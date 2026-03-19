@@ -3,6 +3,7 @@
 import { useRef, useCallback, useState, useEffect } from 'react';
 import { useEditorStore } from '@/lib/store/useEditorStore';
 import Track from './Track';
+import TextTrack from './TextTrack';
 
 function formatMark(s: number): string {
   if (s < 60) return `${s}s`;
@@ -86,6 +87,9 @@ export default function Timeline() {
 
           {/* Track vidéo */}
           <Track duration={duration} trimStart={trimStart} trimEnd={trimEnd} zoomLevel={zoomLevel} />
+
+          {/* Track textes (blocs bleus) */}
+          <TextTrack zoomLevel={zoomLevel} />
 
           {/* Playhead — ligne blanche + triangle */}
           <div

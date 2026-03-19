@@ -72,3 +72,27 @@ export const WORKFLOW_LABELS: Record<WorkflowState, string> = {
   editing: 'Montage',
   ready: 'Prête',
 };
+
+// --- Editor: Text Overlay ---
+
+export type TextStylePreset = 'classic' | 'neon' | 'gold' | 'shadow' | 'bubbly' | 'minimal' | 'dark_pill';
+
+export type TextAnimation = 'none' | 'fade' | 'slide_up' | 'slide_left' | 'bounce' | 'zoom';
+
+export interface TextOverlayItem {
+  id: string;
+  text: string;
+  fontFamily: string;
+  fontSize: number;
+  fill: string;
+  stroke?: string;
+  strokeWidth?: number;
+  shadowColor?: string;
+  shadowBlur?: number;
+  x: number;
+  y: number;
+  startTime: number;
+  endTime: number;
+  style: TextStylePreset;
+  animation: TextAnimation;
+}

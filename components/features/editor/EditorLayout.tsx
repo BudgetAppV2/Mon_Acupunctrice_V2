@@ -8,6 +8,8 @@ import VideoPreview from './VideoPreview';
 import EditorToolbar from './EditorToolbar';
 import Timeline from './timeline/Timeline';
 import TrimPanel from './panels/TrimPanel';
+import FilterPanel from './panels/FilterPanel';
+import TextPanel from './panels/TextPanel';
 import ExportButton from './ExportButton';
 import ImportModal from './ImportModal';
 
@@ -49,7 +51,7 @@ export default function EditorLayout({ itemId }: Props) {
 
       {/* Preview vidéo (~45vh) */}
       <div className="flex-1 min-h-0">
-        <VideoPreview />
+        <VideoPreview interactive={activeTab === 'texte'} />
       </div>
 
       {/* Onglets outils */}
@@ -58,6 +60,8 @@ export default function EditorLayout({ itemId }: Props) {
       {/* Panneau de l'outil actif */}
       <div className="bg-gray-900 shrink-0">
         {activeTab === 'trim' && <TrimPanel />}
+        {activeTab === 'filtres' && <FilterPanel />}
+        {activeTab === 'texte' && <TextPanel />}
       </div>
 
       {/* Timeline multi-track */}

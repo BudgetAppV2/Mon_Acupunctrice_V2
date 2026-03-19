@@ -2,8 +2,8 @@
 
 const TABS: { id: string; label: string; disabled?: boolean }[] = [
   { id: 'trim', label: 'Trim' },
-  { id: 'filtres', label: 'Filtres', disabled: true },
-  { id: 'texte', label: 'Texte', disabled: true },
+  { id: 'filtres', label: 'Filtres' },
+  { id: 'texte', label: 'Texte' },
   { id: 'subs', label: 'Sous-titres', disabled: true },
   { id: 'audio', label: 'Audio', disabled: true },
   { id: 'images', label: 'Images', disabled: true },
