@@ -67,7 +67,7 @@ export default function VideoPreview({ interactive = false }: Props) {
       <video
         ref={videoRef}
         src={videoUrl ?? undefined}
-        className="max-w-full max-h-full object-contain"
+        className="w-full h-full object-contain"
         style={filterStyle}
         playsInline
         onTimeUpdate={handleTimeUpdate}

@@ -40,7 +40,7 @@ export default function TextPanel() {
   const update = (changes: Partial<typeof selected>) => updateOverlay(selected.id, changes);
 
   return (
-    <div className="px-3 py-2 space-y-2 max-h-52 overflow-y-auto">
+    <div className="px-3 py-2 space-y-2 overflow-y-auto bg-gray-900 rounded-t-xl">
       <div className="flex items-center justify-between">
         <button onClick={() => selectOverlay(null)} className="flex items-center gap-1 text-xs text-gray-400">
           <ArrowLeftIcon className="w-3 h-3" /> Retour

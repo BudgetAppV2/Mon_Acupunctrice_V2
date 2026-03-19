@@ -55,20 +55,25 @@ export default function EditorLayout({ itemId }: Props) {
         <div className="w-7" />
       </header>
 
-      {/* Preview vidéo — max de place disponible */}
-      <div className="flex-1 min-h-0">
+      {/* Preview vidéo — hauteur fixe, jamais écrasée par les panneaux */}
+      <div className="flex-1 min-h-0 min-h-[30vh]">
         <VideoPreview interactive={activeTab === 'texte'} />
       </div>
 
       {/* Onglets outils */}
       <EditorToolbar activeTab={activeTab} onTabChange={setActiveTab} />
 
-      {/* Panneau — hauteur auto selon contenu, jamais plus de 35vh */}
-      <div className="bg-gray-900 shrink-0 max-h-[35vh] overflow-y-auto">
+      {/* Panneau — hauteur auto collée au contenu */}
+      <div className={`bg-black shrink-0 overflow-y-auto ${
+        activeTab === 'filtres' ? 'max-h-[110px]' : 'max-h-[50vh]'
+      }`}>
         {activeTab === 'trim' && <TrimPanel />}
         {activeTab === 'filtres' && <FilterPanel />}
         {activeTab === 'texte' && <TextPanel />}
       </div>
+
+      {/* Spacer flexible pour pousser Export en bas */}
+      <div className="flex-1" />
 
       {/* Timeline multi-track */}
       <Timeline />
