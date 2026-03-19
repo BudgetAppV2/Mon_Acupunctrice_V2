@@ -13,7 +13,7 @@ function formatMark(s: number): string {
 }
 
 export default function Timeline() {
-  const { duration, currentTime, trimStart, trimEnd, seekTo } = useEditorStore();
+  const { duration, currentTime, trimStart, trimEnd, seekTo, overlays, subtitles, audioUrl } = useEditorStore();
   const containerRef = useRef<HTMLDivElement>(null);
   const isDragging = useRef(false);
   const [containerWidth, setContainerWidth] = useState(0);
@@ -30,8 +30,11 @@ export default function Timeline() {
   }, []);
 
   // Zoom dynamique : toute la durée tient dans la largeur visible
-  const zoomLevel = containerWidth > 0 && duration > 0 ? containerWidth / duration : 1;
-  const playheadLeft = currentTime * zoomLevel;
+  const PADDING = 12; // px-3 = 12px de chaque côté
+  const zoomLevel = containerWidth > 0 && duration > 0
+    ? (containerWidth - PADDING * 2) / duration
+    : 1;
+  const playheadLeft = PADDING + currentTime * zoomLevel;
 
   // Convertir la position du pointeur en temps
   const rafRef = useRef<number | null>(null);
@@ -40,7 +43,7 @@ export default function Timeline() {
   const timeFromPointer = useCallback((clientX: number) => {
     if (!containerRef.current) return 0;
     const rect = containerRef.current.getBoundingClientRect();
-    const x = Math.max(0, clientX - rect.left);
+    const x = Math.max(0, clientX - rect.left - PADDING);
     return Math.max(0, Math.min(x / zoomLevel, duration));
   }, [duration, zoomLevel]);
 
@@ -77,18 +80,28 @@ export default function Timeline() {
   const marks: number[] = [];
   for (let t = 0; t <= duration; t += markInterval) marks.push(t);
 
-  if (duration === 0) return null;
+  // Hauteur dynamique selon les tracks actives
+  const trackCount = 1 // vidéo toujours présente
+    + (overlays.length > 0 ? 1 : 0)
+    + (subtitles.length > 0 ? 1 : 0)
+    + (audioUrl ? 1 : 0);
+  const timelineHeight = 20 + (trackCount * 26); // règle 20px + 26px par track
+
+  if (duration === 0) {
+    return <div className="bg-gray-950 shrink-0" style={{ height: `${timelineHeight}px` }} />;
+  }
 
   return (
     <div
       ref={containerRef}
-      className="h-[56px] bg-gray-950 shrink-0 relative select-none touch-none"
+      className="bg-gray-950 shrink-0 relative select-none touch-none"
+      style={{ height: `${timelineHeight}px` }}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
     >
       {containerWidth > 0 && (
-        <div className="relative w-full h-full">
+        <div className="relative w-full h-full px-3">
           {/* Règle temporelle */}
           <div className="h-5 border-b border-gray-800 relative">
             {marks.map((t) => (

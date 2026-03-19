@@ -45,16 +45,16 @@ export default function EditorLayout({ itemId }: Props) {
   }
 
   return (
-    <div className="fixed inset-0 flex flex-col bg-black">
-      {/* Header — retour + timecode */}
-      <header className="h-11 flex items-center justify-between px-4 bg-gray-900/90 shrink-0 z-10">
+    <div className="fixed inset-0 flex flex-col bg-gray-950">
+      {/* Header — retour + timecode + export */}
+      <header className="h-11 flex items-center justify-between px-4 bg-gray-900/90 shrink-0 z-10 relative">
         <button onClick={handleBack} className="text-white p-1">
           <ArrowLeftIcon className="w-5 h-5" />
         </button>
         <span className="text-xs text-gray-300 font-mono">
           {formatTime(currentTime)} / {formatTime(duration)}
         </span>
-        <div className="w-7" />
+        <ExportButton />
       </header>
 
       {/* Preview vidéo — prend tout l'espace restant */}
@@ -62,25 +62,27 @@ export default function EditorLayout({ itemId }: Props) {
         <VideoPreview interactive={activeTab === 'texte'} />
       </div>
 
-      {/* Onglets outils */}
-      <EditorToolbar activeTab={activeTab} onTabChange={setActiveTab} />
+      {/* Zone contrôles — hauteur max fixe, preview prend le reste */}
+      <div className="shrink-0 flex flex-col" style={{ maxHeight: '55vh' }}>
+        {/* Onglets outils */}
+        <EditorToolbar activeTab={activeTab} onTabChange={setActiveTab} />
 
-      {/* Panneau compact — scroll interne, hauteur calculée */}
-      <div className={`bg-gray-900 shrink-0 overflow-y-auto ${
-        activeTab === 'filtres' ? 'h-[90px]' : 'h-[120px]'
-      }`}>
-        {activeTab === 'trim' && <TrimPanel />}
-        {activeTab === 'filtres' && <FilterPanel />}
-        {activeTab === 'texte' && <TextPanel />}
-        {activeTab === 'subs' && <SubtitlePanel />}
-        {activeTab === 'audio' && <AudioPanel />}
+        {/* Panneau compact — scroll interne */}
+        <div className={`bg-gray-900 overflow-y-auto ${
+          activeTab === 'filtres' ? 'h-[90px]' :
+          activeTab === 'subs' || activeTab === 'audio' ? 'h-[120px]' :
+          'h-[100px]'
+        }`}>
+          {activeTab === 'trim' && <TrimPanel />}
+          {activeTab === 'filtres' && <FilterPanel />}
+          {activeTab === 'texte' && <TextPanel />}
+          {activeTab === 'subs' && <SubtitlePanel />}
+          {activeTab === 'audio' && <AudioPanel />}
+        </div>
+
+        {/* Timeline multi-track */}
+        <Timeline />
       </div>
-
-      {/* Timeline multi-track */}
-      <Timeline />
-
-      {/* CTA export */}
-      <ExportButton />
     </div>
   );
 }

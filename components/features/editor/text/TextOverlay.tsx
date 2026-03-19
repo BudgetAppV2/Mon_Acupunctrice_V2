@@ -58,16 +58,29 @@ function DraggableText({ overlay: o, selected, interactive, parentW, parentH, cu
   };
   const onPointerUp = () => setDragging(false);
 
-  // Animation d'entrée (0.5s)
-  const t = Math.min((currentTime - o.startTime) / 0.5, 1);
+  // Animation d'entrée (0.5s) + sortie (0.5s)
+  const ANIM_DUR = 0.5;
+  const tIn = Math.min((currentTime - o.startTime) / ANIM_DUR, 1);
+  const tOut = Math.min((o.endTime - currentTime) / ANIM_DUR, 1);
+  const t = Math.min(tIn, tOut); // 0→1 en entrée, 1→0 en sortie
   let transform = 'translate(-50%, -50%)';
   let opacity = 1;
   if (t < 1) {
     switch (o.animation) {
       case 'fade': opacity = t; break;
-      case 'slide_up': transform += ` translateY(${(1 - t) * 40}px)`; opacity = t; break;
-      case 'slide_left': transform += ` translateX(${(1 - t) * 40}px)`; opacity = t; break;
-      case 'bounce': { const s = t < 0.6 ? (t / 0.6) * 1.2 : 1.2 - ((t - 0.6) / 0.4) * 0.2; transform += ` scale(${s})`; break; }
+      case 'slide_up':
+        transform += ` translateY(${(1 - t) * 40}px)`;
+        opacity = t;
+        break;
+      case 'slide_left':
+        transform += ` translateX(${(1 - t) * 40}px)`;
+        opacity = t;
+        break;
+      case 'bounce': {
+        const s = t < 0.6 ? (t / 0.6) * 1.2 : 1.2 - ((t - 0.6) / 0.4) * 0.2;
+        transform += ` scale(${s})`;
+        break;
+      }
       case 'zoom': transform += ` scale(${t})`; opacity = t; break;
     }
   }

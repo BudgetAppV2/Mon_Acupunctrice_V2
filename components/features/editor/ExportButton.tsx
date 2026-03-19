@@ -1,27 +1,19 @@
 'use client';
 
 import { useVideoExport, type ExportState } from '@/lib/hooks/useVideoExport';
-import { ArrowUpIcon, CheckCircleIcon, ExclamationCircleIcon } from '@heroicons/react/24/solid';
-
-const LABELS: Record<ExportState, string> = {
-  idle: 'Exporter la vidéo',
-  preparing: 'Préparation...',
-  exporting: 'Export en cours...',
-  uploading: 'Sauvegarde...',
-  done: 'Vidéo prête !',
-  error: 'Réessayer',
-};
+import { ArrowUpTrayIcon, CheckCircleIcon, ExclamationCircleIcon } from '@heroicons/react/24/outline';
 
 export default function ExportButton() {
   const { exportVideo, state, progress, error, supportsWebCodecs } = useVideoExport();
   const busy = state === 'preparing' || state === 'exporting' || state === 'uploading';
 
   return (
-    <div className="px-4 py-1.5 bg-gray-900 shrink-0" style={{ paddingBottom: 'max(env(safe-area-inset-bottom), 6px)' }}>
+    <>
+      {/* Bouton compact — intégré dans le header via slot */}
       <button
         onClick={exportVideo}
         disabled={busy || state === 'done'}
-        className={`w-full py-3 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 transition-colors ${
+        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
           state === 'done'
             ? 'bg-green-600 text-white'
             : state === 'error'
@@ -31,31 +23,35 @@ export default function ExportButton() {
                 : 'bg-sage text-white'
         }`}
       >
-        {state === 'done' && <CheckCircleIcon className="w-5 h-5" />}
-        {state === 'error' && <ExclamationCircleIcon className="w-5 h-5" />}
-        {state === 'idle' && <ArrowUpIcon className="w-5 h-5" />}
-        {LABELS[state]}
-        {state === 'exporting' && ` ${progress}%`}
+        {state === 'done' && <CheckCircleIcon className="w-4 h-4" />}
+        {state === 'error' && <ExclamationCircleIcon className="w-4 h-4" />}
+        {(state === 'idle' || busy) && <ArrowUpTrayIcon className="w-4 h-4" />}
+        {state === 'idle' && 'Exporter'}
+        {state === 'preparing' && 'Prép...'}
+        {state === 'exporting' && `${progress}%`}
+        {state === 'uploading' && 'Sauvegarde...'}
+        {state === 'done' && 'Prête!'}
+        {state === 'error' && 'Réessayer'}
       </button>
 
-      {/* Barre de progression */}
+      {/* Barre de progression — overlay sous le header */}
       {state === 'exporting' && (
-        <div className="mt-2 h-1 bg-gray-700 rounded-full overflow-hidden">
+        <div className="absolute top-11 left-0 right-0 h-0.5 bg-gray-800 z-20">
           <div
-            className="h-full bg-sage transition-all duration-300 rounded-full"
+            className="h-full bg-sage transition-all duration-300"
             style={{ width: `${progress}%` }}
           />
         </div>
       )}
 
-      {/* Message contextuel selon le moteur utilisé */}
-      {busy && (
-        <p className="text-xs text-gray-500 text-center mt-1">
-          {supportsWebCodecs ? 'Export rapide en cours...' : 'Export en cours (peut prendre 1-2 min)...'}
-        </p>
+      {/* Message si lent */}
+      {busy && !supportsWebCodecs && (
+        <div className="absolute top-12 left-0 right-0 flex justify-center z-20">
+          <span className="text-[10px] text-gray-400 bg-gray-900/80 px-2 py-0.5 rounded-full">
+            Export en cours (1-2 min)...
+          </span>
+        </div>
       )}
-
-      {error && <p className="text-xs text-red-400 text-center mt-1">{error}</p>}
-    </div>
+    </>
   );
 }
