@@ -24,29 +24,42 @@ export function useVideoExport() {
     && 'requestVideoFrameCallback' in HTMLVideoElement.prototype;
 
   const exportVideo = useCallback(async () => {
-    const { videoFile, trimStart, trimEnd, itemId, filter, overlays } = useEditorStore.getState();
-    if (!videoFile || !itemId) return;
+    const s = useEditorStore.getState();
+    if (!s.videoFile || !s.itemId) return;
 
     setState('preparing');
     setProgress(0);
     setError(null);
 
     try {
-      // Charger les polices utilisées par les overlays pour le canvas export
-      for (const o of overlays) await loadFont(o.fontFamily);
-      const filterCss = FILTERS.find(f => f.id === filter)?.css;
+      for (const o of s.overlays) await loadFont(o.fontFamily);
+      const filterCss = FILTERS.find(f => f.id === s.filter)?.css;
+      // FFmpeg requis quand une piste audio est présente (pour le mixage)
+      const useWC = supportsWebCodecs && !s.audioUrl;
 
       let blob: Blob;
       setState('exporting');
 
-      if (supportsWebCodecs) {
-        blob = await exportWithWebCodecs(videoFile, trimStart, trimEnd, setProgress, filterCss, overlays);
+      if (useWC) {
+        blob = await exportWithWebCodecs(
+          s.videoFile, s.trimStart, s.trimEnd, setProgress,
+          filterCss, s.overlays, s.subtitles, s.subtitleStyle,
+        );
       } else {
         const ffmpeg = await loadFFmpeg();
         const { fetchFile } = await import('@ffmpeg/util');
         ffmpeg.on('progress', ({ progress: p }) => setProgress(Math.round(p * 100)));
-        await ffmpeg.writeFile('input.mp4', await fetchFile(videoFile));
-        await ffmpeg.exec(buildExportCommand(trimStart, trimEnd, filter, overlays));
+        await ffmpeg.writeFile('input.mp4', await fetchFile(s.videoFile));
+        if (s.audioUrl) {
+          const audioData = await fetch(s.audioUrl).then(r => r.arrayBuffer());
+          await ffmpeg.writeFile('music.mp3', new Uint8Array(audioData));
+        }
+        await ffmpeg.exec(buildExportCommand({
+          trimStart: s.trimStart, trimEnd: s.trimEnd, filter: s.filter,
+          overlays: s.overlays, subtitles: s.subtitles, subtitleStyle: s.subtitleStyle,
+          audioUrl: s.audioUrl, voiceVolume: s.voiceVolume, audioVolume: s.audioVolume,
+          audioFadeIn: s.audioFadeIn, audioFadeOut: s.audioFadeOut,
+        }));
         const data = await ffmpeg.readFile('output.mp4') as Uint8Array;
         blob = new Blob([data.buffer as ArrayBuffer], { type: 'video/mp4' });
         terminateFFmpeg();
@@ -55,12 +68,12 @@ export function useVideoExport() {
       setState('uploading');
       const userId = getFirebaseAuth().currentUser?.uid;
       const storage = getFirebaseStorage();
-      const storageRef = ref(storage, `videos/${userId}/${itemId}/export.mp4`);
+      const storageRef = ref(storage, `videos/${userId}/${s.itemId}/export.mp4`);
       await uploadBytes(storageRef, blob);
       const videoUrl = await getDownloadURL(storageRef);
 
       const db = getFirebaseFirestore();
-      await updateDoc(doc(db, 'contentItems', itemId), {
+      await updateDoc(doc(db, 'contentItems', s.itemId), {
         videoUrl, workflowState: 'ready', updatedAt: serverTimestamp(),
       });
 

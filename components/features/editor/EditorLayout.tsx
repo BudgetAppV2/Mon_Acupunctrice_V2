@@ -10,6 +10,8 @@ import Timeline from './timeline/Timeline';
 import TrimPanel from './panels/TrimPanel';
 import FilterPanel from './panels/FilterPanel';
 import TextPanel from './panels/TextPanel';
+import SubtitlePanel from './panels/SubtitlePanel';
+import AudioPanel from './panels/AudioPanel';
 import ExportButton from './ExportButton';
 import ImportModal from './ImportModal';
 
@@ -70,6 +72,8 @@ export default function EditorLayout({ itemId }: Props) {
         {activeTab === 'trim' && <TrimPanel />}
         {activeTab === 'filtres' && <FilterPanel />}
         {activeTab === 'texte' && <TextPanel />}
+        {activeTab === 'subs' && <SubtitlePanel />}
+        {activeTab === 'audio' && <AudioPanel />}
       </div>
 
       {/* Timeline multi-track */}

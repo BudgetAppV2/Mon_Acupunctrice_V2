@@ -1,6 +1,7 @@
 import { Muxer, ArrayBufferTarget } from 'mp4-muxer';
 import { drawTextOverlays } from './drawOverlays';
-import type { TextOverlayItem } from '@/lib/types';
+import type { TextOverlayItem, SubtitleSegment, SubtitleStyle } from '@/lib/types';
+import { drawSubtitles } from './drawSubtitles';
 
 const W = 1080, H = 1920;
 
@@ -12,6 +13,7 @@ export async function exportWithWebCodecs(
   file: File, trimStart: number, trimEnd: number,
   onProgress: (p: number) => void,
   filterCss?: string, overlays?: TextOverlayItem[],
+  subtitles?: SubtitleSegment[], subtitleStyle?: string,
 ): Promise<Blob> {
   const dur = trimEnd - trimStart;
 
@@ -65,8 +67,9 @@ export async function exportWithWebCodecs(
       ctx.drawImage(video, (W - dw) / 2, (H - dh) / 2, dw, dh);
       ctx.filter = 'none';
 
-      // Incruster les textes
+      // Incruster les textes + sous-titres
       if (overlays?.length) drawTextOverlays(ctx, overlays, meta.mediaTime, W, H);
+      if (subtitles?.length) drawSubtitles(ctx, subtitles, (subtitleStyle || 'classic') as SubtitleStyle, meta.mediaTime, W, H);
 
       const ts = Math.round((meta.mediaTime - trimStart) * 1e6);
       const frame = new VideoFrame(canvas, { timestamp: ts });

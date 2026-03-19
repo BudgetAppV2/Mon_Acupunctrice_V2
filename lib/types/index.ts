@@ -96,3 +96,32 @@ export interface TextOverlayItem {
   style: TextStylePreset;
   animation: TextAnimation;
 }
+
+// --- Editor: Subtitles ---
+
+export interface SubtitleWord {
+  word: string;
+  start: number;
+  end: number;
+}
+
+export interface SubtitleSegment {
+  id: string;
+  text: string;
+  startTime: number;
+  endTime: number;
+  words: SubtitleWord[];
+}
+
+export type SubtitleStyle = 'classic' | 'tiktok' | 'karaoke';
+
+// --- Editor: Audio / Jamendo ---
+
+export interface JamendoTrack {
+  id: string;
+  name: string;
+  artist: string;
+  duration: number;
+  audio: string;
+  image: string;
+}

@@ -4,6 +4,8 @@ import { useRef, useCallback, useState, useEffect } from 'react';
 import { useEditorStore } from '@/lib/store/useEditorStore';
 import Track from './Track';
 import TextTrack from './TextTrack';
+import SubtitleTrack from './SubtitleTrack';
+import AudioTrackTimeline from './AudioTrackTimeline';
 
 function formatMark(s: number): string {
   if (s < 60) return `${s}s`;
@@ -106,6 +108,10 @@ export default function Timeline() {
 
           {/* Track textes (blocs bleus) */}
           <TextTrack zoomLevel={zoomLevel} />
+          {/* Track sous-titres (blocs jaunes) */}
+          <SubtitleTrack zoomLevel={zoomLevel} />
+          {/* Track audio (bloc violet) */}
+          <AudioTrackTimeline zoomLevel={zoomLevel} />
 
           {/* Playhead — ligne blanche + triangle */}
           <div
