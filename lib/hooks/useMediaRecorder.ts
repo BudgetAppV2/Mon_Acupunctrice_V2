@@ -7,24 +7,31 @@ interface UseMediaRecorderOptions {
 }
 
 /**
- * Hook pour enregistrer une vidéo via la webcam/caméra.
- * Gère automatiquement le format (webm sur Chrome, mp4 sur Safari)
- * et corrige les métadonnées de durée webm via fix-webm-duration.
+ * Hook pour la caméra et l'enregistrement vidéo.
+ * Sépare l'ouverture de la caméra (preview) du démarrage de l'enregistrement
+ * pour permettre un countdown avant de filmer.
  */
 export function useMediaRecorder({ onRecordingComplete }: UseMediaRecorderOptions) {
+  const [stream, setStream] = useState<MediaStream | null>(null);
   const [isRecording, setIsRecording] = useState(false);
   const recorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
   const startTimeRef = useRef(0);
 
-  const startRecording = useCallback(async () => {
-    const stream = await navigator.mediaDevices.getUserMedia({
+  // Ouvrir la caméra sans enregistrer (pour la preview)
+  const openCamera = useCallback(async () => {
+    const s = await navigator.mediaDevices.getUserMedia({
       video: { facingMode: 'environment', width: { ideal: 1080 }, height: { ideal: 1920 } },
       audio: true,
     });
+    setStream(s);
+  }, []);
+
+  // Lancer l'enregistrement sur le stream existant
+  const startRecording = useCallback(() => {
+    if (!stream) return;
     chunksRef.current = [];
 
-    // Chrome = webm, Safari = mp4
     const mimeType = MediaRecorder.isTypeSupported('video/webm;codecs=vp9')
       ? 'video/webm;codecs=vp9'
       : MediaRecorder.isTypeSupported('video/webm')
@@ -54,18 +61,24 @@ export function useMediaRecorder({ onRecordingComplete }: UseMediaRecorderOption
 
       const ext = isWebm ? 'webm' : 'mp4';
       onRecordingComplete(new File([fixedBlob], `recording.${ext}`, { type: mimeType }));
-      stream.getTracks().forEach((t) => t.stop());
     };
 
     startTimeRef.current = Date.now();
     recorder.start(1000);
     setIsRecording(true);
-  }, [onRecordingComplete]);
+  }, [stream, onRecordingComplete]);
 
   const stopRecording = useCallback(() => {
     recorderRef.current?.stop();
     setIsRecording(false);
   }, []);
 
-  return { isRecording, startRecording, stopRecording };
+  // Libérer la caméra (stopper tous les tracks)
+  const closeCamera = useCallback(() => {
+    stream?.getTracks().forEach((t) => t.stop());
+    setStream(null);
+    setIsRecording(false);
+  }, [stream]);
+
+  return { stream, isRecording, openCamera, startRecording, stopRecording, closeCamera };
 }
