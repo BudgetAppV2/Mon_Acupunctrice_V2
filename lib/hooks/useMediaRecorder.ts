@@ -2,83 +2,100 @@
 
 import { useState, useRef, useCallback } from 'react';
 
-interface UseMediaRecorderOptions {
-  onRecordingComplete: (file: File) => void;
-}
+export interface RecordingResult { file: File; url: string }
 
 /**
- * Hook pour la caméra et l'enregistrement vidéo.
- * Sépare l'ouverture de la caméra (preview) du démarrage de l'enregistrement
- * pour permettre un countdown avant de filmer.
+ * Hook caméra + enregistrement.
+ * startWebcam/startScreenCapture ouvrent le stream (preview).
+ * startRecording(stream) lance le countdown 3-2-1 puis le MediaRecorder.
+ * La Promise se résout quand recorder.onstop se déclenche avec {file, url}.
  */
-export function useMediaRecorder({ onRecordingComplete }: UseMediaRecorderOptions) {
+export function useMediaRecorder() {
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [isRecording, setIsRecording] = useState(false);
+  const [countdown, setCountdown] = useState(0);
   const recorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
   const startTimeRef = useRef(0);
+  const cancelledRef = useRef(false);
 
-  // Ouvrir la caméra sans enregistrer (pour la preview)
-  const openCamera = useCallback(async () => {
+  const startWebcam = useCallback(async () => {
     const s = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: 'environment', width: { ideal: 1080 }, height: { ideal: 1920 } },
+      video: { facingMode: 'user', width: { ideal: 1080 }, height: { ideal: 1920 } },
       audio: true,
     });
     setStream(s);
+    return s;
   }, []);
 
-  // Lancer l'enregistrement sur le stream existant
-  const startRecording = useCallback(() => {
-    if (!stream) return;
-    chunksRef.current = [];
+  const startScreenCapture = useCallback(async () => {
+    const s = await navigator.mediaDevices.getDisplayMedia({ video: true });
+    setStream(s);
+    return s;
+  }, []);
+
+  const startRecording = useCallback(async (s: MediaStream): Promise<RecordingResult | null> => {
+    cancelledRef.current = false;
+
+    // Countdown 3-2-1
+    for (let i = 3; i > 0; i--) {
+      if (cancelledRef.current) { setCountdown(0); return null; }
+      setCountdown(i);
+      await new Promise(r => setTimeout(r, 1000));
+    }
+    if (cancelledRef.current) { setCountdown(0); return null; }
+    setCountdown(0);
+    setIsRecording(true);
 
     const mimeType = MediaRecorder.isTypeSupported('video/webm;codecs=vp9')
       ? 'video/webm;codecs=vp9'
-      : MediaRecorder.isTypeSupported('video/webm')
-        ? 'video/webm'
-        : 'video/mp4';
+      : MediaRecorder.isTypeSupported('video/webm') ? 'video/webm' : 'video/mp4';
 
-    const recorder = new MediaRecorder(stream, { mimeType });
-    recorderRef.current = recorder;
+    return new Promise<RecordingResult | null>((resolve) => {
+      chunksRef.current = [];
+      const recorder = new MediaRecorder(s, { mimeType });
+      recorderRef.current = recorder;
 
-    recorder.ondataavailable = (e) => {
-      if (e.data.size > 0) chunksRef.current.push(e.data);
-    };
+      recorder.ondataavailable = (e) => {
+        if (e.data.size > 0) chunksRef.current.push(e.data);
+      };
 
-    recorder.onstop = async () => {
-      const isWebm = mimeType.includes('webm');
-      const blob = new Blob(chunksRef.current, { type: mimeType });
-      const duration = Date.now() - startTimeRef.current;
+      recorder.onstop = async () => {
+        setIsRecording(false);
+        if (cancelledRef.current) { resolve(null); return; }
+        const isWebm = mimeType.includes('webm');
+        const blob = new Blob(chunksRef.current, { type: mimeType });
+        const dur = Date.now() - startTimeRef.current;
+        let fixed = blob;
+        if (isWebm) {
+          try {
+            const mod = await import('fix-webm-duration');
+            fixed = await (mod.default || mod)(blob, dur);
+          } catch { /* continuer sans correction */ }
+        }
+        const ext = isWebm ? 'webm' : 'mp4';
+        const file = new File([fixed], `recording.${ext}`, { type: mimeType });
+        resolve({ file, url: URL.createObjectURL(fixed) });
+      };
 
-      // Corriger la durée incorrecte des fichiers webm (bug MediaRecorder)
-      let fixedBlob = blob;
-      if (isWebm) {
-        try {
-          const mod = await import('fix-webm-duration');
-          fixedBlob = await (mod.default || mod)(blob, duration);
-        } catch { /* continuer sans correction */ }
-      }
-
-      const ext = isWebm ? 'webm' : 'mp4';
-      onRecordingComplete(new File([fixedBlob], `recording.${ext}`, { type: mimeType }));
-    };
-
-    startTimeRef.current = Date.now();
-    recorder.start(1000);
-    setIsRecording(true);
-  }, [stream, onRecordingComplete]);
-
-  const stopRecording = useCallback(() => {
-    recorderRef.current?.stop();
-    setIsRecording(false);
+      startTimeRef.current = Date.now();
+      recorder.start(1000);
+    });
   }, []);
 
-  // Libérer la caméra (stopper tous les tracks)
-  const closeCamera = useCallback(() => {
-    stream?.getTracks().forEach((t) => t.stop());
+  const stopRecording = useCallback(() => { recorderRef.current?.stop(); }, []);
+
+  const cleanup = useCallback(() => {
+    cancelledRef.current = true;
+    recorderRef.current?.stop();
+    stream?.getTracks().forEach(t => t.stop());
     setStream(null);
     setIsRecording(false);
+    setCountdown(0);
   }, [stream]);
 
-  return { stream, isRecording, openCamera, startRecording, stopRecording, closeCamera };
+  return {
+    stream, isRecording, countdown,
+    startWebcam, startScreenCapture, startRecording, stopRecording, cleanup,
+  };
 }

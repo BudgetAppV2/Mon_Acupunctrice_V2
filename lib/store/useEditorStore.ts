@@ -18,6 +18,7 @@ interface EditorState {
   itemId: string | null;
 
   setVideoFile: (file: File) => void;
+  loadVideo: (file: File, url: string) => void;
   setDuration: (d: number) => void;
   setCurrentTime: (t: number) => void;
   play: () => void;
@@ -49,6 +50,15 @@ export const useEditorStore = create<EditorState>((set, get) => ({
       trimEnd: 0,
       currentTime: 0,
       isPlaying: false,
+    });
+  },
+
+  loadVideo: (file, url) => {
+    const prev = get().videoUrl;
+    if (prev) URL.revokeObjectURL(prev);
+    set({
+      videoFile: file, videoUrl: url,
+      trimStart: 0, trimEnd: 0, currentTime: 0, isPlaying: false,
     });
   },
 
