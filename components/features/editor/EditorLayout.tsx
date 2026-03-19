@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useEditorStore } from '@/lib/store/useEditorStore';
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 import VideoPreview from './VideoPreview';
@@ -25,6 +25,12 @@ interface Props {
 
 export default function EditorLayout({ itemId }: Props) {
   const { videoFile, currentTime, duration, setItemId, reset } = useEditorStore();
+  const router = useRouter();
+
+  const handleBack = () => {
+    reset?.();
+    router.push('/calendrier');
+  };
   const [activeTab, setActiveTab] = useState('trim');
 
   useEffect(() => {
@@ -40,16 +46,16 @@ export default function EditorLayout({ itemId }: Props) {
     <div className="fixed inset-0 flex flex-col bg-black">
       {/* Header — retour + timecode */}
       <header className="h-11 flex items-center justify-between px-4 bg-gray-900/90 shrink-0 z-10">
-        <Link href="/calendrier" className="text-white p-1">
+        <button onClick={handleBack} className="text-white p-1">
           <ArrowLeftIcon className="w-5 h-5" />
-        </Link>
+        </button>
         <span className="text-xs text-gray-300 font-mono">
           {formatTime(currentTime)} / {formatTime(duration)}
         </span>
         <div className="w-7" />
       </header>
 
-      {/* Preview vidéo (~45vh) */}
+      {/* Preview vidéo — max de place disponible */}
       <div className="flex-1 min-h-0">
         <VideoPreview interactive={activeTab === 'texte'} />
       </div>
@@ -57,8 +63,8 @@ export default function EditorLayout({ itemId }: Props) {
       {/* Onglets outils */}
       <EditorToolbar activeTab={activeTab} onTabChange={setActiveTab} />
 
-      {/* Panneau de l'outil actif */}
-      <div className="bg-gray-900 shrink-0">
+      {/* Panneau — hauteur auto selon contenu, jamais plus de 35vh */}
+      <div className="bg-gray-900 shrink-0 max-h-[35vh] overflow-y-auto">
         {activeTab === 'trim' && <TrimPanel />}
         {activeTab === 'filtres' && <FilterPanel />}
         {activeTab === 'texte' && <TextPanel />}
