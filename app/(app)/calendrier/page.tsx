@@ -2,9 +2,10 @@
 
 import { useAuth } from '@/lib/hooks/useAuth';
 import { ArrowRightStartOnRectangleIcon } from '@heroicons/react/24/outline';
+import CalendarView from '@/components/features/calendar/CalendarView';
 
 export default function CalendrierPage() {
-  const { user, signOut } = useAuth();
+  const { signOut } = useAuth();
 
   return (
     <div className="min-h-screen bg-sand">
@@ -19,14 +20,7 @@ export default function CalendrierPage() {
         </button>
       </header>
 
-      <main className="flex flex-col items-center justify-center px-4 pt-20">
-        <p className="text-gray-400 text-sm">
-          Bienvenue{user?.displayName ? `, ${user.displayName}` : ''}.
-        </p>
-        <p className="text-gray-400 text-sm mt-1">
-          Le calendrier arrive bientôt.
-        </p>
-      </main>
+      <CalendarView />
     </div>
   );
 }
