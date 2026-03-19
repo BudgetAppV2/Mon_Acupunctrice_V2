@@ -32,26 +32,42 @@ export default function Timeline() {
   const playheadLeft = currentTime * zoomLevel;
 
   // Convertir la position du pointeur en temps
+  const rafRef = useRef<number | null>(null);
+
+  // Convertir la position du pointeur en temps
   const timeFromPointer = useCallback((clientX: number) => {
     if (!containerRef.current) return 0;
     const rect = containerRef.current.getBoundingClientRect();
-    const x = clientX - rect.left;
+    const x = Math.max(0, clientX - rect.left);
     return Math.max(0, Math.min(x / zoomLevel, duration));
   }, [duration, zoomLevel]);
 
   const handlePointerDown = (e: React.PointerEvent) => {
+    e.preventDefault();
     isDragging.current = true;
-    (e.target as HTMLElement).setPointerCapture(e.pointerId);
+    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
     seekTo(timeFromPointer(e.clientX));
   };
 
   const handlePointerMove = (e: React.PointerEvent) => {
     if (!isDragging.current) return;
-    seekTo(timeFromPointer(e.clientX));
+    e.preventDefault();
+    // RAF pour throttler les updates et éviter le découplage
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    const t = timeFromPointer(e.clientX);
+    rafRef.current = requestAnimationFrame(() => {
+      seekTo(t);
+      rafRef.current = null;
+    });
   };
 
-  const handlePointerUp = () => {
+  const handlePointerUp = (e: React.PointerEvent) => {
     isDragging.current = false;
+    if (rafRef.current) {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+    }
+    (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
   };
 
   // Intervalle des marques adapté à la durée
@@ -64,7 +80,7 @@ export default function Timeline() {
   return (
     <div
       ref={containerRef}
-      className="h-[72px] bg-gray-950 shrink-0 relative select-none"
+      className="h-[72px] bg-gray-950 shrink-0 relative select-none touch-none"
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
