@@ -45,13 +45,16 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   if (!user) return null;
 
+  // Cacher la bottom nav dans l'éditeur (plein écran)
+  const isEditor = pathname.startsWith('/editeur');
+
   return (
     <>
-      <div className="pb-[calc(49px+env(safe-area-inset-bottom))]">
+      <div className={isEditor ? '' : 'pb-[calc(49px+env(safe-area-inset-bottom))]'}>
         {children}
       </div>
 
-      <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white/85 backdrop-blur-xl border-t border-gray-200">
+      {!isEditor && <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white/85 backdrop-blur-xl border-t border-gray-200">
         <div
           className="grid grid-cols-4 items-end"
           style={{ height: 'calc(49px + env(safe-area-inset-bottom))', paddingBottom: 'env(safe-area-inset-bottom)' }}
@@ -73,7 +76,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             );
           })}
         </div>
-      </nav>
+      </nav>}
     </>
   );
 }

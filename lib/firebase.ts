@@ -6,6 +6,7 @@ import {
   type Auth,
 } from 'firebase/auth';
 import { getFirestore, type Firestore } from 'firebase/firestore';
+import { getStorage as firebaseGetStorage, type FirebaseStorage } from 'firebase/storage';
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -41,4 +42,13 @@ export function getFirebaseFirestore(): Firestore {
     _db = getFirestore(getFirebaseApp());
   }
   return _db;
+}
+
+let _storage: FirebaseStorage | null = null;
+
+export function getFirebaseStorage(): FirebaseStorage {
+  if (!_storage) {
+    _storage = firebaseGetStorage(getFirebaseApp());
+  }
+  return _storage;
 }
