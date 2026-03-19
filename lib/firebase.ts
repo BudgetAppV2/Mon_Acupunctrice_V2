@@ -5,6 +5,7 @@ import {
   browserLocalPersistence,
   type Auth,
 } from 'firebase/auth';
+import { getFirestore, type Firestore } from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -17,13 +18,27 @@ const firebaseConfig = {
 
 let _app: FirebaseApp | null = null;
 let _auth: Auth | null = null;
+let _db: Firestore | null = null;
 
-// Lazy init — n'est appelée que côté client via useAuth
+function getFirebaseApp(): FirebaseApp {
+  if (!_app) {
+    _app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
+  }
+  return _app;
+}
+
+// Lazy init — appelée côté client uniquement
 export function getFirebaseAuth(): Auth {
   if (!_auth) {
-    _app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
-    _auth = firebaseGetAuth(_app);
+    _auth = firebaseGetAuth(getFirebaseApp());
     setPersistence(_auth, browserLocalPersistence);
   }
   return _auth;
+}
+
+export function getFirebaseFirestore(): Firestore {
+  if (!_db) {
+    _db = getFirestore(getFirebaseApp());
+  }
+  return _db;
 }

@@ -17,6 +17,15 @@ const config: Config = {
         'status-ready': '#22c55e',
         'status-published': '#6b7280',
       },
+      keyframes: {
+        'slide-up': {
+          from: { transform: 'translateY(100%)' },
+          to: { transform: 'translateY(0)' },
+        },
+      },
+      animation: {
+        'slide-up': 'slide-up 0.3s ease-out',
+      },
     },
   },
   plugins: [],
