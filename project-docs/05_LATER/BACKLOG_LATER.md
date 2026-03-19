@@ -3,6 +3,27 @@
 
 ---
 
+## Stats & Analytics (V2 — prioritaire)
+
+### Résumé dans le Profil (cartes simples)
+- Vues totales sur les Reels (Instagram Insights API)
+- Trafic vers le site Wix depuis Instagram (UTM tracking)
+- Constance : publications par semaine (sparkline 4 semaines)
+
+### Page dédiée /stats
+- Graphique vues par Reel (7 derniers Reels)
+- Meilleure heure de publication (basé sur l'engagement réel)
+- Trafic Wix depuis Instagram (UTM params dans les liens captions)
+- Croissance followers (semaine/mois)
+
+### Technique requis pour V2
+- Token Meta long-lived (60 jours, renouvelable)
+- GET /{media-id}/insights?metric=plays,reach,likes,comments
+- GET /{ig-user-id}/insights?metric=follower_count,reach
+- UTM params automatiques dans les liens Wix des captions générées
+
+---
+
 ## Systèmes avancés (V3+)
 
 Tout le travail du moteur de guidance V3/V4 est ici.
