@@ -63,9 +63,9 @@ export default function EditorLayout({ itemId }: Props) {
       {/* Onglets outils */}
       <EditorToolbar activeTab={activeTab} onTabChange={setActiveTab} />
 
-      {/* Panneau compact — hauteur fixe, scroll interne pour voir tous les contrôles */}
+      {/* Panneau compact — scroll interne, hauteur calculée */}
       <div className={`bg-gray-900 shrink-0 overflow-y-auto ${
-        activeTab === 'filtres' ? 'h-[100px]' : 'h-[180px]'
+        activeTab === 'filtres' ? 'h-[90px]' : 'h-[120px]'
       }`}>
         {activeTab === 'trim' && <TrimPanel />}
         {activeTab === 'filtres' && <FilterPanel />}

@@ -17,7 +17,7 @@ export default function ExportButton() {
   const busy = state === 'preparing' || state === 'exporting' || state === 'uploading';
 
   return (
-    <div className="px-4 py-2 bg-gray-900 shrink-0" style={{ paddingBottom: 'env(safe-area-inset-bottom, 8px)' }}>
+    <div className="px-4 py-1.5 bg-gray-900 shrink-0" style={{ paddingBottom: 'max(env(safe-area-inset-bottom), 6px)' }}>
       <button
         onClick={exportVideo}
         disabled={busy || state === 'done'}

@@ -80,7 +80,7 @@ export default function Timeline() {
   return (
     <div
       ref={containerRef}
-      className="h-[72px] bg-gray-950 shrink-0 relative select-none touch-none"
+      className="h-[56px] bg-gray-950 shrink-0 relative select-none touch-none"
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
