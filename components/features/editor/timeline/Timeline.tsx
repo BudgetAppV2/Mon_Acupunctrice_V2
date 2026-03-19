@@ -64,7 +64,7 @@ export default function Timeline() {
   return (
     <div
       ref={containerRef}
-      className="h-[120px] bg-gray-950 shrink-0 relative select-none"
+      className="h-[72px] bg-gray-950 shrink-0 relative select-none"
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
@@ -72,7 +72,7 @@ export default function Timeline() {
       {containerWidth > 0 && (
         <div className="relative w-full h-full">
           {/* Règle temporelle */}
-          <div className="h-6 border-b border-gray-800 relative">
+          <div className="h-5 border-b border-gray-800 relative">
             {marks.map((t) => (
               <div
                 key={t}
