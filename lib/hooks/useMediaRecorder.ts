@@ -14,6 +14,7 @@ export function useMediaRecorder() {
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [isRecording, setIsRecording] = useState(false);
   const [countdown, setCountdown] = useState(0);
+  const streamRef = useRef<MediaStream | null>(null);
   const recorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
   const startTimeRef = useRef(0);
@@ -24,12 +25,14 @@ export function useMediaRecorder() {
       video: { facingMode: 'user', width: { ideal: 1080 }, height: { ideal: 1920 } },
       audio: true,
     });
+    streamRef.current = s;
     setStream(s);
     return s;
   }, []);
 
   const startScreenCapture = useCallback(async () => {
     const s = await navigator.mediaDevices.getDisplayMedia({ video: true });
+    streamRef.current = s;
     setStream(s);
     return s;
   }, []);
@@ -88,11 +91,13 @@ export function useMediaRecorder() {
   const cleanup = useCallback(() => {
     cancelledRef.current = true;
     recorderRef.current?.stop();
-    stream?.getTracks().forEach(t => t.stop());
+    // Utiliser la ref pour éviter la dépendance sur stream
+    streamRef.current?.getTracks().forEach(t => t.stop());
+    streamRef.current = null;
     setStream(null);
     setIsRecording(false);
     setCountdown(0);
-  }, [stream]);
+  }, []); // Pas de dépendance — utilise les refs
 
   return {
     stream, isRecording, countdown,
