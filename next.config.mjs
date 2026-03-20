@@ -11,10 +11,11 @@ const nextConfig = {
   async headers() {
     return [
       {
-        // Page login : allow-popups pour que Google OAuth popup fonctionne
+        // Page login : AUCUN header COOP/COEP pour que Google OAuth fonctionne
+        // (popup sur desktop, redirect sur mobile)
         source: '/login',
         headers: [
-          { key: 'Cross-Origin-Opener-Policy', value: 'same-origin-allow-popups' },
+          { key: 'Cross-Origin-Opener-Policy', value: 'unsafe-none' },
         ],
       },
       {

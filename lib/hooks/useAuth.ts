@@ -41,15 +41,11 @@ export function useAuth() {
 
   const signInWithGoogle = async () => {
     const auth = getFirebaseAuth();
-    // PWA standalone sur iOS : les popups sont bloqués, le redirect aussi
-    // car COOP same-origin empêche le retour cross-origin.
-    // Solution : ouvrir la page login dans Safari via window.open,
-    // puis utiliser signInWithPopup normalement (Safari gère les popups).
-    const isStandalone = typeof window !== 'undefined' &&
-      (window.matchMedia('(display-mode: standalone)').matches ||
-       (window.navigator as unknown as { standalone?: boolean }).standalone === true);
-    if (isStandalone) {
-      // En PWA, on tente signInWithRedirect comme fallback
+    // Mobile (iOS/Android) : signInWithRedirect est plus fiable
+    // Desktop : signInWithPopup pour une meilleure UX
+    const isMobile = typeof window !== 'undefined' &&
+      /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    if (isMobile) {
       await signInWithRedirect(auth, provider);
     } else {
       await signInWithPopup(auth, provider);
