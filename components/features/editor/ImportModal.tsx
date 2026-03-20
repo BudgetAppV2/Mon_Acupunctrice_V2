@@ -60,10 +60,10 @@ export default function ImportModal() {
     return (
       <div className="fixed inset-0 bg-black z-50 flex flex-col items-center justify-center">
 
-        {/* Preview 9:16 — exactement ce qui sera capturé */}
+        {/* Preview plein écran — la caméra affiche sa résolution native,
+           le crop 9:16 sera fait à l'export */}
         <div
-          className="relative overflow-hidden"
-          style={{ aspectRatio: '9/16', height: '100%', maxHeight: '100dvh', maxWidth: 'calc(100dvh * 9 / 16)' }}
+          className="relative overflow-hidden w-full h-full"
         >
           <video
             ref={previewRef}

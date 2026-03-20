@@ -15,7 +15,8 @@ export default function VideoPreview({ interactive = false }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const {
     videoUrl, isPlaying, trimStart, trimEnd, filter, audioUrl, audioVolume,
-    setCurrentTime, setDuration, pause, togglePlayPause, seekTo, setThumbnail,
+    setCurrentTime, setDuration, pause, togglePlayPause, seekTo,
+    setThumbnail, setVideoOrientation, thumbnailUrl,
   } = useEditorStore();
   const [showControls, setShowControls] = useState(true);
   const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -58,25 +59,58 @@ export default function VideoPreview({ interactive = false }: Props) {
     }
   };
 
+  const trySetDuration = (video: HTMLVideoElement) => {
+    if (video.duration && isFinite(video.duration) && video.duration > 0) {
+      setDuration(video.duration);
+      return true;
+    }
+    return false;
+  };
+
   const handleLoaded = () => {
     const video = videoRef.current;
     if (!video) return;
-    setDuration(video.duration);
-    // Capturer une miniature pour FilterPanel (évite le drawImage cross-origin sur Safari iOS)
-    try {
-      const canvas = document.createElement('canvas');
-      canvas.width = 90;
-      canvas.height = 160;
-      canvas.getContext('2d')!.drawImage(video, 0, 0, 90, 160);
-      const url = canvas.toDataURL('image/jpeg', 0.8);
-      if (url !== 'data:,') setThumbnail(url);
-    } catch { /* canvas tainted — FilterPanel utilisera le fallback gradient */ }
+    trySetDuration(video);
+    // Détecter l'orientation — sur iPhone la webcam enregistre en landscape
+    // L'orientation est stockée pour que l'export FFmpeg puisse corriger avec transpose
+    const isLandscape = video.videoWidth > video.videoHeight;
+    setVideoOrientation(isLandscape ? 'landscape' : 'portrait');
   };
 
   const handleDurationChange = () => {
-    const video = videoRef.current;
-    if (video && video.duration && isFinite(video.duration)) setDuration(video.duration);
+    if (videoRef.current) trySetDuration(videoRef.current);
   };
+
+  // onCanPlay est plus fiable que onLoadedMetadata sur Safari iOS pour les blobs
+  const handleCanPlay = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    trySetDuration(video);
+    // Capturer la miniature ici — la frame est décodée, contrairement à loadedmetadata
+    if (thumbnailUrl) return;
+    setTimeout(() => {
+      try {
+        const canvas = document.createElement('canvas');
+        canvas.width = 90;
+        canvas.height = 160;
+        canvas.getContext('2d')!.drawImage(video, 0, 0, 90, 160);
+        const url = canvas.toDataURL('image/jpeg', 0.8);
+        if (url !== 'data:,' && url.length > 100) setThumbnail(url);
+      } catch { /* fallback gradient dans FilterPanel */ }
+    }, 200);
+  };
+
+  // Fallback pour Safari iOS — les blobs peuvent avoir duration=Infinity
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || !videoUrl) return;
+    if (trySetDuration(video)) return;
+    const interval = setInterval(() => {
+      if (trySetDuration(video)) clearInterval(interval);
+    }, 500);
+    const timeout = setTimeout(() => clearInterval(interval), 5000);
+    return () => { clearInterval(interval); clearTimeout(timeout); };
+  }, [videoUrl, setDuration]);
 
   const handleTap = () => {
     if (interactive) return;
@@ -89,7 +123,7 @@ export default function VideoPreview({ interactive = false }: Props) {
 
   return (
     <div ref={containerRef} className="relative w-full h-full flex items-center justify-center bg-black" onClick={handleTap}>
-      <video ref={videoRef} src={videoUrl ?? undefined} className="w-full h-full object-contain" style={filterStyle} playsInline preload="auto" onTimeUpdate={handleTimeUpdate} onLoadedMetadata={handleLoaded} onDurationChange={handleDurationChange} />
+      <video ref={videoRef} src={videoUrl ?? undefined} className="w-full h-full object-contain" style={filterStyle} playsInline preload="auto" onTimeUpdate={handleTimeUpdate} onLoadedMetadata={handleLoaded} onDurationChange={handleDurationChange} onCanPlay={handleCanPlay} />
       {audioUrl && <audio ref={bgAudioRef} src={audioUrl} loop />}
       {size.w > 0 && <TextOverlayLayer width={size.w} height={size.h} interactive={interactive} />}
       <SubtitlePreview />

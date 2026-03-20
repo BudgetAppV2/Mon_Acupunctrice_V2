@@ -42,6 +42,7 @@ interface EditorState {
   audioFadeIn: number;
   audioFadeOut: number;
   thumbnailUrl: string | null;
+  videoOrientation: 'portrait' | 'landscape';
 
   setVideoFile: (file: File) => void;
   loadVideo: (file: File, url: string) => void;
@@ -67,6 +68,7 @@ interface EditorState {
   setVoiceVolume: (v: number) => void;
   setAudioFade: (fadeIn: number, fadeOut: number) => void;
   setThumbnail: (url: string) => void;
+  setVideoOrientation: (o: 'portrait' | 'landscape') => void;
   reset: () => void;
 }
 
@@ -76,7 +78,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   filter: 'normal', overlays: [], selectedOverlayId: null,
   subtitles: [], subtitleStyle: 'classic' as SubtitleStyle,
   audioUrl: null, audioName: null, audioVolume: 0.3, voiceVolume: 1,
-  audioFadeIn: 0, audioFadeOut: 0, thumbnailUrl: null,
+  audioFadeIn: 0, audioFadeOut: 0, thumbnailUrl: null, videoOrientation: 'portrait',
 
   setVideoFile: (file) => {
     const prev = get().videoUrl;
@@ -121,6 +123,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   setVoiceVolume: (v) => set({ voiceVolume: v }),
   setAudioFade: (fadeIn, fadeOut) => set({ audioFadeIn: fadeIn, audioFadeOut: fadeOut }),
   setThumbnail: (url) => set({ thumbnailUrl: url }),
+  setVideoOrientation: (o) => set({ videoOrientation: o }),
   reset: () => {
     const prev = get().videoUrl;
     if (prev) URL.revokeObjectURL(prev);
@@ -132,7 +135,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
       filter: 'normal', overlays: [], selectedOverlayId: null,
       subtitles: [], subtitleStyle: 'classic' as SubtitleStyle,
       audioUrl: null, audioName: null, audioVolume: 0.3, voiceVolume: 1,
-      audioFadeIn: 0, audioFadeOut: 0, thumbnailUrl: null,
+      audioFadeIn: 0, audioFadeOut: 0, thumbnailUrl: null, videoOrientation: 'portrait',
     });
   },
 }));
