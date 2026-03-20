@@ -50,14 +50,13 @@ export default function CalendarDay({ date, items, isCurrentMonth, isToday, onTa
       </span>
 
       {hasItems && !thumbnail && (
-        <div className="flex gap-0.5 mt-1">
-          {items.slice(0, 3).map((item, i) => (
-            <div
-              key={i}
-              className={`w-1.5 h-1.5 rounded-full ${DOT_COLORS[item.workflowState] ?? 'bg-gray-400'}`}
-            />
-          ))}
-        </div>
+        items.length > 1 ? (
+          <span className="text-[9px] font-bold text-sage bg-sage/10 w-4 h-4 flex items-center justify-center rounded-full mt-0.5">
+            {items.length}
+          </span>
+        ) : (
+          <div className={`w-1.5 h-1.5 rounded-full mt-1 ${DOT_COLORS[items[0].workflowState] ?? 'bg-gray-400'}`} />
+        )
       )}
 
       {thumbnail && (

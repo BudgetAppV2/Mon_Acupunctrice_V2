@@ -10,11 +10,11 @@ import {
 } from 'firebase/firestore';
 import { getFirebaseFirestore } from '@/lib/firebase';
 import { useAuthStore } from '@/lib/store/useAuthStore';
-import type { ContentItem, ContentCategory, WorkflowState } from '@/lib/types';
+import type { ContentItem, WorkflowState } from '@/lib/types';
 
 export interface ContentFilters {
   status?: WorkflowState;
-  categories?: ContentCategory[];
+  categories?: string[];
 }
 
 export function useContentItems(filters?: ContentFilters) {
@@ -55,7 +55,7 @@ export function useContentItems(filters?: ContentFilters) {
 
         // Filtrage catégories côté client pour éviter des index composites supplémentaires
         if (categoriesKey) {
-          const cats = categoriesKey.split(',') as ContentCategory[];
+          const cats = categoriesKey.split(',');
           items = items.filter((item) => cats.includes(item.category));
         }
 

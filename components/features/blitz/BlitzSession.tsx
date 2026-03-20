@@ -85,7 +85,7 @@ export default function BlitzSession({ items, onMarkShot }: Props) {
           {current.title}
         </h2>
         <p className="text-sm text-sage mt-1">
-          {CATEGORY_LABELS[current.category]}
+          {CATEGORY_LABELS[current.category as keyof typeof CATEGORY_LABELS] ?? current.category}
         </p>
         {current.notes && (
           <p className="text-sm text-gray-500 mt-3 text-left bg-gray-50 rounded-lg p-3">

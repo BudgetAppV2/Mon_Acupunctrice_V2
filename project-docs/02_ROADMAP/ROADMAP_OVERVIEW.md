@@ -1,6 +1,5 @@
-# ROADMAP OVERVIEW V2
-*Vue d'ensemble — 7 milestones*
-*Version 2.0 — Mars 2026*
+# ROADMAP OVERVIEW — Mon Acupunctrice Hub V2
+*Mis à jour — Mars 2026*
 
 ---
 
@@ -11,17 +10,30 @@
 
 ---
 
-## Les 7 milestones
+## Milestones complétés ✅ (voir _completed/)
 
-| # | Milestone | Features | User Stories |
-|---|-----------|----------|-------------|
-| M01 | Auth + PWA + Structure | Connexion Google, PWA standalone | — |
-| M02 | Banque d'idées + Blitz | CRUD idées, vue Blitz | US-01 à US-04 |
-| M03 | Calendrier | Vue mensuelle, scheduling | US-14 à US-17 |
-| M04 | Éditeur — Fondation | Import, trim, timeline, export | US-05,06,07,12,13 |
-| M05 | Éditeur — Visuel | Filtres, texte overlay, polices | US-08, US-09 |
-| M06 | Éditeur — Média | Sous-titres Whisper, musique Jamendo | US-10, US-11 |
-| M07 | Publication | Instagram, scheduler, caption IA | US-18 à US-21 |
+| # | Milestone | Status |
+|---|-----------|--------|
+| M01 | Auth + PWA + Structure | ✅ Complété |
+| M02 | Banque d'idées + Blitz | ✅ Complété |
+| M03 | Calendrier éditorial | ✅ Complété |
+| M04 | Éditeur — Fondation | ✅ Complété |
+| M05 | Éditeur — Filtres + Texte | ✅ Complété |
+| M06 | Éditeur — Sous-titres + Audio | ✅ Complété |
+| M07 | Publication Instagram + Profil | ✅ Complété |
+
+---
+
+## Milestones à venir — Phase 2
+
+| # | Phase | Milestone | Objectif |
+|---|-------|-----------|----------|
+| M08 | Lancer | Déploiement Vercel | Mettre l'app en production |
+| M09 | Distribuer | Token Meta long-lived + OAuth | Éliminer le token hardcodé |
+| M10 | Distribuer | Facebook Reels | Double la portée via Meta |
+| M11 | Distribuer | YouTube Shorts | Nouvelle audience + SEO Google |
+| M12 | Mesurer | Stats & Analytics | Feedback loop Instagram Insights |
+| M13 | Mesurer | UTM tracking + Wix mapping | Mesurer le trafic réel vers Wix |
 
 ---
 
@@ -31,26 +43,19 @@
 > - publier plus facilement
 > - publier plus régulièrement
 > - produire du contenu de meilleure qualité
+> - mesurer l'impact de son contenu
 >
 > Sinon → BACKLOG_LATER.md
 
 ---
 
-## Règle sur l'éditeur
+## Après M08–M13 (V3)
 
-> L'éditeur est une feature CORE, pas un afterthought.
-> M04, M05, M06 sont aussi importants que M01, M02, M03.
-
----
-
-## Après les 7 milestones (V2)
-
-- Rappel hebdomadaire email simple
+- TikTok distribution
+- Rappel hebdomadaire email
 - Offline partiel (banque d'idées sans connexion)
-- Stickers et éléments graphiques (Twemoji)
+- Stickers et éléments graphiques
 - Templates de contenu quick-start
-- Export WebCodecs (plus rapide que FFmpeg.wasm)
+- Moteur d'assistance opérationnelle
 
-## Vision long terme (V3)
-
-Voir project-docs/05_LATER/BACKLOG_LATER.md
+Voir `project-docs/05_LATER/BACKLOG_LATER.md` pour la liste complète.

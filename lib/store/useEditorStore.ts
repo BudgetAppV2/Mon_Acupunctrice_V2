@@ -1,10 +1,24 @@
 import { create } from 'zustand';
+import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
+import { getFirebaseFirestore } from '@/lib/firebase';
 import type { TextOverlayItem, SubtitleSegment, SubtitleStyle } from '@/lib/types';
 
 let _videoEl: HTMLVideoElement | null = null;
+let _editorTouched = false;
 
 export function registerVideoElement(el: HTMLVideoElement | null) {
   _videoEl = el;
+}
+
+// Marque l'item comme "touche" dans l'editeur (une seule fois par session)
+function markEditorTouched() {
+  if (_editorTouched) return;
+  const id = useEditorStore.getState().itemId;
+  if (!id) return;
+  _editorTouched = true;
+  updateDoc(doc(getFirebaseFirestore(), 'contentItems', id), {
+    editorTouchedAt: serverTimestamp(),
+  }).catch(() => {});
 }
 
 interface EditorState {
@@ -82,23 +96,24 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   pause: () => { set({ isPlaying: false }); _videoEl?.pause(); },
   togglePlayPause: () => { if (get().isPlaying) get().pause(); else get().play(); },
   seekTo: (t) => { const c = Math.max(0, Math.min(t, get().duration)); set({ currentTime: c }); if (_videoEl) _videoEl.currentTime = c; },
-  setTrim: (start, end) => set({ trimStart: start, trimEnd: end }),
+  setTrim: (start, end) => { set({ trimStart: start, trimEnd: end }); markEditorTouched(); },
   setItemId: (id) => set({ itemId: id }),
-  setFilter: (name) => set({ filter: name }),
+  setFilter: (name) => { set({ filter: name }); markEditorTouched(); },
   addOverlay: (text) => {
     const id = crypto.randomUUID(); const { duration } = get();
     set({ overlays: [...get().overlays, { id, text: text || 'Texte', fontFamily: 'Inter', fontSize: 32, fill: '#ffffff', x: 0.5, y: 0.5, startTime: 0, endTime: duration || 10, style: 'classic' as const, animation: 'none' as const }], selectedOverlayId: id });
+    markEditorTouched();
   },
-  updateOverlay: (id, changes) => set({ overlays: get().overlays.map(o => o.id === id ? { ...o, ...changes } : o) }),
+  updateOverlay: (id, changes) => { set({ overlays: get().overlays.map(o => o.id === id ? { ...o, ...changes } : o) }); markEditorTouched(); },
   removeOverlay: (id) => {
     const s = get();
     set({ overlays: s.overlays.filter(o => o.id !== id), selectedOverlayId: s.selectedOverlayId === id ? null : s.selectedOverlayId });
   },
   selectOverlay: (id) => set({ selectedOverlayId: id }),
-  setSubtitles: (subs) => set({ subtitles: subs }),
-  setSubtitleStyle: (s) => set({ subtitleStyle: s }),
+  setSubtitles: (subs) => { set({ subtitles: subs }); markEditorTouched(); },
+  setSubtitleStyle: (s) => { set({ subtitleStyle: s }); markEditorTouched(); },
   updateSubtitle: (id, text) => set({ subtitles: get().subtitles.map(s => s.id === id ? { ...s, text } : s) }),
-  setAudioTrack: (url, name) => set({ audioUrl: url, audioName: name }),
+  setAudioTrack: (url, name) => { set({ audioUrl: url, audioName: name }); markEditorTouched(); },
   removeAudio: () => set({ audioUrl: null, audioName: null, audioFadeIn: 0, audioFadeOut: 0 }),
   setAudioVolume: (v) => set({ audioVolume: v }),
   setVoiceVolume: (v) => set({ voiceVolume: v }),
@@ -107,6 +122,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
     const prev = get().videoUrl;
     if (prev) URL.revokeObjectURL(prev);
     _videoEl = null;
+    _editorTouched = false;
     set({
       videoFile: null, videoUrl: null, duration: 0, currentTime: 0,
       isPlaying: false, trimStart: 0, trimEnd: 0, itemId: null,

@@ -3,11 +3,10 @@
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { getFirebaseFirestore } from '@/lib/firebase';
 import { useAuthStore } from '@/lib/store/useAuthStore';
-import type { ContentCategory } from '@/lib/types';
 
 interface CreateInput {
   title: string;
-  category: ContentCategory;
+  category: string;
   notes?: string;
 }
 

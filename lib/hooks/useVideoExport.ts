@@ -74,7 +74,7 @@ export function useVideoExport() {
 
       const db = getFirebaseFirestore();
       await updateDoc(doc(db, 'contentItems', s.itemId), {
-        videoUrl, workflowState: 'ready', updatedAt: serverTimestamp(),
+        videoUrl, exportedAt: serverTimestamp(), workflowState: 'ready', updatedAt: serverTimestamp(),
       });
 
       setState('done');

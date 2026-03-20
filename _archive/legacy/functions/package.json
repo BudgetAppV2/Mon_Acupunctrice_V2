@@ -1,0 +1,22 @@
+{
+  "name": "mon-acupunctrice-functions",
+  "description": "Cloud Functions for Mon Acupunctrice Hub",
+  "scripts": {
+    "build": "tsc",
+    "predeploy": "npm run build",
+    "serve": "npm run build && firebase emulators:start --only functions",
+    "deploy": "firebase deploy --only functions"
+  },
+  "engines": { "node": "20" },
+  "main": "lib/index.js",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "firebase-admin": "^13.0.0",
+    "firebase-functions": "^6.0.0",
+    "openai": "^4.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.4"
+  },
+  "private": true
+}

@@ -22,7 +22,7 @@ export default function FontSelector({ value, onChange }: Props) {
         className="w-full bg-gray-800 text-white text-sm rounded px-2 py-1.5 mt-0.5"
       >
         {Object.entries(FONT_CATEGORIES).map(([cat, fonts]) => (
-          <optgroup key={cat} label={CATEGORY_LABELS[cat] || cat}>
+          <optgroup key={cat} label={CATEGORY_LABELS[cat as keyof typeof CATEGORY_LABELS] || cat}>
             {fonts.map(f => <option key={f} value={f}>{f}</option>)}
           </optgroup>
         ))}

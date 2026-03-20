@@ -3,9 +3,8 @@
 import { useState } from 'react';
 import BottomSheet from '@/components/ui/BottomSheet';
 import { useCreateContentItem } from '@/lib/hooks/useCreateContentItem';
-import { CATEGORY_LABELS, type ContentCategory } from '@/lib/types';
-
-const CATEGORIES = Object.entries(CATEGORY_LABELS) as [ContentCategory, string][];
+import { useUserProfile } from '@/lib/hooks/useUserProfile';
+import { getAllCategories } from '@/lib/utils/categories';
 
 interface Props {
   isOpen: boolean;
@@ -14,24 +13,49 @@ interface Props {
 
 export default function CreateIdeaSheet({ isOpen, onClose }: Props) {
   const [title, setTitle] = useState('');
-  const [category, setCategory] = useState<ContentCategory>('autre');
+  const [category, setCategory] = useState('autre');
+  const [customCat, setCustomCat] = useState('');
+  const [showCustom, setShowCustom] = useState(false);
   const [notes, setNotes] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const { createItem } = useCreateContentItem();
+  const { customCategories, updateCustomCategories } = useUserProfile();
+
+  const categories = getAllCategories(customCategories);
+
+  const handleCategoryChange = (val: string) => {
+    if (val === '__custom__') {
+      setShowCustom(true);
+      setCategory('');
+    } else {
+      setShowCustom(false);
+      setCategory(val);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim() || submitting) return;
 
+    const finalCategory = showCustom ? customCat.trim() : category;
+    if (!finalCategory) return;
+
     setSubmitting(true);
     try {
+      // Sauvegarder la nouvelle categorie custom si besoin
+      if (showCustom && customCat.trim() && !customCategories.includes(customCat.trim())) {
+        await updateCustomCategories([...customCategories, customCat.trim()]);
+      }
+
       await createItem({
         title: title.trim(),
-        category,
+        category: finalCategory,
         notes: notes.trim() || undefined,
       });
       setTitle('');
       setCategory('autre');
+      setCustomCat('');
+      setShowCustom(false);
       setNotes('');
       onClose();
     } finally {
@@ -40,17 +64,13 @@ export default function CreateIdeaSheet({ isOpen, onClose }: Props) {
   };
 
   return (
-    <BottomSheet isOpen={isOpen} onClose={onClose} title="Nouvelle idée">
+    <BottomSheet isOpen={isOpen} onClose={onClose} title="Nouvelle idee">
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Titre *
-          </label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Titre *</label>
           <input
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="Ex: L'acupuncture et la fertilité"
+            type="text" value={title} onChange={(e) => setTitle(e.target.value)}
+            placeholder="Ex: L'acupuncture et la fertilite"
             maxLength={100}
             className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-sage focus:border-sage outline-none"
             autoFocus
@@ -58,30 +78,31 @@ export default function CreateIdeaSheet({ isOpen, onClose }: Props) {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Catégorie
-          </label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Categorie</label>
           <select
-            value={category}
-            onChange={(e) => setCategory(e.target.value as ContentCategory)}
+            value={showCustom ? '__custom__' : category}
+            onChange={(e) => handleCategoryChange(e.target.value)}
             className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-sage focus:border-sage outline-none bg-white"
           >
-            {CATEGORIES.map(([value, label]) => (
-              <option key={value} value={value}>
-                {label}
-              </option>
+            {categories.map((c) => (
+              <option key={c.value} value={c.value}>{c.label}</option>
             ))}
+            <option value="__custom__">Autre...</option>
           </select>
+          {showCustom && (
+            <input
+              type="text" value={customCat} onChange={(e) => setCustomCat(e.target.value)}
+              placeholder="Nom de la nouvelle categorie"
+              className="w-full mt-2 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-sage focus:border-sage outline-none"
+            />
+          )}
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Notes
-          </label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
           <textarea
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-            placeholder="Notes de tournage, points clés..."
+            value={notes} onChange={(e) => setNotes(e.target.value)}
+            placeholder="Notes de tournage, points cles..."
             rows={3}
             className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-sage focus:border-sage outline-none resize-none"
           />
@@ -89,10 +110,10 @@ export default function CreateIdeaSheet({ isOpen, onClose }: Props) {
 
         <button
           type="submit"
-          disabled={!title.trim() || submitting}
+          disabled={!title.trim() || submitting || (showCustom && !customCat.trim())}
           className="w-full bg-sage text-white rounded-lg py-2.5 text-sm font-medium hover:bg-sage/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
-          {submitting ? 'Création...' : "Créer l'idée"}
+          {submitting ? 'Creation...' : "Creer l'idee"}
         </button>
       </form>
     </BottomSheet>

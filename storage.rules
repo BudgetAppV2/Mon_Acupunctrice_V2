@@ -1,0 +1,26 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Videos exportees — lecture publique (Instagram Graph API doit y acceder)
+    match /videos/{userId}/{allPaths=**} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Covers custom — lecture publique (Instagram Graph API)
+    match /covers/{userId}/{allPaths=**} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Fichiers temporaires (upload pour transcription Whisper)
+    match /temp/{userId}/{allPaths=**} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Tout le reste — authentification requise
+    match /{allPaths=**} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}

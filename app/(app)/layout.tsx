@@ -7,20 +7,20 @@ import { useAuth } from '@/lib/hooks/useAuth';
 import {
   LightBulbIcon as LightBulbOutline,
   CalendarIcon as CalendarOutline,
-  BoltIcon as BoltOutline,
+  ChartBarIcon as ChartBarOutline,
   UserIcon as UserOutline,
 } from '@heroicons/react/24/outline';
 import {
   LightBulbIcon as LightBulbSolid,
   CalendarIcon as CalendarSolid,
-  BoltIcon as BoltSolid,
+  ChartBarIcon as ChartBarSolid,
   UserIcon as UserSolid,
 } from '@heroicons/react/24/solid';
 
 const TABS = [
-  { href: '/idees', label: 'Idées', outline: LightBulbOutline, solid: LightBulbSolid },
+  { href: '/idees', label: 'Idees', outline: LightBulbOutline, solid: LightBulbSolid },
   { href: '/calendrier', label: 'Calendrier', outline: CalendarOutline, solid: CalendarSolid },
-  { href: '/blitz', label: 'Blitz', outline: BoltOutline, solid: BoltSolid },
+  { href: '/stats', label: 'Stats', outline: ChartBarOutline, solid: ChartBarSolid },
   { href: '/profil', label: 'Profil', outline: UserOutline, solid: UserSolid },
 ] as const;
 
@@ -45,7 +45,6 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   if (!user) return null;
 
-  // Cacher la bottom nav dans l'éditeur (plein écran)
   const isEditor = pathname.startsWith('/editeur');
 
   return (

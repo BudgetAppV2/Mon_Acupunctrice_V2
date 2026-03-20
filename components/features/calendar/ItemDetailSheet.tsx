@@ -2,11 +2,12 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { deleteField } from 'firebase/firestore';
+import { deleteField, Timestamp } from 'firebase/firestore';
 import BottomSheet from '@/components/ui/BottomSheet';
 import PublishSheet from '@/components/features/publish/PublishSheet';
 import { useUpdateContentItem } from '@/lib/hooks/useUpdateContentItem';
-import { CATEGORY_LABELS, WORKFLOW_LABELS, type ContentItem } from '@/lib/types';
+import { WORKFLOW_LABELS, type ContentItem } from '@/lib/types';
+import { getCategoryLabel } from '@/lib/utils/categories';
 import { PencilIcon, XCircleIcon, PaperAirplaneIcon } from '@heroicons/react/24/outline';
 
 interface Props {
@@ -16,10 +17,15 @@ interface Props {
   onUnscheduled: () => void;
 }
 
+const PRESET_HOURS = ['08:00', '12:00', '18:00', '20:00'];
+
 export default function ItemDetailSheet({ isOpen, onClose, item, onUnscheduled }: Props) {
   const router = useRouter();
   const { updateItem } = useUpdateContentItem();
   const [showPublish, setShowPublish] = useState(false);
+  const [editDate, setEditDate] = useState(false);
+  const [newDate, setNewDate] = useState('');
+  const [newTime, setNewTime] = useState('18:00');
 
   if (!item) return null;
 
@@ -29,6 +35,21 @@ export default function ItemDetailSheet({ isOpen, onClose, item, onUnscheduled }
   };
 
   const handleEdit = () => { router.push(`/editeur/${item.id}`); onClose(); };
+
+  const openDateEdit = () => {
+    setEditDate(true);
+    const d = item.scheduledAt?.toDate();
+    if (d) {
+      setNewDate(d.toISOString().split('T')[0]);
+      setNewTime(`${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`);
+    }
+  };
+
+  const handleDateChange = async () => {
+    if (!newDate) return;
+    await updateItem(item.id, { scheduledAt: Timestamp.fromDate(new Date(`${newDate}T${newTime}`)) });
+    setEditDate(false);
+  };
 
   const scheduledDate = item.scheduledAt?.toDate();
   const canPublish = item.workflowState === 'ready' && !!item.videoUrl;
@@ -40,49 +61,53 @@ export default function ItemDetailSheet({ isOpen, onClose, item, onUnscheduled }
           <div>
             <h3 className="text-base font-semibold text-gray-900">{item.title}</h3>
             <div className="flex items-center gap-2 mt-1">
-              <span className="text-xs text-gray-500">{CATEGORY_LABELS[item.category]}</span>
+              <span className="text-xs text-gray-500">{getCategoryLabel(item.category)}</span>
               <span className="text-xs text-gray-300">&middot;</span>
               <span className="text-xs text-gray-500">{WORKFLOW_LABELS[item.workflowState]}</span>
             </div>
             {scheduledDate && (
               <p className="text-xs text-sage mt-1">
-                Planifie le {scheduledDate.toLocaleDateString('fr-CA', { day: 'numeric', month: 'long', year: 'numeric' })}
+                Planifie le {scheduledDate.toLocaleDateString('fr-CA', { day: 'numeric', month: 'long' })} a {scheduledDate.getHours()}h{String(scheduledDate.getMinutes()).padStart(2, '0')}
               </p>
             )}
-            {item.caption && (
-              <p className="text-sm text-gray-600 mt-2 bg-gray-50 rounded-lg p-3">{item.caption}</p>
-            )}
+            {item.caption && <p className="text-sm text-gray-600 mt-2 bg-gray-50 rounded-lg p-3">{item.caption}</p>}
           </div>
 
-          {item.thumbnailUrl && (
-            <img src={item.thumbnailUrl} alt="" className="rounded-lg w-full max-h-48 object-cover" />
+          {/* Changer la date/heure (si planifie) */}
+          {item.distributionStatus === 'scheduled' && (
+            editDate ? (
+              <div className="space-y-2 bg-gray-50 rounded-lg p-3">
+                <input type="date" value={newDate} onChange={e => setNewDate(e.target.value)} className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-sm" />
+                <div className="flex gap-1">
+                  {PRESET_HOURS.map(h => (
+                    <button key={h} onClick={() => setNewTime(h)} className={`px-2 py-1 rounded text-xs font-medium ${newTime === h ? 'bg-sage text-white' : 'bg-gray-100 text-gray-600'}`}>
+                      {h.split(':')[0]}h
+                    </button>
+                  ))}
+                  <input type="time" value={newTime} onChange={e => setNewTime(e.target.value)} className="flex-1 border border-gray-200 rounded px-1 py-1 text-xs" />
+                </div>
+                <button onClick={handleDateChange} disabled={!newDate} className="w-full py-2 bg-sage text-white rounded-lg text-sm font-medium disabled:opacity-50">Confirmer</button>
+              </div>
+            ) : (
+              <button onClick={openDateEdit} className="text-xs text-sage font-medium">Changer la date</button>
+            )
           )}
 
+          {item.thumbnailUrl && <img src={item.thumbnailUrl} alt="" className="rounded-lg w-full max-h-48 object-cover" />}
+
           <div className="space-y-2 pt-2">
-            {/* Publier — visible si video prete */}
             {canPublish && item.distributionStatus !== 'published' && (
-              <button
-                onClick={() => setShowPublish(true)}
-                className="w-full flex items-center gap-3 p-3 rounded-lg bg-sage text-white"
-              >
+              <button onClick={() => setShowPublish(true)} className="w-full flex items-center gap-3 p-3 rounded-lg bg-sage text-white">
                 <PaperAirplaneIcon className="w-5 h-5" />
                 <span className="text-sm font-medium">Publier sur Instagram</span>
               </button>
             )}
-
-            <button
-              onClick={handleEdit}
-              className="w-full flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors"
-            >
+            <button onClick={handleEdit} className="w-full flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors">
               <PencilIcon className="w-5 h-5 text-sage" />
               <span className="text-sm font-medium text-gray-900">Modifier</span>
             </button>
-
             {item.distributionStatus === 'scheduled' && (
-              <button
-                onClick={handleUnschedule}
-                className="w-full flex items-center gap-3 p-3 rounded-lg border border-red-200 hover:bg-red-50 transition-colors"
-              >
+              <button onClick={handleUnschedule} className="w-full flex items-center gap-3 p-3 rounded-lg border border-red-200 hover:bg-red-50 transition-colors">
                 <XCircleIcon className="w-5 h-5 text-red-500" />
                 <span className="text-sm font-medium text-red-600">Deprogrammer</span>
               </button>
@@ -90,11 +115,7 @@ export default function ItemDetailSheet({ isOpen, onClose, item, onUnscheduled }
           </div>
         </div>
       </BottomSheet>
-
-      {/* PublishSheet — flux 3 etapes */}
-      {showPublish && (
-        <PublishSheet isOpen={showPublish} onClose={() => { setShowPublish(false); onClose(); }} item={item} />
-      )}
+      {showPublish && <PublishSheet isOpen={showPublish} onClose={() => { setShowPublish(false); onClose(); }} item={item} />}
     </>
   );
 }

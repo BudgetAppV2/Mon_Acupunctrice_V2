@@ -9,9 +9,10 @@ interface Props {
   loading: boolean;
   error: string | null;
   onDelete: (id: string) => void;
+  onSelect: (item: ContentItem) => void;
 }
 
-export default function IdeaList({ items, loading, error, onDelete }: Props) {
+export default function IdeaList({ items, loading, error, onDelete, onSelect }: Props) {
   if (loading) {
     return (
       <div className="flex justify-center py-20">
@@ -32,12 +33,8 @@ export default function IdeaList({ items, loading, error, onDelete }: Props) {
     return (
       <div className="text-center py-20 px-6">
         <LightBulbIcon className="w-12 h-12 text-sage/40 mx-auto mb-3" />
-        <p className="text-gray-400 text-sm">
-          Votre prochaine idée brillante commence ici.
-        </p>
-        <p className="text-gray-400 text-sm">
-          Appuyez sur + pour la capturer !
-        </p>
+        <p className="text-gray-400 text-sm">Votre prochaine idee brillante commence ici.</p>
+        <p className="text-gray-400 text-sm">Appuyez sur + pour la capturer!</p>
       </div>
     );
   }
@@ -45,7 +42,7 @@ export default function IdeaList({ items, loading, error, onDelete }: Props) {
   return (
     <div className="space-y-2">
       {items.map((item) => (
-        <ContentCard key={item.id} item={item} onDelete={onDelete} />
+        <ContentCard key={item.id} item={item} onDelete={onDelete} onClick={() => onSelect(item)} />
       ))}
     </div>
   );

@@ -1,71 +1,61 @@
 'use client';
 
-import type { ContentCategory, WorkflowState } from '@/lib/types';
-import { CATEGORY_LABELS, WORKFLOW_LABELS } from '@/lib/types';
+import { useState } from 'react';
+import type { WorkflowState } from '@/lib/types';
+import { WORKFLOW_LABELS } from '@/lib/types';
+import { useUserProfile } from '@/lib/hooks/useUserProfile';
+import { getAllCategories, getCategoryLabel } from '@/lib/utils/categories';
+import { FunnelIcon, TagIcon } from '@heroicons/react/24/outline';
+import FilterSheet from './FilterSheet';
 
-const STATUSES = Object.entries(WORKFLOW_LABELS) as [WorkflowState, string][];
-const CATEGORIES = Object.entries(CATEGORY_LABELS) as [ContentCategory, string][];
+const STATUS_OPTIONS = Object.entries(WORKFLOW_LABELS).map(([v, l]) => ({ value: v, label: l }));
 
 interface Props {
   selectedStatus?: WorkflowState;
-  selectedCategories: ContentCategory[];
+  selectedCategory?: string;
   onStatusChange: (status?: WorkflowState) => void;
-  onCategoriesChange: (categories: ContentCategory[]) => void;
+  onCategoryChange: (category?: string) => void;
 }
 
-export default function IdeaFilters({
-  selectedStatus,
-  selectedCategories,
-  onStatusChange,
-  onCategoriesChange,
-}: Props) {
-  const toggleCategory = (cat: ContentCategory) => {
-    if (selectedCategories.includes(cat)) {
-      onCategoriesChange(selectedCategories.filter((c) => c !== cat));
-    } else {
-      onCategoriesChange([...selectedCategories, cat]);
-    }
-  };
+export default function IdeaFilters({ selectedStatus, selectedCategory, onStatusChange, onCategoryChange }: Props) {
+  const { customCategories } = useUserProfile();
+  const [statusOpen, setStatusOpen] = useState(false);
+  const [categoryOpen, setCategoryOpen] = useState(false);
+
+  const statusLabel = selectedStatus ? WORKFLOW_LABELS[selectedStatus] : 'Tous statuts';
+  const catLabel = selectedCategory ? getCategoryLabel(selectedCategory) : 'Toute categorie';
 
   return (
-    <div className="space-y-2">
-      <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+    <>
+      <div className="flex gap-2">
         <button
-          onClick={() => onStatusChange(undefined)}
-          className={`shrink-0 px-3 py-1 rounded-full text-xs font-medium transition-colors ${
-            !selectedStatus ? 'bg-sage text-white' : 'bg-gray-100 text-gray-600'
+          onClick={() => setStatusOpen(true)}
+          className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition ${
+            selectedStatus ? 'bg-sage/10 text-sage' : 'bg-gray-100 text-gray-600'
           }`}
         >
-          Tous
+          <FunnelIcon className="w-4 h-4" />
+          {selectedStatus && <span className="w-1.5 h-1.5 rounded-full bg-sage" />}
+          {statusLabel}
         </button>
-        {STATUSES.map(([value, label]) => (
-          <button
-            key={value}
-            onClick={() => onStatusChange(value === selectedStatus ? undefined : value)}
-            className={`shrink-0 px-3 py-1 rounded-full text-xs font-medium transition-colors ${
-              selectedStatus === value ? 'bg-sage text-white' : 'bg-gray-100 text-gray-600'
-            }`}
-          >
-            {label}
-          </button>
-        ))}
+        <button
+          onClick={() => setCategoryOpen(true)}
+          className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition ${
+            selectedCategory ? 'bg-sage/10 text-sage' : 'bg-gray-100 text-gray-600'
+          }`}
+        >
+          <TagIcon className="w-4 h-4" />
+          {selectedCategory && <span className="w-1.5 h-1.5 rounded-full bg-sage" />}
+          {catLabel}
+        </button>
       </div>
 
-      <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
-        {CATEGORIES.map(([value, label]) => (
-          <button
-            key={value}
-            onClick={() => toggleCategory(value)}
-            className={`shrink-0 px-3 py-1 rounded-full text-xs font-medium transition-colors ${
-              selectedCategories.includes(value)
-                ? 'bg-sage/20 text-sage ring-1 ring-sage'
-                : 'bg-gray-100 text-gray-600'
-            }`}
-          >
-            {label}
-          </button>
-        ))}
-      </div>
-    </div>
+      <FilterSheet isOpen={statusOpen} onClose={() => setStatusOpen(false)} title="Statut"
+        options={STATUS_OPTIONS} selected={selectedStatus}
+        onSelect={(v) => onStatusChange(v as WorkflowState | undefined)} />
+      <FilterSheet isOpen={categoryOpen} onClose={() => setCategoryOpen(false)} title="Categorie"
+        options={getAllCategories(customCategories)} selected={selectedCategory}
+        onSelect={onCategoryChange} />
+    </>
   );
 }

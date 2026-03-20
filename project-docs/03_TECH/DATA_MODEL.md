@@ -25,11 +25,28 @@ interface ContentItem {
   thumbnailUrl?: string         // Firebase Storage URL
 
   // Distribution
-  distributionStatus: DistributionStatus  // voir enum ci-dessous
+  distributionStatus: DistributionStatus
+  platforms: string[]           // ['instagram', 'facebook', 'youtube'] (M10-M11)
+  instagramStatus?: 'pending' | 'published' | 'failed'
+  facebookStatus?: 'pending' | 'published' | 'failed' (M10)
+  youtubeStatus?: 'pending' | 'published' | 'failed' (M11)
   scheduledAt?: Timestamp
   publishedAt?: Timestamp
-  instagramPostId?: string
+  instagramMediaId?: string
+  facebookPostId?: string       // (M10)
+  youtubeVideoId?: string       // (M11)
   caption?: string
+
+  // Stats (M12)
+  insights?: {
+    plays: number
+    reach: number
+    likes: number
+    comments: number
+    shares: number
+    saved: number
+    fetchedAt: Timestamp
+  }
 
   // Cover image Instagram
   coverOption?: 'frame' | 'custom'  // Méthode choisie par Judith
@@ -75,9 +92,24 @@ interface User {
   displayName: string
   photoURL?: string
 
-  // Instagram connection
-  instagramAccessToken?: string  // Stocké encrypté
-  instagramUserId?: string
+  // Meta connection (M09-M10)
+  metaInstagramId?: string
+  metaAccessToken?: string       // Secret — NEVER expose client-side
+  metaTokenExpiresAt?: Timestamp
+  metaStatus?: 'connected' | 'expired' | 'disconnected'  // UI state
+  facebookPageId?: string
+  facebookPageName?: string
+
+  // YouTube connection (M11)
+  youtubeChannelId?: string
+  youtubeChannelName?: string
+  youtubeRefreshToken?: string   // Secret — NEVER expose client-side
+
+  // Wix Configuration (M13)
+  wixConfig?: {
+    baseUrl: string
+    categoryMapping: Record<string, string> // { 'fertilite': '/services/fertilite' }
+  }
 
   // Preferences
   defaultCategory?: ContentCategory
@@ -85,6 +117,22 @@ interface User {
 
   createdAt: Timestamp
   lastLoginAt: Timestamp
+}
+```
+
+---
+
+## Collection : analytics (M12)
+
+**Document ID :** `{userId}/daily/{YYYY-MM-DD}`
+
+```typescript
+{
+  followerCount: number,
+  reach: number,
+  impressions: number,
+  date: string,
+  fetchedAt: Timestamp
 }
 ```
 
@@ -131,19 +179,56 @@ service cloud.firestore {
     }
 
     match /users/{userId} {
+      // Lecture : autorisée pour le propriétaire
+      // MAIS les champs sensibles (metaAccessToken, youtubeRefreshToken)
+      // ne doivent JAMAIS être lus côté client.
+      // → Utiliser Firestore field-level security ou un document séparé
+      //   users/{userId}/private/tokens (Cloud Functions only)
       allow read, write: if request.auth != null
         && request.auth.uid == userId;
+    }
+
+    // Tokens secrets — accessible uniquement par Cloud Functions
+    match /users/{userId}/private/{doc} {
+      allow read, write: if false;  // Cloud Functions bypass rules via Admin SDK
+    }
+
+    // Analytics — lecture seule pour le propriétaire (M12)
+    match /analytics/{userId}/daily/{date} {
+      allow read: if request.auth != null
+        && request.auth.uid == userId;
+      allow write: if false;  // Cloud Functions only
     }
   }
 }
 ```
+
+**Architecture recommandée pour les tokens sensibles (M09) :**
+Pour ne jamais exposer les tokens côté client, stocker les secrets
+dans un sous-document séparé : `users/{userId}/private/tokens`
+```typescript
+interface UserTokens {
+  metaAccessToken: string
+  metaTokenExpiresAt: Timestamp
+  youtubeRefreshToken?: string
+}
+```
+Les champs publics (metaStatus, metaInstagramId, youtubeChannelName...)
+restent sur le document principal `users/{userId}` pour que l'UI puisse
+afficher l'état de connexion sans accéder aux secrets.
 
 ---
 
 ## Index Firestore requis
 
 ```
+// Index existants (M01-M07)
 contentItems: userId ASC + createdAt DESC
 contentItems: userId ASC + workflowState ASC
 contentItems: userId ASC + scheduledAt ASC + distributionStatus ASC
+contentItems: userId ASC + category ASC + createdAt DESC
+contentItems: userId ASC + distributionStatus ASC + scheduledAt ASC
+
+// Index ajoutés (M12 — pour fetchInsights)
+contentItems: userId ASC + distributionStatus ASC + publishedAt DESC
 ```

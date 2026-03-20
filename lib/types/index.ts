@@ -37,7 +37,7 @@ export interface ContentItem {
   id: string;
   userId: string;
   title: string;
-  category: ContentCategory;
+  category: string;
   notes?: string;
   workflowState: WorkflowState;
   videoUrl?: string;
@@ -50,9 +50,20 @@ export interface ContentItem {
   coverOption?: 'frame' | 'custom';
   thumbOffset?: number;
   coverImageUrl?: string;
+  editorTouchedAt?: Timestamp;
+  exportedAt?: Timestamp;
+  captionDraft?: string;
   createdAt: Timestamp;
   updatedAt: Timestamp;
 }
+
+export const DEFAULT_CATEGORIES: { value: string; label: string }[] = [
+  { value: 'fertilite', label: 'Fertilité' },
+  { value: 'grossesse', label: 'Grossesse' },
+  { value: 'bien_etre', label: 'Bien-être' },
+  { value: 'mtc', label: 'MTC' },
+  { value: 'autre', label: 'Autre' },
+];
 
 // --- Labels d'affichage ---
 

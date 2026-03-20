@@ -1,0 +1,244 @@
+[debug] [2026-03-18T03:11:19.551Z] ----------------------------------------------------------------------
+[debug] [2026-03-18T03:11:19.553Z] Command:       /usr/local/bin/node /usr/local/bin/firebase emulators:start --only functions
+[debug] [2026-03-18T03:11:19.553Z] CLI Version:   15.10.1
+[debug] [2026-03-18T03:11:19.553Z] Platform:      darwin
+[debug] [2026-03-18T03:11:19.553Z] Node Version:  v22.14.0
+[debug] [2026-03-18T03:11:19.553Z] Time:          Tue Mar 17 2026 23:11:19 GMT-0400 (Eastern Daylight Time)
+[debug] [2026-03-18T03:11:19.553Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-03-18T03:11:20.403Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-03-18T03:11:20.403Z] > authorizing via signed-in user (barchambault@grandsballets.com)
+[info] i  emulators: Starting emulators: functions {"metadata":{"emulator":{"name":"hub"},"message":"Starting emulators: functions"}}
+[debug] [2026-03-18T03:11:20.723Z] [logging] Logging Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2026-03-18T03:11:20.723Z] assigned listening specs for emulators {"user":{"hub":[{"address":"127.0.0.1","family":"IPv4","port":4400},{"address":"::1","family":"IPv6","port":4400}],"ui":[{"address":"127.0.0.1","family":"IPv4","port":4000},{"address":"::1","family":"IPv6","port":4000}],"logging":[{"address":"127.0.0.1","family":"IPv4","port":4500}]},"metadata":{"message":"assigned listening specs for emulators"}}
+[debug] [2026-03-18T03:11:20.725Z] Write emulator hub locator at /tmp/hub-mon-acupunctrice-hub.json
+[debug] [2026-03-18T03:11:21.040Z] [functions] Functions Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2026-03-18T03:11:21.040Z] [eventarc] Eventarc Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2026-03-18T03:11:21.040Z] [tasks] Cloud Tasks Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2026-03-18T03:11:21.040Z] late-assigned ports for functions and eventarc emulators {"user":{"hub":[{"address":"127.0.0.1","family":"IPv4","port":4400},{"address":"::1","family":"IPv6","port":4400}],"ui":[{"address":"127.0.0.1","family":"IPv4","port":4000},{"address":"::1","family":"IPv6","port":4000}],"logging":[{"address":"127.0.0.1","family":"IPv4","port":4500}],"functions":[{"address":"127.0.0.1","family":"IPv4","port":5001}],"eventarc":[{"address":"127.0.0.1","family":"IPv4","port":9299}],"tasks":[{"address":"127.0.0.1","family":"IPv4","port":9499}]},"metadata":{"message":"late-assigned ports for functions and eventarc emulators"}}
+[warn] ⚠  functions: The following emulators are not running, calls to these services from the Functions emulator will affect production: apphosting, auth, firestore, database, hosting, pubsub, storage, dataconnect {"metadata":{"emulator":{"name":"functions"},"message":"The following emulators are not running, calls to these services from the Functions emulator will affect production: apphosting, auth, firestore, database, hosting, pubsub, storage, dataconnect"}}
+[debug] [2026-03-18T03:11:21.076Z] defaultcredentials: writing to file /Users/benoitarchambault/.config/firebase/barchambault_grandsballets_com_application_default_credentials.json
+[debug] [2026-03-18T03:11:21.077Z] Setting GAC to /Users/benoitarchambault/.config/firebase/barchambault_grandsballets_com_application_default_credentials.json {"metadata":{"emulator":{"name":"functions"},"message":"Setting GAC to /Users/benoitarchambault/.config/firebase/barchambault_grandsballets_com_application_default_credentials.json"}}
+[debug] [2026-03-18T03:11:21.077Z] Checked if tokens are valid: false, expires at: 1773802959046
+[debug] [2026-03-18T03:11:21.077Z] Checked if tokens are valid: false, expires at: 1773802959046
+[debug] [2026-03-18T03:11:21.077Z] > refreshing access token with scopes: []
+[debug] [2026-03-18T03:11:21.078Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2026-03-18T03:11:21.078Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-03-18T03:11:21.239Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2026-03-18T03:11:21.239Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-03-18T03:11:21.253Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/mon-acupunctrice-hub/adminSdkConfig [none]
+[debug] [2026-03-18T03:11:21.747Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/mon-acupunctrice-hub/adminSdkConfig 200
+[debug] [2026-03-18T03:11:21.747Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/mon-acupunctrice-hub/adminSdkConfig {"projectId":"mon-acupunctrice-hub","storageBucket":"mon-acupunctrice-hub.firebasestorage.app"}
+[info] i  ui: downloading ui-v1.15.0.zip... {"metadata":{"emulator":{"name":"ui"},"message":"downloading ui-v1.15.0.zip..."}}
+[debug] [2026-03-18T03:11:21.763Z] >>> [apiv2][query] GET https://storage.googleapis.com/firebase-preview-drop/emulator/ui-v1.15.0.zip 
+[debug] [2026-03-18T03:11:21.869Z] <<< [apiv2][status] GET https://storage.googleapis.com/firebase-preview-drop/emulator/ui-v1.15.0.zip 200
+[debug] [2026-03-18T03:11:21.870Z] <<< [apiv2][body] GET https://storage.googleapis.com/firebase-preview-drop/emulator/ui-v1.15.0.zip [stream]
+[debug] [2026-03-18T03:11:22.451Z] Data is 3538469
+[debug] [2026-03-18T03:11:22.451Z] [unzip] Entry: client/ (compressed_size=0 bytes, uncompressed_size=0 bytes)
+[debug] [2026-03-18T03:11:22.451Z] [unzip] Processing entry: client/
+[debug] [2026-03-18T03:11:22.451Z] [unzip] mkdir: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client/
+[debug] [2026-03-18T03:11:22.452Z] [unzip] Entry: client/favicon-16x16.png (compressed_size=293 bytes, uncompressed_size=293 bytes)
+[debug] [2026-03-18T03:11:22.453Z] [unzip] Processing entry: client/favicon-16x16.png
+[debug] [2026-03-18T03:11:22.453Z] [unzip] else mkdir: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client
+[debug] [2026-03-18T03:11:22.453Z] [unzip] Writing file: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client/favicon-16x16.png
+[debug] [2026-03-18T03:11:22.453Z] [unzip] Entry: client/safari-pinned-tab.svg (compressed_size=1433 bytes, uncompressed_size=2611 bytes)
+[debug] [2026-03-18T03:11:22.453Z] [unzip] Processing entry: client/safari-pinned-tab.svg
+[debug] [2026-03-18T03:11:22.453Z] [unzip] else mkdir: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client
+[debug] [2026-03-18T03:11:22.453Z] [unzip] deflating: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client/safari-pinned-tab.svg
+[debug] [2026-03-18T03:11:22.454Z] [unzip] Entry: client/favicon.ico (compressed_size=2933 bytes, uncompressed_size=13294 bytes)
+[debug] [2026-03-18T03:11:22.454Z] [unzip] Processing entry: client/favicon.ico
+[debug] [2026-03-18T03:11:22.454Z] [unzip] else mkdir: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client
+[debug] [2026-03-18T03:11:22.454Z] [unzip] deflating: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client/favicon.ico
+[debug] [2026-03-18T03:11:22.455Z] [unzip] Entry: client/index.html (compressed_size=1364 bytes, uncompressed_size=3071 bytes)
+[debug] [2026-03-18T03:11:22.455Z] [unzip] Processing entry: client/index.html
+[debug] [2026-03-18T03:11:22.455Z] [unzip] else mkdir: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client
+[debug] [2026-03-18T03:11:22.455Z] [unzip] deflating: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client/index.html
+[debug] [2026-03-18T03:11:22.456Z] [unzip] Entry: client/android-chrome-192x192.png (compressed_size=2684 bytes, uncompressed_size=2684 bytes)
+[debug] [2026-03-18T03:11:22.456Z] [unzip] Processing entry: client/android-chrome-192x192.png
+[debug] [2026-03-18T03:11:22.456Z] [unzip] else mkdir: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client
+[debug] [2026-03-18T03:11:22.456Z] [unzip] Writing file: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client/android-chrome-192x192.png
+[debug] [2026-03-18T03:11:22.456Z] [unzip] Entry: client/apple-touch-icon.png (compressed_size=2123 bytes, uncompressed_size=2152 bytes)
+[debug] [2026-03-18T03:11:22.456Z] [unzip] Processing entry: client/apple-touch-icon.png
+[debug] [2026-03-18T03:11:22.456Z] [unzip] else mkdir: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client
+[debug] [2026-03-18T03:11:22.456Z] [unzip] deflating: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client/apple-touch-icon.png
+[debug] [2026-03-18T03:11:22.456Z] [unzip] Entry: client/android-chrome-512x512.png (compressed_size=5369 bytes, uncompressed_size=5411 bytes)
+[debug] [2026-03-18T03:11:22.456Z] [unzip] Processing entry: client/android-chrome-512x512.png
+[debug] [2026-03-18T03:11:22.456Z] [unzip] else mkdir: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client
+[debug] [2026-03-18T03:11:22.456Z] [unzip] deflating: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client/android-chrome-512x512.png
+[debug] [2026-03-18T03:11:22.457Z] [unzip] Entry: client/manifest.json (compressed_size=245 bytes, uncompressed_size=551 bytes)
+[debug] [2026-03-18T03:11:22.457Z] [unzip] Processing entry: client/manifest.json
+[debug] [2026-03-18T03:11:22.457Z] [unzip] else mkdir: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client
+[debug] [2026-03-18T03:11:22.457Z] [unzip] deflating: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client/manifest.json
+[debug] [2026-03-18T03:11:22.457Z] [unzip] Entry: client/robots.txt (compressed_size=26 bytes, uncompressed_size=26 bytes)
+[debug] [2026-03-18T03:11:22.457Z] [unzip] Processing entry: client/robots.txt
+[debug] [2026-03-18T03:11:22.457Z] [unzip] else mkdir: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client
+[debug] [2026-03-18T03:11:22.457Z] [unzip] Writing file: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client/robots.txt
+[debug] [2026-03-18T03:11:22.458Z] [unzip] Entry: client/mstile-150x150.png (compressed_size=2034 bytes, uncompressed_size=2034 bytes)
+[debug] [2026-03-18T03:11:22.458Z] [unzip] Processing entry: client/mstile-150x150.png
+[debug] [2026-03-18T03:11:22.458Z] [unzip] else mkdir: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client
+[debug] [2026-03-18T03:11:22.458Z] [unzip] Writing file: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client/mstile-150x150.png
+[debug] [2026-03-18T03:11:22.458Z] [unzip] Entry: client/assets/ (compressed_size=0 bytes, uncompressed_size=0 bytes)
+[debug] [2026-03-18T03:11:22.458Z] [unzip] Processing entry: client/assets/
+[debug] [2026-03-18T03:11:22.458Z] [unzip] mkdir: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client/assets/
+[debug] [2026-03-18T03:11:22.458Z] [unzip] Entry: client/assets/index-BX-A56oj.js (compressed_size=582089 bytes, uncompressed_size=2092775 bytes)
+[debug] [2026-03-18T03:11:22.458Z] [unzip] Processing entry: client/assets/index-BX-A56oj.js
+[debug] [2026-03-18T03:11:22.458Z] [unzip] else mkdir: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client/assets
+[debug] [2026-03-18T03:11:22.458Z] [unzip] deflating: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client/assets/index-BX-A56oj.js
+[debug] [2026-03-18T03:11:22.464Z] [unzip] Entry: client/assets/index-CjB9C900.css (compressed_size=35979 bytes, uncompressed_size=298654 bytes)
+[debug] [2026-03-18T03:11:22.464Z] [unzip] Processing entry: client/assets/index-CjB9C900.css
+[debug] [2026-03-18T03:11:22.464Z] [unzip] else mkdir: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client/assets
+[debug] [2026-03-18T03:11:22.464Z] [unzip] deflating: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client/assets/index-CjB9C900.css
+[debug] [2026-03-18T03:11:22.468Z] [unzip] Entry: client/assets/index-BX-A56oj.js.map (compressed_size=2362482 bytes, uncompressed_size=10036679 bytes)
+[debug] [2026-03-18T03:11:22.468Z] [unzip] Processing entry: client/assets/index-BX-A56oj.js.map
+[debug] [2026-03-18T03:11:22.468Z] [unzip] else mkdir: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client/assets
+[debug] [2026-03-18T03:11:22.468Z] [unzip] deflating: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client/assets/index-BX-A56oj.js.map
+[debug] [2026-03-18T03:11:22.490Z] [unzip] Entry: client/assets/extensions/ (compressed_size=0 bytes, uncompressed_size=0 bytes)
+[debug] [2026-03-18T03:11:22.490Z] [unzip] Processing entry: client/assets/extensions/
+[debug] [2026-03-18T03:11:22.490Z] [unzip] mkdir: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client/assets/extensions/
+[debug] [2026-03-18T03:11:22.490Z] [unzip] Entry: client/assets/extensions/default-extension.png (compressed_size=1646 bytes, uncompressed_size=1657 bytes)
+[debug] [2026-03-18T03:11:22.490Z] [unzip] Processing entry: client/assets/extensions/default-extension.png
+[debug] [2026-03-18T03:11:22.490Z] [unzip] else mkdir: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client/assets/extensions
+[debug] [2026-03-18T03:11:22.490Z] [unzip] deflating: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client/assets/extensions/default-extension.png
+[debug] [2026-03-18T03:11:22.491Z] [unzip] Entry: client/assets/img/ (compressed_size=0 bytes, uncompressed_size=0 bytes)
+[debug] [2026-03-18T03:11:22.491Z] [unzip] Processing entry: client/assets/img/
+[debug] [2026-03-18T03:11:22.491Z] [unzip] mkdir: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client/assets/img/
+[debug] [2026-03-18T03:11:22.491Z] [unzip] Entry: client/assets/img/database.png (compressed_size=29449 bytes, uncompressed_size=29988 bytes)
+[debug] [2026-03-18T03:11:22.491Z] [unzip] Processing entry: client/assets/img/database.png
+[debug] [2026-03-18T03:11:22.491Z] [unzip] else mkdir: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client/assets/img
+[debug] [2026-03-18T03:11:22.491Z] [unzip] deflating: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client/assets/img/database.png
+[debug] [2026-03-18T03:11:22.491Z] [unzip] Entry: client/assets/provider-icons/ (compressed_size=0 bytes, uncompressed_size=0 bytes)
+[debug] [2026-03-18T03:11:22.491Z] [unzip] Processing entry: client/assets/provider-icons/
+[debug] [2026-03-18T03:11:22.491Z] [unzip] mkdir: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client/assets/provider-icons/
+[debug] [2026-03-18T03:11:22.492Z] [unzip] Entry: client/assets/provider-icons/auth_service_saml.svg (compressed_size=575 bytes, uncompressed_size=1226 bytes)
+[debug] [2026-03-18T03:11:22.492Z] [unzip] Processing entry: client/assets/provider-icons/auth_service_saml.svg
+[debug] [2026-03-18T03:11:22.492Z] [unzip] else mkdir: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client/assets/provider-icons
+[debug] [2026-03-18T03:11:22.492Z] [unzip] deflating: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client/assets/provider-icons/auth_service_saml.svg
+[debug] [2026-03-18T03:11:22.492Z] [unzip] Entry: client/assets/provider-icons/auth_service_phone.svg (compressed_size=261 bytes, uncompressed_size=414 bytes)
+[debug] [2026-03-18T03:11:22.492Z] [unzip] Processing entry: client/assets/provider-icons/auth_service_phone.svg
+[debug] [2026-03-18T03:11:22.492Z] [unzip] else mkdir: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client/assets/provider-icons
+[debug] [2026-03-18T03:11:22.492Z] [unzip] deflating: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client/assets/provider-icons/auth_service_phone.svg
+[debug] [2026-03-18T03:11:22.492Z] [unzip] Entry: client/assets/provider-icons/auth_service_facebook.svg (compressed_size=289 bytes, uncompressed_size=457 bytes)
+[debug] [2026-03-18T03:11:22.492Z] [unzip] Processing entry: client/assets/provider-icons/auth_service_facebook.svg
+[debug] [2026-03-18T03:11:22.492Z] [unzip] else mkdir: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client/assets/provider-icons
+[debug] [2026-03-18T03:11:22.492Z] [unzip] deflating: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client/assets/provider-icons/auth_service_facebook.svg
+[debug] [2026-03-18T03:11:22.493Z] [unzip] Entry: client/assets/provider-icons/auth_service_game_center.svg (compressed_size=991 bytes, uncompressed_size=3921 bytes)
+[debug] [2026-03-18T03:11:22.493Z] [unzip] Processing entry: client/assets/provider-icons/auth_service_game_center.svg
+[debug] [2026-03-18T03:11:22.493Z] [unzip] else mkdir: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client/assets/provider-icons
+[debug] [2026-03-18T03:11:22.493Z] [unzip] deflating: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client/assets/provider-icons/auth_service_game_center.svg
+[debug] [2026-03-18T03:11:22.493Z] [unzip] Entry: client/assets/provider-icons/auth_service_apple.svg (compressed_size=230 bytes, uncompressed_size=334 bytes)
+[debug] [2026-03-18T03:11:22.493Z] [unzip] Processing entry: client/assets/provider-icons/auth_service_apple.svg
+[debug] [2026-03-18T03:11:22.493Z] [unzip] else mkdir: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client/assets/provider-icons
+[debug] [2026-03-18T03:11:22.493Z] [unzip] deflating: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client/assets/provider-icons/auth_service_apple.svg
+[debug] [2026-03-18T03:11:22.493Z] [unzip] Entry: client/assets/provider-icons/auth_service_github.svg (compressed_size=466 bytes, uncompressed_size=838 bytes)
+[debug] [2026-03-18T03:11:22.493Z] [unzip] Processing entry: client/assets/provider-icons/auth_service_github.svg
+[debug] [2026-03-18T03:11:22.493Z] [unzip] else mkdir: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client/assets/provider-icons
+[debug] [2026-03-18T03:11:22.493Z] [unzip] deflating: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client/assets/provider-icons/auth_service_github.svg
+[debug] [2026-03-18T03:11:22.494Z] [unzip] Entry: client/assets/provider-icons/auth_service_mslive.svg (compressed_size=203 bytes, uncompressed_size=378 bytes)
+[debug] [2026-03-18T03:11:22.494Z] [unzip] Processing entry: client/assets/provider-icons/auth_service_mslive.svg
+[debug] [2026-03-18T03:11:22.494Z] [unzip] else mkdir: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client/assets/provider-icons
+[debug] [2026-03-18T03:11:22.494Z] [unzip] deflating: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client/assets/provider-icons/auth_service_mslive.svg
+[debug] [2026-03-18T03:11:22.494Z] [unzip] Entry: client/assets/provider-icons/auth_service_yahoo.svg (compressed_size=577 bytes, uncompressed_size=1182 bytes)
+[debug] [2026-03-18T03:11:22.494Z] [unzip] Processing entry: client/assets/provider-icons/auth_service_yahoo.svg
+[debug] [2026-03-18T03:11:22.494Z] [unzip] else mkdir: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client/assets/provider-icons
+[debug] [2026-03-18T03:11:22.494Z] [unzip] deflating: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client/assets/provider-icons/auth_service_yahoo.svg
+[debug] [2026-03-18T03:11:22.494Z] [unzip] Entry: client/assets/provider-icons/auth_service_twitter.svg (compressed_size=444 bytes, uncompressed_size=751 bytes)
+[debug] [2026-03-18T03:11:22.494Z] [unzip] Processing entry: client/assets/provider-icons/auth_service_twitter.svg
+[debug] [2026-03-18T03:11:22.494Z] [unzip] else mkdir: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client/assets/provider-icons
+[debug] [2026-03-18T03:11:22.494Z] [unzip] deflating: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client/assets/provider-icons/auth_service_twitter.svg
+[debug] [2026-03-18T03:11:22.495Z] [unzip] Entry: client/assets/provider-icons/auth_service_play_games.svg (compressed_size=565 bytes, uncompressed_size=1173 bytes)
+[debug] [2026-03-18T03:11:22.495Z] [unzip] Processing entry: client/assets/provider-icons/auth_service_play_games.svg
+[debug] [2026-03-18T03:11:22.495Z] [unzip] else mkdir: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client/assets/provider-icons
+[debug] [2026-03-18T03:11:22.495Z] [unzip] deflating: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client/assets/provider-icons/auth_service_play_games.svg
+[debug] [2026-03-18T03:11:22.495Z] [unzip] Entry: client/assets/provider-icons/auth_service_email.svg (compressed_size=228 bytes, uncompressed_size=326 bytes)
+[debug] [2026-03-18T03:11:22.495Z] [unzip] Processing entry: client/assets/provider-icons/auth_service_email.svg
+[debug] [2026-03-18T03:11:22.495Z] [unzip] else mkdir: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client/assets/provider-icons
+[debug] [2026-03-18T03:11:22.495Z] [unzip] deflating: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client/assets/provider-icons/auth_service_email.svg
+[debug] [2026-03-18T03:11:22.496Z] [unzip] Entry: client/assets/provider-icons/auth_service_google.svg (compressed_size=409 bytes, uncompressed_size=720 bytes)
+[debug] [2026-03-18T03:11:22.496Z] [unzip] Processing entry: client/assets/provider-icons/auth_service_google.svg
+[debug] [2026-03-18T03:11:22.496Z] [unzip] else mkdir: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client/assets/provider-icons
+[debug] [2026-03-18T03:11:22.496Z] [unzip] deflating: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client/assets/provider-icons/auth_service_google.svg
+[debug] [2026-03-18T03:11:22.496Z] [unzip] Entry: client/assets/provider-icons/auth_service_oidc.svg (compressed_size=414 bytes, uncompressed_size=858 bytes)
+[debug] [2026-03-18T03:11:22.496Z] [unzip] Processing entry: client/assets/provider-icons/auth_service_oidc.svg
+[debug] [2026-03-18T03:11:22.496Z] [unzip] else mkdir: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client/assets/provider-icons
+[debug] [2026-03-18T03:11:22.496Z] [unzip] deflating: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client/assets/provider-icons/auth_service_oidc.svg
+[debug] [2026-03-18T03:11:22.497Z] [unzip] Entry: client/browserconfig.xml (compressed_size=491 bytes, uncompressed_size=822 bytes)
+[debug] [2026-03-18T03:11:22.497Z] [unzip] Processing entry: client/browserconfig.xml
+[debug] [2026-03-18T03:11:22.497Z] [unzip] else mkdir: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client
+[debug] [2026-03-18T03:11:22.497Z] [unzip] deflating: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client/browserconfig.xml
+[debug] [2026-03-18T03:11:22.497Z] [unzip] Entry: client/favicon-32x32.png (compressed_size=475 bytes, uncompressed_size=475 bytes)
+[debug] [2026-03-18T03:11:22.497Z] [unzip] Processing entry: client/favicon-32x32.png
+[debug] [2026-03-18T03:11:22.497Z] [unzip] else mkdir: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client
+[debug] [2026-03-18T03:11:22.497Z] [unzip] Writing file: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/client/favicon-32x32.png
+[debug] [2026-03-18T03:11:22.497Z] [unzip] Entry: server/ (compressed_size=0 bytes, uncompressed_size=0 bytes)
+[debug] [2026-03-18T03:11:22.497Z] [unzip] Processing entry: server/
+[debug] [2026-03-18T03:11:22.497Z] [unzip] mkdir: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/server/
+[debug] [2026-03-18T03:11:22.498Z] [unzip] Entry: server/server.mjs.map (compressed_size=217845 bytes, uncompressed_size=944978 bytes)
+[debug] [2026-03-18T03:11:22.498Z] [unzip] Processing entry: server/server.mjs.map
+[debug] [2026-03-18T03:11:22.498Z] [unzip] else mkdir: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/server
+[debug] [2026-03-18T03:11:22.498Z] [unzip] deflating: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/server/server.mjs.map
+[debug] [2026-03-18T03:11:22.500Z] [unzip] Entry: server/server.mjs (compressed_size=276407 bytes, uncompressed_size=933701 bytes)
+[debug] [2026-03-18T03:11:22.500Z] [unzip] Processing entry: server/server.mjs
+[debug] [2026-03-18T03:11:22.500Z] [unzip] else mkdir: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/server
+[debug] [2026-03-18T03:11:22.500Z] [unzip] deflating: /Users/benoitarchambault/.cache/firebase/emulators/ui-v1.15.0/server/server.mjs
+[info] i  ui: Removing outdated emulator files: ui-v1.14.0 {"metadata":{"emulator":{"name":"ui"},"message":"Removing outdated emulator files: ui-v1.14.0"}}
+[info] i  ui: Removing outdated emulator files: ui-v1.14.0.zip {"metadata":{"emulator":{"name":"ui"},"message":"Removing outdated emulator files: ui-v1.14.0.zip"}}
+[info] i  functions: Watching "/Users/benoitarchambault/Desktop/Mon_Acupunctrice/functions" for Cloud Functions... {"metadata":{"emulator":{"name":"functions"},"message":"Watching \"/Users/benoitarchambault/Desktop/Mon_Acupunctrice/functions\" for Cloud Functions..."}}
+[debug] [2026-03-18T03:11:22.520Z] Validating nodejs source
+[warn] ⚠  functions: package.json indicates an outdated version of firebase-functions. Please upgrade using npm install --save firebase-functions@latest in your functions directory. 
+[warn] ⚠  functions: Please note that there will be breaking changes when you upgrade. 
+[debug] [2026-03-18T03:11:23.075Z] > [functions] package.json contents: {
+  "name": "mon-acupunctrice-functions",
+  "description": "Cloud Functions for Mon Acupunctrice Hub",
+  "scripts": {
+    "build": "tsc",
+    "predeploy": "npm run build",
+    "serve": "npm run build && firebase emulators:start --only functions",
+    "deploy": "firebase deploy --only functions"
+  },
+  "engines": {
+    "node": "20"
+  },
+  "main": "lib/index.js",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "firebase-admin": "^13.0.0",
+    "firebase-functions": "^6.0.0",
+    "openai": "^4.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.4"
+  },
+  "private": true
+}
+[debug] [2026-03-18T03:11:23.075Z] Building nodejs source
+[debug] [2026-03-18T03:11:23.076Z] Failed to find version of module node: reached end of search path /Users/benoitarchambault/Desktop/Mon_Acupunctrice/functions/node_modules
+[warn] ⚠  functions: Your requested "node" version "20" doesn't match your global version "22". Using node@22 from host. 
+[info] i  functions: Loaded environment variables from .env. 
+[debug] [2026-03-18T03:11:23.077Z] Could not find functions.yaml. Must use http discovery
+[debug] [2026-03-18T03:11:23.081Z] Found firebase-functions binary at '/Users/benoitarchambault/Desktop/Mon_Acupunctrice/functions/node_modules/.bin/firebase-functions'
+[info] Serving at port 8340
+
+[debug] [2026-03-18T03:11:23.371Z] Got response from /__/functions.yaml {"endpoints":{"generateCaption":{"availableMemoryMb":256,"timeoutSeconds":60,"minInstances":null,"maxInstances":null,"ingressSettings":null,"concurrency":null,"serviceAccountEmail":null,"vpc":null,"platform":"gcfv2","secretEnvironmentVariables":[{"key":"ANTHROPIC_API_KEY"}],"labels":{},"callableTrigger":{},"entryPoint":"generateCaption"},"publishToInstagram":{"availableMemoryMb":256,"timeoutSeconds":120,"minInstances":null,"maxInstances":null,"ingressSettings":null,"concurrency":null,"serviceAccountEmail":null,"vpc":null,"platform":"gcfv2","secretEnvironmentVariables":[{"key":"META_USER_TOKEN"},{"key":"META_IG_ACCOUNT_ID"}],"labels":{},"callableTrigger":{},"entryPoint":"publishToInstagram"},"transcribeAudio":{"availableMemoryMb":512,"timeoutSeconds":120,"minInstances":null,"maxInstances":null,"ingressSettings":null,"concurrency":null,"serviceAccountEmail":null,"vpc":null,"platform":"gcfv2","secretEnvironmentVariables":[{"key":"OPENAI_API_KEY"},{"key":"ANTHROPIC_API_KEY"}],"labels":{},"callableTrigger":{},"entryPoint":"transcribeAudio"},"schedulePublisher":{"availableMemoryMb":256,"timeoutSeconds":300,"minInstances":null,"maxInstances":null,"ingressSettings":null,"concurrency":null,"serviceAccountEmail":null,"vpc":null,"platform":"gcfv2","secretEnvironmentVariables":[{"key":"META_USER_TOKEN"},{"key":"META_IG_ACCOUNT_ID"}],"labels":{},"scheduleTrigger":{"schedule":"every 15 minutes","retryConfig":{}},"entryPoint":"schedulePublisher"},"searchJamendo":{"availableMemoryMb":256,"timeoutSeconds":30,"minInstances":null,"maxInstances":null,"ingressSettings":null,"concurrency":null,"serviceAccountEmail":null,"vpc":null,"platform":"gcfv2","secretEnvironmentVariables":[{"key":"JAMENDO_CLIENT_ID"}],"labels":{},"callableTrigger":{},"entryPoint":"searchJamendo"}},"specVersion":"v1alpha1","requiredAPIs":[{"api":"cloudscheduler.googleapis.com","reason":"Needed for scheduled functions."}],"extensions":{},"params":[{"type":"secret","name":"OPENAI_API_KEY"},{"type":"secret","name":"ANTHROPIC_API_KEY"},{"type":"secret","name":"META_USER_TOKEN"},{"type":"secret","name":"META_IG_ACCOUNT_ID"},{"type":"secret","name":"JAMENDO_CLIENT_ID"}]}
+[info] ✔  functions: Loaded functions definitions from source: generateCaption, publishToInstagram, transcribeAudio, schedulePublisher, searchJamendo. {"metadata":{"emulator":{"name":"functions"},"message":"Loaded functions definitions from source: generateCaption, publishToInstagram, transcribeAudio, schedulePublisher, searchJamendo."}}
+[info] ✔  functions[us-central1-generateCaption]: http function initialized (http://127.0.0.1:5001/mon-acupunctrice-hub/us-central1/generateCaption). {"metadata":{"emulator":{"name":"functions"},"message":"http function initialized (http://127.0.0.1:5001/mon-acupunctrice-hub/us-central1/generateCaption)."}}
+[info] ✔  functions[us-central1-publishToInstagram]: http function initialized (http://127.0.0.1:5001/mon-acupunctrice-hub/us-central1/publishToInstagram). {"metadata":{"emulator":{"name":"functions"},"message":"http function initialized (http://127.0.0.1:5001/mon-acupunctrice-hub/us-central1/publishToInstagram)."}}
+[info] ✔  functions[us-central1-transcribeAudio]: http function initialized (http://127.0.0.1:5001/mon-acupunctrice-hub/us-central1/transcribeAudio). {"metadata":{"emulator":{"name":"functions"},"message":"http function initialized (http://127.0.0.1:5001/mon-acupunctrice-hub/us-central1/transcribeAudio)."}}
+[info] i  functions[us-central1-schedulePublisher]: function ignored because the pubsub emulator does not exist or is not running. {"metadata":{"emulator":{"name":"functions"},"message":"function ignored because the pubsub emulator does not exist or is not running."}}
+[info] ✔  functions[us-central1-searchJamendo]: http function initialized (http://127.0.0.1:5001/mon-acupunctrice-hub/us-central1/searchJamendo). {"metadata":{"emulator":{"name":"functions"},"message":"http function initialized (http://127.0.0.1:5001/mon-acupunctrice-hub/us-central1/searchJamendo)."}}
+[debug] [2026-03-18T03:11:27.393Z] Could not find VSCode notification endpoint: FetchError: request to http://localhost:40001/vscode/notify failed, reason: . If you are not running the Firebase Data Connect VSCode extension, this is expected and not an issue.
+[info] 
+┌─────────────────────────────────────────────────────────────┐
+│ ✔  All emulators ready! It is now safe to connect your app. │
+│ i  View Emulator UI at http://127.0.0.1:4000/               │
+└─────────────────────────────────────────────────────────────┘
+
+┌───────────┬────────────────┬─────────────────────────────────┐
+│ Emulator  │ Host:Port      │ View in Emulator UI             │
+├───────────┼────────────────┼─────────────────────────────────┤
+│ Functions │ 127.0.0.1:5001 │ http://127.0.0.1:4000/functions │
+└───────────┴────────────────┴─────────────────────────────────┘
+  Emulator Hub host: 127.0.0.1 port: 4400
+  Other reserved ports: 4500
+
+Issues? Report them at https://github.com/firebase/firebase-tools/issues and attach the *-debug.log files.
+ 
