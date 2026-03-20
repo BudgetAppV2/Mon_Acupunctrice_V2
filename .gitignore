@@ -27,6 +27,7 @@ yarn-error.log*
 
 # Legacy proof of concept — pas dans le repo V2
 /legacy
+/_archive
 
 # vercel
 .vercel
