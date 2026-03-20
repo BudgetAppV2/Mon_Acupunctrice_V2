@@ -22,12 +22,15 @@ export default function Timeline() {
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
+    // Set initial width immediately (ResizeObserver peut etre async)
+    const rect = el.getBoundingClientRect();
+    if (rect.width > 0) setContainerWidth(rect.width);
     const observer = new ResizeObserver(([entry]) => {
       setContainerWidth(entry.contentRect.width);
     });
     observer.observe(el);
     return () => observer.disconnect();
-  }, []);
+  }, [duration]); // re-run quand duration change (le composant est monte)
 
   // Zoom dynamique : toute la durée tient dans la largeur visible
   const PADDING = 12; // px-3 = 12px de chaque côté
