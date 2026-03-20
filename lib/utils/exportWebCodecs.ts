@@ -32,11 +32,14 @@ export async function exportWithWebCodecs(
   const FRAME_DUR = 33333; // ~30fps in microseconds
   const vEnc = new VideoEncoder({
     output: (chunk, meta) => {
-      // Certains navigateurs (Safari) produisent des chunks sans duration valide.
-      // mp4-muxer exige un duration positif. On passe FRAME_DUR comme fallback.
+      // Safari produit des chunks avec duration=null.
+      // mp4-muxer.addVideoChunk passe sample.duration directement a addVideoChunkRaw
+      // qui exige un number fini. On utilise addVideoChunkRaw avec un fallback.
+      const data = new Uint8Array(chunk.byteLength);
+      chunk.copyTo(data);
       const d = (chunk.duration != null && isFinite(chunk.duration) && chunk.duration > 0)
         ? chunk.duration : FRAME_DUR;
-      muxer.addVideoChunk(chunk, meta, d);
+      muxer.addVideoChunkRaw(data, chunk.type, chunk.timestamp, d, meta);
     },
     error: (e) => { throw e; },
   });
