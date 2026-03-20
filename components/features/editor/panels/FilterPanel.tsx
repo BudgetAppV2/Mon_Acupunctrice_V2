@@ -1,42 +1,10 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
 import { useEditorStore } from '@/lib/store/useEditorStore';
 import { FILTERS } from '@/lib/utils/filters';
 
 export default function FilterPanel() {
-  const { filter, setFilter } = useEditorStore();
-  const [thumbUrl, setThumbUrl] = useState<string | null>(null);
-  const capturedRef = useRef(false);
-
-  // Capturer une frame de la video deja dans le DOM
-  useEffect(() => {
-    if (capturedRef.current) return;
-    const capture = () => {
-      const video = document.querySelector('video') as HTMLVideoElement | null;
-      if (!video || video.readyState < 2 || video.videoWidth === 0) return;
-      try {
-        const canvas = document.createElement('canvas');
-        // Ratio 9:16
-        canvas.width = 90;
-        canvas.height = 160;
-        canvas.getContext('2d')!.drawImage(video, 0, 0, 90, 160);
-        const url = canvas.toDataURL('image/jpeg', 0.8);
-        if (url !== 'data:,') {
-          setThumbUrl(url);
-          capturedRef.current = true;
-        }
-      } catch {
-        // securite cross-origin, on retente plus tard
-      }
-    };
-
-    // Essayer immediatement + retry toutes les 200ms
-    capture();
-    const interval = setInterval(capture, 200);
-    const timeout = setTimeout(() => clearInterval(interval), 3000);
-    return () => { clearInterval(interval); clearTimeout(timeout); };
-  }, []);
+  const { filter, setFilter, thumbnailUrl } = useEditorStore();
 
   return (
     <div className="px-3 py-2">
@@ -53,9 +21,9 @@ export default function FilterPanel() {
             <div className={`w-11 h-[60px] rounded-lg overflow-hidden ${
               filter === f.id ? 'ring-2 ring-sage' : ''
             }`}>
-              {thumbUrl ? (
+              {thumbnailUrl ? (
                 <img
-                  src={thumbUrl}
+                  src={thumbnailUrl}
                   alt={f.label}
                   className="w-full h-full object-cover"
                   style={f.css !== 'none' ? { filter: f.css } : undefined}

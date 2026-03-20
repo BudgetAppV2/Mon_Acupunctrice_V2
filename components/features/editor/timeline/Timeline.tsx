@@ -13,7 +13,7 @@ function formatMark(s: number): string {
 }
 
 export default function Timeline() {
-  const { duration, currentTime, trimStart, trimEnd, seekTo, overlays, subtitles, audioUrl } = useEditorStore();
+  const { duration, currentTime, trimStart, trimEnd, seekTo, overlays, subtitles, audioUrl, videoFile } = useEditorStore();
   const containerRef = useRef<HTMLDivElement>(null);
   const isDragging = useRef(false);
   const [containerWidth, setContainerWidth] = useState(0);
@@ -88,7 +88,11 @@ export default function Timeline() {
   const timelineHeight = 20 + (trackCount * 26); // règle 20px + 26px par track
 
   if (duration === 0) {
-    return <div className="bg-gray-950 shrink-0" style={{ height: `${timelineHeight}px` }} />;
+    return (
+      <div className="bg-gray-950 shrink-0 flex items-center justify-center" style={{ height: `${timelineHeight}px` }}>
+        {videoFile && <span className="text-xs text-gray-500">Chargement de la timeline...</span>}
+      </div>
+    );
   }
 
   return (

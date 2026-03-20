@@ -15,7 +15,7 @@ export default function VideoPreview({ interactive = false }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const {
     videoUrl, isPlaying, trimStart, trimEnd, filter, audioUrl, audioVolume,
-    setCurrentTime, setDuration, pause, togglePlayPause, seekTo,
+    setCurrentTime, setDuration, pause, togglePlayPause, seekTo, setThumbnail,
   } = useEditorStore();
   const [showControls, setShowControls] = useState(true);
   const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -58,7 +58,25 @@ export default function VideoPreview({ interactive = false }: Props) {
     }
   };
 
-  const handleLoaded = () => { if (videoRef.current) setDuration(videoRef.current.duration); };
+  const handleLoaded = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    setDuration(video.duration);
+    // Capturer une miniature pour FilterPanel (évite le drawImage cross-origin sur Safari iOS)
+    try {
+      const canvas = document.createElement('canvas');
+      canvas.width = 90;
+      canvas.height = 160;
+      canvas.getContext('2d')!.drawImage(video, 0, 0, 90, 160);
+      const url = canvas.toDataURL('image/jpeg', 0.8);
+      if (url !== 'data:,') setThumbnail(url);
+    } catch { /* canvas tainted — FilterPanel utilisera le fallback gradient */ }
+  };
+
+  const handleDurationChange = () => {
+    const video = videoRef.current;
+    if (video && video.duration && isFinite(video.duration)) setDuration(video.duration);
+  };
 
   const handleTap = () => {
     if (interactive) return;
@@ -71,7 +89,7 @@ export default function VideoPreview({ interactive = false }: Props) {
 
   return (
     <div ref={containerRef} className="relative w-full h-full flex items-center justify-center bg-black" onClick={handleTap}>
-      <video ref={videoRef} src={videoUrl ?? undefined} className="w-full h-full object-contain" style={filterStyle} playsInline onTimeUpdate={handleTimeUpdate} onLoadedMetadata={handleLoaded} />
+      <video ref={videoRef} src={videoUrl ?? undefined} className="w-full h-full object-contain" style={filterStyle} playsInline preload="auto" onTimeUpdate={handleTimeUpdate} onLoadedMetadata={handleLoaded} onDurationChange={handleDurationChange} />
       {audioUrl && <audio ref={bgAudioRef} src={audioUrl} loop />}
       {size.w > 0 && <TextOverlayLayer width={size.w} height={size.h} interactive={interactive} />}
       <SubtitlePreview />

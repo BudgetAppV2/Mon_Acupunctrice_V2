@@ -50,9 +50,11 @@ export function useMediaRecorder() {
     setCountdown(0);
     setIsRecording(true);
 
-    const mimeType = MediaRecorder.isTypeSupported('video/webm;codecs=vp9')
-      ? 'video/webm;codecs=vp9'
-      : MediaRecorder.isTypeSupported('video/webm') ? 'video/webm' : 'video/mp4';
+    // Préférer MP4 — Safari iOS supporte mal le playback WebM même si
+    // isTypeSupported('video/webm') retourne true sur certaines versions
+    const mimeType = MediaRecorder.isTypeSupported('video/mp4') ? 'video/mp4'
+      : MediaRecorder.isTypeSupported('video/webm;codecs=vp9') ? 'video/webm;codecs=vp9'
+      : 'video/webm';
 
     return new Promise<RecordingResult | null>((resolve) => {
       chunksRef.current = [];

@@ -41,6 +41,7 @@ interface EditorState {
   voiceVolume: number;
   audioFadeIn: number;
   audioFadeOut: number;
+  thumbnailUrl: string | null;
 
   setVideoFile: (file: File) => void;
   loadVideo: (file: File, url: string) => void;
@@ -65,6 +66,7 @@ interface EditorState {
   setAudioVolume: (v: number) => void;
   setVoiceVolume: (v: number) => void;
   setAudioFade: (fadeIn: number, fadeOut: number) => void;
+  setThumbnail: (url: string) => void;
   reset: () => void;
 }
 
@@ -74,7 +76,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   filter: 'normal', overlays: [], selectedOverlayId: null,
   subtitles: [], subtitleStyle: 'classic' as SubtitleStyle,
   audioUrl: null, audioName: null, audioVolume: 0.3, voiceVolume: 1,
-  audioFadeIn: 0, audioFadeOut: 0,
+  audioFadeIn: 0, audioFadeOut: 0, thumbnailUrl: null,
 
   setVideoFile: (file) => {
     const prev = get().videoUrl;
@@ -118,6 +120,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   setAudioVolume: (v) => set({ audioVolume: v }),
   setVoiceVolume: (v) => set({ voiceVolume: v }),
   setAudioFade: (fadeIn, fadeOut) => set({ audioFadeIn: fadeIn, audioFadeOut: fadeOut }),
+  setThumbnail: (url) => set({ thumbnailUrl: url }),
   reset: () => {
     const prev = get().videoUrl;
     if (prev) URL.revokeObjectURL(prev);
@@ -129,7 +132,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
       filter: 'normal', overlays: [], selectedOverlayId: null,
       subtitles: [], subtitleStyle: 'classic' as SubtitleStyle,
       audioUrl: null, audioName: null, audioVolume: 0.3, voiceVolume: 1,
-      audioFadeIn: 0, audioFadeOut: 0,
+      audioFadeIn: 0, audioFadeOut: 0, thumbnailUrl: null,
     });
   },
 }));
