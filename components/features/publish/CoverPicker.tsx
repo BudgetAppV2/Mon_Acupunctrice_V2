@@ -20,11 +20,26 @@ export default function CoverPicker({ videoUrl, value, onChange }: Props) {
   const [videoDuration, setVideoDuration] = useState(30);
   const [uploading, setUploading] = useState(false);
 
+  const captureFrame = (vid: HTMLVideoElement) => {
+    try {
+      if (vid.readyState < 2 || vid.videoWidth === 0) return;
+      const c = document.createElement('canvas');
+      c.width = 270; c.height = 480;
+      c.getContext('2d')!.drawImage(vid, 0, 0, 270, 480);
+      const url = c.toDataURL('image/jpeg', 0.8);
+      if (url !== 'data:,' && url.length > 100) setFramePreview(url);
+    } catch { /* cross-origin — will show placeholder */ }
+  };
+
   // Charger la vidéo et mesurer la durée
   useEffect(() => {
     const vid = videoRef.current;
     if (!vid) return;
-    vid.onloadedmetadata = () => setVideoDuration(vid.duration);
+    vid.onloadedmetadata = () => {
+      if (vid.duration && isFinite(vid.duration)) setVideoDuration(vid.duration);
+    };
+    // onCanPlay est plus fiable que onseeked sur Safari iOS
+    vid.oncanplay = () => captureFrame(vid);
   }, [videoUrl]);
 
   // Capturer la frame à l'offset sélectionné
@@ -33,20 +48,9 @@ export default function CoverPicker({ videoUrl, value, onChange }: Props) {
     if (!vid || value.type !== 'frame') return;
     vid.currentTime = value.offset / 1000;
 
-    const captureFrame = () => {
-      try {
-        if (vid.readyState < 2 || vid.videoWidth === 0) return;
-        const c = document.createElement('canvas');
-        c.width = 270; c.height = 480;
-        c.getContext('2d')!.drawImage(vid, 0, 0, 270, 480);
-        const url = c.toDataURL('image/jpeg', 0.8);
-        if (url !== 'data:,' && url.length > 100) setFramePreview(url);
-      } catch { /* cross-origin — will show placeholder */ }
-    };
-
-    vid.onseeked = captureFrame;
+    vid.onseeked = () => captureFrame(vid);
     // Fallback si onseeked ne fire pas
-    setTimeout(captureFrame, 500);
+    setTimeout(() => captureFrame(vid), 500);
   }, [value]);
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -63,13 +67,12 @@ export default function CoverPicker({ videoUrl, value, onChange }: Props) {
     } finally { setUploading(false); }
   };
 
-  // Avec COEP: credentialless, on peut charger directement depuis Firebase Storage
-  // Le proxy n'est plus necessaire (il etait requis avec require-corp)
-  const videoSrc = videoUrl;
+  // Proxy same-origin pour éviter le taint canvas cross-origin sur Safari
+  const videoSrc = `/api/proxy-video?url=${encodeURIComponent(videoUrl)}`;
 
   return (
     <div className="space-y-3">
-      <video ref={videoRef} src={videoSrc} className="hidden" playsInline muted preload="auto" crossOrigin="anonymous" />
+      <video ref={videoRef} src={videoSrc} className="hidden" playsInline muted preload="auto" />
 
       {/* Preview de la couverture */}
       <div className="flex justify-center">

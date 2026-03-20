@@ -28,16 +28,39 @@ function formatTime(s: number): string {
 interface Props { itemId: string }
 
 export default function EditorLayout({ itemId }: Props) {
-  const { videoFile, currentTime, duration, setItemId, reset } = useEditorStore();
+  const { videoFile, videoUrl, currentTime, duration, setItemId, reset } = useEditorStore();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState('trim');
   const [showPublish, setShowPublish] = useState(false);
   const [publishItem, setPublishItem] = useState<ContentItem | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const handleBack = () => { reset?.(); router.push('/calendrier'); };
 
   useEffect(() => {
     setItemId(itemId);
+
+    // Charger la vidéo existante depuis Firestore si le store est vide
+    const loadExisting = async () => {
+      const state = useEditorStore.getState();
+      if (state.videoFile) { setLoading(false); return; }
+      try {
+        const db = getFirebaseFirestore();
+        const snap = await getDoc(doc(db, 'contentItems', itemId));
+        if (snap.exists()) {
+          const data = snap.data();
+          if (data.videoUrl) {
+            const res = await fetch(data.videoUrl);
+            const blob = await res.blob();
+            const file = new File([blob], 'existing.mp4', { type: 'video/mp4' });
+            useEditorStore.getState().loadVideo(file, URL.createObjectURL(file));
+          }
+        }
+      } catch { /* vidéo pas disponible — ImportModal s'affichera */ }
+      setLoading(false);
+    };
+
+    loadExisting();
     return () => { reset(); };
   }, [itemId, setItemId, reset]);
 
@@ -51,7 +74,15 @@ export default function EditorLayout({ itemId }: Props) {
     }
   };
 
-  if (!videoFile) return <ImportModal />;
+  if (loading) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center bg-gray-950">
+        <div className="w-8 h-8 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (!videoFile && !videoUrl) return <ImportModal />;
 
   return (
     <div className="fixed inset-0 flex flex-col bg-gray-950">

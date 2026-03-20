@@ -41,7 +41,7 @@ export default function BottomSheet({ isOpen, onClose, title, children }: Props)
             <XMarkIcon className="w-5 h-5 text-gray-400" />
           </button>
         </div>
-        <div className="overflow-y-auto p-4" style={{ paddingBottom: 'calc(16px + env(safe-area-inset-bottom, 0px))' }}>
+        <div className="overflow-y-auto p-4" style={{ paddingBottom: 'calc(60px + env(safe-area-inset-bottom, 0px))' }}>
           {children}
         </div>
       </div>

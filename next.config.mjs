@@ -4,6 +4,17 @@ const withPWA = withPWAInit({
   dest: 'public',
   register: true,
   skipWaiting: true,
+  // Ne pas intercepter les requetes cross-origin (Firebase Storage, CDN, APIs)
+  runtimeCaching: [
+    {
+      urlPattern: /^https:\/\/firebasestorage\.googleapis\.com\/.*/i,
+      handler: 'NetworkOnly',
+    },
+    {
+      urlPattern: /^https:\/\/.*\.cloudfunctions\.net\/.*/i,
+      handler: 'NetworkOnly',
+    },
+  ],
 })
 
 /** @type {import('next').NextConfig} */

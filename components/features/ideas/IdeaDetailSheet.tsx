@@ -2,7 +2,6 @@
 
 import BottomSheet from '@/components/ui/BottomSheet';
 import type { ContentItem } from '@/lib/types';
-import { VideoCameraIcon } from '@heroicons/react/24/outline';
 import IdeaInfoSection from './IdeaInfoSection';
 import IdeaCaptionSection from './IdeaCaptionSection';
 import IdeaActions from './IdeaActions';
@@ -26,9 +25,13 @@ export default function IdeaDetailSheet({ isOpen, onClose, item }: Props) {
           item.thumbnailUrl ? (
             <img src={item.thumbnailUrl} alt="" className="rounded-lg w-full max-h-36 object-cover" />
           ) : (
-            <div className="h-24 bg-gray-100 rounded-lg flex items-center justify-center">
-              <VideoCameraIcon className="w-8 h-8 text-gray-300" />
-            </div>
+            <video
+              src={item.videoUrl}
+              className="rounded-lg w-full max-h-36 object-cover"
+              playsInline
+              muted
+              preload="metadata"
+            />
           )
         )}
 
