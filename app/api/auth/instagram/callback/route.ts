@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { verifyState } from '@/lib/utils/oauth-state';
 import { getAdminFirestore } from '@/lib/firebase-admin';
 
-const META_CLIENT_ID = '823305796703895';
+const IG_APP_ID = '1224688753149053';
 const REDIRECT_URI = 'https://mon-acupunctrice-v2.vercel.app/api/auth/instagram/callback';
 
 /** GET /api/auth/instagram/callback — Echange le code OAuth pour un token long-lived */
@@ -22,35 +22,25 @@ export async function GET(request: NextRequest) {
   if (!secret) return NextResponse.redirect(`${baseUrl}/profil?error=server_config`);
 
   try {
-    // 1. Code → short-lived token
-    const tokenRes = await fetch('https://graph.facebook.com/v25.0/oauth/access_token', {
+    // 1. Code → short-lived token (Instagram API)
+    const tokenRes = await fetch('https://api.instagram.com/oauth/access_token', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams({ client_id: META_CLIENT_ID, client_secret: secret, redirect_uri: REDIRECT_URI, code }),
+      body: new URLSearchParams({ client_id: IG_APP_ID, client_secret: secret, grant_type: 'authorization_code', redirect_uri: REDIRECT_URI, code }),
     });
     const tokenData = await tokenRes.json();
-    if (!tokenData.access_token) throw new Error('token_exchange_failed');
+    if (!tokenData.access_token) throw new Error(`token_exchange_failed: ${JSON.stringify(tokenData)}`);
+
+    const igId = String(tokenData.user_id);
 
     // 2. Short-lived → long-lived token (60 jours)
     const longRes = await fetch(
-      `https://graph.facebook.com/v25.0/oauth/access_token?grant_type=fb_exchange_token&client_id=${META_CLIENT_ID}&client_secret=${secret}&fb_exchange_token=${tokenData.access_token}`,
+      `https://graph.instagram.com/access_token?grant_type=ig_exchange_token&client_secret=${secret}&access_token=${tokenData.access_token}`,
     );
     const longData = await longRes.json();
-    if (!longData.access_token) throw new Error('long_lived_exchange_failed');
+    if (!longData.access_token) throw new Error(`long_lived_exchange_failed: ${JSON.stringify(longData)}`);
 
     const expiresAt = new Date(Date.now() + (longData.expires_in || 5184000) * 1000);
-
-    // 3. Recuperer les pages Facebook
-    const pagesRes = await fetch(`https://graph.facebook.com/v25.0/me/accounts?access_token=${longData.access_token}`);
-    const pagesData = await pagesRes.json();
-    const page = pagesData.data?.[0];
-    if (!page) throw new Error('no_facebook_page');
-
-    // 4. Recuperer l'Instagram Business Account
-    const igRes = await fetch(`https://graph.facebook.com/v25.0/${page.id}?fields=instagram_business_account&access_token=${longData.access_token}`);
-    const igData = await igRes.json();
-    const igId = igData.instagram_business_account?.id;
-    if (!igId) throw new Error('no_instagram_account');
 
     // 5. Sauvegarder dans Firestore (Admin SDK — bypass rules)
     const db = getAdminFirestore();
@@ -63,8 +53,6 @@ export async function GET(request: NextRequest) {
       metaInstagramId: igId,
       metaStatus: 'connected',
       metaTokenExpiresAt: expiresAt,
-      facebookPageId: page.id,
-      facebookPageName: page.name,
     }, { merge: true });
 
     return NextResponse.redirect(`${baseUrl}/profil?connected=instagram`);
