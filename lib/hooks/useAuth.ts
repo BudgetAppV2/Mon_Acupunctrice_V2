@@ -20,8 +20,18 @@ export function useAuth() {
   useEffect(() => {
     const auth = getFirebaseAuth();
 
-    // Capturer le résultat du redirect (PWA standalone)
-    getRedirectResult(auth).catch(() => { /* pas de redirect en cours */ });
+    // Capturer le résultat du redirect (mobile)
+    getRedirectResult(auth)
+      .then((result) => {
+        if (result?.user) {
+          // eslint-disable-next-line no-console
+          console.log('[AUTH] getRedirectResult success:', result.user.uid);
+        }
+      })
+      .catch((err) => {
+        // eslint-disable-next-line no-console
+        console.log('[AUTH] getRedirectResult error:', err.code, err.message);
+      });
 
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       if (firebaseUser) {
