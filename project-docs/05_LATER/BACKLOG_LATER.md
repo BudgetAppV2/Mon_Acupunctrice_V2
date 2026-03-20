@@ -32,7 +32,8 @@ Brillant mais prématuré pour l'instant.
 ## Distribution & Plateformes (V3+)
 
 - **TikTok** : API plus complexe nécessitant une validation entreprise lourde.
-- **Threads / LinkedIn** : Pour une distribution plus "pro" ou textuelle.
+- **LinkedIn** : Contenu éducatif pour réseau professionnel santé (médecins, physios, naturopathes qui réfèrent). API restrictive, format vidéo différent (carré/paysage vs 9:16). Pertinent pour développer un réseau de référencement pro.
+- **Threads** : Pour une distribution textuelle complémentaire.
 - **Réutilisation de contenu** : Suggestion automatique de recycler un ancien Reel performant (reuseScore).
 - **Collaboration** : Permettre à un monteur externe d'accéder au compte de Judith.
 

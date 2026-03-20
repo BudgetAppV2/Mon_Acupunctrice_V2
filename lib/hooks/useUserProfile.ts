@@ -5,10 +5,13 @@ import { doc, onSnapshot, setDoc } from 'firebase/firestore';
 import { getFirebaseFirestore } from '@/lib/firebase';
 import { useAuthStore } from '@/lib/store/useAuthStore';
 
-/** Lit le profil utilisateur (users/{uid}) pour les categories custom */
+/** Lit le profil utilisateur (users/{uid}) — categories custom + meta Instagram */
 export function useUserProfile() {
   const uid = useAuthStore((s) => s.user?.uid);
   const [customCategories, setCustomCategories] = useState<string[]>([]);
+  const [metaStatus, setMetaStatus] = useState<string | null>(null);
+  const [metaInstagramId, setMetaInstagramId] = useState<string | null>(null);
+  const [metaTokenExpiresAt, setMetaTokenExpiresAt] = useState<Date | null>(null);
 
   useEffect(() => {
     if (!uid) return;
@@ -16,6 +19,9 @@ export function useUserProfile() {
     const unsub = onSnapshot(doc(db, 'users', uid), (snap) => {
       const data = snap.data();
       setCustomCategories(data?.customCategories || []);
+      setMetaStatus(data?.metaStatus || null);
+      setMetaInstagramId(data?.metaInstagramId || null);
+      setMetaTokenExpiresAt(data?.metaTokenExpiresAt?.toDate() || null);
     });
     return unsub;
   }, [uid]);
@@ -26,5 +32,5 @@ export function useUserProfile() {
     await setDoc(doc(db, 'users', uid), { customCategories: cats }, { merge: true });
   };
 
-  return { customCategories, updateCustomCategories };
+  return { customCategories, updateCustomCategories, metaStatus, metaInstagramId, metaTokenExpiresAt };
 }

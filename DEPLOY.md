@@ -21,6 +21,8 @@ Toutes les valeurs sont dans `.env.local` localement.
 | Variable | Description |
 |----------|-------------|
 | `FIREBASE_FUNCTIONS_URL` | URL base des Cloud Functions (`https://us-central1-[PROJECT_ID].cloudfunctions.net`) |
+| `FIREBASE_SERVICE_ACCOUNT` | JSON stringifie du service account Firebase (pour Admin SDK) |
+| `META_APP_SECRET` | App Secret de la Meta App (pour OAuth Instagram) |
 
 ### App
 
