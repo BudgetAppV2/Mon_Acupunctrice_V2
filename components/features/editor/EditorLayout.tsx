@@ -70,7 +70,7 @@ export default function EditorLayout({ itemId }: Props) {
         <VideoPreview interactive={activeTab === 'texte'} />
       </div>
 
-      <div className="shrink-0 flex flex-col" style={{ maxHeight: '55vh' }}>
+      <div className="shrink-0 flex flex-col" style={{ maxHeight: '55vh', paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
         <EditorToolbar activeTab={activeTab} onTabChange={setActiveTab} />
         <div className={`bg-gray-900 overflow-y-auto ${
           activeTab === 'filtres' ? 'h-[90px]' : activeTab === 'subs' || activeTab === 'audio' ? 'h-[120px]' : 'h-[100px]'
