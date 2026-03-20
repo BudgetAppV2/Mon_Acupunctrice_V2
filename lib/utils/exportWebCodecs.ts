@@ -24,7 +24,10 @@ export async function exportWithWebCodecs(
   const sr = audioBuf?.sampleRate ?? 48000;
 
   const muxerOpts: ConstructorParameters<typeof Muxer>[0] = {
-    target: new ArrayBufferTarget(), video: { codec: 'avc', width: W, height: H }, fastStart: 'in-memory',
+    target: new ArrayBufferTarget(),
+    video: { codec: 'avc', width: W, height: H },
+    fastStart: 'in-memory',
+    firstTimestampBehavior: 'offset',
   };
   if (audioBuf) muxerOpts.audio = { codec: 'aac', sampleRate: sr, numberOfChannels: nCh };
   const muxer = new Muxer(muxerOpts);
@@ -95,7 +98,7 @@ export async function exportWithWebCodecs(
 
   if (audioBuf) {
     const aEnc = new AudioEncoder({ output: (c, m) => muxer.addAudioChunk(c, m), error: () => {} });
-    aEnc.configure({ codec: 'mp4a.40.2', sampleRate: sr, numberOfChannels: nCh, bitrate: 256_000 });
+    aEnc.configure({ codec: 'mp4a.40.2', sampleRate: sr, numberOfChannels: nCh, bitrate: 128_000 });
     const startSmp = Math.floor(trimStart * sr);
     const endSmp = Math.min(Math.floor(trimEnd * sr), audioBuf.length);
     const CHUNK = 1024;
