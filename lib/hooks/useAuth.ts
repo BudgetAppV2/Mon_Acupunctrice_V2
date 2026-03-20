@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import {
   signInWithPopup,
   signInWithRedirect,
+  getRedirectResult,
   GoogleAuthProvider,
   onAuthStateChanged,
   signOut as firebaseSignOut,
@@ -18,6 +19,10 @@ export function useAuth() {
 
   useEffect(() => {
     const auth = getFirebaseAuth();
+
+    // Capturer le résultat du redirect (PWA standalone)
+    getRedirectResult(auth).catch(() => { /* pas de redirect en cours */ });
+
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       if (firebaseUser) {
         setUser({
@@ -36,11 +41,15 @@ export function useAuth() {
 
   const signInWithGoogle = async () => {
     const auth = getFirebaseAuth();
-    // PWA standalone sur iOS bloque les popups → utiliser redirect
+    // PWA standalone sur iOS : les popups sont bloqués, le redirect aussi
+    // car COOP same-origin empêche le retour cross-origin.
+    // Solution : ouvrir la page login dans Safari via window.open,
+    // puis utiliser signInWithPopup normalement (Safari gère les popups).
     const isStandalone = typeof window !== 'undefined' &&
       (window.matchMedia('(display-mode: standalone)').matches ||
        (window.navigator as unknown as { standalone?: boolean }).standalone === true);
     if (isStandalone) {
+      // En PWA, on tente signInWithRedirect comme fallback
       await signInWithRedirect(auth, provider);
     } else {
       await signInWithPopup(auth, provider);
