@@ -3,8 +3,6 @@
 import { useEffect } from 'react';
 import {
   signInWithPopup,
-  signInWithRedirect,
-  getRedirectResult,
   GoogleAuthProvider,
   onAuthStateChanged,
   signOut as firebaseSignOut,
@@ -19,20 +17,6 @@ export function useAuth() {
 
   useEffect(() => {
     const auth = getFirebaseAuth();
-
-    // Capturer le résultat du redirect (mobile)
-    getRedirectResult(auth)
-      .then((result) => {
-        if (result?.user) {
-          // eslint-disable-next-line no-console
-          console.log('[AUTH] getRedirectResult success:', result.user.uid);
-        }
-      })
-      .catch((err) => {
-        // eslint-disable-next-line no-console
-        console.log('[AUTH] getRedirectResult error:', err.code, err.message);
-      });
-
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       if (firebaseUser) {
         setUser({
@@ -51,15 +35,7 @@ export function useAuth() {
 
   const signInWithGoogle = async () => {
     const auth = getFirebaseAuth();
-    // Mobile (iOS/Android) : signInWithRedirect est plus fiable
-    // Desktop : signInWithPopup pour une meilleure UX
-    const isMobile = typeof window !== 'undefined' &&
-      /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    if (isMobile) {
-      await signInWithRedirect(auth, provider);
-    } else {
-      await signInWithPopup(auth, provider);
-    }
+    await signInWithPopup(auth, provider);
   };
 
   const signOut = async () => {
