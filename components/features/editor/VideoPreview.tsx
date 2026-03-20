@@ -151,7 +151,7 @@ export default function VideoPreview({ interactive = false }: Props) {
 
   return (
     <div ref={containerRef} className="relative w-full h-full flex items-center justify-center bg-black" onClick={handleTap}>
-      <video ref={videoRef} src={videoUrl ?? undefined} className="w-full h-full object-contain" style={filterStyle} playsInline preload="auto" onTimeUpdate={handleTimeUpdate} onLoadedMetadata={handleLoaded} onDurationChange={handleDurationChange} onCanPlay={handleCanPlay} />
+      <video ref={videoRef} src={videoUrl ?? undefined} className="w-full h-full object-cover" style={filterStyle} playsInline preload="auto" onTimeUpdate={handleTimeUpdate} onLoadedMetadata={handleLoaded} onDurationChange={handleDurationChange} onCanPlay={handleCanPlay} />
       {audioUrl && <audio ref={bgAudioRef} src={audioUrl} loop />}
       {size.w > 0 && <TextOverlayLayer width={size.w} height={size.h} interactive={interactive} />}
       <SubtitlePreview />
