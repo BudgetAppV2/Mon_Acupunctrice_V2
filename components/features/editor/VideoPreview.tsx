@@ -101,15 +101,43 @@ export default function VideoPreview({ interactive = false }: Props) {
   };
 
   // Fallback pour Safari iOS — les blobs peuvent avoir duration=Infinity
+  // Aussi : s'assurer que la duration est capturée même si les events ne fire pas
   useEffect(() => {
     const video = videoRef.current;
     if (!video || !videoUrl) return;
-    if (trySetDuration(video)) return;
+
+    const check = () => {
+      if (video.duration && isFinite(video.duration) && video.duration > 0) {
+        setDuration(video.duration);
+        return true;
+      }
+      return false;
+    };
+
+    // Essayer immédiatement
+    if (check()) return;
+
+    // Écouter les events directement sur l'élément
+    const onMeta = () => check();
+    const onCanPlay = () => check();
+    const onDurChange = () => check();
+    video.addEventListener('loadedmetadata', onMeta);
+    video.addEventListener('canplay', onCanPlay);
+    video.addEventListener('durationchange', onDurChange);
+
+    // Polling fallback toutes les 500ms pendant 10s
     const interval = setInterval(() => {
-      if (trySetDuration(video)) clearInterval(interval);
+      if (check()) clearInterval(interval);
     }, 500);
-    const timeout = setTimeout(() => clearInterval(interval), 5000);
-    return () => { clearInterval(interval); clearTimeout(timeout); };
+    const timeout = setTimeout(() => clearInterval(interval), 10000);
+
+    return () => {
+      video.removeEventListener('loadedmetadata', onMeta);
+      video.removeEventListener('canplay', onCanPlay);
+      video.removeEventListener('durationchange', onDurChange);
+      clearInterval(interval);
+      clearTimeout(timeout);
+    };
   }, [videoUrl, setDuration]);
 
   const handleTap = () => {
