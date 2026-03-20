@@ -36,6 +36,8 @@ export function useVideoExport() {
       const filterCss = FILTERS.find(f => f.id === s.filter)?.css;
       // FFmpeg requis quand une piste audio est présente (pour le mixage)
       const useWC = supportsWebCodecs && !s.audioUrl;
+      // eslint-disable-next-line no-console
+      console.log('[EXPORT] start', { useWC, supportsWebCodecs, hasAudio: !!s.audioUrl, crossOriginIsolated: window.crossOriginIsolated });
 
       let blob: Blob;
       setState('exporting');
@@ -79,6 +81,8 @@ export function useVideoExport() {
 
       setState('done');
     } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error('[EXPORT ERROR]', err);
       setState('error');
       setError(err instanceof Error ? err.message : 'Export échoué');
     }

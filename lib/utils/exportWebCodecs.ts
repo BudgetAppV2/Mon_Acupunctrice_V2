@@ -29,8 +29,15 @@ export async function exportWithWebCodecs(
   if (audioBuf) muxerOpts.audio = { codec: 'aac', sampleRate: sr, numberOfChannels: nCh };
   const muxer = new Muxer(muxerOpts);
 
+  const FRAME_DUR = 33333; // ~30fps in microseconds
   const vEnc = new VideoEncoder({
-    output: (c, m) => muxer.addVideoChunk(c, m),
+    output: (chunk, meta) => {
+      // Certains navigateurs (Safari) produisent des chunks sans duration valide.
+      // mp4-muxer exige un duration positif. On passe FRAME_DUR comme fallback.
+      const d = (chunk.duration != null && isFinite(chunk.duration) && chunk.duration > 0)
+        ? chunk.duration : FRAME_DUR;
+      muxer.addVideoChunk(chunk, meta, d);
+    },
     error: (e) => { throw e; },
   });
   vEnc.configure({
