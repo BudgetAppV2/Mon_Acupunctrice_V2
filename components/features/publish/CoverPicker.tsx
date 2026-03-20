@@ -23,9 +23,16 @@ export default function CoverPicker({ videoUrl, value, onChange }: Props) {
   const captureFrame = (vid: HTMLVideoElement) => {
     try {
       if (vid.readyState < 2 || vid.videoWidth === 0) return;
+      const cw = 270, ch = 480;
       const c = document.createElement('canvas');
-      c.width = 270; c.height = 480;
-      c.getContext('2d')!.drawImage(vid, 0, 0, 270, 480);
+      c.width = cw; c.height = ch;
+      // Crop center (object-cover) — cohérent avec l'export
+      const { videoWidth: vw, videoHeight: vh } = vid;
+      const va = vw / vh, ca = cw / ch;
+      let sx = 0, sy = 0, sw = vw, sh = vh;
+      if (va > ca) { sw = vh * ca; sx = (vw - sw) / 2; }
+      else { sh = vw / ca; sy = (vh - sh) / 2; }
+      c.getContext('2d')!.drawImage(vid, sx, sy, sw, sh, 0, 0, cw, ch);
       const url = c.toDataURL('image/jpeg', 0.8);
       if (url !== 'data:,' && url.length > 100) setFramePreview(url);
     } catch { /* cross-origin — will show placeholder */ }

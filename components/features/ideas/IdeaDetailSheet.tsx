@@ -20,20 +20,18 @@ export default function IdeaDetailSheet({ isOpen, onClose, item }: Props) {
       <div className="space-y-4">
         <IdeaInfoSection item={item} />
 
-        {/* Thumbnail video (si elle existe) */}
-        {item.videoUrl && (
-          item.thumbnailUrl ? (
-            <img src={item.thumbnailUrl} alt="" className="rounded-lg w-full max-h-36 object-cover" />
-          ) : (
-            <video
-              src={item.videoUrl}
-              className="rounded-lg w-full max-h-36 object-cover"
-              playsInline
-              muted
-              preload="metadata"
-            />
-          )
-        )}
+        {/* Preview vidéo : coverImageUrl > thumbnailUrl > video > placeholder */}
+        {(item.coverImageUrl || item.thumbnailUrl) ? (
+          <img src={(item.coverImageUrl || item.thumbnailUrl)!} alt="" className="rounded-lg w-full max-h-36 object-cover" />
+        ) : item.videoUrl ? (
+          <video
+            src={item.videoUrl}
+            className="rounded-lg w-full max-h-36 object-cover"
+            playsInline
+            muted
+            preload="metadata"
+          />
+        ) : null}
 
         <IdeaCaptionSection item={item} />
         <IdeaActions item={item} onClose={onClose} />

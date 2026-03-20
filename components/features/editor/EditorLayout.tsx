@@ -38,30 +38,33 @@ export default function EditorLayout({ itemId }: Props) {
   const handleBack = () => { reset?.(); router.push('/calendrier'); };
 
   useEffect(() => {
+    let cancelled = false;
     setItemId(itemId);
+    setLoading(true);
 
     // Charger la vidéo existante depuis Firestore si le store est vide
     const loadExisting = async () => {
-      const state = useEditorStore.getState();
-      if (state.videoFile) { setLoading(false); return; }
+      if (useEditorStore.getState().videoFile) { if (!cancelled) setLoading(false); return; }
       try {
         const db = getFirebaseFirestore();
         const snap = await getDoc(doc(db, 'contentItems', itemId));
+        if (cancelled) return;
         if (snap.exists()) {
           const data = snap.data();
-          if (data.videoUrl) {
-            const res = await fetch(data.videoUrl);
+          if (data.videoUrl && !useEditorStore.getState().videoFile) {
+            const res = await fetch(`/api/proxy-video?url=${encodeURIComponent(data.videoUrl)}`);
+            if (cancelled) return;
             const blob = await res.blob();
             const file = new File([blob], 'existing.mp4', { type: 'video/mp4' });
             useEditorStore.getState().loadVideo(file, URL.createObjectURL(file));
           }
         }
       } catch { /* vidéo pas disponible — ImportModal s'affichera */ }
-      setLoading(false);
+      if (!cancelled) setLoading(false);
     };
 
     loadExisting();
-    return () => { reset(); };
+    return () => { cancelled = true; reset(); };
   }, [itemId, setItemId, reset]);
 
   // Ouvrir le flux de publication apres export

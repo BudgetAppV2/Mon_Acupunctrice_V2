@@ -72,12 +72,16 @@ export async function exportWithWebCodecs(
 
       // Filtre couleur via CSS filter sur le contexte canvas
       if (filterCss && filterCss !== 'none') ctx.filter = filterCss;
-      ctx.fillStyle = 'black';
-      ctx.fillRect(0, 0, W, H);
+      // Crop center (object-cover) — pas de bandes noires pour les Reels 9:16
       const { videoWidth: vw, videoHeight: vh } = video;
-      const va = vw / vh, ca = W / H;
-      const [dw, dh] = va > ca ? [W, W / va] : [H * va, H];
-      ctx.drawImage(video, (W - dw) / 2, (H - dh) / 2, dw, dh);
+      const videoAspect = vw / vh, canvasAspect = W / H;
+      let sx = 0, sy = 0, sw = vw, sh = vh;
+      if (videoAspect > canvasAspect) {
+        sw = vh * canvasAspect; sx = (vw - sw) / 2;
+      } else {
+        sh = vw / canvasAspect; sy = (vh - sh) / 2;
+      }
+      ctx.drawImage(video, sx, sy, sw, sh, 0, 0, W, H);
       ctx.filter = 'none';
 
       // Incruster les textes + sous-titres
