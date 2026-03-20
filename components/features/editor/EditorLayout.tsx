@@ -55,8 +55,8 @@ export default function EditorLayout({ itemId }: Props) {
 
   return (
     <div className="fixed inset-0 flex flex-col bg-gray-950">
-      {/* Header */}
-      <header className="h-11 flex items-center justify-between px-4 bg-gray-900/90 shrink-0 z-10 relative">
+      {/* Header — safe area top pour PWA standalone */}
+      <header className="flex items-center justify-between px-4 bg-gray-900/90 shrink-0 z-10 relative" style={{ height: 'calc(44px + env(safe-area-inset-top, 0px))', paddingTop: 'env(safe-area-inset-top, 0px)' }}>
         <button onClick={handleBack} className="text-white p-1">
           <ArrowLeftIcon className="w-5 h-5" />
         </button>

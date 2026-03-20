@@ -71,18 +71,19 @@ export default function ImportModal() {
             className={`w-full h-full object-cover ${mode === 'webcam' ? '-scale-x-100' : ''}`}
           />
 
-          {/* Bouton Annuler — top-left */}
+          {/* Bouton Annuler — top-left (safe area pour PWA) */}
           <button
             onClick={handleCancel}
-            className="absolute top-4 left-4 z-20 flex items-center gap-2 bg-black/40 hover:bg-black/60 backdrop-blur-sm px-3 py-1.5 rounded-full text-white text-sm transition"
+            className="absolute left-4 z-20 flex items-center gap-2 bg-black/40 hover:bg-black/60 backdrop-blur-sm px-3 py-1.5 rounded-full text-white text-sm transition"
+            style={{ top: 'calc(16px + env(safe-area-inset-top, 0px))' }}
           >
             <XMarkIcon className="w-4 h-4" />
             Annuler
           </button>
 
-          {/* REC indicator — top-right */}
+          {/* REC indicator — top-right (safe area pour PWA) */}
           {isRecording && (
-            <div className="absolute top-4 right-4 z-20 flex items-center gap-2 bg-black/40 px-3 py-1.5 rounded-full">
+            <div className="absolute right-4 z-20 flex items-center gap-2 bg-black/40 px-3 py-1.5 rounded-full" style={{ top: 'calc(16px + env(safe-area-inset-top, 0px))' }}>
               <span className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse" />
               <span className="text-white text-sm font-semibold">REC</span>
             </div>
