@@ -11,18 +11,12 @@ const nextConfig = {
   async headers() {
     return [
       {
-        // Page login : allow-popups pour que Google OAuth popup fonctionne
-        source: '/login',
-        headers: [
-          { key: 'Cross-Origin-Opener-Policy', value: 'same-origin-allow-popups' },
-        ],
-      },
-      {
-        // COOP/COEP requis pour FFmpeg.wasm sur toutes les autres pages
-        source: '/((?!login).*)',
+        // COOP/COEP requis SEULEMENT pour l'editeur (FFmpeg.wasm + SharedArrayBuffer)
+        // Les autres pages n'en ont pas besoin et ca casse Google Auth + Firebase Storage
+        source: '/editeur/:path*',
         headers: [
           { key: 'Cross-Origin-Opener-Policy', value: 'same-origin' },
-          { key: 'Cross-Origin-Embedder-Policy', value: 'require-corp' },
+          { key: 'Cross-Origin-Embedder-Policy', value: 'credentialless' },
         ],
       },
     ]
