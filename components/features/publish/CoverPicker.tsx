@@ -32,14 +32,21 @@ export default function CoverPicker({ videoUrl, value, onChange }: Props) {
     const vid = videoRef.current;
     if (!vid || value.type !== 'frame') return;
     vid.currentTime = value.offset / 1000;
-    vid.onseeked = () => {
+
+    const captureFrame = () => {
       try {
+        if (vid.readyState < 2 || vid.videoWidth === 0) return;
         const c = document.createElement('canvas');
         c.width = 270; c.height = 480;
         c.getContext('2d')!.drawImage(vid, 0, 0, 270, 480);
-        setFramePreview(c.toDataURL('image/jpeg', 0.8));
-      } catch { /* cross-origin fallback */ }
+        const url = c.toDataURL('image/jpeg', 0.8);
+        if (url !== 'data:,' && url.length > 100) setFramePreview(url);
+      } catch { /* cross-origin — will show placeholder */ }
     };
+
+    vid.onseeked = captureFrame;
+    // Fallback si onseeked ne fire pas
+    setTimeout(captureFrame, 500);
   }, [value]);
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -56,11 +63,13 @@ export default function CoverPicker({ videoUrl, value, onChange }: Props) {
     } finally { setUploading(false); }
   };
 
-  const proxyUrl = `/api/proxy-video?url=${encodeURIComponent(videoUrl)}`;
+  // Avec COEP: credentialless, on peut charger directement depuis Firebase Storage
+  // Le proxy n'est plus necessaire (il etait requis avec require-corp)
+  const videoSrc = videoUrl;
 
   return (
     <div className="space-y-3">
-      <video ref={videoRef} src={proxyUrl} className="hidden" playsInline muted preload="auto" crossOrigin="anonymous" />
+      <video ref={videoRef} src={videoSrc} className="hidden" playsInline muted preload="auto" crossOrigin="anonymous" />
 
       {/* Preview de la couverture */}
       <div className="flex justify-center">
