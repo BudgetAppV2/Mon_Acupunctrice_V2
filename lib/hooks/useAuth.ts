@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import {
   signInWithPopup,
+  signInWithRedirect,
   GoogleAuthProvider,
   onAuthStateChanged,
   signOut as firebaseSignOut,
@@ -35,7 +36,15 @@ export function useAuth() {
 
   const signInWithGoogle = async () => {
     const auth = getFirebaseAuth();
-    await signInWithPopup(auth, provider);
+    // PWA standalone sur iOS bloque les popups → utiliser redirect
+    const isStandalone = typeof window !== 'undefined' &&
+      (window.matchMedia('(display-mode: standalone)').matches ||
+       (window.navigator as unknown as { standalone?: boolean }).standalone === true);
+    if (isStandalone) {
+      await signInWithRedirect(auth, provider);
+    } else {
+      await signInWithPopup(auth, provider);
+    }
   };
 
   const signOut = async () => {
