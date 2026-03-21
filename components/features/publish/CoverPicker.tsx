@@ -19,6 +19,7 @@ export default function CoverPicker({ videoUrl, value, onChange }: Props) {
   const [framePreview, setFramePreview] = useState<string | null>(null);
   const [videoDuration, setVideoDuration] = useState(30);
   const [uploading, setUploading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const captureFrame = (vid: HTMLVideoElement) => {
     try {
@@ -42,23 +43,22 @@ export default function CoverPicker({ videoUrl, value, onChange }: Props) {
   useEffect(() => {
     const vid = videoRef.current;
     if (!vid) return;
+    setLoading(true);
     vid.onloadedmetadata = () => {
       if (vid.duration && isFinite(vid.duration)) setVideoDuration(vid.duration);
     };
-    // onCanPlay est plus fiable que onseeked sur Safari iOS
-    vid.oncanplay = () => captureFrame(vid);
+    vid.oncanplay = () => { setLoading(false); captureFrame(vid); };
   }, [videoUrl]);
 
-  // Capturer la frame à l'offset sélectionné
+  // Capturer la frame à l'offset sélectionné via le slider
+  const frameOffset = value.type === 'frame' ? value.offset : null;
   useEffect(() => {
     const vid = videoRef.current;
-    if (!vid || value.type !== 'frame') return;
-    vid.currentTime = value.offset / 1000;
-
+    if (!vid || frameOffset === null) return;
     vid.onseeked = () => captureFrame(vid);
-    // Fallback si onseeked ne fire pas
-    setTimeout(() => captureFrame(vid), 500);
-  }, [value]);
+    vid.currentTime = frameOffset / 1000;
+    setTimeout(() => captureFrame(vid), 300);
+  }, [frameOffset]);
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -85,6 +85,10 @@ export default function CoverPicker({ videoUrl, value, onChange }: Props) {
       <div className="flex justify-center">
         {value.type === 'custom' ? (
           <img src={value.url} alt="" className="w-32 h-56 object-cover rounded-lg" />
+        ) : loading ? (
+          <div className="w-32 h-56 bg-gray-100 rounded-lg flex items-center justify-center">
+            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-sage" />
+          </div>
         ) : framePreview ? (
           <img src={framePreview} alt="" className="w-32 h-56 object-cover rounded-lg" />
         ) : (
