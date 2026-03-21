@@ -47,7 +47,21 @@ export default function CoverPicker({ videoUrl, value, onChange }: Props) {
     vid.onloadedmetadata = () => {
       if (vid.duration && isFinite(vid.duration)) setVideoDuration(vid.duration);
     };
-    vid.oncanplay = () => { setLoading(false); captureFrame(vid); };
+    vid.oncanplay = () => {
+      setLoading(false);
+      captureFrame(vid);
+    };
+    // Safari iOS: polling fallback si oncanplay ne fire pas
+    const interval = setInterval(() => {
+      if (vid.readyState >= 2) {
+        setLoading(false);
+        captureFrame(vid);
+        if (vid.duration && isFinite(vid.duration)) setVideoDuration(vid.duration);
+        clearInterval(interval);
+      }
+    }, 500);
+    const timeout = setTimeout(() => { clearInterval(interval); setLoading(false); }, 15000);
+    return () => { clearInterval(interval); clearTimeout(timeout); };
   }, [videoUrl]);
 
   // Capturer la frame à l'offset sélectionné via le slider
@@ -79,7 +93,8 @@ export default function CoverPicker({ videoUrl, value, onChange }: Props) {
 
   return (
     <div className="space-y-3">
-      <video ref={videoRef} src={videoSrc} className="hidden" playsInline muted preload="auto" />
+      {/* Video element pour la capture de frame — pas hidden (Safari iOS refuse de decoder les videos hidden) */}
+      <video ref={videoRef} src={videoSrc} className="absolute w-px h-px opacity-0 pointer-events-none" playsInline muted preload="auto" />
 
       {/* Preview de la couverture */}
       <div className="flex justify-center">
