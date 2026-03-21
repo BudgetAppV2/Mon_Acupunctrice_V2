@@ -3,7 +3,7 @@ import { signState } from '@/lib/utils/oauth-state';
 
 const META_APP_ID = '823305796703895';
 const REDIRECT_URI = 'https://mon-acupunctrice-v2.vercel.app/api/auth/facebook/callback';
-const SCOPES = 'pages_manage_posts,pages_read_engagement,pages_show_list';
+const SCOPES = 'pages_manage_posts,pages_read_engagement,pages_show_list,business_management';
 
 /** GET /api/auth/facebook?uid=xxx — Redirige vers Facebook OAuth */
 export async function GET(request: NextRequest) {
