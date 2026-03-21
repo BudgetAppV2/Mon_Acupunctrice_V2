@@ -40,12 +40,27 @@ par les headers COEP, ou la vidéo n'est pas encore chargée au moment de la cap
 
 ---
 
-## Priorité
-Ces bugs sont tous dans l'éditeur. L'éditeur est le coeur du produit pour Judith.
-À corriger avant de passer aux milestones M10+.
+## BUGS RESTANTS (20 mars soir)
 
-## Approche recommandée
-1. Ouvrir l'éditeur en prod avec DevTools mobile (375px)
-2. Identifier le problème exact (console errors, network, rendering)
-3. Fixer un bug à la fois
-4. Tester sur iPhone réel après chaque fix
+### Image de couverture ne charge pas sur Safari iOS
+Le CoverPicker charge la vidéo via proxy et capture une frame avec canvas.drawImage.
+Safari iOS refuse de décoder les vidéos non visibles même avec opacity-0.
+Approche possible : générer la miniature côté serveur (API route avec ffmpeg)
+ou utiliser la thumbnailUrl du store (déjà capturée par VideoPreview).
+
+### Aperçus vidéo absents dans le bottom sheet détail
+Le `<video preload="metadata">` dans IdeaDetailSheet ne montre pas la première frame.
+Possible régression. Vérifier que le champ videoUrl est bien passé.
+
+## Bugs corrigés (20 mars)
+- Preview webcam (iPhone + desktop)
+- Timeline invisible
+- Export WebCodecs Safari (duration, timestamp, bitrate)
+- Safe area PWA (header, webcam, bottom sheet)
+- Image de couverture sur desktop/Chrome
+- Slider de frame (proxy Range requests)
+- Login PWA
+- COOP/COEP limité à l'éditeur
+- Bouton Modifier charge la vidéo existante
+- M09 OAuth Instagram
+- M10 OAuth Facebook + publication
