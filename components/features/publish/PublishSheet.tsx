@@ -7,6 +7,8 @@ import type { ContentItem } from '@/lib/types';
 import CoverPicker from './CoverPicker';
 import CaptionEditor from './CaptionEditor';
 import SchedulePicker from './SchedulePicker';
+import { useUserProfile } from '@/lib/hooks/useUserProfile';
+import { useAuthStore } from '@/lib/store/useAuthStore';
 import { ArrowRightIcon, ArrowLeftIcon, PaperAirplaneIcon, CalendarIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
 
 interface Props {
@@ -23,22 +25,36 @@ export default function PublishSheet({ isOpen, onClose, item }: Props) {
   const [caption, setCaption] = useState(item.caption || '');
   const [showSchedule, setShowSchedule] = useState(false);
   const [done, setDone] = useState(false);
+  const [alsoFacebook, setAlsoFacebook] = useState(false);
+  const [fbError, setFbError] = useState<string | null>(null);
   const { publish, schedule, publishing, error } = usePublish();
+  const uid = useAuthStore((s) => s.user?.uid);
+  const { facebookPageId } = useUserProfile();
 
-  const coverOpt = cover.type;
-  const thumbOff = cover.type === 'frame' ? cover.offset : undefined;
-  const coverUrl = cover.type === 'custom' ? cover.url : undefined;
+  const coverOpt = cover.type, thumbOff = cover.type === 'frame' ? cover.offset : undefined, coverUrl = cover.type === 'custom' ? cover.url : undefined;
 
   const handlePublish = async () => {
     if (!item.videoUrl) return;
+    setFbError(null);
     const ok = await publish({ videoUrl: item.videoUrl, caption, itemId: item.id, coverOption: coverOpt, thumbOffset: thumbOff, coverUrl });
+    // Publier sur Facebook en parallèle si activé
+    if (ok && alsoFacebook && uid) {
+      try {
+        const res = await fetch('/api/publish-facebook', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ itemId: item.id, uid }),
+        });
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({}));
+          setFbError(data.error || 'Erreur Facebook');
+        }
+      } catch { setFbError('Erreur Facebook'); }
+    }
     if (ok) setDone(true);
   };
 
-  const handleSchedule = async (date: Date) => {
-    const ok = await schedule(item.id, caption, date, coverOpt, thumbOff, coverUrl);
-    if (ok) setDone(true);
-  };
+  const handleSchedule = async (date: Date) => { if (await schedule(item.id, caption, date, coverOpt, thumbOff, coverUrl)) setDone(true); };
 
   // Ecran de succes
   if (done) {
@@ -49,6 +65,7 @@ export default function PublishSheet({ isOpen, onClose, item }: Props) {
           <p className="text-base font-semibold text-gray-900">
             {showSchedule ? 'Publication planifiee!' : 'Publie sur Instagram!'}
           </p>
+          {fbError && <p className="text-xs text-red-500">{fbError}</p>}
           <button onClick={onClose} className="mt-4 px-6 py-2 bg-sage text-white rounded-xl font-medium">Fermer</button>
         </div>
       </BottomSheet>
@@ -86,6 +103,25 @@ export default function PublishSheet({ isOpen, onClose, item }: Props) {
         {step === 3 && (
           <>
             {error && <p className="text-sm text-red-500 bg-red-50 p-2 rounded">{error}</p>}
+            {/* Toggle Facebook */}
+            <div className="flex items-center justify-between bg-gray-50 rounded-lg px-3 py-2">
+              {facebookPageId ? (
+                <>
+                  <span className="text-sm text-gray-700">Publier aussi sur Facebook</span>
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={alsoFacebook}
+                    onClick={() => setAlsoFacebook(!alsoFacebook)}
+                    className={`relative w-10 h-6 rounded-full transition ${alsoFacebook ? 'bg-sage' : 'bg-gray-300'}`}
+                  >
+                    <span className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${alsoFacebook ? 'translate-x-4' : 'translate-x-0.5'}`} />
+                  </button>
+                </>
+              ) : (
+                <span className="text-xs text-gray-400">Connecte Facebook dans Profil</span>
+              )}
+            </div>
             {showSchedule ? (
               <SchedulePicker onSchedule={handleSchedule} onCancel={() => setShowSchedule(false)} />
             ) : (

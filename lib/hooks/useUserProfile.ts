@@ -12,6 +12,9 @@ export function useUserProfile() {
   const [metaStatus, setMetaStatus] = useState<string | null>(null);
   const [metaInstagramId, setMetaInstagramId] = useState<string | null>(null);
   const [metaTokenExpiresAt, setMetaTokenExpiresAt] = useState<Date | null>(null);
+  const [facebookStatus, setFacebookStatus] = useState<string | null>(null);
+  const [facebookPageId, setFacebookPageId] = useState<string | null>(null);
+  const [facebookPageName, setFacebookPageName] = useState<string | null>(null);
 
   useEffect(() => {
     if (!uid) return;
@@ -22,6 +25,9 @@ export function useUserProfile() {
       setMetaStatus(data?.metaStatus || null);
       setMetaInstagramId(data?.metaInstagramId || null);
       setMetaTokenExpiresAt(data?.metaTokenExpiresAt?.toDate() || null);
+      setFacebookStatus(data?.facebookStatus || null);
+      setFacebookPageId(data?.facebookPageId || null);
+      setFacebookPageName(data?.facebookPageName || null);
     });
     return unsub;
   }, [uid]);
@@ -32,5 +38,9 @@ export function useUserProfile() {
     await setDoc(doc(db, 'users', uid), { customCategories: cats }, { merge: true });
   };
 
-  return { customCategories, updateCustomCategories, metaStatus, metaInstagramId, metaTokenExpiresAt };
+  return {
+    customCategories, updateCustomCategories,
+    metaStatus, metaInstagramId, metaTokenExpiresAt,
+    facebookStatus, facebookPageId, facebookPageName,
+  };
 }

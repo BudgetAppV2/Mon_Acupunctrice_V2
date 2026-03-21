@@ -6,19 +6,26 @@ import { useAuth } from '@/lib/hooks/useAuth';
 import { useContentItems } from '@/lib/hooks/useContentItems';
 import { useUserProfile } from '@/lib/hooks/useUserProfile';
 import InstagramConnectButton from '@/components/features/profile/InstagramConnectButton';
+import FacebookConnectButton from '@/components/features/profile/FacebookConnectButton';
 import { ArrowTopRightOnSquareIcon, ArrowRightStartOnRectangleIcon, XMarkIcon, ChevronRightIcon, PlusIcon } from '@heroicons/react/24/outline';
 import { CheckCircleIcon, ClockIcon, SparklesIcon } from '@heroicons/react/24/solid';
 
 export default function ProfilPage() {
   const { user, signOut } = useAuth();
   const { data: items } = useContentItems();
-  const { customCategories, updateCustomCategories, metaStatus, metaTokenExpiresAt } = useUserProfile();
+  const { customCategories, updateCustomCategories, metaStatus, metaTokenExpiresAt, facebookStatus, facebookPageName } = useUserProfile();
   const [newCat, setNewCat] = useState('');
   const [toast, setToast] = useState<string | null>(null);
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && window.location.search.includes('connected=instagram')) {
+    if (typeof window === 'undefined') return;
+    const search = window.location.search;
+    if (search.includes('connected=instagram')) {
       setToast('Instagram connecte avec succes');
+    } else if (search.includes('connected=facebook')) {
+      setToast('Facebook connecte avec succes');
+    }
+    if (search.includes('connected=')) {
       window.history.replaceState({}, '', '/profil');
       setTimeout(() => setToast(null), 3000);
     }
@@ -65,6 +72,7 @@ export default function ProfilPage() {
         <Link href="/stats" className="flex items-center gap-1 text-xs text-sage font-medium mb-6">Voir toutes les stats <ChevronRightIcon className="w-3 h-3" /></Link>
 
         {user && <InstagramConnectButton uid={user.uid} metaStatus={metaStatus} metaTokenExpiresAt={metaTokenExpiresAt} />}
+        {user && <FacebookConnectButton uid={user.uid} facebookStatus={facebookStatus} facebookPageName={facebookPageName} />}
 
         <a href={process.env.NEXT_PUBLIC_WIX_URL || 'https://judithtremblay.com'} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 bg-white rounded-xl p-3 mb-6">
           <ArrowTopRightOnSquareIcon className="w-5 h-5 text-sage" />
