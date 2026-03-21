@@ -21,6 +21,8 @@ export async function GET(request: NextRequest) {
   url.searchParams.set('scope', SCOPES);
   url.searchParams.set('response_type', 'code');
   url.searchParams.set('state', state);
+  // Forcer l'ecran de selection de Page meme si deja autorise
+  url.searchParams.set('auth_type', 'rerequest');
 
   return NextResponse.redirect(url.toString());
 }
