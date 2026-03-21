@@ -40,7 +40,7 @@ export async function GET(request: NextRequest) {
     const pagesRes = await fetch(`https://graph.facebook.com/v25.0/me/accounts?access_token=${longData.access_token}`);
     const pagesData = await pagesRes.json();
     const page = pagesData.data?.[0];
-    if (!page) throw new Error(`no_facebook_page: got ${JSON.stringify(pagesData).slice(0, 200)}`);
+    if (!page) throw new Error('no_facebook_page');
 
     // Le Page Access Token est long-lived par défaut quand il vient d'un long-lived user token
     const db = getAdminFirestore();
