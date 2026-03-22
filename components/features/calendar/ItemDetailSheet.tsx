@@ -8,7 +8,8 @@ import PublishSheet from '@/components/features/publish/PublishSheet';
 import { useUpdateContentItem } from '@/lib/hooks/useUpdateContentItem';
 import { WORKFLOW_LABELS, type ContentItem } from '@/lib/types';
 import { getCategoryLabel } from '@/lib/utils/categories';
-import { PencilIcon, XCircleIcon, PaperAirplaneIcon, VideoCameraIcon } from '@heroicons/react/24/outline';
+import { PencilIcon, XCircleIcon, PaperAirplaneIcon } from '@heroicons/react/24/outline';
+import VideoThumbnail from '@/components/ui/VideoThumbnail';
 
 interface Props {
   isOpen: boolean;
@@ -28,8 +29,6 @@ export default function ItemDetailSheet({ isOpen, onClose, item, onUnscheduled }
   const [newTime, setNewTime] = useState('18:00');
 
   if (!item) return null;
-  // eslint-disable-next-line no-console
-  if (isOpen) console.log('[DETAIL] calendar item:', { id: item.id, videoUrl: !!item.videoUrl, thumbnailUrl: !!item.thumbnailUrl, coverImageUrl: !!item.coverImageUrl, workflowState: item.workflowState });
 
   const handleUnschedule = async () => {
     await updateItem(item.id, { distributionStatus: 'draft', scheduledAt: deleteField() });
@@ -95,14 +94,11 @@ export default function ItemDetailSheet({ isOpen, onClose, item, onUnscheduled }
             )
           )}
 
-          {/* Preview : coverImageUrl > thumbnailUrl > placeholder vidéo */}
+          {/* Preview : coverImageUrl > thumbnailUrl > génération à la volée */}
           {(item.coverImageUrl || item.thumbnailUrl) ? (
             <img src={(item.coverImageUrl || item.thumbnailUrl)!} alt="" className="rounded-lg w-full max-h-48 object-cover" />
           ) : item.videoUrl ? (
-            <div className="h-24 bg-gray-100 rounded-lg flex items-center justify-center gap-2">
-              <VideoCameraIcon className="w-6 h-6 text-sage" />
-              <span className="text-sm text-gray-500">Video prete</span>
-            </div>
+            <VideoThumbnail videoUrl={item.videoUrl} className="rounded-lg w-full h-48" />
           ) : null}
 
           <div className="space-y-2 pt-2">
