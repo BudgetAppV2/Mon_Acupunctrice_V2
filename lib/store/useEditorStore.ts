@@ -58,6 +58,7 @@ interface EditorState {
   addOverlay: (text?: string) => void;
   updateOverlay: (id: string, changes: Partial<TextOverlayItem>) => void;
   removeOverlay: (id: string) => void;
+  duplicateOverlay: (id: string) => void;
   selectOverlay: (id: string | null) => void;
   setSubtitles: (subs: SubtitleSegment[]) => void;
   setSubtitleStyle: (s: SubtitleStyle) => void;
@@ -112,6 +113,16 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   removeOverlay: (id) => {
     const s = get();
     set({ overlays: s.overlays.filter(o => o.id !== id), selectedOverlayId: s.selectedOverlayId === id ? null : s.selectedOverlayId });
+  },
+  duplicateOverlay: (id) => {
+    const src = get().overlays.find(o => o.id === id);
+    if (!src) return;
+    const gap = 0.3, dur = src.endTime - src.startTime;
+    const newStart = Math.min(src.endTime + gap, get().duration);
+    const newEnd = Math.min(newStart + dur, get().duration);
+    const newId = `txt_${Date.now()}`;
+    set({ overlays: [...get().overlays, { ...src, id: newId, text: '', startTime: newStart, endTime: newEnd }], selectedOverlayId: newId });
+    markEditorTouched();
   },
   selectOverlay: (id) => set({ selectedOverlayId: id }),
   setSubtitles: (subs) => { set({ subtitles: subs }); markEditorTouched(); },
