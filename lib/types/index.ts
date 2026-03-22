@@ -57,6 +57,15 @@ export interface ContentItem {
   facebookPostId?: string;
   youtubeStatus?: 'pending' | 'published' | 'failed' | 'quota_exceeded';
   youtubeVideoId?: string;
+  insights?: {
+    plays: number;
+    reach: number;
+    likes: number;
+    comments: number;
+    shares: number;
+    saved: number;
+    fetchedAt: Timestamp;
+  };
   createdAt: Timestamp;
   updatedAt: Timestamp;
 }

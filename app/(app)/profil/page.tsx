@@ -8,6 +8,7 @@ import { useUserProfile } from '@/lib/hooks/useUserProfile';
 import InstagramConnectButton from '@/components/features/profile/InstagramConnectButton';
 import FacebookConnectButton from '@/components/features/profile/FacebookConnectButton';
 import YouTubeConnectButton from '@/components/features/profile/YouTubeConnectButton';
+import StatsSummary from '@/components/features/profile/StatsSummary';
 import { ArrowTopRightOnSquareIcon, ArrowRightStartOnRectangleIcon, XMarkIcon, ChevronRightIcon, PlusIcon } from '@heroicons/react/24/outline';
 import { CheckCircleIcon, ClockIcon, SparklesIcon } from '@heroicons/react/24/solid';
 
@@ -72,6 +73,7 @@ export default function ProfilPage() {
             <SparklesIcon className="w-5 h-5 text-sage mx-auto mb-1" /><p className="text-lg font-bold text-gray-900">{ready.length}</p><p className="text-[10px] text-gray-500">Pretes</p>
           </div>
         </div>
+        <StatsSummary />
         <Link href="/stats" className="flex items-center gap-1 text-xs text-sage font-medium mb-6">Voir toutes les stats <ChevronRightIcon className="w-3 h-3" /></Link>
 
         {user && <InstagramConnectButton uid={user.uid} metaStatus={metaStatus} metaTokenExpiresAt={metaTokenExpiresAt} />}
