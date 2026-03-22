@@ -82,18 +82,14 @@ export default function CoverPicker({ videoUrl, value, onChange, fallbackThumbna
     const targetTime = frameOffset / 1000;
     vid.currentTime = targetTime;
 
-    // Méthode 1 : requestVideoFrameCallback (Safari 15.4+, plus fiable)
-    if ('requestVideoFrameCallback' in vid) {
-      vid.requestVideoFrameCallback(() => {
-        // Délai court pour laisser Safari décoder la frame
-        setTimeout(() => captureFrame(vid), 100);
-      });
-    } else {
-      // Fallback : onseeked + délai
-      vid.onseeked = () => setTimeout(() => captureFrame(vid), 200);
-    }
-    // Fallback ultime si rien ne fire
-    setTimeout(() => captureFrame(vid), 800);
+    // Attendre le seek + délai pour laisser Safari décoder la frame
+    const handler = () => setTimeout(() => captureFrame(vid), 150);
+    vid.addEventListener('seeked', handler, { once: true });
+    // Fallback si seeked ne fire pas (Safari iOS)
+    setTimeout(() => {
+      vid.removeEventListener('seeked', handler);
+      captureFrame(vid);
+    }, 800);
   }, [frameOffset]);
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
