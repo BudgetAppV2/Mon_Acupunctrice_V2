@@ -23,9 +23,13 @@ export default function IdeaDetailSheet({ isOpen, onClose, item }: Props) {
 
         {/* Preview : coverImageUrl > thumbnailUrl > génération à la volée */}
         {(item.coverImageUrl || item.thumbnailUrl) ? (
-          <img src={(item.coverImageUrl || item.thumbnailUrl)!} alt="" className="rounded-lg w-full max-h-36 object-cover" />
+          <div className="flex justify-center">
+            <img src={(item.coverImageUrl || item.thumbnailUrl)!} alt="" className="rounded-lg w-24" style={{ aspectRatio: '9/16', objectFit: 'cover' }} />
+          </div>
         ) : item.videoUrl ? (
-          <VideoThumbnail videoUrl={item.videoUrl} className="rounded-lg w-full h-36" />
+          <div className="flex justify-center">
+            <VideoThumbnail videoUrl={item.videoUrl} className="rounded-lg w-24 h-auto" />
+          </div>
         ) : null}
 
         <IdeaCaptionSection item={item} />

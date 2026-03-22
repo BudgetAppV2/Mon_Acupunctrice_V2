@@ -96,9 +96,13 @@ export default function ItemDetailSheet({ isOpen, onClose, item, onUnscheduled }
 
           {/* Preview : coverImageUrl > thumbnailUrl > génération à la volée */}
           {(item.coverImageUrl || item.thumbnailUrl) ? (
-            <img src={(item.coverImageUrl || item.thumbnailUrl)!} alt="" className="rounded-lg w-full max-h-48 object-cover" />
+            <div className="flex justify-center">
+              <img src={(item.coverImageUrl || item.thumbnailUrl)!} alt="" className="rounded-lg w-28" style={{ aspectRatio: '9/16', objectFit: 'cover' }} />
+            </div>
           ) : item.videoUrl ? (
-            <VideoThumbnail videoUrl={item.videoUrl} className="rounded-lg w-full h-48" />
+            <div className="flex justify-center">
+              <VideoThumbnail videoUrl={item.videoUrl} className="rounded-lg w-28 h-auto" />
+            </div>
           ) : null}
 
           <div className="space-y-2 pt-2">
