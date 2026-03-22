@@ -7,13 +7,14 @@ import { useContentItems } from '@/lib/hooks/useContentItems';
 import { useUserProfile } from '@/lib/hooks/useUserProfile';
 import InstagramConnectButton from '@/components/features/profile/InstagramConnectButton';
 import FacebookConnectButton from '@/components/features/profile/FacebookConnectButton';
+import YouTubeConnectButton from '@/components/features/profile/YouTubeConnectButton';
 import { ArrowTopRightOnSquareIcon, ArrowRightStartOnRectangleIcon, XMarkIcon, ChevronRightIcon, PlusIcon } from '@heroicons/react/24/outline';
 import { CheckCircleIcon, ClockIcon, SparklesIcon } from '@heroicons/react/24/solid';
 
 export default function ProfilPage() {
   const { user, signOut } = useAuth();
   const { data: items } = useContentItems();
-  const { customCategories, updateCustomCategories, metaStatus, metaTokenExpiresAt, facebookStatus, facebookPageName } = useUserProfile();
+  const { customCategories, updateCustomCategories, metaStatus, metaTokenExpiresAt, facebookStatus, facebookPageName, youtubeStatus, youtubeChannelName } = useUserProfile();
   const [newCat, setNewCat] = useState('');
   const [toast, setToast] = useState<string | null>(null);
 
@@ -24,6 +25,8 @@ export default function ProfilPage() {
       setToast('Instagram connecte avec succes');
     } else if (search.includes('connected=facebook')) {
       setToast('Facebook connecte avec succes');
+    } else if (search.includes('connected=youtube')) {
+      setToast('YouTube connecte avec succes');
     }
     if (search.includes('connected=')) {
       window.history.replaceState({}, '', '/profil');
@@ -73,6 +76,7 @@ export default function ProfilPage() {
 
         {user && <InstagramConnectButton uid={user.uid} metaStatus={metaStatus} metaTokenExpiresAt={metaTokenExpiresAt} />}
         {user && <FacebookConnectButton uid={user.uid} facebookStatus={facebookStatus} facebookPageName={facebookPageName} />}
+        {user && <YouTubeConnectButton uid={user.uid} youtubeStatus={youtubeStatus} youtubeChannelName={youtubeChannelName} />}
 
         <a href={process.env.NEXT_PUBLIC_WIX_URL || 'https://judithtremblay.com'} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 bg-white rounded-xl p-3 mb-6">
           <ArrowTopRightOnSquareIcon className="w-5 h-5 text-sage" />

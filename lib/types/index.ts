@@ -53,6 +53,8 @@ export interface ContentItem {
   editorTouchedAt?: Timestamp;
   exportedAt?: Timestamp;
   captionDraft?: string;
+  youtubeStatus?: 'pending' | 'published' | 'failed' | 'quota_exceeded';
+  youtubeVideoId?: string;
   createdAt: Timestamp;
   updatedAt: Timestamp;
 }

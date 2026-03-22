@@ -15,6 +15,9 @@ export function useUserProfile() {
   const [facebookStatus, setFacebookStatus] = useState<string | null>(null);
   const [facebookPageId, setFacebookPageId] = useState<string | null>(null);
   const [facebookPageName, setFacebookPageName] = useState<string | null>(null);
+  const [youtubeStatus, setYoutubeStatus] = useState<string | null>(null);
+  const [youtubeChannelId, setYoutubeChannelId] = useState<string | null>(null);
+  const [youtubeChannelName, setYoutubeChannelName] = useState<string | null>(null);
 
   useEffect(() => {
     if (!uid) return;
@@ -28,6 +31,9 @@ export function useUserProfile() {
       setFacebookStatus(data?.facebookStatus || null);
       setFacebookPageId(data?.facebookPageId || null);
       setFacebookPageName(data?.facebookPageName || null);
+      setYoutubeStatus(data?.youtubeStatus || null);
+      setYoutubeChannelId(data?.youtubeChannelId || null);
+      setYoutubeChannelName(data?.youtubeChannelName || null);
     });
     return unsub;
   }, [uid]);
@@ -42,5 +48,6 @@ export function useUserProfile() {
     customCategories, updateCustomCategories,
     metaStatus, metaInstagramId, metaTokenExpiresAt,
     facebookStatus, facebookPageId, facebookPageName,
+    youtubeStatus, youtubeChannelId, youtubeChannelName,
   };
 }

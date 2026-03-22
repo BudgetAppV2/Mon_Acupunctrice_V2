@@ -7,6 +7,7 @@ import type { ContentItem } from '@/lib/types';
 import CoverPicker from './CoverPicker';
 import CaptionEditor from './CaptionEditor';
 import SchedulePicker from './SchedulePicker';
+import PlatformToggles from './PlatformToggles';
 import { useUserProfile } from '@/lib/hooks/useUserProfile';
 import { useAuthStore } from '@/lib/store/useAuthStore';
 import { useEditorStore } from '@/lib/store/useEditorStore';
@@ -27,49 +28,45 @@ export default function PublishSheet({ isOpen, onClose, item }: Props) {
   const [showSchedule, setShowSchedule] = useState(false);
   const [done, setDone] = useState(false);
   const [alsoFacebook, setAlsoFacebook] = useState(false);
+  const [alsoYoutube, setAlsoYoutube] = useState(false);
   const [fbError, setFbError] = useState<string | null>(null);
+  const [ytError, setYtError] = useState<string | null>(null);
   const [frameDataUrl, setFrameDataUrl] = useState<string | null>(null);
   const { publish, schedule, publishing, error } = usePublish();
   const uid = useAuthStore((s) => s.user?.uid);
-  const { facebookPageId } = useUserProfile();
+  const { facebookPageId, youtubeChannelId } = useUserProfile();
   const editorThumb = useEditorStore((s) => s.thumbnailUrl);
 
   const coverOpt = cover.type, thumbOff = cover.type === 'frame' ? cover.offset : undefined, coverUrl = cover.type === 'custom' ? cover.url : undefined;
 
-  /** Upload la frame capturée vers Storage et retourne l'URL */
   const uploadFrameAsCover = async (): Promise<string | undefined> => {
     if (cover.type !== 'frame' || !frameDataUrl || !uid) return undefined;
     try {
       const blob = await fetch(frameDataUrl).then(r => r.blob());
-      const { ref: storageRef, uploadBytes: up, getDownloadURL: dl } = await import('firebase/storage');
-      const storage = (await import('@/lib/firebase')).getFirebaseStorage();
-      const coverRef = storageRef(storage, `covers/${uid}/${item.id}_frame.jpg`);
-      await up(coverRef, blob, { contentType: 'image/jpeg' });
-      return await dl(coverRef);
-    } catch {
-      return undefined;
-    }
+      const { ref: sRef, uploadBytes: up, getDownloadURL: dl } = await import('firebase/storage');
+      const s = (await import('@/lib/firebase')).getFirebaseStorage();
+      await up(sRef(s, `covers/${uid}/${item.id}_frame.jpg`), blob, { contentType: 'image/jpeg' });
+      return await dl(sRef(s, `covers/${uid}/${item.id}_frame.jpg`));
+    } catch { return undefined; }
+  };
+
+  const publishToApi = async (api: string, setErr: (e: string) => void) => {
+    try {
+      const r = await fetch(api, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ itemId: item.id, uid }) });
+      if (!r.ok) { const d = await r.json().catch(() => ({})); setErr(d.error || 'Erreur'); }
+    } catch { setErr('Erreur'); }
   };
 
   const handlePublish = async () => {
     if (!item.videoUrl) return;
-    setFbError(null);
-    // Si frame sélectionnée, uploader comme cover image
+    setFbError(null); setYtError(null);
     const finalCoverUrl = coverUrl || await uploadFrameAsCover();
     const ok = await publish({ videoUrl: item.videoUrl, caption, itemId: item.id, coverOption: coverOpt, thumbOffset: thumbOff, coverUrl: finalCoverUrl });
-    // Publier sur Facebook en parallèle si activé
-    if (ok && alsoFacebook && uid) {
-      try {
-        const res = await fetch('/api/publish-facebook', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ itemId: item.id, uid }),
-        });
-        if (!res.ok) {
-          const data = await res.json().catch(() => ({}));
-          setFbError(data.error || 'Erreur Facebook');
-        }
-      } catch { setFbError('Erreur Facebook'); }
+    if (ok && uid) {
+      const tasks: Promise<void>[] = [];
+      if (alsoFacebook) tasks.push(publishToApi('/api/publish-facebook', setFbError));
+      if (alsoYoutube) tasks.push(publishToApi('/api/publish-youtube', setYtError));
+      await Promise.allSettled(tasks);
     }
     if (ok) setDone(true);
   };
@@ -79,21 +76,17 @@ export default function PublishSheet({ isOpen, onClose, item }: Props) {
     if (await schedule(item.id, caption, date, coverOpt, thumbOff, finalCoverUrl)) setDone(true);
   };
 
-  // Ecran de succes
-  if (done) {
-    return (
-      <BottomSheet isOpen={isOpen} onClose={onClose} title="Publication">
-        <div className="flex flex-col items-center py-8 gap-3">
-          <CheckCircleIcon className="w-12 h-12 text-sage" />
-          <p className="text-base font-semibold text-gray-900">
-            {showSchedule ? 'Publication planifiee!' : 'Publie sur Instagram!'}
-          </p>
-          {fbError && <p className="text-xs text-red-500">{fbError}</p>}
-          <button onClick={onClose} className="mt-4 px-6 py-2 bg-sage text-white rounded-xl font-medium">Fermer</button>
-        </div>
-      </BottomSheet>
-    );
-  }
+  if (done) return (
+    <BottomSheet isOpen={isOpen} onClose={onClose} title="Publication">
+      <div className="flex flex-col items-center py-8 gap-3">
+        <CheckCircleIcon className="w-12 h-12 text-sage" />
+        <p className="text-base font-semibold text-gray-900">{showSchedule ? 'Publication planifiee!' : 'Publie sur Instagram!'}</p>
+        {fbError && <p className="text-xs text-red-500">{fbError}</p>}
+        {ytError && <p className="text-xs text-red-500">{ytError}</p>}
+        <button onClick={onClose} className="mt-4 px-6 py-2 bg-sage text-white rounded-xl font-medium">Fermer</button>
+      </div>
+    </BottomSheet>
+  );
 
   const titles: Record<number, string> = { 1: 'Image de couverture', 2: 'Caption', 3: 'Confirmer' };
 
@@ -126,25 +119,11 @@ export default function PublishSheet({ isOpen, onClose, item }: Props) {
         {step === 3 && (
           <>
             {error && <p className="text-sm text-red-500 bg-red-50 p-2 rounded">{error}</p>}
-            {/* Toggle Facebook */}
-            <div className="flex items-center justify-between bg-gray-50 rounded-lg px-3 py-2">
-              {facebookPageId ? (
-                <>
-                  <span className="text-sm text-gray-700">Publier aussi sur Facebook</span>
-                  <button
-                    type="button"
-                    role="switch"
-                    aria-checked={alsoFacebook}
-                    onClick={() => setAlsoFacebook(!alsoFacebook)}
-                    className={`relative w-10 h-6 rounded-full transition ${alsoFacebook ? 'bg-sage' : 'bg-gray-300'}`}
-                  >
-                    <span className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${alsoFacebook ? 'translate-x-4' : 'translate-x-0.5'}`} />
-                  </button>
-                </>
-              ) : (
-                <span className="text-xs text-gray-400">Connecte Facebook dans Profil</span>
-              )}
-            </div>
+            <PlatformToggles
+              facebookPageId={facebookPageId} youtubeChannelId={youtubeChannelId}
+              alsoFacebook={alsoFacebook} alsoYoutube={alsoYoutube}
+              onToggleFacebook={() => setAlsoFacebook(!alsoFacebook)} onToggleYoutube={() => setAlsoYoutube(!alsoYoutube)}
+            />
             {showSchedule ? (
               <SchedulePicker onSchedule={handleSchedule} onCancel={() => setShowSchedule(false)} />
             ) : (
