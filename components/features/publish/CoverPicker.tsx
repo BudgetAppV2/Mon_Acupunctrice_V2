@@ -71,9 +71,12 @@ export default function CoverPicker({ videoUrl, value, onChange, fallbackThumbna
   useEffect(() => {
     const vid = videoRef.current;
     if (!vid || frameOffset === null) return;
-    vid.onseeked = () => captureFrame(vid);
+    // Sur Safari iOS le seek peut ne pas fonctionner via proxy
+    // On tente quand même + fallback après 500ms
+    let captured = false;
+    vid.onseeked = () => { captureFrame(vid); captured = true; };
     vid.currentTime = frameOffset / 1000;
-    setTimeout(() => captureFrame(vid), 300);
+    setTimeout(() => { if (!captured) captureFrame(vid); }, 500);
   }, [frameOffset]);
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -101,17 +104,15 @@ export default function CoverPicker({ videoUrl, value, onChange, fallbackThumbna
       {/* Preview de la couverture */}
       <div className="flex flex-col items-center gap-1">
         {value.type === 'custom' ? (
-          <img src={value.url} alt="" className="w-32 h-56 object-cover rounded-lg" />
+          <img src={value.url} alt="" className="rounded-lg" style={{ width: 128, aspectRatio: '9/16', objectFit: 'cover' }} />
         ) : loading ? (
-          <div className="w-32 h-56 bg-gray-100 rounded-lg flex items-center justify-center">
+          <div className="bg-gray-100 rounded-lg flex items-center justify-center" style={{ width: 128, aspectRatio: '9/16' }}>
             <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-sage" />
           </div>
-        ) : framePreview ? (
-          <img src={framePreview} alt="" className="w-32 h-56 object-cover rounded-lg" />
-        ) : captureFailed && fallbackThumbnail ? (
-          <img src={fallbackThumbnail} alt="" className="w-32 h-56 object-cover rounded-lg" />
+        ) : (framePreview || fallbackThumbnail) ? (
+          <img src={(framePreview || fallbackThumbnail)!} alt="" className="rounded-lg" style={{ width: 128, aspectRatio: '9/16', objectFit: 'cover' }} />
         ) : (
-          <div className="w-32 h-56 bg-gray-100 rounded-lg flex items-center justify-center">
+          <div className="bg-gray-100 rounded-lg flex items-center justify-center" style={{ width: 128, aspectRatio: '9/16' }}>
             <PhotoIcon className="w-8 h-8 text-gray-300" />
           </div>
         )}
