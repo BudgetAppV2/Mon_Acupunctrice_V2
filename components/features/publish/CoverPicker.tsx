@@ -23,15 +23,9 @@ export default function CoverPicker({ videoUrl, value, onChange, fallbackThumbna
   const [loading, setLoading] = useState(true);
   const [captureFailed, setCaptureFailed] = useState(false);
 
-  const captureFrame = async (vid: HTMLVideoElement, source?: string) => {
-    // eslint-disable-next-line no-console
-    console.log('[COVER] captureFrame called from:', source, 'readyState:', vid.readyState, 'videoWidth:', vid.videoWidth, 'videoHeight:', vid.videoHeight, 'currentTime:', vid.currentTime);
+  const captureFrame = async (vid: HTMLVideoElement) => {
     try {
-      if (vid.readyState < 2 || vid.videoWidth === 0) {
-        // eslint-disable-next-line no-console
-        console.log('[COVER] skipped: readyState or videoWidth not ready');
-        return;
-      }
+      if (vid.readyState < 2 || vid.videoWidth === 0) return;
       const cw = 270, ch = 480;
       const c = document.createElement('canvas');
       c.width = cw; c.height = ch;
@@ -41,8 +35,7 @@ export default function CoverPicker({ videoUrl, value, onChange, fallbackThumbna
       let sx = 0, sy = 0, sw = vw, sh = vh;
       if (va > ca) { sw = vh * ca; sx = (vw - sw) / 2; }
       else { sh = vw / ca; sy = (vh - sh) / 2; }
-      // eslint-disable-next-line no-console
-      console.log('[COVER] drawing:', { vw, vh, sx, sy, sw, sh, cw, ch, hasBitmap: typeof createImageBitmap !== 'undefined' });
+      // Safari iOS : createImageBitmap est plus fiable que drawImage direct
       if (typeof createImageBitmap !== 'undefined') {
         const bitmap = await createImageBitmap(vid, sx, sy, sw, sh);
         ctx.drawImage(bitmap, 0, 0, cw, ch);
@@ -51,20 +44,8 @@ export default function CoverPicker({ videoUrl, value, onChange, fallbackThumbna
         ctx.drawImage(vid, sx, sy, sw, sh, 0, 0, cw, ch);
       }
       const url = c.toDataURL('image/jpeg', 0.8);
-      // eslint-disable-next-line no-console
-      console.log('[COVER] toDataURL length:', url.length, 'starts:', url.substring(0, 30));
-      if (url !== 'data:,' && url.length > 100) {
-        setFramePreview(url);
-        // eslint-disable-next-line no-console
-        console.log('[COVER] frame preview SET successfully');
-      } else {
-        // eslint-disable-next-line no-console
-        console.log('[COVER] frame preview EMPTY or too short');
-      }
-    } catch (err) {
-      // eslint-disable-next-line no-console
-      console.log('[COVER] captureFrame ERROR:', err);
-    }
+      if (url !== 'data:,' && url.length > 100) setFramePreview(url);
+    } catch { /* cross-origin — placeholder */ }
   };
 
   // Charger la vidéo et mesurer la durée
@@ -72,40 +53,27 @@ export default function CoverPicker({ videoUrl, value, onChange, fallbackThumbna
     const vid = videoRef.current;
     if (!vid) return;
     setLoading(true);
-    // eslint-disable-next-line no-console
-    console.log('[COVER] useEffect mount, videoSrc:', videoSrc.substring(0, 80));
     vid.onloadedmetadata = () => {
-      // eslint-disable-next-line no-console
-      console.log('[COVER] onloadedmetadata fired, duration:', vid.duration);
       if (vid.duration && isFinite(vid.duration)) setVideoDuration(vid.duration);
     };
     vid.oncanplay = () => {
-      // eslint-disable-next-line no-console
-      console.log('[COVER] oncanplay fired, readyState:', vid.readyState);
       setLoading(false);
-      captureFrame(vid, 'oncanplay');
+      captureFrame(vid);
     };
     // Safari iOS : forcer le décodage avec play()+pause() ("priming")
     // Safari refuse de décoder les frames sans un play() initial
     vid.onloadeddata = () => {
-      // eslint-disable-next-line no-console
-      console.log('[COVER] onloadeddata fired, attempting play/pause prime');
       vid.play().then(() => {
         vid.pause();
-        // eslint-disable-next-line no-console
-        console.log('[COVER] play/pause prime done, readyState:', vid.readyState);
         setLoading(false);
-        captureFrame(vid, 'play-pause-prime');
-      }).catch(() => {
-        // eslint-disable-next-line no-console
-        console.log('[COVER] play() rejected (expected on some browsers)');
-      });
+        captureFrame(vid);
+      }).catch(() => { /* play() rejected — expected on some browsers */ });
     };
     // Polling fallback
     const interval = setInterval(() => {
       if (vid.readyState >= 2) {
         setLoading(false);
-        captureFrame(vid, 'polling');
+        captureFrame(vid);
         if (vid.duration && isFinite(vid.duration)) setVideoDuration(vid.duration);
         clearInterval(interval);
       }
@@ -122,27 +90,19 @@ export default function CoverPicker({ videoUrl, value, onChange, fallbackThumbna
     const targetTime = frameOffset / 1000;
     vid.currentTime = targetTime;
 
-    // eslint-disable-next-line no-console
-    console.log('[COVER] slider seek to:', targetTime);
-    const handler = () => {
-      // eslint-disable-next-line no-console
-      console.log('[COVER] seeked event fired, readyState:', vid.readyState);
-      setTimeout(() => captureFrame(vid, 'seeked+delay'), 150);
-    };
+    const handler = () => setTimeout(() => captureFrame(vid), 150);
     vid.addEventListener('seeked', handler, { once: true });
     // Safari iOS: si readyState < 2 après seek, forcer play/pause
     setTimeout(() => {
       if (vid.readyState < 2) {
-        // eslint-disable-next-line no-console
-        console.log('[COVER] slider: readyState still', vid.readyState, '- trying play/pause');
         vid.play().then(() => {
           vid.pause();
           vid.currentTime = targetTime;
-          setTimeout(() => captureFrame(vid, 'slider-play-pause'), 300);
-        }).catch(() => captureFrame(vid, 'slider-play-catch'));
+          setTimeout(() => captureFrame(vid), 300);
+        }).catch(() => captureFrame(vid));
       } else {
         vid.removeEventListener('seeked', handler);
-        captureFrame(vid, 'slider-fallback');
+        captureFrame(vid);
       }
     }, 600);
   }, [frameOffset]);
@@ -166,7 +126,7 @@ export default function CoverPicker({ videoUrl, value, onChange, fallbackThumbna
 
   return (
     <div className="space-y-3">
-      {/* Video element pour la capture de frame — pas hidden (Safari iOS refuse de decoder les videos hidden) */}
+      {/* Video element — pas hidden (Safari iOS refuse de decoder les videos hidden) */}
       <video ref={videoRef} src={videoSrc} className="absolute w-px h-px opacity-0 pointer-events-none" playsInline muted preload="auto" />
 
       {/* Preview de la couverture */}
