@@ -5,6 +5,7 @@ import BottomSheet from '@/components/ui/BottomSheet';
 import { useCreateContentItem } from '@/lib/hooks/useCreateContentItem';
 import { useUserProfile } from '@/lib/hooks/useUserProfile';
 import { getAllCategories } from '@/lib/utils/categories';
+import VoiceRecordButton from './VoiceRecordButton';
 
 interface Props {
   isOpen: boolean;
@@ -18,10 +19,21 @@ export default function CreateIdeaSheet({ isOpen, onClose }: Props) {
   const [showCustom, setShowCustom] = useState(false);
   const [notes, setNotes] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [voiceError, setVoiceError] = useState<string | null>(null);
   const { createItem } = useCreateContentItem();
   const { customCategories, updateCustomCategories } = useUserProfile();
 
   const categories = getAllCategories(customCategories);
+
+  const handleVoiceResult = (result: { title: string; notes: string; category?: string }) => {
+    setTitle(result.title);
+    setNotes(result.notes);
+    if (result.category) {
+      const match = categories.find(c => c.value === result.category);
+      if (match) setCategory(result.category);
+    }
+    setVoiceError(null);
+  };
 
   const handleCategoryChange = (val: string) => {
     if (val === '__custom__') {
@@ -66,8 +78,13 @@ export default function CreateIdeaSheet({ isOpen, onClose }: Props) {
   return (
     <BottomSheet isOpen={isOpen} onClose={onClose} title="Nouvelle idee">
       <form onSubmit={handleSubmit} className="space-y-4">
+        {voiceError && <p className="text-xs text-red-500 bg-red-50 p-2 rounded">{voiceError}</p>}
+
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Titre *</label>
+          <div className="flex items-center justify-between mb-1">
+            <label className="text-sm font-medium text-gray-700">Titre *</label>
+            <VoiceRecordButton onResult={handleVoiceResult} onError={setVoiceError} disabled={submitting} />
+          </div>
           <input
             type="text" value={title} onChange={(e) => setTitle(e.target.value)}
             placeholder="Ex: L'acupuncture et la fertilite"
