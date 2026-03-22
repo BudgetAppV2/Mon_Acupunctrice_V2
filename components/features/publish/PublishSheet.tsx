@@ -9,6 +9,7 @@ import CaptionEditor from './CaptionEditor';
 import SchedulePicker from './SchedulePicker';
 import { useUserProfile } from '@/lib/hooks/useUserProfile';
 import { useAuthStore } from '@/lib/store/useAuthStore';
+import { useEditorStore } from '@/lib/store/useEditorStore';
 import { ArrowRightIcon, ArrowLeftIcon, PaperAirplaneIcon, CalendarIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
 
 interface Props {
@@ -30,6 +31,7 @@ export default function PublishSheet({ isOpen, onClose, item }: Props) {
   const { publish, schedule, publishing, error } = usePublish();
   const uid = useAuthStore((s) => s.user?.uid);
   const { facebookPageId } = useUserProfile();
+  const editorThumb = useEditorStore((s) => s.thumbnailUrl);
 
   const coverOpt = cover.type, thumbOff = cover.type === 'frame' ? cover.offset : undefined, coverUrl = cover.type === 'custom' ? cover.url : undefined;
 
@@ -79,7 +81,7 @@ export default function PublishSheet({ isOpen, onClose, item }: Props) {
       <div className="space-y-4">
         {step === 1 && (
           <>
-            <CoverPicker videoUrl={item.videoUrl!} value={cover} onChange={setCover} />
+            <CoverPicker videoUrl={item.videoUrl!} value={cover} onChange={setCover} fallbackThumbnail={editorThumb ?? undefined} />
             <button onClick={() => setStep(2)} className="w-full py-3 bg-sage text-white rounded-xl font-medium flex items-center justify-center gap-2">
               Continuer <ArrowRightIcon className="w-4 h-4" />
             </button>

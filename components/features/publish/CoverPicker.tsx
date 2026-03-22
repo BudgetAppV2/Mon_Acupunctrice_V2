@@ -11,15 +11,17 @@ interface Props {
   videoUrl: string;
   value: CoverSelection;
   onChange: (v: CoverSelection) => void;
+  fallbackThumbnail?: string;
 }
 
-export default function CoverPicker({ videoUrl, value, onChange }: Props) {
+export default function CoverPicker({ videoUrl, value, onChange, fallbackThumbnail }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const [framePreview, setFramePreview] = useState<string | null>(null);
   const [videoDuration, setVideoDuration] = useState(30);
   const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [captureFailed, setCaptureFailed] = useState(false);
 
   const captureFrame = (vid: HTMLVideoElement) => {
     try {
@@ -60,7 +62,7 @@ export default function CoverPicker({ videoUrl, value, onChange }: Props) {
         clearInterval(interval);
       }
     }, 500);
-    const timeout = setTimeout(() => { clearInterval(interval); setLoading(false); }, 15000);
+    const timeout = setTimeout(() => { clearInterval(interval); setLoading(false); setCaptureFailed(true); }, 5000);
     return () => { clearInterval(interval); clearTimeout(timeout); };
   }, [videoUrl]);
 
@@ -97,7 +99,7 @@ export default function CoverPicker({ videoUrl, value, onChange }: Props) {
       <video ref={videoRef} src={videoSrc} className="absolute w-px h-px opacity-0 pointer-events-none" playsInline muted preload="auto" />
 
       {/* Preview de la couverture */}
-      <div className="flex justify-center">
+      <div className="flex flex-col items-center gap-1">
         {value.type === 'custom' ? (
           <img src={value.url} alt="" className="w-32 h-56 object-cover rounded-lg" />
         ) : loading ? (
@@ -106,10 +108,17 @@ export default function CoverPicker({ videoUrl, value, onChange }: Props) {
           </div>
         ) : framePreview ? (
           <img src={framePreview} alt="" className="w-32 h-56 object-cover rounded-lg" />
+        ) : captureFailed && fallbackThumbnail ? (
+          <img src={fallbackThumbnail} alt="" className="w-32 h-56 object-cover rounded-lg" />
         ) : (
           <div className="w-32 h-56 bg-gray-100 rounded-lg flex items-center justify-center">
             <PhotoIcon className="w-8 h-8 text-gray-300" />
           </div>
+        )}
+        {captureFailed && !framePreview && (
+          <p className="text-[10px] text-gray-400 text-center max-w-[200px]">
+            Utilisez Depuis Photos pour choisir une image personnalisee
+          </p>
         )}
       </div>
 

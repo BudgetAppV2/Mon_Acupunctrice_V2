@@ -47,13 +47,15 @@ function DraggableText({ overlay: o, selected, interactive, parentW, parentH, cu
   const onPointerDown = (e: React.PointerEvent) => {
     if (!interactive) return;
     e.stopPropagation();
+    e.preventDefault();
     onSelect();
     setDragging(true);
-    (e.target as HTMLElement).setPointerCapture(e.pointerId);
+    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
     ref.current = { sx: e.clientX, sy: e.clientY, ox: o.x, oy: o.y };
   };
   const onPointerMove = (e: React.PointerEvent) => {
     if (!dragging) return;
+    e.preventDefault();
     onMove(ref.current.ox + (e.clientX - ref.current.sx) / parentW, ref.current.oy + (e.clientY - ref.current.sy) / parentH);
   };
   const onPointerUp = () => setDragging(false);
@@ -87,7 +89,7 @@ function DraggableText({ overlay: o, selected, interactive, parentW, parentH, cu
 
   return (
     <div
-      className={`absolute select-none whitespace-nowrap ${interactive ? 'cursor-move' : ''} ${selected ? 'outline outline-2 outline-sage outline-offset-2 rounded' : ''}`}
+      className={`absolute select-none whitespace-nowrap ${interactive ? 'cursor-move touch-none' : ''} ${selected ? 'outline outline-2 outline-sage outline-offset-2 rounded' : ''}`}
       style={{
         left: `${o.x * 100}%`, top: `${o.y * 100}%`, transform, opacity,
         fontFamily: `"${o.fontFamily}", sans-serif`, fontSize: `${o.fontSize}px`, fontWeight: 700,

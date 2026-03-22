@@ -52,7 +52,8 @@ export default function IdeesPage() {
 
       <button
         onClick={() => setSheetOpen(true)}
-        className="fixed bottom-6 right-6 w-14 h-14 bg-sage text-white rounded-full shadow-lg flex items-center justify-center hover:bg-sage/90 transition-colors z-40"
+        className="fixed right-5 w-14 h-14 bg-sage text-white rounded-full shadow-lg flex items-center justify-center hover:bg-sage/90 transition-colors z-40"
+        style={{ bottom: 'calc(60px + env(safe-area-inset-bottom, 0px))' }}
         aria-label="Nouvelle idee"
       >
         <PlusIcon className="w-7 h-7" />
