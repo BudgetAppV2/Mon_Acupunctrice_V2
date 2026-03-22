@@ -31,6 +31,7 @@
 | M08 | Lancer | Déploiement Vercel | Mettre l'app en production |
 | M09 | Distribuer | Token Meta long-lived + OAuth | Éliminer le token hardcodé |
 | M10 | Distribuer | Facebook Reels | Double la portée via Meta |
+| **R2** | **Créer** | **Transcription vocale d'idées** | **Judith dicte, Claude structure** |
 | M11 | Distribuer | YouTube Shorts | Nouvelle audience + SEO Google |
 | M12 | Mesurer | Stats & Analytics | Feedback loop Instagram Insights |
 | M13 | Mesurer | UTM tracking + Wix mapping | Mesurer le trafic réel vers Wix |

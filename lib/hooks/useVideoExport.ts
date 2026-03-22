@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from 'react';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { useEditorStore } from '@/lib/store/useEditorStore';
 import { getFirebaseFirestore, getFirebaseAuth, getFirebaseStorage } from '@/lib/firebase';
 import { exportWithWebCodecs } from '@/lib/utils/exportWebCodecs';
@@ -75,9 +75,9 @@ export function useVideoExport() {
       const videoUrl = await getDownloadURL(storageRef);
 
       const db = getFirebaseFirestore();
-      await updateDoc(doc(db, 'contentItems', s.itemId), {
+      await setDoc(doc(db, 'contentItems', s.itemId), {
         videoUrl, exportedAt: serverTimestamp(), workflowState: 'ready', updatedAt: serverTimestamp(),
-      });
+      }, { merge: true });
 
       setState('done');
     } catch (err) {
