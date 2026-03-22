@@ -35,6 +35,8 @@ Brillant mais prématuré pour l'instant.
 - **LinkedIn** : Contenu éducatif pour réseau professionnel santé (médecins, physios, naturopathes qui réfèrent). API restrictive, format vidéo différent (carré/paysage vs 9:16). Pertinent pour développer un réseau de référencement pro.
 - **Threads** : Pour une distribution textuelle complémentaire.
 - **Réutilisation de contenu** : Suggestion automatique de recycler un ancien Reel performant (reuseScore).
+- **Sélection de caméra** : Sélecteur de source vidéo (caméra frontale, arrière, webcam USB-C externe) via `enumerateDevices()`. Permettrait de filmer des démonstrations d'acupuncture avec une caméra externe.
+- **Captation multi-caméra** : Enregistrement simultané depuis plusieurs sources vidéo (ex: face caméra + plan d'ensemble) pour montage multi-angle ensuite. Nécessite `getUserMedia` sur plusieurs devices + synchronisation audio.
 - **Collaboration** : Permettre à un monteur externe d'accéder au compte de Judith.
 
 ---
