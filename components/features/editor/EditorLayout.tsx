@@ -100,8 +100,11 @@ export default function EditorLayout({ itemId }: Props) {
         <ExportButton onExportDone={handlePublish} />
       </header>
 
-      <div className="flex-1 min-h-0">
-        <VideoPreview interactive={activeTab === 'texte'} />
+      {/* Conteneur vidéo forcé en 9:16 — WYSIWYG avec l'export */}
+      <div className="flex-1 min-h-0 flex items-center justify-center bg-black">
+        <div className="relative h-full" style={{ aspectRatio: '9/16', maxWidth: '100%' }}>
+          <VideoPreview interactive={activeTab === 'texte'} />
+        </div>
       </div>
 
       <div className="shrink-0 flex flex-col" style={{ maxHeight: '55vh', paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
