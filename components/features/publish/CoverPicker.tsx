@@ -12,9 +12,10 @@ interface Props {
   value: CoverSelection;
   onChange: (v: CoverSelection) => void;
   fallbackThumbnail?: string;
+  onFrameCapture?: (dataUrl: string) => void;
 }
 
-export default function CoverPicker({ videoUrl, value, onChange, fallbackThumbnail }: Props) {
+export default function CoverPicker({ videoUrl, value, onChange, fallbackThumbnail, onFrameCapture }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const [framePreview, setFramePreview] = useState<string | null>(null);
@@ -44,7 +45,10 @@ export default function CoverPicker({ videoUrl, value, onChange, fallbackThumbna
         ctx.drawImage(vid, sx, sy, sw, sh, 0, 0, cw, ch);
       }
       const url = c.toDataURL('image/jpeg', 0.8);
-      if (url !== 'data:,' && url.length > 100) setFramePreview(url);
+      if (url !== 'data:,' && url.length > 100) {
+        setFramePreview(url);
+        onFrameCapture?.(url);
+      }
     } catch { /* cross-origin — placeholder */ }
   };
 

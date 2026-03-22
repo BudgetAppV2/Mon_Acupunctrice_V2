@@ -28,6 +28,7 @@ export default function PublishSheet({ isOpen, onClose, item }: Props) {
   const [done, setDone] = useState(false);
   const [alsoFacebook, setAlsoFacebook] = useState(false);
   const [fbError, setFbError] = useState<string | null>(null);
+  const [frameDataUrl, setFrameDataUrl] = useState<string | null>(null);
   const { publish, schedule, publishing, error } = usePublish();
   const uid = useAuthStore((s) => s.user?.uid);
   const { facebookPageId } = useUserProfile();
@@ -35,10 +36,34 @@ export default function PublishSheet({ isOpen, onClose, item }: Props) {
 
   const coverOpt = cover.type, thumbOff = cover.type === 'frame' ? cover.offset : undefined, coverUrl = cover.type === 'custom' ? cover.url : undefined;
 
+  /** Upload la frame capturée vers Storage et retourne l'URL */
+  const uploadFrameAsCover = async (): Promise<string | undefined> => {
+    if (cover.type !== 'frame' || !frameDataUrl || !uid) return undefined;
+    try {
+      // eslint-disable-next-line no-console
+      console.log('[PUBLISH] uploading frame cover, dataUrl length:', frameDataUrl.length);
+      const blob = await fetch(frameDataUrl).then(r => r.blob());
+      const { ref: storageRef, uploadBytes: up, getDownloadURL: dl } = await import('firebase/storage');
+      const storage = (await import('@/lib/firebase')).getFirebaseStorage();
+      const coverRef = storageRef(storage, `covers/${uid}/${item.id}_frame.jpg`);
+      await up(coverRef, blob, { contentType: 'image/jpeg' });
+      const url = await dl(coverRef);
+      // eslint-disable-next-line no-console
+      console.log('[PUBLISH] frame cover uploaded:', url.substring(0, 60));
+      return url;
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.warn('[PUBLISH] frame cover upload failed:', err);
+      return undefined;
+    }
+  };
+
   const handlePublish = async () => {
     if (!item.videoUrl) return;
     setFbError(null);
-    const ok = await publish({ videoUrl: item.videoUrl, caption, itemId: item.id, coverOption: coverOpt, thumbOffset: thumbOff, coverUrl });
+    // Si frame sélectionnée, uploader comme cover image
+    const finalCoverUrl = coverUrl || await uploadFrameAsCover();
+    const ok = await publish({ videoUrl: item.videoUrl, caption, itemId: item.id, coverOption: coverOpt, thumbOffset: thumbOff, coverUrl: finalCoverUrl });
     // Publier sur Facebook en parallèle si activé
     if (ok && alsoFacebook && uid) {
       try {
@@ -56,7 +81,10 @@ export default function PublishSheet({ isOpen, onClose, item }: Props) {
     if (ok) setDone(true);
   };
 
-  const handleSchedule = async (date: Date) => { if (await schedule(item.id, caption, date, coverOpt, thumbOff, coverUrl)) setDone(true); };
+  const handleSchedule = async (date: Date) => {
+    const finalCoverUrl = coverUrl || await uploadFrameAsCover();
+    if (await schedule(item.id, caption, date, coverOpt, thumbOff, finalCoverUrl)) setDone(true);
+  };
 
   // Ecran de succes
   if (done) {
@@ -81,7 +109,7 @@ export default function PublishSheet({ isOpen, onClose, item }: Props) {
       <div className="space-y-4">
         {step === 1 && (
           <>
-            <CoverPicker videoUrl={item.videoUrl!} value={cover} onChange={setCover} fallbackThumbnail={editorThumb ?? undefined} />
+            <CoverPicker videoUrl={item.videoUrl!} value={cover} onChange={setCover} fallbackThumbnail={editorThumb ?? undefined} onFrameCapture={setFrameDataUrl} />
             <button onClick={() => setStep(2)} className="w-full py-3 bg-sage text-white rounded-xl font-medium flex items-center justify-center gap-2">
               Continuer <ArrowRightIcon className="w-4 h-4" />
             </button>

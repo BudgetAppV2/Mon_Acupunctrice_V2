@@ -56,7 +56,7 @@ export default function VideoThumbnail({ videoUrl, className = '' }: Props) {
   // Proxy same-origin pour éviter le taint canvas
   const proxySrc = `/api/proxy-video?url=${encodeURIComponent(videoUrl)}`;
 
-  if (thumb) return <img src={thumb} alt="" className={`object-cover ${className}`} />;
+  if (thumb) return <img src={thumb} alt="" className={`object-cover ${className}`} style={{ aspectRatio: '9/16' }} />;
 
   return (
     <>
