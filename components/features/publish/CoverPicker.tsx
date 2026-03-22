@@ -23,20 +23,26 @@ export default function CoverPicker({ videoUrl, value, onChange, fallbackThumbna
   const [loading, setLoading] = useState(true);
   const [captureFailed, setCaptureFailed] = useState(false);
 
-  const captureFrame = async (vid: HTMLVideoElement) => {
+  const captureFrame = async (vid: HTMLVideoElement, source?: string) => {
+    // eslint-disable-next-line no-console
+    console.log('[COVER] captureFrame called from:', source, 'readyState:', vid.readyState, 'videoWidth:', vid.videoWidth, 'videoHeight:', vid.videoHeight, 'currentTime:', vid.currentTime);
     try {
-      if (vid.readyState < 2 || vid.videoWidth === 0) return;
+      if (vid.readyState < 2 || vid.videoWidth === 0) {
+        // eslint-disable-next-line no-console
+        console.log('[COVER] skipped: readyState or videoWidth not ready');
+        return;
+      }
       const cw = 270, ch = 480;
       const c = document.createElement('canvas');
       c.width = cw; c.height = ch;
       const ctx = c.getContext('2d')!;
-      // Crop center (object-cover) — cohérent avec l'export
       const { videoWidth: vw, videoHeight: vh } = vid;
       const va = vw / vh, ca = cw / ch;
       let sx = 0, sy = 0, sw = vw, sh = vh;
       if (va > ca) { sw = vh * ca; sx = (vw - sw) / 2; }
       else { sh = vw / ca; sy = (vh - sh) / 2; }
-      // Safari iOS : createImageBitmap est plus fiable que drawImage direct
+      // eslint-disable-next-line no-console
+      console.log('[COVER] drawing:', { vw, vh, sx, sy, sw, sh, cw, ch, hasBitmap: typeof createImageBitmap !== 'undefined' });
       if (typeof createImageBitmap !== 'undefined') {
         const bitmap = await createImageBitmap(vid, sx, sy, sw, sh);
         ctx.drawImage(bitmap, 0, 0, cw, ch);
@@ -45,8 +51,20 @@ export default function CoverPicker({ videoUrl, value, onChange, fallbackThumbna
         ctx.drawImage(vid, sx, sy, sw, sh, 0, 0, cw, ch);
       }
       const url = c.toDataURL('image/jpeg', 0.8);
-      if (url !== 'data:,' && url.length > 100) setFramePreview(url);
-    } catch { /* cross-origin — will show placeholder */ }
+      // eslint-disable-next-line no-console
+      console.log('[COVER] toDataURL length:', url.length, 'starts:', url.substring(0, 30));
+      if (url !== 'data:,' && url.length > 100) {
+        setFramePreview(url);
+        // eslint-disable-next-line no-console
+        console.log('[COVER] frame preview SET successfully');
+      } else {
+        // eslint-disable-next-line no-console
+        console.log('[COVER] frame preview EMPTY or too short');
+      }
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.log('[COVER] captureFrame ERROR:', err);
+    }
   };
 
   // Charger la vidéo et mesurer la durée
@@ -54,12 +72,18 @@ export default function CoverPicker({ videoUrl, value, onChange, fallbackThumbna
     const vid = videoRef.current;
     if (!vid) return;
     setLoading(true);
+    // eslint-disable-next-line no-console
+    console.log('[COVER] useEffect mount, videoSrc:', videoSrc.substring(0, 80));
     vid.onloadedmetadata = () => {
+      // eslint-disable-next-line no-console
+      console.log('[COVER] onloadedmetadata fired, duration:', vid.duration);
       if (vid.duration && isFinite(vid.duration)) setVideoDuration(vid.duration);
     };
     vid.oncanplay = () => {
+      // eslint-disable-next-line no-console
+      console.log('[COVER] oncanplay fired');
       setLoading(false);
-      captureFrame(vid);
+      captureFrame(vid, 'oncanplay');
     };
     // Safari iOS: polling fallback si oncanplay ne fire pas
     const interval = setInterval(() => {
@@ -82,13 +106,20 @@ export default function CoverPicker({ videoUrl, value, onChange, fallbackThumbna
     const targetTime = frameOffset / 1000;
     vid.currentTime = targetTime;
 
-    // Attendre le seek + délai pour laisser Safari décoder la frame
-    const handler = () => setTimeout(() => captureFrame(vid), 150);
+    // eslint-disable-next-line no-console
+    console.log('[COVER] slider seek to:', targetTime);
+    const handler = () => {
+      // eslint-disable-next-line no-console
+      console.log('[COVER] seeked event fired for offset:', targetTime);
+      setTimeout(() => captureFrame(vid, 'seeked+delay'), 150);
+    };
     vid.addEventListener('seeked', handler, { once: true });
     // Fallback si seeked ne fire pas (Safari iOS)
     setTimeout(() => {
+      // eslint-disable-next-line no-console
+      console.log('[COVER] fallback timeout fired for offset:', targetTime);
       vid.removeEventListener('seeked', handler);
-      captureFrame(vid);
+      captureFrame(vid, 'fallback-800ms');
     }, 800);
   }, [frameOffset]);
 
