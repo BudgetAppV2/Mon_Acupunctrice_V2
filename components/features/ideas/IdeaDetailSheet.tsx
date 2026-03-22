@@ -15,6 +15,8 @@ interface Props {
 
 export default function IdeaDetailSheet({ isOpen, onClose, item }: Props) {
   if (!item) return null;
+  // eslint-disable-next-line no-console
+  if (isOpen) console.log('[DETAIL] idea item:', { id: item.id, videoUrl: !!item.videoUrl, thumbnailUrl: !!item.thumbnailUrl, coverImageUrl: !!item.coverImageUrl, workflowState: item.workflowState });
 
   return (
     <BottomSheet isOpen={isOpen} onClose={onClose} title="Details">

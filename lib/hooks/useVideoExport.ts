@@ -74,10 +74,35 @@ export function useVideoExport() {
       await uploadBytes(storageRef, blob);
       const videoUrl = await getDownloadURL(storageRef);
 
+      // Uploader la thumbnail du store vers Storage pour les previews
+      let thumbnailUrl: string | null = null;
+      const thumbDataUrl = useEditorStore.getState().thumbnailUrl;
+      if (thumbDataUrl && userId) {
+        try {
+          // eslint-disable-next-line no-console
+          console.log('[EXPORT] uploading thumbnail, dataUrl length:', thumbDataUrl.length);
+          const thumbBlob = await fetch(thumbDataUrl).then(r => r.blob());
+          const thumbRef = ref(storage, `thumbnails/${userId}/${s.itemId}.jpg`);
+          await uploadBytes(thumbRef, thumbBlob, { contentType: 'image/jpeg' });
+          thumbnailUrl = await getDownloadURL(thumbRef);
+          // eslint-disable-next-line no-console
+          console.log('[EXPORT] thumbnail uploaded:', thumbnailUrl.substring(0, 60));
+        } catch (thumbErr) {
+          // eslint-disable-next-line no-console
+          console.warn('[EXPORT] thumbnail upload failed:', thumbErr);
+        }
+      } else {
+        // eslint-disable-next-line no-console
+        console.log('[EXPORT] no thumbnail to upload, dataUrl:', !!thumbDataUrl, 'userId:', !!userId);
+      }
+
       const db = getFirebaseFirestore();
       await setDoc(doc(db, 'contentItems', s.itemId), {
         videoUrl, exportedAt: serverTimestamp(), workflowState: 'ready', updatedAt: serverTimestamp(),
+        ...(thumbnailUrl ? { thumbnailUrl } : {}),
       }, { merge: true });
+      // eslint-disable-next-line no-console
+      console.log('[EXPORT] Firestore updated, thumbnailUrl saved:', !!thumbnailUrl);
 
       setState('done');
     } catch (err) {
