@@ -23,19 +23,27 @@ export default function CoverPicker({ videoUrl, value, onChange, fallbackThumbna
   const [loading, setLoading] = useState(true);
   const [captureFailed, setCaptureFailed] = useState(false);
 
-  const captureFrame = (vid: HTMLVideoElement) => {
+  const captureFrame = async (vid: HTMLVideoElement) => {
     try {
       if (vid.readyState < 2 || vid.videoWidth === 0) return;
       const cw = 270, ch = 480;
       const c = document.createElement('canvas');
       c.width = cw; c.height = ch;
+      const ctx = c.getContext('2d')!;
       // Crop center (object-cover) — cohérent avec l'export
       const { videoWidth: vw, videoHeight: vh } = vid;
       const va = vw / vh, ca = cw / ch;
       let sx = 0, sy = 0, sw = vw, sh = vh;
       if (va > ca) { sw = vh * ca; sx = (vw - sw) / 2; }
       else { sh = vw / ca; sy = (vh - sh) / 2; }
-      c.getContext('2d')!.drawImage(vid, sx, sy, sw, sh, 0, 0, cw, ch);
+      // Safari iOS : createImageBitmap est plus fiable que drawImage direct
+      if (typeof createImageBitmap !== 'undefined') {
+        const bitmap = await createImageBitmap(vid, sx, sy, sw, sh);
+        ctx.drawImage(bitmap, 0, 0, cw, ch);
+        bitmap.close();
+      } else {
+        ctx.drawImage(vid, sx, sy, sw, sh, 0, 0, cw, ch);
+      }
       const url = c.toDataURL('image/jpeg', 0.8);
       if (url !== 'data:,' && url.length > 100) setFramePreview(url);
     } catch { /* cross-origin — will show placeholder */ }
@@ -71,12 +79,21 @@ export default function CoverPicker({ videoUrl, value, onChange, fallbackThumbna
   useEffect(() => {
     const vid = videoRef.current;
     if (!vid || frameOffset === null) return;
-    // Sur Safari iOS le seek peut ne pas fonctionner via proxy
-    // On tente quand même + fallback après 500ms
-    let captured = false;
-    vid.onseeked = () => { captureFrame(vid); captured = true; };
-    vid.currentTime = frameOffset / 1000;
-    setTimeout(() => { if (!captured) captureFrame(vid); }, 500);
+    const targetTime = frameOffset / 1000;
+    vid.currentTime = targetTime;
+
+    // Méthode 1 : requestVideoFrameCallback (Safari 15.4+, plus fiable)
+    if ('requestVideoFrameCallback' in vid) {
+      vid.requestVideoFrameCallback(() => {
+        // Délai court pour laisser Safari décoder la frame
+        setTimeout(() => captureFrame(vid), 100);
+      });
+    } else {
+      // Fallback : onseeked + délai
+      vid.onseeked = () => setTimeout(() => captureFrame(vid), 200);
+    }
+    // Fallback ultime si rien ne fire
+    setTimeout(() => captureFrame(vid), 800);
   }, [frameOffset]);
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
