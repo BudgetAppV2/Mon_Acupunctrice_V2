@@ -78,9 +78,9 @@ export default function ProfilPage() {
         {user && <FacebookConnectButton uid={user.uid} facebookStatus={facebookStatus} facebookPageName={facebookPageName} />}
         {user && <YouTubeConnectButton uid={user.uid} youtubeStatus={youtubeStatus} youtubeChannelName={youtubeChannelName} />}
 
-        <a href={process.env.NEXT_PUBLIC_WIX_URL || 'https://judithtremblay.com'} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 bg-white rounded-xl p-3 mb-6">
+        <a href={process.env.NEXT_PUBLIC_WIX_DASHBOARD_URL || process.env.NEXT_PUBLIC_WIX_URL || 'https://mon-acupunctrice.ca'} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 bg-white rounded-xl p-3 mb-6">
           <ArrowTopRightOnSquareIcon className="w-5 h-5 text-sage" />
-          <div className="flex-1"><p className="text-sm font-medium text-gray-900">Mon site Wix</p><p className="text-xs text-gray-500">{process.env.NEXT_PUBLIC_WIX_URL?.replace('https://', '') || 'judithtremblay.com'}</p></div>
+          <div className="flex-1"><p className="text-sm font-medium text-gray-900">Mon site Wix</p><p className="text-xs text-gray-500">{process.env.NEXT_PUBLIC_WIX_URL?.replace('https://', '') || 'mon-acupunctrice.ca'}</p></div>
         </a>
 
         <h2 className="text-sm font-semibold text-gray-700 mb-2">Mes categories</h2>

@@ -47,7 +47,7 @@ et les mises à jour algorithmiques de 2025-2026.
 
 #lasourceensoi #acupuncture #[1-3 hashtags spécifiques au sujet]
 
-🔗 judithtremblay.com
+🔗 mon-acupunctrice.ca
 ```
 
 ### Mots-clés stratégiques pour Judith (français + anglais)
@@ -94,7 +94,7 @@ Ex: "3 points d'acupuncture pour le stress" comme texte superposé.
 [2-3 phrases de description avec mots-clés naturels]
 
 📍 La Source en Soi — Clinique d'acupuncture, Montréal
-🔗 Prendre rendez-vous : https://judithtremblay.com
+🔗 Prendre rendez-vous : https://mon-acupunctrice.ca
 
 #Shorts #Acupuncture #[mot-clé spécifique] #lasourceensoi
 ```

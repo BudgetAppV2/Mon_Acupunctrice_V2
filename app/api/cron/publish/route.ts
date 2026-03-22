@@ -6,7 +6,7 @@ const FUNCTIONS_URL = process.env.FIREBASE_FUNCTIONS_URL;
 const GRAPH = 'https://graph.facebook.com/v25.0';
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
-const WIX_URL = process.env.NEXT_PUBLIC_WIX_URL || 'https://judithtremblay.com';
+const WIX_URL = process.env.NEXT_PUBLIC_WIX_URL || 'https://mon-acupunctrice.ca';
 
 // --- Helpers publication ---
 

@@ -3,7 +3,7 @@ import { getAdminFirestore } from '@/lib/firebase-admin';
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID!;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET!;
-const WIX_URL = process.env.NEXT_PUBLIC_WIX_URL || 'https://judithtremblay.com';
+const WIX_URL = process.env.NEXT_PUBLIC_WIX_URL || 'https://mon-acupunctrice.ca';
 
 /** Refresh le access_token Google via le refresh_token */
 async function refreshAccessToken(refreshToken: string): Promise<string> {
