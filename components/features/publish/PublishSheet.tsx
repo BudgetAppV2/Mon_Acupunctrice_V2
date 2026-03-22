@@ -40,20 +40,13 @@ export default function PublishSheet({ isOpen, onClose, item }: Props) {
   const uploadFrameAsCover = async (): Promise<string | undefined> => {
     if (cover.type !== 'frame' || !frameDataUrl || !uid) return undefined;
     try {
-      // eslint-disable-next-line no-console
-      console.log('[PUBLISH] uploading frame cover, dataUrl length:', frameDataUrl.length);
       const blob = await fetch(frameDataUrl).then(r => r.blob());
       const { ref: storageRef, uploadBytes: up, getDownloadURL: dl } = await import('firebase/storage');
       const storage = (await import('@/lib/firebase')).getFirebaseStorage();
       const coverRef = storageRef(storage, `covers/${uid}/${item.id}_frame.jpg`);
       await up(coverRef, blob, { contentType: 'image/jpeg' });
-      const url = await dl(coverRef);
-      // eslint-disable-next-line no-console
-      console.log('[PUBLISH] frame cover uploaded:', url.substring(0, 60));
-      return url;
-    } catch (err) {
-      // eslint-disable-next-line no-console
-      console.warn('[PUBLISH] frame cover upload failed:', err);
+      return await dl(coverRef);
+    } catch {
       return undefined;
     }
   };
