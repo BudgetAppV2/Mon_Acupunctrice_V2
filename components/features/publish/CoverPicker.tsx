@@ -81,20 +81,36 @@ export default function CoverPicker({ videoUrl, value, onChange, fallbackThumbna
     };
     vid.oncanplay = () => {
       // eslint-disable-next-line no-console
-      console.log('[COVER] oncanplay fired');
+      console.log('[COVER] oncanplay fired, readyState:', vid.readyState);
       setLoading(false);
       captureFrame(vid, 'oncanplay');
     };
-    // Safari iOS: polling fallback si oncanplay ne fire pas
+    // Safari iOS : forcer le décodage avec play()+pause() ("priming")
+    // Safari refuse de décoder les frames sans un play() initial
+    vid.onloadeddata = () => {
+      // eslint-disable-next-line no-console
+      console.log('[COVER] onloadeddata fired, attempting play/pause prime');
+      vid.play().then(() => {
+        vid.pause();
+        // eslint-disable-next-line no-console
+        console.log('[COVER] play/pause prime done, readyState:', vid.readyState);
+        setLoading(false);
+        captureFrame(vid, 'play-pause-prime');
+      }).catch(() => {
+        // eslint-disable-next-line no-console
+        console.log('[COVER] play() rejected (expected on some browsers)');
+      });
+    };
+    // Polling fallback
     const interval = setInterval(() => {
       if (vid.readyState >= 2) {
         setLoading(false);
-        captureFrame(vid);
+        captureFrame(vid, 'polling');
         if (vid.duration && isFinite(vid.duration)) setVideoDuration(vid.duration);
         clearInterval(interval);
       }
     }, 500);
-    const timeout = setTimeout(() => { clearInterval(interval); setLoading(false); setCaptureFailed(true); }, 5000);
+    const timeout = setTimeout(() => { clearInterval(interval); setLoading(false); setCaptureFailed(true); }, 8000);
     return () => { clearInterval(interval); clearTimeout(timeout); };
   }, [videoUrl]);
 
@@ -110,17 +126,25 @@ export default function CoverPicker({ videoUrl, value, onChange, fallbackThumbna
     console.log('[COVER] slider seek to:', targetTime);
     const handler = () => {
       // eslint-disable-next-line no-console
-      console.log('[COVER] seeked event fired for offset:', targetTime);
+      console.log('[COVER] seeked event fired, readyState:', vid.readyState);
       setTimeout(() => captureFrame(vid, 'seeked+delay'), 150);
     };
     vid.addEventListener('seeked', handler, { once: true });
-    // Fallback si seeked ne fire pas (Safari iOS)
+    // Safari iOS: si readyState < 2 après seek, forcer play/pause
     setTimeout(() => {
-      // eslint-disable-next-line no-console
-      console.log('[COVER] fallback timeout fired for offset:', targetTime);
-      vid.removeEventListener('seeked', handler);
-      captureFrame(vid, 'fallback-800ms');
-    }, 800);
+      if (vid.readyState < 2) {
+        // eslint-disable-next-line no-console
+        console.log('[COVER] slider: readyState still', vid.readyState, '- trying play/pause');
+        vid.play().then(() => {
+          vid.pause();
+          vid.currentTime = targetTime;
+          setTimeout(() => captureFrame(vid, 'slider-play-pause'), 300);
+        }).catch(() => captureFrame(vid, 'slider-play-catch'));
+      } else {
+        vid.removeEventListener('seeked', handler);
+        captureFrame(vid, 'slider-fallback');
+      }
+    }, 600);
   }, [frameOffset]);
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
