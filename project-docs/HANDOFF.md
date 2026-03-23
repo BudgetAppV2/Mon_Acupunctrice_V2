@@ -1,183 +1,142 @@
-# MON ACUPUNCTRICE HUB V2 — Document de passation
-*Généré le 19 mars 2026 — Fin de session de développement*
+# Mon Acupunctrice Hub V2 — Résumé pour session Stratégie
 
----
+## Le projet en bref
+Hub de création et publication de contenu pour Judith Dufour-Savard,
+acupunctrice solo à Montréal (La Source en Soi, Rosemont).
+Stack : Next.js 15 + Firebase + Vercel.
+Repo : `/Users/benoitarchambault/Desktop/Mon_Acupunctrice_V2`
+GitHub : `github.com/BudgetAppV2/Mon_Acupunctrice_V2`
+Déployé : `mon-acupunctrice-v2.vercel.app`
 
-## Contexte projet
+## État actuel — Milestones techniques COMPLÉTÉS
 
-**Qui :** Benoît Archambault, Directeur Technique aux Grands Ballets Canadiens
-**Pour qui :** Judith Dufour Savard, acupunctrice solo à Montréal
-**Quoi :** PWA mobile-first pour créer, monter et publier du contenu Instagram
+| # | Feature | Status |
+|---|---------|--------|
+| M01-M08 | Auth, PWA, Idées, Calendrier, Éditeur vidéo, Sous-titres, Publication IG, Deploy | ✅ |
+| M09 | OAuth Instagram (Business Login) | ✅ |
+| M10 | Facebook Reels OAuth + publication | ✅ |
+| M11 | YouTube Shorts OAuth + publication | ✅ |
+| M12 | Stats & Analytics (Instagram Insights, recharts, cron) | ✅ |
+| R | Refinements UX (9 fixes en 3 one-shots) | ✅ |
+| R2 | Transcription vocale d'idées (Whisper + Claude) | ✅ |
+| R3 | Éditeur texte multi-blocs (narration, duplication, timeline) | ✅ |
+| SCHEDULER | Cron Vercel (publication automatique) | ✅ |
 
-**Critère de succès absolu :**
-> Ce produit est réussi uniquement si Judith l'utilise réellement chaque semaine.
+## Phase actuelle : STRATÉGIE
 
----
+On est passés de "construire l'outil" à "construire le système qui guide
+Judith à créer du contenu régulier et efficace". 
 
-## Repo & Stack
+## Documents clés à lire (dans project-docs/)
 
-**GitHub :** https://github.com/BudgetAppV2/Mon_Acupunctrice_V2
-**Local :** /Users/benoitarchambault/Desktop/Mon_Acupunctrice_V2
+### Documents stratégie (LES PLUS IMPORTANTS)
+1. `01_PRODUCT/STRATEGIE/CENTRE_NEVRALGIQUE.md`
+   → Vision globale : tous les canaux, pipelines blogue→story→reel,
+   features S1-S10 à construire, connexion Go Rendez-Vous
 
-**Stack :** Next.js 15 App Router + TypeScript + Tailwind + Heroicons + Firebase Auth/Firestore/Storage/Functions + Zustand + FFmpeg.wasm + WebCodecs + Vercel (pas encore déployé)
+2. `01_PRODUCT/CALENDRIER_CADRE.md`
+   → Structure 6 mois : 4 types de posts (Éduquer/Connecter/Aider/Prouver),
+   3 piliers (Fertilité/Grossesse/Bien-être), gradation du rythme,
+   rotation mensuelle, structure hebdomadaire
 
-**Commandes dev :**
-```bash
-npm run dev          # Démarrer le serveur
-npm run dev:clean    # Vider cache .next et redémarrer ← utiliser si page blanche
-npm run build        # Build production
-firebase deploy --only firestore:indexes
-```
+3. `01_PRODUCT/CONTENT_STRATEGY.md`
+   → Stratégie de contenu : règles de posting, templates de CTA,
+   optimisation bio Instagram
 
----
+4. `01_PRODUCT/SEO_DISTRIBUTION_KB.md`
+   → Mots-clés, hashtags (3-5 max en 2026), stratégie distribution
 
-## 7 Milestones complétés ✅
+### Documents techniques (référence)
+5. `03_TECH/ARCHITECTURE.md` → Architecture Next.js + Firebase
+6. `03_TECH/DATA_MODEL.md` → Firestore schema (contentItems, users, analytics)
 
-| # | Milestone | Contenu |
-|---|-----------|---------|
-| M01 | Auth + PWA | Login Google, session persistante, PWA standalone, Bottom Tab Bar |
-| M02 | Banque d'idées | CRUD Firestore, Bottom Sheet iOS, filtres, swipe-to-delete, vue Blitz |
-| M03 | Calendrier | Grille mensuelle, dashboard bar, scheduling, ItemDetailSheet |
-| M04 | Éditeur fondation | Webcam 9:16, timeline dynamique, trim, export WebCodecs+FFmpeg |
-| M05 | Filtres + Texte | 9 filtres CSS, 30 polices, 7 styles, 6 animations fade in/out |
-| M06 | Sous-titres + Audio | Whisper, 3 styles subs, Jamendo, trim audio, fade, volumes |
-| M07 | Publication + Profil | PublishSheet 3 étapes, CoverPicker, Caption IA, Page /profil |
+## Ce qu'on veut construire ce soir
 
----
+### L'idée principale
+Hardcoder un plan de missions dans le calendrier du Hub. Pas de pipeline
+automatique, mais des missions pré-placées aux bonnes dates que Judith
+voit et complète comme un jeu.
 
-## Configuration Firebase
+### Les questions à détailler
+1. **Le calendrier gamifié** — Comment représenter les missions dans le
+   calendrier existant? Quels états (à faire → en cours → fait)?
+   Comment rendre ça motivant visuellement?
 
-**Projet :** mon-acupunctrice-hub
+2. **Les séquences** — Quand Judith publie un article de blogue,
+   les missions suivantes sont déjà programmées :
+   - Jour J : Story de promo (auto via API)
+   - Jour J+1 : Reel résumé (Judith le crée)
+   - Jour J+3 : Reel pratique (Judith le crée)
+   - Jour J+7 : Story rappel (auto via API)
 
-**Secrets Firebase déployés :**
-- ANTHROPIC_API_KEY → Génération captions (Claude)
-- OPENAI_API_KEY → Whisper transcription
-- META_USER_TOKEN → Instagram Graph API (hardcodé V1)
-- META_IG_ACCOUNT_ID → ID compte Instagram Judith
-- JAMENDO_CLIENT_ID → Bibliothèque musicale
+3. **Lier les idées aux missions** — Comment Judith assigne une idée
+   de sa banque à une mission du calendrier?
 
-**Variables .env.local (ne jamais committer) :**
-```
-NEXT_PUBLIC_FIREBASE_API_KEY
-NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
-NEXT_PUBLIC_FIREBASE_PROJECT_ID
-NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
-NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
-NEXT_PUBLIC_FIREBASE_APP_ID
-FIREBASE_FUNCTIONS_URL=https://us-central1-mon-acupunctrice-hub.cloudfunctions.net
-NEXT_PUBLIC_WIX_URL=https://[dashboard-wix-judith]
-```
+4. **Gamification** — Streaks, badges, progression, score?
+   Qu'est-ce qui motive sans être infantilisant?
 
-**Cloud Functions déployées :**
-- generateCaption (Claude/Anthropic)
-- publishToInstagram (Meta Graph API v25.0)
-- schedulePublisher (cron every 15min → publie les items scheduledAt)
-- transcribeAudio (Whisper OpenAI, timestamp_granularities: word)
-- searchJamendo (Jamendo API)
+5. **Stories via l'API** — L'API Instagram supporte media_type=STORIES.
+   On peut publier des Stories automatiquement (images/vidéos, pas de
+   stickers interactifs).
 
-**Index Firestore déployés :**
-- userId + workflowState + createdAt
-- userId + category + createdAt
-- userId + distributionStatus + scheduledAt
-- userId + createdAt
-- userId + scheduledAt
+## Découvertes clés de la session précédente
 
----
+### Go Rendez-Vous
+- La Source en Soi : companyId=104074
+- Judith : employeeId=7556837
+- Paramètre URL `eids=7556837` reconnu par le widget JS mais ne skip
+  pas la sélection du professionnel (limitation clinique multi-praticiens)
+- Solution : l'admin de La Source en Soi doit configurer le bouton embed
+  dans Paramètres → Promouvoir → Bouton → Avancé → sélectionner Judith
 
-## Architecture éditeur — Points importants
+### Instagram Stories API
+- `media_type=STORIES` dans le Content Publishing API (depuis 2023)
+- Le Hub PEUT publier des Stories automatiquement
+- Limitation : pas de stickers interactifs (liens, sondages)
+- Workaround : texte "Lien dans ma bio 👆" dans la Story
 
-### Layout (EditorLayout.tsx)
-```
-Header 44px    : ← retour | timecode | [↑ Exporter] bouton compact
-Preview vidéo  : flex-1 (tout l'espace disponible)
-Zone contrôles : max-height 55vh (ne peut pas écraser la preview)
-  ├── Toolbar onglets : Trim · Filtres · Texte · Sous-titres · Audio · Images
-  ├── Panneau actif   : filtres=90px / autres=100-120px, overflow-y-auto
-  └── Timeline        : hauteur dynamique = 20 + nb_tracks×26 px
-```
+### Vercel
+- Webhook GitHub→Vercel cassé depuis le 22 mars 2026
+- Déployer via `npx vercel --prod` en attendant
+- Ou reconnecter le repo dans Settings → Git
 
-### Export vidéo
-- **WebCodecs** prioritaire (hardware H.264 iPhone, ~12s pour 60s vidéo)
-- **FFmpeg.wasm** fallback (obligatoire si audio pour le mixage afade)
-- Format sortie : MP4 H.264, 1080×1920 (9:16), CRF 23
+## Canaux de Judith
+- Instagram : Reels + Stories
+- Facebook : Reels (republication)
+- YouTube : Shorts (SEO Google)
+- Site Wix : acupuncturejudith.ca (vitrine + blogue ~10 articles)
+- Go Rendez-Vous : gorendezvous.com/lasourceensoi
 
-### Filtres
-- Appliqués en CSS sur la `<video>` en preview
-- Traduits en `eq=` FFmpeg à l'export
-- Miniatures capturées depuis la vraie vidéo DOM + filtre CSS appliqué
+## Les 3 piliers de contenu
+1. FERTILITÉ — préconception, PMA, cycle menstruel
+2. GROSSESSE — prénatal, postnatal, accouchement
+3. BIEN-ÊTRE — menstruations, ménopause, stress, anxiété
 
-### Timeline
-- Hauteur dynamique selon tracks actives (vidéo/texte/subs/audio)
-- Marges 12px de chaque côté (PADDING constant)
-- Drag playhead : RAF throttle + setPointerCapture + touch-none
+## Les 4 types de posts
+- ÉDUQUER → Judith enseigne quelque chose
+- CONNECTER → Judith montre qui elle est
+- AIDER → Judith donne un truc concret à essayer
+- PROUVER → Résultat, témoignage
 
----
+## Profil de Judith (pour la stratégie)
+- À l'aise devant la caméra
+- Écrit ~1 article de blogue par mois
+- Fait déjà des Stories (mais pas liées au blogue)
+- Clientèle cible : femmes en général
+- Objectif : plus de clients
+- Rythme visé : gradation 1→4 posts/semaine sur 6 mois
+- Commence cette semaine
 
-## Bug connu
-Cache `.next` stale après modifications Claude Code → utiliser `npm run dev:clean`
-L'extension Chrome Kapture cause un warning d'hydratation (inoffensif, disparaît en prod)
-
----
-
-## Prochaine session — Ce qui est planifié
-
-### 1. Feedback Benoît (batch)
-Benoît va explorer et tester l'app. Il donnera son feedback en une batch.
-Axes probables : raffinements éditeur, bugs UX, tests flux complet.
-
-### 2. Nouvelles features à milestoner (session Gemini d'abord)
-
-**Distribution multi-plateforme**
-- YouTube Shorts : YouTube Data API v3, OAuth Google, quota 10k units/jour
-- Facebook Reels : même token Meta qu'Instagram, quasi gratuit à ajouter
-
-**Stats & Analytics**
-- Résumé dans /profil : vues Reels + trafic Wix (2 cartes simples)
-- Page dédiée /stats : graphiques, meilleure heure, croissance followers
-- Dashboard dans onglet Calendrier : résumé performances publications
-- Technique requis : token Meta long-lived (60j) + Instagram Insights API
-  - GET /{media-id}/insights?metric=plays,reach,likes
-  - GET /{ig-user-id}/insights?metric=follower_count
-
-**Stratégie trafic Wix**
-- UTM params automatiques dans les liens des captions générées
-- Mapping catégorie → URL spécifique du site Wix de Judith
-
-**Déploiement Vercel**
-- Variables d'environnement à configurer dans Vercel dashboard
-- Domaine custom à brancher
-
-### 3. Process pour la prochaine session
-1. Lire ce HANDOFF.md + project-docs/
-2. Session Gemini CLI pour écrire les milestones M08+
-3. Claude Code one shot par milestone
-4. Claude Desktop + Claude in Chrome pour troubleshoot
-
----
-
-## Conventions établies (non-négociables)
-
-- **Heroicons UNIQUEMENT** — zéro emoji dans l'UI
-- **0 console.log** en production
-- **Composants < 150 lignes**
-- **TypeScript strict**
-- **Mobile first 375px** (iPhone SE minimum)
-- **App Router ONLY** (jamais pages/)
-- **Commits sémantiques** : feat/fix/chore + description claire
-
----
-
-## Product Bible complète
-
-Tous les documents de référence :
-`/Users/benoitarchambault/Desktop/Mon_Acupunctrice_V2/project-docs/`
-
-Documents clés :
-- `00_VISION/VISION_FINALE.md` — vision et workflow de Judith
-- `00_VISION/DECISIONS_PRODUIT.md` — décisions validées (auth, Instagram, notifications...)
-- `01_PRODUCT/PRD_V1.md` — 21 user stories
-- `01_PRODUCT/EDITOR_SPEC.md` — spec complète éditeur
-- `01_PRODUCT/CONTENT_STRATEGY.md` — SEO Instagram 2026, CTA, YouTube
-- `03_TECH/API_DESIGN.md` — Cloud Functions et API routes
-- `03_TECH/EXPORT_STRATEGY.md` — WebCodecs vs FFmpeg
-- `05_LATER/BACKLOG_LATER.md` — features futures planifiées
+## Features à construire (priorité)
+| # | Feature | Description |
+|---|---------|-------------|
+| S1 | Stories API | Publier des Stories Instagram via l'API |
+| S2 | Pipeline blogue | Lien d'article → missions auto dans le calendrier |
+| S3 | Missions hebdomadaires | Calendrier gamifié avec missions à compléter |
+| S4 | Catégorisation idées | Pilier + type sur chaque idée |
+| S5 | Tableau d'inspiration | Sauvegarder des posts Instagram comme référence |
+| S6 | Calendrier amélioré | Code couleur, indicateur pilier du mois |
+| S7 | Stories auto blogue | Générer et publier une Story quand article sort |
+| S8 | Hashtags configurables | Par catégorie, dans generateCaption |
+| S9 | Page lien RDV | Page publique avec lien Go Rendez-Vous |
+| S10 | Refonte blogue Wix | Nouvelle disposition (Judith a un exemple) |
