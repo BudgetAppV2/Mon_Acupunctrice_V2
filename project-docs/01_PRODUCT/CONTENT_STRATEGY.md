@@ -1,256 +1,182 @@
-# CONTENT_STRATEGY.md
-# Stratégie de contenu — Distribution & croissance
-*Version 1.0 — Mars 2026*
+# Stratégie de contenu & conversion — Mon Acupunctrice Hub
+
+## Objectif final
+**Stimuler la prise de rendez-vous** chez La Source en Soi avec Judith.
+Chaque post, chaque Reel, chaque story doit rapprocher la personne de cliquer "Prendre RDV".
 
 ---
 
-## Principe
+## Constat actuel
 
-> Judith crée une fois. L'app distribue partout.
-> Chaque publication ramène du trafic vers judithtremblay.com
+### Ce qu'on a
+- Hub de création de contenu (idées → éditeur → publication multi-plateforme)
+- Instagram, Facebook, YouTube connectés
+- Site Wix (acupuncturejudith.ca / mon-acupunctrice.ca)
+- Go Rendez-Vous (via La Source en Soi, clinique multi-praticiens)
+- Judith employee ID: 7556837
 
----
-
-## Plateformes de distribution
-
-### Phase 1 — V1 (maintenant)
-- ✅ **Instagram Reels** — plateforme principale, token hardcodé
-
-### Phase 2 — V2 (après usage réel)
-- 🔜 **YouTube Shorts** — même fichier MP4, API YouTube Data v3
-- 🔜 **Facebook Reels** — via Meta Graph API (même token que IG)
-
-### Phase 3 — V3 (futur)
-- TikTok (API séparée, vérification plus complexe)
+### Le gap
+- Pas de lien direct vers la prise de RDV avec Judith spécifiquement
+- Le contenu n'a pas encore de stratégie de conversion structurée
+- Pas de call-to-action systématique dans les captions
+- Le bio Instagram n'est pas optimisé pour la conversion
 
 ---
 
-## Stratégie SEO Instagram 2026
+## La stratégie en 3 piliers
 
-### Hashtags — La réalité en 2026
+### PILIER 1 — Contenu qui parle aux problèmes réels
+**Principe clé de 2026 :** "Si ton post ne fait pas penser 'c'est exactement
+ce que je vis', les gens scrollent." — La spécificité bat l'esthétique.
 
-> Judith a raison : le hashtag stuffing est mort.
-> Adam Mosseri (CEO Instagram) l'a confirmé officiellement.
+**Catégories de contenu pour Judith :**
 
-**Nouvelle approche :**
-- Instagram fonctionne comme un moteur de recherche
-- Les **mots-clés dans la caption** sont le signal #1
-- Les hashtags : max **3-5**, ultra-ciblés, pas plus
-- L'alt-text des images/vidéos est indexé par l'algorithme
+1. **"Tu savais que..." (Éducation)**
+   - Acupuncture et fertilité : mythes vs réalité
+   - Ce qui se passe dans ton corps pendant une séance
+   - Pourquoi l'OMS recommande l'acupuncture pour X
+   → But : Établir la crédibilité, SEO YouTube
 
-**Ce qu'on fait dans les captions générées :**
+2. **"Moi aussi je..." (Connexion personnelle)**
+   - Judith qui prépare sa salle, ses aiguilles
+   - Sa routine avant/après une journée de consultations
+   - Ses boucles d'oreilles (le contenu qu'elle voulait faire!)
+   → But : Créer un lien humain, "je veux être traitée par ELLE"
+
+3. **"Voici comment..." (Solutions)**
+   - 3 points d'acupression à faire chez soi pour les nausées de grossesse
+   - Comment préparer sa première séance d'acupuncture
+   - Exercice de respiration pour l'anxiété pré-natale
+   → But : Donner de la valeur, démontrer l'expertise
+
+4. **"Témoignage / Résultat" (Preuve sociale)**
+   - Avant/après (avec consentement) — pas physique, mais état de bien-être
+   - Texte de remerciement d'une patiente (anonymisé)
+   - "3 séances plus tard, elle dort enfin"
+   → But : Preuve que ça fonctionne → conversion directe
+
+**Ratio recommandé :** 2 éducation : 2 connexion : 1 solution : 1 preuve sociale
+
+### PILIER 2 — Call-to-Action systématique
+
+**Chaque post doit avoir UN CTA clair.** Pas deux, pas zéro. UN.
+
+**CTAs rotatifs par type de contenu :**
+
+| Type | CTA |
+|------|-----|
+| Éducation | "Enregistre ce post pour t'en rappeler 📌" |
+| Connexion | "Tu vis ça aussi? Dis-le moi en commentaire 💬" |
+| Solution | "Essaie et dis-moi comment ça s'est passé! 🌿" |
+| Preuve sociale | "Prête à essayer? Lien pour prendre RDV dans ma bio ✨" |
+
+**Règle importante :** Seulement 1 post sur 4-5 devrait avoir un CTA direct
+vers la prise de RDV. Les autres construisent l'engagement et la confiance.
+
+**CTA pour la prise de RDV (quand utilisé) :**
 ```
-❌ Avant (hashtag stuffing) :
-"L'acupuncture peut aider la fertilité!
-#acupuncture #fertilite #montreal #sante #bienetre
-#MTC #grossesse #naturel #holistique #yoga..."
-
-✅ Maintenant (SEO-first) :
-"L'acupuncture aide la fertilité en régulant les cycles
-hormonaux et en améliorant la circulation vers les organes
-reproducteurs. Si tu es à Montréal et que tu cherches une
-approche naturelle pour concevoir, voilà comment je peux t'aider.
-
-Prends rendez-vous → lien en bio
-
-#acupuncturemontreal #fertilitenatuelle #MTC"
+📍 La Source en Soi — Rosemont
+🔗 Lien de prise de rendez-vous dans ma bio
+Ou cherche "Judith Dufour-Savard" sur gorendezvous.com
 ```
 
-### Les 5 éléments SEO d'une bonne caption
+### PILIER 3 — Optimiser le chemin vers le RDV
 
-1. **Hook (première ligne)** — question ou fait surprenant
-   *L'algorithme indexe les premiers mots*
-   Ex: "Saviez-vous que l'acupuncture peut doubler les chances de FIV?"
+**Bio Instagram optimisée :**
+```
+Judith Dufour-Savard, Ac. 🌿
+Acupuncture | Fertilité | Prénatal | Enfant
+📍 La Source en Soi — Rosemont, Montréal
+⬇️ Prends rendez-vous ici ⬇️
+[lien]
+```
 
-2. **Corps riche en mots-clés naturels** — parler comme ses patients cherchent
-   Ex: "douleurs menstruelles", "stress et fertilité", "acupuncture Montréal"
+**Le lien dans la bio — options par priorité :**
 
-3. **CTA explicite** — toujours une action claire
-   Ex: "Prends rendez-vous →", "Lis l'article complet →"
+1. **Idéal (nécessite admin La Source en Soi) :**
+   Bouton Go Rendez-Vous embed avec `eids=7556837` pré-sélectionné
+   → L'admin configure dans Paramètres → Promouvoir → Bouton → Avancé
 
-4. **Mention du lien en bio** — Instagram ne permet pas de liens cliquables
-   Ex: "Lien en bio pour réserver ta consultation gratuite"
+2. **Solution intermédiaire — Page de lien dans le Hub :**
+   Créer une page `/rdv` dans le Hub (ou sur le site Wix) qui :
+   - Affiche le nom et la photo de Judith
+   - Explique les services disponibles (Régulier, Prénatal, Fertilité, Enfant)
+   - Chaque service a un bouton "Prendre RDV" qui pointe vers Go Rendez-Vous
+   - Instructions claires : "Sélectionnez Judith Dufour-Savard"
 
-5. **3 hashtags max** — ultra-ciblés, pas de hashtags génériques
-   Ex: #acupuncturemontreal #fertiliteMTC #acupunctriceMontreal
+3. **Minimum viable :**
+   Lien direct `gorendezvous.com/lasourceensoi` avec dans la bio :
+   "Demandez Judith Dufour-Savard"
+
+**YouTube Shorts :**
+Le lien est cliquable dans la description → inclure systématiquement
+le lien vers Go Rendez-Vous + le site web de Judith.
 
 ---
 
-## Stratégie CTA — Amener du trafic vers le site Wix
+## Implémentation dans le Hub
 
-### Pourquoi c'est difficile sur Instagram
+### Modifications à faire (par priorité)
 
-Instagram ne permet pas de liens cliquables dans les posts.
-Le seul lien cliquable est dans la **bio du profil**.
+#### P1 — Templates de CTA dans la génération de caption
+Modifier le prompt `generateCaption` pour inclure automatiquement un CTA
+adapté au type de contenu. Le prompt utilise la KB SEO déjà créée.
 
-### Stratégie en 3 couches (baked-in dans l'app)
+**Fichier :** `app/api/generate-caption/route.ts` (ou Cloud Function)
+**Action :** Ajouter au prompt système les CTAs par catégorie (ci-dessus)
 
-**Couche 1 — Caption textuelle (générée automatiquement)**
-```
-"Pour en savoir plus sur mes services, le lien est dans ma bio.
-→ [URL du site Wix]"
-```
+#### P2 — Page de lien "Prendre RDV" 
+Créer une page publique (pas derrière le login) accessible depuis la bio IG.
+Options : 
+- Page sur le site Wix de Judith (plus simple)
+- Ou page `/rdv` dans le Hub (plus contrôlé)
 
-**Couche 2 — CTA verbal dans la vidéo (reminder à l'éditeur)**
-L'app affiche un reminder dans l'éditeur :
-"💡 Conseil : mentionne ton site verbalement dans ta vidéo
-pour maximiser le trafic vers judithtremblay.com"
+#### P3 — Hashtags configurables dans le profil
+Judith configure ses hashtags par catégorie dans le profil du Hub.
+Le generateCaption les inclut automatiquement (3-5 max, ciblés).
 
-**Couche 3 — Texte overlay dans la vidéo**
-Template de texte overlay disponible dans l'éditeur :
-"📍 Lien en bio pour réserver" (style, position, animation pré-configurés)
+#### P4 — Calendrier éditorial dans le Hub
+Ajouter une vue "Semaine" dans le calendrier qui montre le ratio de contenu :
+- Code couleur par catégorie (éducation=bleu, connexion=vert, solution=jaune, preuve=rose)
+- Alerte si trop de posts dans la même catégorie
+- Suggestion : "Tu n'as pas posté de contenu 'connexion' cette semaine"
 
-### Types de CTA par objectif
-
-```typescript
-const CTA_TEMPLATES = {
-  // Prise de rendez-vous (objectif principal)
-  appointment: [
-    "Prends rendez-vous → lien en bio",
-    "Consultation gratuite disponible → lien en bio",
-    "Reserve ta place → lien en bio",
-  ],
-
-  // Découverte du site (objectif secondaire)
-  discovery: [
-    "En savoir plus → lien en bio",
-    "Tous mes services → lien en bio",
-    "Lis l'article complet → lien en bio",
-  ],
-
-  // Contenu éducatif (brand awareness)
-  education: [
-    "Télécharge mon guide gratuit → lien en bio",
-    "Plus de conseils sur mon site → lien en bio",
-  ],
-}
-```
-
-L'IA sélectionne automatiquement le type de CTA selon la catégorie du contenu :
-- Fertilité / Grossesse → CTA appointment
-- Bien-être général → CTA education
-- MTC explicatif → CTA discovery
+#### P5 — Statistiques orientées conversion (extension M12)
+Ajouter dans la page Stats :
+- "Engagement moyen par catégorie de contenu"
+- "Quel type de post génère le plus de sauvegardes?"
+- Les sauvegardes (saves) sont le signal #1 sur Instagram en 2026
 
 ---
 
-## YouTube Shorts — Planification
+## Calendrier éditorial — Première semaine type
 
-### Pourquoi YouTube en V2
+| Jour | Type | Idée de contenu | CTA |
+|------|------|----------------|-----|
+| Lundi | Éducation | "3 choses que l'acupuncture peut faire pour ta fertilité" | Enregistre 📌 |
+| Mercredi | Connexion | Judith met ses boucles d'oreilles + texte narratif "ma journée commence..." | Commente 💬 |
+| Vendredi | Solution | "Point d'acupression pour les nausées — essaie maintenant" | Essaie et dis-moi 🌿 |
+| Dimanche | Preuve sociale | Texte témoignage anonymisé + musique douce | Lien RDV dans bio ✨ |
 
-- Même fichier MP4 9:16 → zéro travail supplémentaire pour Judith
-- Audience différente d'Instagram → double la portée
-- YouTube = moteur de recherche Google → SEO long terme
-- Les Shorts apparaissent dans Google Search — énorme pour une acupunctrice locale
-
-### Architecture technique YouTube Data API v3
-
-```typescript
-// Cloud Function: publishToYouTube
-// Nécessite OAuth par utilisateur (pas de token hardcodé)
-// → Judith doit connecter son compte YouTube une fois dans le Profil
-
-// Upload flow:
-// 1. POST videos.insert (multipart upload)
-//    title: titre de l'idée
-//    description: caption + CTA Wix
-//    tags: ['acupuncture', 'montreal', 'MTC'] // max 500 chars
-//    categoryId: '26' // Howto & Style
-//    privacyStatus: 'public'
-//    madeForKids: false
-// 2. Video classifiée Shorts automatiquement si:
-//    - Durée ≤ 60 secondes
-//    - Ratio 9:16
-//    - Titre contient #Shorts (optionnel mais aide)
-```
-
-### Quotas YouTube API (contrainte importante)
-```
-10 000 units/jour (projet Google Cloud)
-1 upload = ~1600 units
-→ Max ~6 uploads/jour en gratuit
-Pour Judith (3 posts/semaine) → largement suffisant
-```
-
-### Description YouTube (différente d'Instagram)
-
-YouTube permet les liens cliquables dans la description :
-```
-[Caption complète]
-
-🔗 Prends rendez-vous : https://judithtremblay.com/rdv
-📍 Clinique à Montréal
-📸 Instagram : @judithtremblay_acupuncture
-
-#acupuncture #montreal #Shorts
-```
+**Fréquence recommandée :** 3-4 posts/semaine minimum, régularité > quantité.
 
 ---
 
-## SEO Wix — Connexion contenu → site
+## Action items immédiats
 
-### Comment le contenu Instagram alimente le SEO du site
-
-Instagram et YouTube indexent les mots-clés des captions.
-Ces mots-clés doivent être alignés avec les pages du site Wix.
-
-**Mapping suggéré (configurable dans le Profil) :**
-```
-Catégorie Fertilité  → judithtremblay.com/fertilite
-Catégorie Grossesse  → judithtremblay.com/grossesse
-Catégorie Bien-être  → judithtremblay.com/bienetre
-Catégorie MTC        → judithtremblay.com/acupuncture
-```
-
-Le CTA généré pointe vers la bonne page selon la catégorie :
-```
-Post sur la fertilité → "Prends rdv → judithtremblay.com/fertilite"
-Post sur la grossesse → "Prends rdv → judithtremblay.com/grossesse"
-```
-
-### URL configurable dans le Profil
-
-```typescript
-interface UserProfile {
-  wixSiteUrl: string           // URL de base du site
-  categoryUrls: {              // URLs par catégorie (optionnel)
-    fertilite?: string
-    grossesse?: string
-    bien_etre?: string
-    mtc?: string
-  }
-  defaultCTA: CTAType          // Type de CTA préféré
-}
-```
+- [ ] Judith demande à l'admin de La Source en Soi le bouton embed avec son profil
+- [ ] Optimiser la bio Instagram de Judith (texte ci-dessus)
+- [ ] Mettre à jour le prompt generateCaption avec les CTAs par catégorie
+- [ ] Créer une page de lien simple sur le site Wix ou dans le Hub
+- [ ] Planifier la première semaine de contenu avec Judith
 
 ---
 
-## Prompt Claude pour caption SEO-optimisée
+## Métriques de succès (à suivre dans M12 Stats)
 
-```
-Tu es l'assistante de Judith Tremblay, acupunctrice à Montréal.
-Rédige une caption Instagram SEO-optimisée pour un Reel sur: {titre}
-Catégorie: {catégorie}
-
-RÈGLES STRICTES:
-1. Première ligne = hook percutant (question ou fait surprenant)
-2. Corps = 3-4 phrases riches en mots-clés naturels que ses patients chercheraient
-   Exemples: "acupuncture Montréal", "fertilité naturelle", "douleurs menstruelles"
-3. Ton: professionnel ET chaleureux, français québécois authentique
-   ("rendez-vous" pas "appointment", naturel et organique)
-4. CTA explicite: "{cta}" + "lien en bio"
-5. Max 3 hashtags ultra-ciblés à la fin (pas de hashtags génériques)
-6. 150-200 mots maximum
-
-URL à mentionner: {categoryUrl}
-```
-
----
-
-## Ce qu'on NE fait PAS
-
-- ❌ Hashtag stuffing (30 hashtags) — mort en 2026
-- ❌ Même caption copiée-collée sur YouTube et Instagram
-  (adapter légèrement — YouTube peut avoir des liens cliquables)
-- ❌ Liens cliquables dans la caption Instagram (pas supporté)
-- ❌ CTA trop agressif ou commercial ("ACHETEZ MAINTENANT")
-- ❌ Automatisation TikTok en V1 (API trop complexe)
+1. **Saves par post** — le signal #1 en 2026, montre que le contenu a de la valeur
+2. **Reach par Reel** — portée organique
+3. **Engagement rate** — (likes + comments + saves + shares) / reach
+4. **Clics vers le profil** — disponible via Instagram Insights
+5. **Prises de RDV** — demander à Judith de tracker manuellement au début
+   ("Comment avez-vous entendu parler de moi?" → Instagram/YouTube)
