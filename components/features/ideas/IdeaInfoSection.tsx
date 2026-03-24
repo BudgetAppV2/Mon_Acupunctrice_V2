@@ -4,7 +4,8 @@ import { useState, useEffect } from 'react';
 import { useUpdateContentItem } from '@/lib/hooks/useUpdateContentItem';
 import { useUserProfile } from '@/lib/hooks/useUserProfile';
 import { getAllCategories } from '@/lib/utils/categories';
-import { WORKFLOW_LABELS, type ContentItem, type WorkflowState } from '@/lib/types';
+import { WORKFLOW_LABELS, type ContentItem, type WorkflowState, type ContentStyle } from '@/lib/types';
+import ContentStyleSelector from './ContentStyleSelector';
 
 function getStatusLabel(item: ContentItem): string {
   if (item.distributionStatus === 'published') return 'Publiee';
@@ -85,6 +86,12 @@ export default function IdeaInfoSection({ item }: { item: ContentItem }) {
           <button onClick={saveCustomCat} disabled={!customCat.trim()} className="px-3 py-1.5 bg-sage text-white text-sm rounded-lg disabled:opacity-50">OK</button>
         </div>
       )}
+
+      {/* Style de contenu */}
+      <ContentStyleSelector
+        value={item.contentStyle}
+        onChange={(style: ContentStyle) => updateItem(item.id, { contentStyle: style })}
+      />
 
       {/* Notes editables */}
       <textarea
