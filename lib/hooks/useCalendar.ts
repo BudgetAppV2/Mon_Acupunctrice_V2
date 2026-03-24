@@ -77,7 +77,7 @@ export function useCalendar() {
     return map;
   }, [scheduledItems]);
 
-  return { currentMonth, calendarDays, itemsByDay, loading, error, goToNextMonth, goToPreviousMonth };
+  return { currentMonth, calendarDays, itemsByDay, scheduledItems, loading, error, goToNextMonth, goToPreviousMonth };
 }
 
 // Génère 42 jours (6 semaines) en commençant par lundi

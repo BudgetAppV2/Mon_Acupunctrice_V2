@@ -1,25 +1,19 @@
 'use client';
 
-import type { ContentItem, WorkflowState } from '@/lib/types';
-
-const DOT_COLORS: Record<WorkflowState, string> = {
-  idea: 'bg-status-idea',
-  planned: 'bg-status-planned',
-  ready_to_shoot: 'bg-status-shot',
-  shot: 'bg-status-shot',
-  editing: 'bg-status-editing',
-  ready: 'bg-status-ready',
-};
+import React, { memo } from 'react';
+import DayIndicators from './DayIndicators';
+import type { ContentItem, CalendarSlot } from '@/lib/types';
 
 interface Props {
   date: Date;
   items: ContentItem[];
+  slots: CalendarSlot[];
   isCurrentMonth: boolean;
   isToday: boolean;
   onTap: (date: Date, items: ContentItem[]) => void;
 }
 
-export default function CalendarDay({ date, items, isCurrentMonth, isToday, onTap }: Props) {
+function CalendarDay({ date, items, slots, isCurrentMonth, isToday, onTap }: Props) {
   // Jours hors du mois courant : décoratifs, non interactifs
   if (!isCurrentMonth) {
     return (
@@ -30,9 +24,6 @@ export default function CalendarDay({ date, items, isCurrentMonth, isToday, onTa
       </div>
     );
   }
-
-  const hasItems = items.length > 0;
-  const thumbnail = items.find((i) => i.thumbnailUrl)?.thumbnailUrl;
 
   return (
     <button
@@ -48,24 +39,9 @@ export default function CalendarDay({ date, items, isCurrentMonth, isToday, onTa
       >
         {date.getDate()}
       </span>
-
-      {hasItems && !thumbnail && (
-        items.length > 1 ? (
-          <span className="text-[9px] font-bold text-sage bg-sage/10 w-4 h-4 flex items-center justify-center rounded-full mt-0.5">
-            {items.length}
-          </span>
-        ) : (
-          <div className={`w-1.5 h-1.5 rounded-full mt-1 ${DOT_COLORS[items[0].workflowState] ?? 'bg-gray-400'}`} />
-        )
-      )}
-
-      {thumbnail && (
-        <img
-          src={thumbnail}
-          alt=""
-          className="w-8 h-8 mt-0.5 rounded object-cover"
-        />
-      )}
+      <DayIndicators items={items} slots={slots} />
     </button>
   );
 }
+
+export default memo(CalendarDay);

@@ -1,53 +1,43 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useRef, useMemo } from 'react';
 import { useCalendar } from '@/lib/hooks/useCalendar';
+import { useCalendarSheets } from '@/lib/hooks/useCalendarSheets';
 import CalendarHeader from './CalendarHeader';
 import DashboardBar from './DashboardBar';
 import CalendarDay from './CalendarDay';
 import ScheduleSheet from './ScheduleSheet';
 import ItemDetailSheet from './ItemDetailSheet';
-import type { ContentItem } from '@/lib/types';
+import type { ContentItem, CalendarSlot } from '@/lib/types';
 
 const WEEKDAYS = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
+// Pas de slots Firestore avant S02 — tableau vide stable
+const EMPTY_SLOTS: CalendarSlot[] = [];
 
 export default function CalendarView() {
-  const {
-    currentMonth,
-    calendarDays,
-    itemsByDay,
-    loading,
-    error,
-    goToNextMonth,
-    goToPreviousMonth,
-  } = useCalendar();
-
-  const [scheduleDate, setScheduleDate] = useState<Date | null>(null);
-  const [detailItem, setDetailItem] = useState<ContentItem | null>(null);
+  const { currentMonth, calendarDays, itemsByDay, scheduledItems, loading, error, goToNextMonth, goToPreviousMonth } = useCalendar();
+  const sheets = useCalendarSheets();
 
   // Swipe natif pour naviguer entre les mois
   const touchXRef = useRef(0);
-  const handleTouchStart = (e: React.TouchEvent) => {
-    touchXRef.current = e.touches[0].clientX;
-  };
+  const handleTouchStart = (e: React.TouchEvent) => { touchXRef.current = e.touches[0].clientX; };
   const handleTouchEnd = (e: React.TouchEvent) => {
     const diff = e.changedTouches[0].clientX - touchXRef.current;
     if (diff > 60) goToPreviousMonth();
     if (diff < -60) goToNextMonth();
   };
 
+  const handleDayTap = (date: Date, items: ContentItem[]) => {
+    if (items.length > 0) sheets.onTapItem(items[0]);
+    else sheets.onTapEmptyDay(date);
+  };
+
+  // Items du mois pour MonthSummary (via CalendarHeader)
+  const monthItems = useMemo(() => scheduledItems ?? [], [scheduledItems]);
+
   const today = new Date();
   const curMonth = currentMonth.getMonth();
-
   const dayKey = (d: Date) => `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
-
-  const handleDayTap = (date: Date, items: ContentItem[]) => {
-    if (items.length > 0) {
-      setDetailItem(items[0]);
-    } else {
-      setScheduleDate(date);
-    }
-  };
 
   if (loading) {
     return (
@@ -68,19 +58,21 @@ export default function CalendarView() {
   return (
     <>
       <DashboardBar />
-      <CalendarHeader currentMonth={currentMonth} onPrev={goToPreviousMonth} onNext={goToNextMonth} />
+      <CalendarHeader
+        currentMonth={currentMonth}
+        onPrev={goToPreviousMonth}
+        onNext={goToNextMonth}
+        items={monthItems}
+        slots={EMPTY_SLOTS}
+      />
 
       <div onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
-        {/* En-têtes jours de la semaine */}
         <div className="grid grid-cols-7 px-2">
           {WEEKDAYS.map((d, i) => (
-            <div key={i} className="text-center text-xs text-gray-400 py-2 font-medium">
-              {d}
-            </div>
+            <div key={i} className="text-center text-xs text-gray-400 py-2 font-medium">{d}</div>
           ))}
         </div>
 
-        {/* Grille 6×7 */}
         <div className="grid grid-cols-7 px-2">
           {calendarDays.map((date, i) => {
             const items = itemsByDay.get(dayKey(date)) ?? [];
@@ -89,6 +81,7 @@ export default function CalendarView() {
                 key={i}
                 date={date}
                 items={items}
+                slots={EMPTY_SLOTS}
                 isCurrentMonth={date.getMonth() === curMonth}
                 isToday={
                   date.getDate() === today.getDate() &&
@@ -103,16 +96,16 @@ export default function CalendarView() {
       </div>
 
       <ScheduleSheet
-        isOpen={!!scheduleDate}
-        onClose={() => setScheduleDate(null)}
-        selectedDate={scheduleDate}
-        onScheduled={() => setScheduleDate(null)}
+        isOpen={sheets.showSchedule}
+        onClose={sheets.closeAll}
+        selectedDate={sheets.selectedDate}
+        onScheduled={sheets.closeAll}
       />
       <ItemDetailSheet
-        isOpen={!!detailItem}
-        onClose={() => setDetailItem(null)}
-        item={detailItem}
-        onUnscheduled={() => setDetailItem(null)}
+        isOpen={!!sheets.selectedItem}
+        onClose={sheets.closeAll}
+        item={sheets.selectedItem}
+        onUnscheduled={sheets.closeAll}
       />
     </>
   );
