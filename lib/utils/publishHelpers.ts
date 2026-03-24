@@ -86,3 +86,26 @@ export async function publishYouTube(
   const upData = await upRes.json();
   return upData.id ?? null;
 }
+
+export async function publishInstagramStory(
+  item: Record<string, unknown>, igUserId: string, accessToken: string,
+): Promise<string | null> {
+  const mediaPayload = item.videoUrl
+    ? { video_url: item.videoUrl as string }
+    : { image_url: (item.coverImageUrl || item.storyImageUrl) as string };
+
+  const createRes = await fetch(`${GRAPH}/${igUserId}/media`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ media_type: 'STORIES', ...mediaPayload, access_token: accessToken }),
+  });
+  const createData = await createRes.json();
+  if (!createData.id) throw new Error(`story_create_failed: ${JSON.stringify(createData)}`);
+
+  const publishRes = await fetch(`${GRAPH}/${igUserId}/media_publish`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ creation_id: createData.id, access_token: accessToken }),
+  });
+  const publishData = await publishRes.json();
+  if (!publishData.id) throw new Error(`story_publish_failed: ${JSON.stringify(publishData)}`);
+  return publishData.id;
+}

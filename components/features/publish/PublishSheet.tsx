@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import BottomSheet from '@/components/ui/BottomSheet';
 import { usePublish } from '@/lib/hooks/usePublish';
+import { useMultiPlatformPublish } from '@/lib/hooks/useMultiPlatformPublish';
 import type { ContentItem } from '@/lib/types';
 import CoverPicker from './CoverPicker';
 import CaptionEditor from './CaptionEditor';
@@ -13,12 +14,7 @@ import { useAuthStore } from '@/lib/store/useAuthStore';
 import { useEditorStore } from '@/lib/store/useEditorStore';
 import { ArrowRightIcon, ArrowLeftIcon, PaperAirplaneIcon, CalendarIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
 
-interface Props {
-  isOpen: boolean;
-  onClose: () => void;
-  item: ContentItem;
-}
-
+interface Props { isOpen: boolean; onClose: () => void; item: ContentItem }
 type CoverSelection = { type: 'frame'; offset: number } | { type: 'custom'; url: string };
 
 export default function PublishSheet({ isOpen, onClose, item }: Props) {
@@ -27,14 +23,10 @@ export default function PublishSheet({ isOpen, onClose, item }: Props) {
   const [caption, setCaption] = useState(item.caption || '');
   const [showSchedule, setShowSchedule] = useState(false);
   const [done, setDone] = useState(false);
-  const [alsoFacebook, setAlsoFacebook] = useState(false);
-  const [alsoYoutube, setAlsoYoutube] = useState(false);
-  const [fbError, setFbError] = useState<string | null>(null);
-  const [ytError, setYtError] = useState<string | null>(null);
   const [frameDataUrl, setFrameDataUrl] = useState<string | null>(null);
   const { publish, schedule, publishing, error } = usePublish();
   const uid = useAuthStore((s) => s.user?.uid);
-  const { facebookPageId, youtubeChannelId } = useUserProfile();
+  const { facebookPageId, youtubeChannelId, metaStatus } = useUserProfile();
   const editorThumb = useEditorStore((s) => s.thumbnailUrl);
 
   const coverOpt = cover.type, thumbOff = cover.type === 'frame' ? cover.offset : undefined, coverUrl = cover.type === 'custom' ? cover.url : undefined;
@@ -50,26 +42,10 @@ export default function PublishSheet({ isOpen, onClose, item }: Props) {
     } catch { return undefined; }
   };
 
-  const publishToApi = async (api: string, setErr: (e: string) => void) => {
-    try {
-      const r = await fetch(api, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ itemId: item.id, uid }) });
-      if (!r.ok) { const d = await r.json().catch(() => ({})); setErr(d.error || 'Erreur'); }
-    } catch { setErr('Erreur'); }
-  };
-
-  const handlePublish = async () => {
-    if (!item.videoUrl) return;
-    setFbError(null); setYtError(null);
-    const finalCoverUrl = coverUrl || await uploadFrameAsCover();
-    const ok = await publish({ videoUrl: item.videoUrl, caption, itemId: item.id, coverOption: coverOpt, thumbOffset: thumbOff, coverUrl: finalCoverUrl });
-    if (ok && uid) {
-      const tasks: Promise<void>[] = [];
-      if (alsoFacebook) tasks.push(publishToApi('/api/publish-facebook', setFbError));
-      if (alsoYoutube) tasks.push(publishToApi('/api/publish-youtube', setYtError));
-      await Promise.allSettled(tasks);
-    }
-    if (ok) setDone(true);
-  };
+  const {
+    handlePublish, fbError, ytError, storyError,
+    alsoFacebook, setAlsoFacebook, alsoYoutube, setAlsoYoutube, alsoStory, setAlsoStory,
+  } = useMultiPlatformPublish({ item, uid, caption, coverOption: coverOpt, thumbOffset: thumbOff, coverUrl, publish, uploadFrameAsCover, setDone });
 
   const handleSchedule = async (date: Date) => {
     const finalCoverUrl = coverUrl || await uploadFrameAsCover();
@@ -83,6 +59,7 @@ export default function PublishSheet({ isOpen, onClose, item }: Props) {
         <p className="text-base font-semibold text-gray-900">{showSchedule ? 'Publication planifiee!' : 'Publie sur Instagram!'}</p>
         {fbError && <p className="text-xs text-red-500">{fbError}</p>}
         {ytError && <p className="text-xs text-red-500">{ytError}</p>}
+        {storyError && <p className="text-xs text-red-500">{storyError}</p>}
         <button onClick={onClose} className="mt-4 px-6 py-2 bg-sage text-white rounded-xl font-medium">Fermer</button>
       </div>
     </BottomSheet>
@@ -101,7 +78,6 @@ export default function PublishSheet({ isOpen, onClose, item }: Props) {
             </button>
           </>
         )}
-
         {step === 2 && (
           <>
             <CaptionEditor caption={caption} onChange={setCaption} title={item.title} category={item.category} notes={item.notes} />
@@ -115,22 +91,20 @@ export default function PublishSheet({ isOpen, onClose, item }: Props) {
             </div>
           </>
         )}
-
         {step === 3 && (
           <>
             {error && <p className="text-sm text-red-500 bg-red-50 p-2 rounded">{error}</p>}
             <PlatformToggles
-              facebookPageId={facebookPageId} youtubeChannelId={youtubeChannelId}
-              alsoFacebook={alsoFacebook} alsoYoutube={alsoYoutube}
-              onToggleFacebook={() => setAlsoFacebook(!alsoFacebook)} onToggleYoutube={() => setAlsoYoutube(!alsoYoutube)}
+              facebookPageId={facebookPageId} youtubeChannelId={youtubeChannelId} metaStatus={metaStatus}
+              alsoFacebook={alsoFacebook} alsoYoutube={alsoYoutube} alsoStory={alsoStory}
+              onToggleFacebook={() => setAlsoFacebook(!alsoFacebook)} onToggleYoutube={() => setAlsoYoutube(!alsoYoutube)} onToggleStory={() => setAlsoStory(!alsoStory)}
             />
             {showSchedule ? (
               <SchedulePicker onSchedule={handleSchedule} onCancel={() => setShowSchedule(false)} />
             ) : (
               <div className="space-y-2">
                 <button onClick={handlePublish} disabled={publishing} className="w-full py-3 bg-sage text-white rounded-xl font-semibold flex items-center justify-center gap-2 disabled:opacity-50">
-                  <PaperAirplaneIcon className="w-5 h-5" />
-                  {publishing ? 'Publication...' : 'Publier maintenant'}
+                  <PaperAirplaneIcon className="w-5 h-5" /> {publishing ? 'Publication...' : 'Publier maintenant'}
                 </button>
                 <button onClick={() => setShowSchedule(true)} className="w-full py-3 border border-gray-200 rounded-xl text-sm font-medium text-gray-700 flex items-center justify-center gap-2">
                   <CalendarIcon className="w-5 h-5" /> Planifier

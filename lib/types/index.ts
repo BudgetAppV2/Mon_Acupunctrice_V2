@@ -60,6 +60,9 @@ export interface ContentItem {
   facebookPostId?: string;
   youtubeStatus?: 'pending' | 'published' | 'failed' | 'quota_exceeded';
   youtubeVideoId?: string;
+  storyStatus?: 'pending' | 'published' | 'failed';
+  storyMediaId?: string;
+  mediaType?: 'reel' | 'story';
   insights?: {
     plays: number;
     reach: number;
