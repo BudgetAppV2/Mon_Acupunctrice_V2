@@ -44,6 +44,21 @@ export interface WeekPattern {
   format: SlotFormat;
 }
 
+// --- Blog Sequences (S04) ---
+
+export interface BlogSequence {
+  id: string;
+  userId: string;
+  blogUrl: string;
+  blogTitle: string;
+  blogImageUrl?: string;
+  startDate: Timestamp;
+  status: 'active' | 'completed';
+  slotIds: string[];
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+}
+
 // --- Content ---
 
 export type ContentCategory =

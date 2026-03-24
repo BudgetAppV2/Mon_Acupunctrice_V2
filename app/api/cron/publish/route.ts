@@ -81,5 +81,34 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  return NextResponse.json({ processed: snap.size, published, failed });
+  // Auto-publish des stories de sequences (calendarSlots avec autoPublish=true)
+  const autoSnap = await db.collection('calendarSlots')
+    .where('autoPublish', '==', true)
+    .where('status', '==', 'open')
+    .where('scheduledDate', '<=', now)
+    .limit(5)
+    .get();
+
+  for (const slotDoc of autoSnap.docs) {
+    const slot = slotDoc.data();
+    const slotUserId = slot.userId as string;
+    try {
+      const [uSnap, tSnap] = await Promise.all([
+        db.doc(`users/${slotUserId}`).get(),
+        db.doc(`users/${slotUserId}/private/tokens`).get(),
+      ]);
+      const u = uSnap.data() || {};
+      const t = tSnap.data() || {};
+      if (u.metaInstagramId && t.metaAccessToken) {
+        await publishInstagramStory(slot, u.metaInstagramId, t.metaAccessToken);
+      }
+      await db.doc(`calendarSlots/${slotDoc.id}`).update({ status: 'completed', updatedAt: FieldValue.serverTimestamp() });
+      published++;
+    } catch {
+      await db.doc(`calendarSlots/${slotDoc.id}`).update({ status: 'failed' }).catch(() => {});
+      failed++;
+    }
+  }
+
+  return NextResponse.json({ processed: snap.size + autoSnap.size, published, failed });
 }

@@ -11,6 +11,7 @@ import CalendarDay from './CalendarDay';
 import ScheduleSheet from './ScheduleSheet';
 import ItemDetailSheet from './ItemDetailSheet';
 import FillSlotSheet from './FillSlotSheet';
+import CreateSequenceSheet from './CreateSequenceSheet';
 import type { ContentItem, CalendarSlot } from '@/lib/types';
 
 const WEEKDAYS = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
@@ -32,6 +33,7 @@ export default function CalendarView() {
   const [scheduleDate, setScheduleDate] = useState<Date | null>(null);
   const [detailItem, setDetailItem] = useState<ContentItem | null>(null);
   const [selectedSlot, setSelectedSlot] = useState<CalendarSlot | null>(null);
+  const [showSequence, setShowSequence] = useState(false);
 
   // Génère les slots pour chaque semaine du mois affiché (anti-doublons géré dans generateWeekSlots)
   useEffect(() => {
@@ -90,7 +92,7 @@ export default function CalendarView() {
   return (
     <>
       <DashboardBar />
-      <CalendarHeader currentMonth={currentMonth} onPrev={goToPreviousMonth} onNext={goToNextMonth} />
+      <CalendarHeader currentMonth={currentMonth} onPrev={goToPreviousMonth} onNext={goToNextMonth} onOpenSequence={() => setShowSequence(true)} />
 
       <div onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
         <div className="grid grid-cols-7 px-2">
@@ -135,6 +137,10 @@ export default function CalendarView() {
         onClose={() => setSelectedSlot(null)}
         slot={selectedSlot}
         onFilled={() => setSelectedSlot(null)}
+      />
+      <CreateSequenceSheet
+        isOpen={showSequence}
+        onClose={() => setShowSequence(false)}
       />
     </>
   );
