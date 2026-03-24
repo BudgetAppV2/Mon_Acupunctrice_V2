@@ -4,10 +4,13 @@ import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { getFirebaseFirestore } from '@/lib/firebase';
 import { useAuthStore } from '@/lib/store/useAuthStore';
 
+import type { ContentStyle } from '@/lib/types';
+
 interface CreateInput {
   title: string;
   category: string;
   notes?: string;
+  contentStyle?: ContentStyle;
 }
 
 export function useCreateContentItem() {
@@ -24,6 +27,7 @@ export function useCreateContentItem() {
       title: input.title,
       category: input.category,
       notes: input.notes ?? '',
+      ...(input.contentStyle ? { contentStyle: input.contentStyle } : {}),
       workflowState: 'idea',
       distributionStatus: 'draft',
       createdAt: now,

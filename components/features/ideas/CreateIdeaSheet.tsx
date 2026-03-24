@@ -6,13 +6,15 @@ import { useCreateContentItem } from '@/lib/hooks/useCreateContentItem';
 import { useUserProfile } from '@/lib/hooks/useUserProfile';
 import { getAllCategories } from '@/lib/utils/categories';
 import VoiceRecordButton from './VoiceRecordButton';
+import type { ContentStyle } from '@/lib/types';
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
+  defaultStyle?: ContentStyle;
 }
 
-export default function CreateIdeaSheet({ isOpen, onClose }: Props) {
+export default function CreateIdeaSheet({ isOpen, onClose, defaultStyle }: Props) {
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('autre');
   const [customCat, setCustomCat] = useState('');
@@ -63,6 +65,7 @@ export default function CreateIdeaSheet({ isOpen, onClose }: Props) {
         title: title.trim(),
         category: finalCategory,
         notes: notes.trim() || undefined,
+        contentStyle: defaultStyle,
       });
       setTitle('');
       setCategory('autre');

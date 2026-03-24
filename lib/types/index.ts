@@ -1,5 +1,40 @@
 import type { Timestamp } from 'firebase/firestore';
 
+// --- Content Styles (S01) ---
+
+export type ContentStyle = 'enseigner' | 'connecter' | 'aider' | 'inspirer';
+
+// --- Calendar Slots (S02) ---
+
+export type SlotFormat = 'reel' | 'story' | 'post';
+export type SlotStatus = 'open' | 'filled' | 'completed' | 'skipped';
+
+export interface CalendarSlot {
+  id: string;
+  userId: string;
+  scheduledDate: Timestamp;
+  dayOfWeek: number;
+  contentStyle: ContentStyle;
+  format: SlotFormat;
+  contentItemId?: string;
+  status: SlotStatus;
+  sequenceId?: string;
+  sequenceRole?: string;
+  autoPublish?: boolean;
+  promptTitle?: string;
+  promptDescription?: string;
+  weekNumber: number;
+  planPhase: number;
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+}
+
+export interface WeekPattern {
+  dayOfWeek: number;
+  contentStyle: ContentStyle;
+  format: SlotFormat;
+}
+
 // --- Auth ---
 
 export interface FirebaseUser {
@@ -53,6 +88,8 @@ export interface ContentItem {
   editorTouchedAt?: Timestamp;
   exportedAt?: Timestamp;
   captionDraft?: string;
+  contentStyle?: ContentStyle;
+  slotId?: string;
   facebookStatus?: 'pending' | 'published' | 'failed';
   facebookPostId?: string;
   youtubeStatus?: 'pending' | 'published' | 'failed' | 'quota_exceeded';
