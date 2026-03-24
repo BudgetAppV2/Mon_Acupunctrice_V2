@@ -38,6 +38,8 @@ Brillant mais prématuré pour l'instant.
 - **Sélection de caméra** : Sélecteur de source vidéo (caméra frontale, arrière, webcam USB-C externe) via `enumerateDevices()`. Permettrait de filmer des démonstrations d'acupuncture avec une caméra externe.
 - **Captation multi-caméra** : Enregistrement simultané depuis plusieurs sources vidéo (ex: face caméra + plan d'ensemble) pour montage multi-angle ensuite. Nécessite `getUserMedia` sur plusieurs devices + synchronisation audio.
 - **Collaboration** : Permettre à un monteur externe d'accéder au compte de Judith.
+- **Stories avec Link Sticker cliquable (instagrapi)** : La lib Python `instagrapi` utilise l'API privée Instagram et supporte les link stickers dans les Stories — permettrait de publier des Stories avec un vrai lien cliquable vers Go Rendez-Vous sans que Judith ouvre Instagram. Risques : API non-officielle (peut casser), login par username/password (pas OAuth), risque de ban si usage détecté. Nécessite un micro-service Python séparé. À prototyper en isolation avant mise en production. Pertinent surtout pour les stories auto des séquences blogue (S04) — Judith n'aurait jamais besoin d'ouvrir l'app.
+- **Intégration Canva API** : Connecter Canva au Hub pour générer des visuels de Stories plus élaborés à partir de templates Canva de Judith. Canva Connect API nécessite OAuth Canva + gestion des templates. Post-Phase Stratégie.
 
 ---
 
