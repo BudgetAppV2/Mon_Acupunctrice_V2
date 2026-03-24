@@ -6,6 +6,8 @@ import { useCreateContentItem } from '@/lib/hooks/useCreateContentItem';
 import { useUserProfile } from '@/lib/hooks/useUserProfile';
 import { getAllCategories } from '@/lib/utils/categories';
 import VoiceRecordButton from './VoiceRecordButton';
+import ContentStyleSelector from './ContentStyleSelector';
+import type { ContentStyle } from '@/lib/types';
 
 interface Props {
   isOpen: boolean;
@@ -18,6 +20,7 @@ export default function CreateIdeaSheet({ isOpen, onClose }: Props) {
   const [customCat, setCustomCat] = useState('');
   const [showCustom, setShowCustom] = useState(false);
   const [notes, setNotes] = useState('');
+  const [style, setStyle] = useState<ContentStyle | undefined>();
   const [submitting, setSubmitting] = useState(false);
   const [voiceError, setVoiceError] = useState<string | null>(null);
   const { createItem } = useCreateContentItem();
@@ -63,12 +66,14 @@ export default function CreateIdeaSheet({ isOpen, onClose }: Props) {
         title: title.trim(),
         category: finalCategory,
         notes: notes.trim() || undefined,
+        contentStyle: style,
       });
       setTitle('');
       setCategory('autre');
       setCustomCat('');
       setShowCustom(false);
       setNotes('');
+      setStyle(undefined);
       onClose();
     } finally {
       setSubmitting(false);
@@ -113,6 +118,11 @@ export default function CreateIdeaSheet({ isOpen, onClose }: Props) {
               className="w-full mt-2 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-sage focus:border-sage outline-none"
             />
           )}
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Style</label>
+          <ContentStyleSelector value={style} onChange={setStyle} />
         </div>
 
         <div>

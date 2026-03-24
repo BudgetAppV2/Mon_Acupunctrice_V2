@@ -5,6 +5,7 @@ import { TrashIcon } from '@heroicons/react/24/outline';
 import type { ContentItem, WorkflowState } from '@/lib/types';
 import { WORKFLOW_LABELS } from '@/lib/types';
 import { getCategoryLabel } from '@/lib/utils/categories';
+import { getStyleColor } from '@/lib/utils/contentStyles';
 
 const STATUS_COLORS: Record<WorkflowState, string> = {
   idea: 'bg-status-idea', planned: 'bg-status-planned', ready_to_shoot: 'bg-status-shot',
@@ -69,7 +70,15 @@ export default function ContentCard({ item, onDelete, onClick }: Props) {
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1 min-w-0">
             <h3 className="text-sm font-medium text-gray-900 truncate">{item.title}</h3>
-            <p className="text-xs text-gray-500 mt-0.5">{getCategoryLabel(item.category)}</p>
+            <div className="flex items-center gap-1.5 mt-0.5">
+              <p className="text-xs text-gray-500">{getCategoryLabel(item.category)}</p>
+              {item.contentStyle && (
+                <span
+                  className="w-1.5 h-1.5 rounded-full shrink-0"
+                  style={{ backgroundColor: getStyleColor(item.contentStyle) }}
+                />
+              )}
+            </div>
           </div>
           <span className={`shrink-0 px-2 py-0.5 rounded-full text-xs font-medium text-white ${STATUS_COLORS[item.workflowState]}`}>
             {WORKFLOW_LABELS[item.workflowState]}

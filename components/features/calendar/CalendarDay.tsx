@@ -1,6 +1,7 @@
 'use client';
 
 import type { ContentItem, WorkflowState } from '@/lib/types';
+import { getStyleColor } from '@/lib/utils/contentStyles';
 
 const DOT_COLORS: Record<WorkflowState, string> = {
   idea: 'bg-status-idea',
@@ -54,9 +55,14 @@ export default function CalendarDay({ date, items, isCurrentMonth, isToday, onTa
           <span className="text-[9px] font-bold text-sage bg-sage/10 w-4 h-4 flex items-center justify-center rounded-full mt-0.5">
             {items.length}
           </span>
-        ) : (
-          <div className={`w-1.5 h-1.5 rounded-full mt-1 ${DOT_COLORS[items[0].workflowState] ?? 'bg-gray-400'}`} />
-        )
+        ) : (() => {
+          const item = items[0];
+          // Style color takes priority over workflowState color when defined
+          const dotColor = item.contentStyle ? getStyleColor(item.contentStyle) : undefined;
+          return dotColor
+            ? <div className="w-1.5 h-1.5 rounded-full mt-1" style={{ backgroundColor: dotColor }} />
+            : <div className={`w-1.5 h-1.5 rounded-full mt-1 ${DOT_COLORS[item.workflowState] ?? 'bg-gray-400'}`} />;
+        })()
       )}
 
       {thumbnail && (
