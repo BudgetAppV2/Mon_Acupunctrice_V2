@@ -5,7 +5,8 @@ import { useRouter } from 'next/navigation';
 import { getDoc, doc } from 'firebase/firestore';
 import { useEditorStore } from '@/lib/store/useEditorStore';
 import { getFirebaseFirestore } from '@/lib/firebase';
-import { ArrowLeftIcon } from '@heroicons/react/24/outline';
+import { ArrowLeftIcon, CheckCircleIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline';
+import { getDurationFeedback } from '@/lib/utils/platformOptimization';
 import type { ContentItem } from '@/lib/types';
 import VideoPreview from './VideoPreview';
 import EditorToolbar from './EditorToolbar';
@@ -94,8 +95,14 @@ export default function EditorLayout({ itemId }: Props) {
         <button onClick={handleBack} className="text-white p-1">
           <ArrowLeftIcon className="w-5 h-5" />
         </button>
-        <span className="text-xs text-gray-300 font-mono">
+        <span className="text-xs text-gray-300 font-mono flex items-center gap-1.5">
           {formatTime(currentTime)} / {formatTime(duration)}
+          {duration > 0 && (() => {
+            const fb = getDurationFeedback(Math.floor(duration), 'instagram');
+            return fb.ok
+              ? <CheckCircleIcon className="w-3.5 h-3.5 text-green-400" title={fb.message} />
+              : <ExclamationTriangleIcon className="w-3.5 h-3.5 text-yellow-400" title={fb.message} />;
+          })()}
         </span>
         <ExportButton onExportDone={handlePublish} />
       </header>
