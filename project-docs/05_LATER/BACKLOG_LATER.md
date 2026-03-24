@@ -43,6 +43,20 @@ Brillant mais prématuré pour l'instant.
 
 ---
 
+## Éditeur — Timeline Pro (E01)
+
+Améliorations de la timeline inspirées de CapCut, Instagram Edits, et du SDK img.ly (article technique : img.ly/blog/designing-a-timeline-for-mobile-video-editing/, code source SwiftUI open-source : github.com/imgly/IMGLYUI-swift/tree/main/Sources/IMGLYEditor/Timeline/TimelineView).
+
+- **Trim handles sur les blocs** : Drag des bords gauche/droite d'un bloc (texte, sous-titre, audio) pour ajuster début/fin directement sur la timeline. Zone de hit tactile 2x plus large que le visuel (pattern img.ly). Encoches triangulaires pour indiquer les bords réels du clip.
+- **Scrubbing preview pendant le trim** : Overlay temporaire avec son propre temps de lecture pendant le drag d'un handle — Judith voit exactement où elle coupe sans déplacer la position de lecture principale.
+- **Drag-and-drop des blocs** : Déplacer un bloc sélectionné horizontalement sur la timeline pour le repositionner dans le temps.
+- **Snap magnétique** : Les blocs snappent aux bords des autres blocs, au playhead, et au début/fin de la timeline. Feedback visuel (ligne pointillée) + vibration haptique si disponible.
+- **Timeline colapsable** : Toggle pour minimiser la timeline et maximiser la preview vidéo (filmage/visionnage) ou maximiser la timeline (édition). Pattern img.ly : la timeline ajuste sa hauteur au contenu.
+- **Pinch-to-zoom sur la timeline** : Changer l'échelle temporelle pour éditer avec plus de précision. Règle avec subdivisions (1 point par seconde).
+- **Coordination des gestes** : 5 gestes à harmoniser sans interférence (scroll horizontal, scroll vertical, drag clip, trim handles, pinch-to-zoom). img.ly a trouvé ça "étonnamment difficile" en SwiftUI — en React/web il faudra un système de priorité de gestes basé sur l'état de sélection.
+
+---
+
 ## Technique & UX
 
 - **Offline partiel** : Pouvoir noter des idées sans connexion internet.
