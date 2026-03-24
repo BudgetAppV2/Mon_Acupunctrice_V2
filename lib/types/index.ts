@@ -11,6 +11,8 @@ export interface FirebaseUser {
 
 // --- Content ---
 
+export type ContentStyle = 'enseigner' | 'connecter' | 'aider' | 'inspirer';
+
 export type ContentCategory =
   | 'fertilite'
   | 'grossesse'
@@ -52,6 +54,7 @@ export interface ContentItem {
   coverImageUrl?: string;
   editorTouchedAt?: Timestamp;
   exportedAt?: Timestamp;
+  contentStyle?: ContentStyle;
   captionDraft?: string;
   facebookStatus?: 'pending' | 'published' | 'failed';
   facebookPostId?: string;
