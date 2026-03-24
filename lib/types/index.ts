@@ -18,6 +18,12 @@ export type ContentCategory =
   | 'mtc'
   | 'autre';
 
+export type ContentStyle =
+  | 'enseigner'
+  | 'connecter'
+  | 'aider'
+  | 'inspirer';
+
 export type WorkflowState =
   | 'idea'
   | 'planned'
@@ -53,6 +59,7 @@ export interface ContentItem {
   editorTouchedAt?: Timestamp;
   exportedAt?: Timestamp;
   captionDraft?: string;
+  contentStyle?: ContentStyle;
   facebookStatus?: 'pending' | 'published' | 'failed';
   facebookPostId?: string;
   youtubeStatus?: 'pending' | 'published' | 'failed' | 'quota_exceeded';

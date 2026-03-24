@@ -104,7 +104,7 @@ export default function PublishSheet({ isOpen, onClose, item }: Props) {
 
         {step === 2 && (
           <>
-            <CaptionEditor caption={caption} onChange={setCaption} title={item.title} category={item.category} notes={item.notes} />
+            <CaptionEditor caption={caption} onChange={setCaption} title={item.title} category={item.category} notes={item.notes} contentStyle={item.contentStyle} />
             <div className="flex gap-2">
               <button onClick={() => setStep(1)} className="flex-1 py-3 border border-gray-200 rounded-xl text-sm text-gray-700 flex items-center justify-center gap-1">
                 <ArrowLeftIcon className="w-4 h-4" /> Retour
