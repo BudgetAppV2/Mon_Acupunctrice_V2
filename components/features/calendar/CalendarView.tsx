@@ -22,13 +22,14 @@ export default function CalendarView() {
     currentMonth,
     calendarDays,
     itemsByDay,
+    scheduledItems,
     loading,
     error,
     goToNextMonth,
     goToPreviousMonth,
   } = useCalendar();
 
-  const { slotsByDay } = useCalendarSlots(currentMonth.getMonth(), currentMonth.getFullYear());
+  const { slots, slotsByDay } = useCalendarSlots(currentMonth.getMonth(), currentMonth.getFullYear());
 
   const [scheduleDate, setScheduleDate] = useState<Date | null>(null);
   const [detailItem, setDetailItem] = useState<ContentItem | null>(null);
@@ -92,7 +93,7 @@ export default function CalendarView() {
   return (
     <>
       <DashboardBar />
-      <CalendarHeader currentMonth={currentMonth} onPrev={goToPreviousMonth} onNext={goToNextMonth} onOpenSequence={() => setShowSequence(true)} />
+      <CalendarHeader currentMonth={currentMonth} onPrev={goToPreviousMonth} onNext={goToNextMonth} onOpenSequence={() => setShowSequence(true)} items={scheduledItems} slots={slots} />
 
       <div onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
         <div className="grid grid-cols-7 px-2">
