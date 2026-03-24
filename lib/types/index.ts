@@ -139,6 +139,17 @@ export interface SubtitleSegment {
 
 export type SubtitleStyle = 'classic' | 'tiktok' | 'karaoke';
 
+// --- Progression & Jalons ---
+
+export interface ProgressData {
+  currentStreak: number;
+  longestStreak: number;
+  totalPublished: number;
+  milestonesUnlocked: string[];
+  lastActiveWeek: string;  // "2026-W15" format ISO
+  pendingMilestoneToasts: string[];  // Jalons non encore affiches
+}
+
 // --- Editor: Audio / Jamendo ---
 
 export interface JamendoTrack {

@@ -2,6 +2,16 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getAdminFirestore } from '@/lib/firebase-admin';
 import { FieldValue } from 'firebase-admin/firestore';
 
+/** Calcule la semaine ISO courante en heure de Montreal (cote serveur) */
+function getCurrentWeek(): string {
+  const now = new Date();
+  const mtl = new Date(now.toLocaleString('en-US', { timeZone: 'America/Toronto' }));
+  const jan1 = new Date(mtl.getFullYear(), 0, 1);
+  const days = Math.floor((mtl.getTime() - jan1.getTime()) / 86400000);
+  const week = Math.ceil((days + jan1.getDay() + 1) / 7);
+  return `${mtl.getFullYear()}-W${String(week).padStart(2, '0')}`;
+}
+
 const FUNCTIONS_URL = process.env.FIREBASE_FUNCTIONS_URL;
 const GRAPH = 'https://graph.facebook.com/v25.0';
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
@@ -159,6 +169,13 @@ export async function GET(request: NextRequest) {
       }
 
       await db.doc(`contentItems/${doc.id}`).update(updates);
+
+      // Incremente la progression cote serveur (atomic)
+      await db.doc(`users/${userId}`).update({
+        'progressData.totalPublished': FieldValue.increment(1),
+        'progressData.lastActiveWeek': getCurrentWeek(),
+      }).catch(() => {});
+
       published++;
     } catch {
       await db.doc(`contentItems/${doc.id}`).update({ distributionStatus: 'failed' }).catch(() => {});

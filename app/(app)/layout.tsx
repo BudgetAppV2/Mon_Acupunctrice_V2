@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/lib/hooks/useAuth';
+import { useProgression } from '@/lib/hooks/useProgression';
 import {
   LightBulbIcon as LightBulbOutline,
   CalendarIcon as CalendarOutline,
@@ -28,6 +29,21 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
+  const { pendingToast, consumeToast } = useProgression();
+  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Affiche le toast de jalon 3 secondes puis le consomme
+  useEffect(() => {
+    if (!pendingToast) return;
+    if (toastTimer.current) clearTimeout(toastTimer.current);
+    toastTimer.current = setTimeout(() => {
+      consumeToast();
+      toastTimer.current = null;
+    }, 3000);
+    return () => {
+      if (toastTimer.current) clearTimeout(toastTimer.current);
+    };
+  }, [pendingToast, consumeToast]);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -49,6 +65,13 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <>
+      {/* Toast jalon debloque */}
+      {pendingToast && (
+        <div className="fixed top-4 left-4 right-4 z-50 bg-green-600 text-white text-sm font-medium px-4 py-2.5 rounded-xl text-center shadow-lg animate-slide-up">
+          {pendingToast.label} debloque !
+        </div>
+      )}
+
       <div className={isEditor ? '' : 'pb-[calc(49px+env(safe-area-inset-bottom))]'}>
         {children}
       </div>
