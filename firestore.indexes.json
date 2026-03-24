@@ -43,6 +43,14 @@
         { "fieldPath": "scheduledAt", "order": "ASCENDING" }
       ]
     }
+  ,{
+      "collectionGroup": "calendarSlots",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "userId", "order": "ASCENDING" },
+        { "fieldPath": "scheduledDate", "order": "ASCENDING" }
+      ]
+    }
   ],
   "fieldOverrides": []
 }

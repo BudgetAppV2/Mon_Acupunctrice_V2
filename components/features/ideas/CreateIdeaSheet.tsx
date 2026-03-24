@@ -12,15 +12,16 @@ import type { ContentStyle } from '@/lib/types';
 interface Props {
   isOpen: boolean;
   onClose: () => void;
+  defaultStyle?: ContentStyle;
 }
 
-export default function CreateIdeaSheet({ isOpen, onClose }: Props) {
+export default function CreateIdeaSheet({ isOpen, onClose, defaultStyle }: Props) {
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('autre');
   const [customCat, setCustomCat] = useState('');
   const [showCustom, setShowCustom] = useState(false);
   const [notes, setNotes] = useState('');
-  const [style, setStyle] = useState<ContentStyle | undefined>();
+  const [style, setStyle] = useState<ContentStyle | undefined>(defaultStyle);
   const [submitting, setSubmitting] = useState(false);
   const [voiceError, setVoiceError] = useState<string | null>(null);
   const { createItem } = useCreateContentItem();
