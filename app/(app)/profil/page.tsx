@@ -9,6 +9,8 @@ import InstagramConnectButton from '@/components/features/profile/InstagramConne
 import FacebookConnectButton from '@/components/features/profile/FacebookConnectButton';
 import YouTubeConnectButton from '@/components/features/profile/YouTubeConnectButton';
 import StatsSummary from '@/components/features/profile/StatsSummary';
+import MilestonesList from '@/components/features/profile/MilestonesList';
+import { useProgression } from '@/lib/hooks/useProgression';
 import { ArrowTopRightOnSquareIcon, ArrowRightStartOnRectangleIcon, XMarkIcon, ChevronRightIcon, PlusIcon } from '@heroicons/react/24/outline';
 import { CheckCircleIcon, ClockIcon, SparklesIcon } from '@heroicons/react/24/solid';
 
@@ -16,6 +18,7 @@ export default function ProfilPage() {
   const { user, signOut } = useAuth();
   const { data: items } = useContentItems();
   const { customCategories, updateCustomCategories, metaStatus, metaTokenExpiresAt, facebookStatus, facebookPageName, youtubeStatus, youtubeChannelName } = useUserProfile();
+  const { progressData } = useProgression();
   const [newCat, setNewCat] = useState('');
   const [toast, setToast] = useState<string | null>(null);
 
@@ -99,6 +102,8 @@ export default function ProfilPage() {
           </div>
           {customCategories.length === 0 && <p className="text-xs text-gray-400">Aucune categorie personnalisee</p>}
         </div>
+
+        <MilestonesList milestones={progressData?.milestonesUnlocked || []} />
 
         <h2 className="text-sm font-semibold text-gray-700 mb-2">Dernieres publications</h2>
         {recentPublished.length === 0 ? (

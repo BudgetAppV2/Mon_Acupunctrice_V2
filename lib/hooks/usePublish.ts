@@ -3,6 +3,7 @@
 import { useState, useCallback } from 'react';
 import { Timestamp } from 'firebase/firestore';
 import { useUpdateContentItem } from './useUpdateContentItem';
+import { useProgression } from './useProgression';
 
 interface PublishOptions {
   videoUrl: string;
@@ -18,6 +19,7 @@ export function usePublish() {
   const [publishing, setPublishing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { updateItem } = useUpdateContentItem();
+  const { updateProgression } = useProgression();
 
   const publish = useCallback(async (opts: PublishOptions) => {
     setPublishing(true);
@@ -41,6 +43,7 @@ export function usePublish() {
         thumbOffset: opts.thumbOffset ?? null,
         coverImageUrl: opts.coverUrl ?? null,
       });
+      await updateProgression();
       return true;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erreur de publication');

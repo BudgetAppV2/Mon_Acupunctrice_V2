@@ -59,6 +59,17 @@ export interface BlogSequence {
   updatedAt: Timestamp;
 }
 
+// --- Progression (S07) ---
+
+export interface ProgressData {
+  currentStreak: number;
+  longestStreak: number;
+  totalPublished: number;
+  milestonesUnlocked: string[];
+  lastActiveWeek: string;
+  pendingMilestoneToasts: string[];
+}
+
 // --- Content ---
 
 export type ContentCategory =

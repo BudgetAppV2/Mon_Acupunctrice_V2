@@ -74,6 +74,12 @@ export async function GET(request: NextRequest) {
       }
 
       await db.doc(`contentItems/${doc.id}`).update(updates);
+      // Progression (S07)
+      const wk = new Date().toISOString().slice(0, 4) + '-W' + String(Math.ceil((Date.now() - new Date(new Date().getFullYear(), 0, 1).getTime()) / 604800000)).padStart(2, '0');
+      await db.doc(`users/${userId}`).update({
+        'progressData.totalPublished': FieldValue.increment(1),
+        'progressData.lastActiveWeek': wk,
+      }).catch(() => {});
       published++;
     } catch {
       await db.doc(`contentItems/${doc.id}`).update({ distributionStatus: 'failed' }).catch(() => {});

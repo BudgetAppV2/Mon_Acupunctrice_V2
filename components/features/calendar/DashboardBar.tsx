@@ -1,8 +1,10 @@
 'use client';
 
 import { useMemo } from 'react';
-import { CheckIcon } from '@heroicons/react/24/solid';
+import { CheckIcon, FireIcon } from '@heroicons/react/24/solid';
 import { useCalendarSlots } from '@/lib/hooks/useCalendarSlots';
+import { useProgression } from '@/lib/hooks/useProgression';
+import ProgressionCircle from './ProgressionCircle';
 import { getStyleDot, getStyleDashedBorder } from '@/lib/utils/contentStyles';
 import type { CalendarSlot } from '@/lib/types';
 
@@ -24,6 +26,8 @@ function isoWeekNumber(date: Date): number {
 export default function DashboardBar() {
   const today = new Date();
   const { slots } = useCalendarSlots(today.getMonth(), today.getFullYear());
+  const { progressData } = useProgression();
+  const streak = progressData?.currentStreak ?? 0;
 
   // Slots de la semaine courante uniquement
   const weekSlots = useMemo(() => {
@@ -47,12 +51,21 @@ export default function DashboardBar() {
 
   return (
     <div className="px-4 py-3 bg-white border-b border-gray-100">
-      <div className="flex items-center justify-between mb-2">
-        <div className="flex items-baseline gap-2">
-          <span className="text-sm font-semibold text-gray-900">Semaine {weekNum}</span>
-          <span className="text-xs text-gray-400">{dateRange}</span>
+      <div className="flex items-center gap-3 mb-2">
+        <ProgressionCircle completed={filled} total={Math.max(weekSlots.length, 1)} />
+        <div className="flex-1">
+          <div className="flex items-baseline gap-2">
+            <span className="text-sm font-semibold text-gray-900">Semaine {weekNum}</span>
+            <span className="text-xs text-gray-400">{dateRange}</span>
+          </div>
+          <span className="text-xs text-gray-500">{filled}/{weekSlots.length} emplacements</span>
         </div>
-        <span className="text-sm font-semibold text-sage">{filled}/{weekSlots.length}</span>
+        {streak > 0 && (
+          <div className="flex items-center gap-1 shrink-0 bg-orange-50 rounded-full px-2.5 py-1 border border-orange-100">
+            <FireIcon className="w-3.5 h-3.5 text-orange-500" />
+            <span className="text-xs font-semibold text-orange-600">{streak}</span>
+          </div>
+        )}
       </div>
       <div className="flex gap-2">
         {weekSlots.map((slot) => <SlotCircle key={slot.id} slot={slot} />)}
