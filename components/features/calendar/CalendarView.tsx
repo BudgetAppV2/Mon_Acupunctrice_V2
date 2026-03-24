@@ -2,11 +2,13 @@
 
 import { useState, useRef } from 'react';
 import { useCalendar } from '@/lib/hooks/useCalendar';
+import { useCalendarSlots } from '@/lib/hooks/useCalendarSlots';
 import CalendarHeader from './CalendarHeader';
 import DashboardBar from './DashboardBar';
 import CalendarDay from './CalendarDay';
 import ScheduleSheet from './ScheduleSheet';
 import ItemDetailSheet from './ItemDetailSheet';
+import CreateSequenceSheet from './CreateSequenceSheet';
 import type { ContentItem } from '@/lib/types';
 
 const WEEKDAYS = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
@@ -22,8 +24,14 @@ export default function CalendarView() {
     goToPreviousMonth,
   } = useCalendar();
 
+  const { slotsByDay } = useCalendarSlots(
+    currentMonth.getMonth(),
+    currentMonth.getFullYear(),
+  );
+
   const [scheduleDate, setScheduleDate] = useState<Date | null>(null);
   const [detailItem, setDetailItem] = useState<ContentItem | null>(null);
+  const [sequenceOpen, setSequenceOpen] = useState(false);
 
   // Swipe natif pour naviguer entre les mois
   const touchXRef = useRef(0);
@@ -68,7 +76,12 @@ export default function CalendarView() {
   return (
     <>
       <DashboardBar />
-      <CalendarHeader currentMonth={currentMonth} onPrev={goToPreviousMonth} onNext={goToNextMonth} />
+      <CalendarHeader
+        currentMonth={currentMonth}
+        onPrev={goToPreviousMonth}
+        onNext={goToNextMonth}
+        onOpenSequence={() => setSequenceOpen(true)}
+      />
 
       <div onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
         {/* En-têtes jours de la semaine */}
@@ -83,12 +96,15 @@ export default function CalendarView() {
         {/* Grille 6×7 */}
         <div className="grid grid-cols-7 px-2">
           {calendarDays.map((date, i) => {
-            const items = itemsByDay.get(dayKey(date)) ?? [];
+            const key = dayKey(date);
+            const items = itemsByDay.get(key) ?? [];
+            const slots = slotsByDay.get(key) ?? [];
             return (
               <CalendarDay
                 key={i}
                 date={date}
                 items={items}
+                slots={slots}
                 isCurrentMonth={date.getMonth() === curMonth}
                 isToday={
                   date.getDate() === today.getDate() &&
@@ -113,6 +129,10 @@ export default function CalendarView() {
         onClose={() => setDetailItem(null)}
         item={detailItem}
         onUnscheduled={() => setDetailItem(null)}
+      />
+      <CreateSequenceSheet
+        isOpen={sequenceOpen}
+        onClose={() => setSequenceOpen(false)}
       />
     </>
   );

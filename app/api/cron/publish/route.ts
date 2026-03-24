@@ -166,5 +166,71 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  return NextResponse.json({ processed: snap.size, published, failed });
+  // --- Stories auto (CalendarSlots autoPublish=true) ---
+
+  const autoSlots = await db.collection('calendarSlots')
+    .where('autoPublish', '==', true)
+    .where('status', '==', 'open')
+    .where('scheduledDate', '<=', now)
+    .limit(5)
+    .get();
+
+  let storiesPublished = 0;
+  let storiesFailed = 0;
+
+  for (const slotDoc of autoSlots.docs) {
+    const slot = slotDoc.data();
+    const userId = slot.userId as string;
+    const imageUrl = slot.storyImageUrl as string | undefined;
+    if (!userId || !imageUrl) { storiesFailed++; continue; }
+
+    try {
+      const tokensSnap = await db.doc(`users/${userId}/private/tokens`).get();
+      const tokens = tokensSnap.data() || {};
+      const igUserId = tokens.instagramUserId as string | undefined;
+      const igToken = tokens.instagramAccessToken as string | undefined;
+      if (!igUserId || !igToken) { storiesFailed++; continue; }
+
+      // Créer le container story IG
+      const containerRes = await fetch(
+        `https://graph.facebook.com/v25.0/${igUserId}/media`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ image_url: imageUrl, media_type: 'IMAGE', is_stories: true, access_token: igToken }),
+        },
+      );
+      const containerData = await containerRes.json() as { id?: string };
+      if (!containerData.id) { storiesFailed++; continue; }
+
+      // Publier
+      const pubRes = await fetch(
+        `https://graph.facebook.com/v25.0/${igUserId}/media_publish`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ creation_id: containerData.id, access_token: igToken }),
+        },
+      );
+      const pubData = await pubRes.json() as { id?: string };
+      if (!pubData.id) { storiesFailed++; continue; }
+
+      await db.doc(`calendarSlots/${slotDoc.id}`).update({
+        status: 'completed',
+        updatedAt: FieldValue.serverTimestamp(),
+      });
+      storiesPublished++;
+    } catch {
+      storiesFailed++;
+    }
+  }
+
+  return NextResponse.json({
+    processed: snap.size,
+    published,
+    failed,
+    storiesProcessed: autoSlots.size,
+    storiesPublished,
+    storiesFailed,
+  });
 }

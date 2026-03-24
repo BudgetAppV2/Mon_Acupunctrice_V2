@@ -1,6 +1,6 @@
 'use client';
 
-import type { ContentItem, WorkflowState } from '@/lib/types';
+import type { ContentItem, WorkflowState, CalendarSlot } from '@/lib/types';
 
 const DOT_COLORS: Record<WorkflowState, string> = {
   idea: 'bg-status-idea',
@@ -14,12 +14,13 @@ const DOT_COLORS: Record<WorkflowState, string> = {
 interface Props {
   date: Date;
   items: ContentItem[];
+  slots?: CalendarSlot[];
   isCurrentMonth: boolean;
   isToday: boolean;
   onTap: (date: Date, items: ContentItem[]) => void;
 }
 
-export default function CalendarDay({ date, items, isCurrentMonth, isToday, onTap }: Props) {
+export default function CalendarDay({ date, items, slots, isCurrentMonth, isToday, onTap }: Props) {
   // Jours hors du mois courant : décoratifs, non interactifs
   if (!isCurrentMonth) {
     return (
@@ -33,6 +34,9 @@ export default function CalendarDay({ date, items, isCurrentMonth, isToday, onTa
 
   const hasItems = items.length > 0;
   const thumbnail = items.find((i) => i.thumbnailUrl)?.thumbnailUrl;
+
+  // Badge de séquence : premier slot avec un rôle de séquence dans ce jour
+  const sequenceSlot = slots?.find((s) => s.sequenceRole && s.sequencePosition && s.sequenceLength);
 
   return (
     <button
@@ -65,6 +69,13 @@ export default function CalendarDay({ date, items, isCurrentMonth, isToday, onTa
           alt=""
           className="w-8 h-8 mt-0.5 rounded object-cover"
         />
+      )}
+
+      {/* Badge position dans la séquence blogue, ex : "2/4" */}
+      {sequenceSlot && (
+        <span className="text-[8px] font-bold text-white bg-sage/80 px-1 rounded mt-0.5 leading-tight">
+          {sequenceSlot.sequencePosition}/{sequenceSlot.sequenceLength}
+        </span>
       )}
     </button>
   );

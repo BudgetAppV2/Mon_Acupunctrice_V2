@@ -1,6 +1,6 @@
 'use client';
 
-import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import { ChevronLeftIcon, ChevronRightIcon, BookOpenIcon } from '@heroicons/react/24/outline';
 
 const MONTHS = [
   'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
@@ -11,9 +11,10 @@ interface Props {
   currentMonth: Date;
   onPrev: () => void;
   onNext: () => void;
+  onOpenSequence: () => void;
 }
 
-export default function CalendarHeader({ currentMonth, onPrev, onNext }: Props) {
+export default function CalendarHeader({ currentMonth, onPrev, onNext, onOpenSequence }: Props) {
   return (
     <div className="flex items-center justify-between px-4 py-3">
       <button onClick={onPrev} className="p-2 text-gray-500 hover:text-gray-700" aria-label="Mois précédent">
@@ -22,9 +23,18 @@ export default function CalendarHeader({ currentMonth, onPrev, onNext }: Props) 
       <h2 className="text-base font-semibold text-gray-900">
         {MONTHS[currentMonth.getMonth()]} {currentMonth.getFullYear()}
       </h2>
-      <button onClick={onNext} className="p-2 text-gray-500 hover:text-gray-700" aria-label="Mois suivant">
-        <ChevronRightIcon className="w-5 h-5" />
-      </button>
+      <div className="flex items-center gap-1">
+        <button
+          onClick={onOpenSequence}
+          className="p-2 text-gray-500 hover:text-sage transition-colors"
+          aria-label="Nouvelle séquence blogue"
+        >
+          <BookOpenIcon className="w-5 h-5" />
+        </button>
+        <button onClick={onNext} className="p-2 text-gray-500 hover:text-gray-700" aria-label="Mois suivant">
+          <ChevronRightIcon className="w-5 h-5" />
+        </button>
+      </div>
     </div>
   );
 }

@@ -1,5 +1,53 @@
 import type { Timestamp } from 'firebase/firestore';
 
+// --- Content Style (S01) ---
+
+export type ContentStyle = 'enseigner' | 'connecter' | 'aider' | 'inspirer';
+
+// --- Calendar Slots (S02) ---
+
+export type SlotFormat = 'reel' | 'story' | 'post';
+export type SlotStatus = 'open' | 'filled' | 'completed' | 'skipped';
+
+export interface CalendarSlot {
+  id: string;
+  userId: string;
+  scheduledDate: Timestamp;
+  dayOfWeek: number;
+  contentStyle: ContentStyle;
+  format: SlotFormat;
+  contentItemId?: string;
+  status: SlotStatus;
+  sequenceId?: string;
+  sequenceRole?: string;
+  sequencePosition?: number;
+  sequenceLength?: number;
+  autoPublish?: boolean;
+  storyImageUrl?: string;
+  promptTitle?: string;
+  promptDescription?: string;
+  weekNumber: number;
+  planPhase: number;
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+}
+
+// --- Blog Sequence (S04) ---
+
+export interface BlogSequence {
+  id: string;
+  userId: string;
+  blogUrl: string;
+  blogTitle: string;
+  blogImageUrl?: string;
+  storyImageUrl?: string;
+  startDate: Timestamp;
+  status: 'active' | 'completed';
+  slotIds: string[];
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+}
+
 // --- Auth ---
 
 export interface FirebaseUser {
@@ -66,6 +114,7 @@ export interface ContentItem {
     saved: number;
     fetchedAt: Timestamp;
   };
+  slotId?: string;
   createdAt: Timestamp;
   updatedAt: Timestamp;
 }
