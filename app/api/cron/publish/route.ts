@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAdminFirestore } from '@/lib/firebase-admin';
 import { FieldValue } from 'firebase-admin/firestore';
+import { publishInstagramStory } from '@/lib/utils/publishHelpers';
 
 const FUNCTIONS_URL = process.env.FIREBASE_FUNCTIONS_URL;
 const GRAPH = 'https://graph.facebook.com/v25.0';
@@ -156,6 +157,15 @@ export async function GET(request: NextRequest) {
         } catch (e) {
           updates.youtubeStatus = (e instanceof Error && e.message.includes('quota')) ? 'quota_exceeded' : 'failed';
         }
+      }
+
+      // Story IG (si connecté et item de type story)
+      if (user.metaInstagramId && tokens.metaAccessToken && item.mediaType === 'story') {
+        try {
+          const storyId = await publishInstagramStory(item, user.metaInstagramId as string, tokens.metaAccessToken as string);
+          updates.storyStatus = 'published';
+          updates.storyMediaId = storyId;
+        } catch { updates.storyStatus = 'failed'; }
       }
 
       await db.doc(`contentItems/${doc.id}`).update(updates);
