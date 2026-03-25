@@ -21,11 +21,16 @@ export default function IdeaCaptionSection({ item }: { item: ContentItem }) {
   const handleOptimize = async () => {
     setGenerating(true);
     try {
-      const body: Record<string, string> = { title: item.title, category: item.category };
+      const body: Record<string, string> = {
+        title: item.title,
+        category: item.category,
+        platform: 'instagram',
+        contentStyle: item.contentStyle || 'enseigner',
+      };
       if (draft.trim()) body.captionDraft = draft;
       if (item.notes) body.notes = item.notes;
 
-      const res = await fetch('/api/generate-caption', {
+      const res = await fetch('/api/generate-caption-v2', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
