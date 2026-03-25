@@ -1,159 +1,157 @@
-# Fix — Export vidéo robuste pour fichiers longs (60-90s)
+# Fix Architecture — Gestion vidéo optimisée pour fichiers longs (60-90s)
 
-## Problème constaté
-Sur iPhone Safari, l'export d'une vidéo de ~90s :
-1. Le bouton Exporter ne répondait pas → fixé (window.confirm remplacé par UI inline)
-2. L'export démarre mais freeze à 12% → le `requestVideoFrameCallback` joue en TEMPS RÉEL, donc 90s de vidéo = minimum 90s d'export. Si le tab perd le focus ou l'écran se locke, `video.play()` est suspendu et les callbacks s'arrêtent.
-3. L'extraction audio via FFmpeg fait `fetchFile(s.videoFile)` qui charge TOUT le fichier (~150MB) en mémoire WASM avant même de commencer — probable OOM sur iPhone.
+## Problème de fond
+Chaque opération qui a besoin de la vidéo la re-télécharge depuis Firebase Storage via `/api/proxy-video`. Pour un fichier de 150MB, ça veut dire :
+- **Ouverture éditeur** : télécharge 150MB via proxy → blob → File → store
+- **Cover picker** : re-télécharge 150MB via proxy pour un `<video>` séparé
+- **Export WebCodecs** : re-crée un `<video>` avec le même fichier (OK, c'est un blob local)
+- **Export FFmpeg** : `fetchFile(videoFile)` copie 150MB en mémoire WASM
 
-## Root causes (du rapport d'analyse)
-- `requestVideoFrameCallback` ne fonctionne que pendant `video.play()` → temps réel
-- `fetchFile(videoFile)` dans useVideoExport charge ~150MB en mémoire WASM pour extraire l'audio
-- `file.arrayBuffer()` dans exportWebCodecs charge ~150MB + decodeAudioData ajoute ~150MB en PCM
-- Total mémoire pic : ~450MB+ pour un fichier de 150MB → OOM sur iPhone (~1.5GB dispo)
+Sur iPhone Safari avec ~1.5GB de RAM, ces copies multiples causent des OOM.
+L'export via `requestVideoFrameCallback` est en temps réel (90s pour exporter 90s).
+Le cover picker seek sur un fichier proxié est lent et peu fiable sur Safari iOS.
+
+## Objectif
+Créer une architecture où le fichier vidéo est chargé UNE SEULE FOIS et réutilisé partout, avec un export plus rapide que le temps réel.
 
 ## Stack
 Next.js 15, TypeScript, Zustand, FFmpeg.wasm 0.12.6, WebCodecs API, mp4-muxer.
 
-## Ce qui existe
-
-### exportWebCodecs.ts — le frame loop problématique
-```
-video.requestVideoFrameCallback(capture) → video.play()
-```
-Ce pattern joue la vidéo en temps réel. Chaque frame est capturée quand le navigateur la rend. Pour 90s @ 30fps = 2700 frames, ça prend minimum 90 secondes, et le tab DOIT rester actif.
-
-### useVideoExport.ts — double chargement mémoire
-L'extraction audio FFmpeg fait :
-```typescript
-await ffmpeg.writeFile('input.mp4', await fetchFile(s.videoFile)); // ~150MB en WASM
-```
-Puis le WebCodecs loop recrée un `<video>` element avec le même fichier.
-
-## Objectif
-Rendre l'export fiable sur des vidéos de 60-90s sur iPhone Safari sans crash mémoire ni freeze.
-
 ## Livrables attendus
 
-### 1. Remplacer requestVideoFrameCallback par un seek loop (CRITIQUE)
+### 1. Cache vidéo local — charger une fois, réutiliser partout
+
+**Fichier principal :** `lib/store/useEditorStore.ts`
+
+Le store a déjà `videoFile: File | null` et `videoUrl: string` (blob URL). Le problème c'est que le CoverPicker crée son propre `<video>` avec `/api/proxy-video?url=...` au lieu de réutiliser le blob URL du store.
+
+**Fix dans `components/features/publish/CoverPicker.tsx` :**
+- Remplacer `const videoSrc = /api/proxy-video?url=${encodeURIComponent(videoUrl)};` par utiliser directement le blob URL du store : `useEditorStore.getState().videoUrl`
+- Si le blob URL du store n'existe pas (l'éditeur n'a pas été ouvert), ALORS utiliser le proxy comme fallback
+- Ça élimine le re-téléchargement de 150MB pour le cover picker
+
+### 2. Export seek-based au lieu de temps réel (CRITIQUE)
 
 **Fichier :** `lib/utils/exportWebCodecs.ts`
 
-Remplacer le pattern play+requestVideoFrameCallback par un seek loop :
+Remplacer le pattern `video.play()` + `requestVideoFrameCallback` par un seek loop :
+
 ```
-for each frame:
-  video.currentTime = trimStart + (frameIndex / fps)
-  await waitForSeeked()
-  draw canvas
-  encode frame
-```
+const fps = 30;
+const totalFrames = Math.ceil((trimEnd - trimStart) * fps);
 
-Ce pattern est PLUS RAPIDE que le temps réel (le seek est quasi-instantané sur les fichiers locaux) et ne dépend pas de `video.play()` — donc le tab peut être en arrière-plan.
-
-**Détails d'implémentation :**
-- FPS cible : 30
-- Nombre total de frames : `Math.ceil((trimEnd - trimStart) * 30)`
-- Pour chaque frame :
-  1. `video.currentTime = trimStart + (frameIndex / 30)`
-  2. Attendre l'event `seeked` via une Promise
-  3. Dessiner sur le canvas (avec filtres, overlays, sous-titres)
-  4. Créer le VideoFrame et encoder
-  5. Appeler `onProgress(Math.round(frameIndex / totalFrames * 100))`
-- NE PAS appeler `video.play()` — tout se fait par seek
-- Utiliser un petit `await new Promise(r => setTimeout(r, 0))` entre chaque frame pour ne pas bloquer le thread principal et permettre les updates UI
-
-**Avantage :** L'export de 90s prend ~15-30s au lieu de 90s+, et fonctionne même si le tab perd le focus.
-
-### 2. Extraire l'audio SANS charger le fichier entier en mémoire WASM
-
-**Fichier :** `lib/hooks/useVideoExport.ts`
-
-Le problème actuel : `fetchFile(s.videoFile)` charge tout le fichier en `Uint8Array` puis le copie en mémoire WASM. Pour un fichier de 150MB, c'est ~300MB d'allocation.
-
-**Solution :** Utiliser `file.arrayBuffer()` directement (sans passer par fetchFile) et le writer en chunks :
-```typescript
-const buffer = await s.videoFile.arrayBuffer();
-await ffmpeg.writeFile('input.mp4', new Uint8Array(buffer));
-```
-C'est pareil en mémoire mais évite la copie supplémentaire de fetchFile.
-
-**Meilleure solution :** Si le fichier est > 50MB, SKIP l'extraction audio côté FFmpeg et utiliser directement le `<audio>` element du navigateur pour décoder :
-```typescript
-if (s.videoFile.size > 50 * 1024 * 1024) {
-  // Gros fichier : décoder l'audio via AudioContext + <audio> element
-  // Pas besoin de FFmpeg du tout pour l'audio
-  const audio = new Audio(URL.createObjectURL(s.videoFile));
-  // ... utiliser MediaElementSourceNode
-} else {
-  // Petit fichier : FFmpeg comme avant
+for (let i = 0; i < totalFrames; i++) {
+  video.currentTime = trimStart + (i / fps);
+  await new Promise(resolve => {
+    video.onseeked = resolve;
+  });
+  // draw canvas, encode frame
+  await new Promise(r => setTimeout(r, 0)); // yield au thread principal
+  onProgress(Math.round(i / totalFrames * 100));
 }
 ```
 
-Ou encore mieux : ne pas extraire l'audio du tout si pas de modifications audio. Si `audioUrl` est null (pas de musique ajoutée) et pas de trim audio, on peut copier le stream audio directement dans le muxer.
+**Avantages :**
+- 3-6x plus rapide que le temps réel (seek est quasi-instantané sur blob local)
+- Fonctionne si le tab perd le focus ou l'écran se locke
+- Pas de dépendance à `video.play()` (bloqué par Safari dans certains contextes)
+- Progression plus granulaire et fiable
 
-**Solution pragmatique recommandée :**
-Pour les fichiers > 30MB, utiliser le fallback FFmpeg complet (pas WebCodecs) pour l'export — FFmpeg gère mieux la mémoire et fait tout en une passe (video + audio). Le WebCodecs est gardé pour les fichiers courts où il est plus rapide.
+**Points d'attention :**
+- Le `<video>` doit utiliser le blob URL local (pas le proxy) pour que le seek soit rapide
+- Après chaque seek, attendre l'event `seeked` avant de capturer
+- Ajouter un `await new Promise(r => setTimeout(r, 0))` entre chaque frame pour ne pas bloquer l'UI
+- Garder le keyframe interval (1 keyframe toutes les 60 frames)
 
-### 3. Fallback intelligent basé sur la taille du fichier
+### 3. Seuil intelligent WebCodecs vs FFmpeg
 
 **Fichier :** `lib/hooks/useVideoExport.ts`
 
+Actuellement `const useWC = supportsWebCodecs && !s.audioUrl;`
+Le problème c'est que pour les gros fichiers, l'extraction audio FFmpeg fait `fetchFile(s.videoFile)` qui charge tout en mémoire WASM (~300MB pour un fichier de 150MB).
+
+**Fix :**
 ```typescript
-const useWC = supportsWebCodecs && !s.audioUrl && s.videoFile.size < 30 * 1024 * 1024; // < 30MB
+const fileSizeMB = s.videoFile.size / (1024 * 1024);
+const useWC = supportsWebCodecs && !s.audioUrl && fileSizeMB < 100;
 ```
 
-Pour les fichiers > 30MB (typiquement > 30-40s de vidéo) :
-- Utiliser le pipeline FFmpeg.wasm complet (déjà implémenté dans le else branch)
-- FFmpeg fait le trim, les filtres, et l'encodage en une seule passe
-- Pas de problème de mémoire car FFmpeg stream les données
+- Fichiers < 100MB (~60s de vidéo) : WebCodecs seek loop + extraction audio FFmpeg
+- Fichiers >= 100MB (~90s+) : Pipeline FFmpeg complet (une seule passe, gère mieux la mémoire)
 
-Pour les fichiers < 30MB :
-- Garder le pipeline WebCodecs (plus rapide, hardware-accelerated)
-- Mais avec le seek loop au lieu de requestVideoFrameCallback
+Pour les gros fichiers avec le pipeline FFmpeg, NE PAS extraire l'audio séparément — FFmpeg fait tout en une passe (trim + filtres + encodage vidéo + audio).
 
-### 4. Nettoyage mémoire dans exportWebCodecs.ts
+### 4. Extraction audio optimisée pour WebCodecs path
+
+**Fichier :** `lib/hooks/useVideoExport.ts`
+
+Pour les fichiers < 100MB qui passent par WebCodecs, l'extraction audio actuelle charge le fichier entier en mémoire WASM (`fetchFile`). Optimiser :
+
+- Utiliser `s.videoFile.arrayBuffer()` directement au lieu de `fetchFile` (évite une copie supplémentaire)
+- Extraire en MP3 compressé au lieu de WAV non compressé : `-vn -ar 48000 -ac 2 -b:a 128k audio.mp3`
+- Un MP3 de 60s @ 128kbps = ~1MB vs WAV = ~30MB
+- Nettoyer la mémoire WASM immédiatement après extraction : `ffmpeg.deleteFile('input.mp4')`
+
+### 5. CoverPicker plus réactif
+
+**Fichier :** `components/features/publish/CoverPicker.tsx`
+
+Problèmes actuels :
+- Charge la vidéo via proxy (lent sur gros fichiers)
+- Le seek sur un fichier proxié est très lent
+- Multiples timeouts/fallbacks Safari compliquent le code
+
+**Fix :**
+- Utiliser le blob URL du store (déjà en mémoire, seek instantané)
+- Simplifier le code Safari : le blob URL local n'a pas de problème cross-origin
+- Supprimer le proxy fallback puisque le CoverPicker n'est accessible que depuis l'éditeur (où le blob existe toujours)
+- Augmenter le `step` du slider pour les longues vidéos : `step={duration > 60 ? 500 : 100}` (sauts de 0.5s au lieu de 0.1s)
+- Debouncer le seek du slider (200ms) pour ne pas seek à chaque pixel de déplacement
+
+### 6. Nettoyage mémoire après export
+
+**Fichier :** `lib/utils/exportWebCodecs.ts`
 
 Après le loop de frames :
-- `URL.revokeObjectURL(video.src)` — déjà fait ✅
-- `video.remove()` — libérer l'element vidéo du DOM
-- `canvas.remove()` — libérer le canvas
-- Mettre `audioBuf = null` après utilisation
-
-### 5. Progression informative pour les fichiers longs
-
-**Fichier :** `components/features/editor/ExportButton.tsx`
-
-Le warning inline est déjà en place. Ajouter :
-- Pour les fichiers > 30MB (FFmpeg path) : montrer la progression FFmpeg (déjà exposée via `ffmpeg.on('progress')`)
-- Pour les fichiers < 30MB (WebCodecs path) : montrer le frame count `Encodage ${frameIndex}/${totalFrames}`
-- Pendant l'extraction audio : "Préparation audio..."
+```typescript
+video.pause();
+video.removeAttribute('src');
+video.load(); // force le release des buffers
+URL.revokeObjectURL(video.src); // déjà fait
+canvas.width = 0; canvas.height = 0; // force le release du canvas buffer
+audioBuf = null;
+```
 
 ## Contraintes
-- NE PAS modifier les tracks de la timeline (Track.tsx, TextTrack.tsx, etc.)
-- NE PAS modifier ResizeDivider.tsx, TrimHandle.tsx, EditorLayout.tsx
-- NE PAS modifier la Cloud Function transcribeAudio
-- NE PAS supprimer le pipeline WebCodecs (le garder pour les petits fichiers)
-- NE PAS supprimer le pipeline FFmpeg (le garder comme fallback)
+- NE PAS modifier les tracks de la timeline
+- NE PAS modifier ResizeDivider, TrimHandle, EditorLayout
+- NE PAS modifier les Cloud Functions
+- NE PAS supprimer le pipeline FFmpeg (garder comme fallback pour gros fichiers et audio custom)
 - Le format de sortie reste MP4 H.264
-- Les vidéos courtes (< 30s) doivent fonctionner identiquement
-- Les overlays texte et sous-titres doivent être rendus correctement dans les deux pipelines
+- Les vidéos courtes (< 30s) doivent fonctionner identiquement ou mieux
+- Les overlays texte et sous-titres doivent être rendus dans les deux pipelines
+- Le CoverPicker doit fonctionner même si on y accède sans passer par l'éditeur (ex: depuis ItemDetailSheet) — dans ce cas, fallback au proxy
 
 ## Definition of Done
-- [ ] Export d'une vidéo de 90s fonctionne sur iPhone Safari sans crash
-- [ ] Le seek loop remplace requestVideoFrameCallback dans exportWebCodecs
-- [ ] Les fichiers > 30MB utilisent le fallback FFmpeg automatiquement
-- [ ] Pas de `fetchFile` pour les gros fichiers (ou chunked)
-- [ ] La mémoire est nettoyée après l'export (video.remove, canvas.remove)
-- [ ] La progression est informative (frame count ou pourcentage FFmpeg)
-- [ ] Les vidéos courtes (< 15s) fonctionnent toujours via WebCodecs
+- [ ] Le CoverPicker utilise le blob URL du store (pas le proxy) quand disponible
+- [ ] Le seek du slider CoverPicker est fluide (debounce + step adaptatif)
+- [ ] L'export utilise un seek loop au lieu de requestVideoFrameCallback
+- [ ] L'export de 90s prend < 45 secondes (au lieu de 90s+)
+- [ ] Fichiers > 100MB utilisent le pipeline FFmpeg complet
+- [ ] L'extraction audio produit du MP3 (pas WAV) pour le path WebCodecs
+- [ ] La mémoire est nettoyée après l'export
+- [ ] Les vidéos courtes fonctionnent identiquement
+- [ ] L'export fonctionne même si le tab perd le focus momentanément
 - [ ] `tsc --noEmit` = 0 erreurs
 - [ ] `npm run build` = succès
 
 ## Référence — fichiers à lire
 - `CLAUDE.md`
 - `project-docs/04_DEV_SYSTEM/analysis/EXPORT_SUBTITLE_ANALYSIS.md`
-- `lib/utils/exportWebCodecs.ts` (le frame loop à modifier)
-- `lib/hooks/useVideoExport.ts` (l'orchestrateur)
+- `lib/utils/exportWebCodecs.ts` (le frame loop à refaire)
+- `lib/hooks/useVideoExport.ts` (orchestrateur export)
 - `lib/hooks/useFFmpeg.ts` (singleton FFmpeg)
-- `lib/utils/ffmpegCommands.ts` (commandes FFmpeg existantes)
+- `lib/utils/ffmpegCommands.ts` (commandes FFmpeg)
+- `components/features/publish/CoverPicker.tsx` (à optimiser)
+- `lib/store/useEditorStore.ts` (blob URL du store)
 - `components/features/editor/ExportButton.tsx` (UI)
