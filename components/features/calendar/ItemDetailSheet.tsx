@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { deleteField, Timestamp, doc, updateDoc, serverTimestamp } from 'firebase/firestore';
+import { deleteField, Timestamp, doc, updateDoc, serverTimestamp, FieldValue } from 'firebase/firestore';
 import BottomSheet from '@/components/ui/BottomSheet';
 import PublishSheet from '@/components/features/publish/PublishSheet';
 import { useUpdateContentItem } from '@/lib/hooks/useUpdateContentItem';
@@ -43,9 +43,8 @@ export default function ItemDetailSheet({ isOpen, onClose, item, onUnscheduled }
     }
     await updateItem(item.id, {
       distributionStatus: 'draft',
-      workflowState: item.videoUrl ? 'ready' : 'idea',
-      scheduledAt: deleteField(),
-      slotId: deleteField(),
+      scheduledAt: null,
+      slotId: null,
     });
     onUnscheduled();
   };
