@@ -46,12 +46,16 @@ export async function POST(request: NextRequest) {
     if (!initData.video_id) throw new Error(`init_failed: ${JSON.stringify(initData)}`);
 
     // Étape 2 : Upload vidéo via file_url
+    console.log('[FB] Uploading video to:', initData.upload_url);
     const uploadRes = await fetch(initData.upload_url, {
       method: 'POST',
-      headers: { Authorization: `OAuth ${pageToken}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ file_url: videoUrl }),
+      headers: {
+        Authorization: `OAuth ${pageToken}`,
+        file_url: videoUrl,
+      },
     });
     const uploadData = await uploadRes.json();
+    console.log('[FB] Upload response:', JSON.stringify(uploadData).substring(0, 200));
     if (!uploadData.success) throw new Error(`upload_failed: ${JSON.stringify(uploadData)}`);
 
     // Étape 3 : Publish

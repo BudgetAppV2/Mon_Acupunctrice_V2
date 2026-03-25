@@ -1,7 +1,8 @@
 // Helpers de publication extraits du cron pour garder le cron lisible
 
 const FUNCTIONS_URL = process.env.FIREBASE_FUNCTIONS_URL;
-const GRAPH = 'https://graph.facebook.com/v25.0';
+const GRAPH_FB = 'https://graph.facebook.com/v25.0';
+const GRAPH_IG = 'https://graph.instagram.com/v25.0';
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 const WIX_URL = process.env.NEXT_PUBLIC_WIX_URL || 'https://mon-acupunctrice.ca';
@@ -27,7 +28,7 @@ export async function publishInstagram(item: Record<string, unknown>): Promise<s
 export async function publishFacebook(
   item: Record<string, unknown>, pageId: string, pageToken: string,
 ): Promise<string | null> {
-  const initRes = await fetch(`${GRAPH}/${pageId}/video_reels`, {
+  const initRes = await fetch(`${GRAPH_FB}/${pageId}/video_reels`, {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ upload_phase: 'start', access_token: pageToken }),
   });
@@ -41,7 +42,7 @@ export async function publishFacebook(
   const uploadData = await uploadRes.json();
   if (!uploadData.success) throw new Error('fb_upload_failed');
 
-  const pubRes = await fetch(`${GRAPH}/${pageId}/video_reels`, {
+  const pubRes = await fetch(`${GRAPH_FB}/${pageId}/video_reels`, {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ upload_phase: 'finish', video_id: initData.video_id, description: item.caption || '', access_token: pageToken }),
   });
@@ -94,14 +95,14 @@ export async function publishInstagramStory(
     ? { video_url: item.videoUrl as string }
     : { image_url: (item.coverImageUrl || item.storyImageUrl) as string };
 
-  const createRes = await fetch(`${GRAPH}/${igUserId}/media`, {
+  const createRes = await fetch(`${GRAPH_IG}/${igUserId}/media`, {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ media_type: 'STORIES', ...mediaPayload, access_token: accessToken }),
   });
   const createData = await createRes.json();
   if (!createData.id) throw new Error(`story_create_failed: ${JSON.stringify(createData)}`);
 
-  const publishRes = await fetch(`${GRAPH}/${igUserId}/media_publish`, {
+  const publishRes = await fetch(`${GRAPH_IG}/${igUserId}/media_publish`, {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ creation_id: createData.id, access_token: accessToken }),
   });
