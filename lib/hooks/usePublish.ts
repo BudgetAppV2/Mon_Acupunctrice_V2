@@ -27,8 +27,8 @@ export function usePublish() {
     console.log('[PUBLISH] Starting publish for', opts.itemId);
     console.log('[PUBLISH] Options:', JSON.stringify({ videoUrl: opts.videoUrl?.substring(0, 80) + '...', caption: opts.caption?.substring(0, 50), coverOption: opts.coverOption, thumbOffset: opts.thumbOffset }));
     try {
-      await updateItem(opts.itemId, { distributionStatus: 'publishing' });
-      console.log('[PUBLISH] Status set to publishing');
+      await updateItem(opts.itemId, { distributionStatus: 'publishing', caption: opts.caption });
+      console.log('[PUBLISH] Status set to publishing, caption saved to Firestore');
 
       const res = await fetch('/api/publish', {
         method: 'POST',
