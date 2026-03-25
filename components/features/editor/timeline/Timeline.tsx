@@ -92,7 +92,7 @@ export default function Timeline() {
 
   if (duration === 0) {
     return (
-      <div className="bg-gray-950 shrink-0 flex items-center justify-center" style={{ height: `${timelineHeight}px` }}>
+      <div className="bg-gray-950 flex-1 min-h-[60px] flex items-center justify-center">
         {videoFile && <span className="text-xs text-gray-500">Chargement de la timeline...</span>}
       </div>
     );
@@ -101,8 +101,7 @@ export default function Timeline() {
   return (
     <div
       ref={containerRef}
-      className="bg-gray-950 shrink-0 relative select-none touch-none"
-      style={{ height: `${timelineHeight}px` }}
+      className="bg-gray-950 flex-1 min-h-[60px] relative select-none touch-none"
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}

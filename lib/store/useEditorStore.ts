@@ -43,6 +43,7 @@ interface EditorState {
   audioFadeOut: number;
   thumbnailUrl: string | null;
   videoOrientation: 'portrait' | 'landscape';
+  editorSplitRatio: number;
 
   setVideoFile: (file: File) => void;
   loadVideo: (file: File, url: string) => void;
@@ -70,6 +71,7 @@ interface EditorState {
   setAudioFade: (fadeIn: number, fadeOut: number) => void;
   setThumbnail: (url: string) => void;
   setVideoOrientation: (o: 'portrait' | 'landscape') => void;
+  setEditorSplitRatio: (ratio: number) => void;
   reset: () => void;
 }
 
@@ -79,7 +81,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   filter: 'normal', overlays: [], selectedOverlayId: null,
   subtitles: [], subtitleStyle: 'classic' as SubtitleStyle,
   audioUrl: null, audioName: null, audioVolume: 0.3, voiceVolume: 1,
-  audioFadeIn: 0, audioFadeOut: 0, thumbnailUrl: null, videoOrientation: 'portrait',
+  audioFadeIn: 0, audioFadeOut: 0, thumbnailUrl: null, videoOrientation: 'portrait', editorSplitRatio: 0.50,
 
   setVideoFile: (file) => {
     const prev = get().videoUrl;
@@ -135,6 +137,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   setAudioFade: (fadeIn, fadeOut) => set({ audioFadeIn: fadeIn, audioFadeOut: fadeOut }),
   setThumbnail: (url) => set({ thumbnailUrl: url }),
   setVideoOrientation: (o) => set({ videoOrientation: o }),
+  setEditorSplitRatio: (ratio) => set({ editorSplitRatio: Math.max(0.25, Math.min(0.80, ratio)) }),
   reset: () => {
     const prev = get().videoUrl;
     if (prev) URL.revokeObjectURL(prev);
