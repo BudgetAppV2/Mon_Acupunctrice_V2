@@ -29,7 +29,10 @@ export interface CalendarSlot {
   status: SlotStatus;
   sequenceId?: string;
   sequenceRole?: string;
+  sequencePosition?: number;
+  sequenceLength?: number;
   autoPublish?: boolean;
+  storyImageUrl?: string;
   promptTitle?: string;
   promptDescription?: string;
   weekNumber: number;
