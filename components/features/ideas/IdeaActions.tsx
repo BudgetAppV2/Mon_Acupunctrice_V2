@@ -6,7 +6,7 @@ import { Timestamp } from 'firebase/firestore';
 import { useUpdateContentItem } from '@/lib/hooks/useUpdateContentItem';
 import { useDeleteContentItem } from '@/lib/hooks/useDeleteContentItem';
 import type { ContentItem } from '@/lib/types';
-import { PencilIcon, TrashIcon, XCircleIcon, CalendarIcon, ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
+import { PencilIcon, TrashIcon, XCircleIcon, CalendarIcon, ArrowTopRightOnSquareIcon, VideoCameraSlashIcon } from '@heroicons/react/24/outline';
 
 interface Props {
   item: ContentItem;
@@ -83,6 +83,17 @@ export default function IdeaActions({ item, onClose }: Props) {
         {item.videoUrl && ds !== 'published' && (
           <button onClick={goEditor} className="flex items-center gap-1.5 px-3 py-1.5 border border-gray-200 rounded-lg text-xs text-gray-700">
             <PencilIcon className="w-3.5 h-3.5" /> Editeur
+          </button>
+        )}
+        {item.videoUrl && ds !== 'published' && (
+          <button
+            onClick={() => updateItem(item.id, {
+              videoUrl: null, thumbnailUrl: null, coverImageUrl: null,
+              workflowState: 'idea', exportedAt: null, editorTouchedAt: null,
+            })}
+            className="flex items-center gap-1.5 px-3 py-1.5 border border-orange-200 rounded-lg text-xs text-orange-600"
+          >
+            <VideoCameraSlashIcon className="w-3.5 h-3.5" /> Retirer la video
           </button>
         )}
         {ds === 'scheduled' && (

@@ -82,8 +82,14 @@ export default function IdeaCaptionSection({ item }: { item: ContentItem }) {
 
       {/* Caption enrichie (lecture seule, affichee si differente du draft) */}
       {caption && caption !== draft && (
-        <div className="bg-gray-50 rounded-lg p-2 text-sm text-gray-700 whitespace-pre-wrap">
+        <div className="bg-gray-50 rounded-lg p-2 text-sm text-gray-700 whitespace-pre-wrap relative">
           {caption}
+          <button
+            onClick={() => { setCaption(''); updateItem(item.id, { caption: '' }); }}
+            className="absolute top-1 right-1 text-[10px] text-gray-400 hover:text-red-400 px-1.5 py-0.5 rounded"
+          >
+            Effacer
+          </button>
         </div>
       )}
     </div>
