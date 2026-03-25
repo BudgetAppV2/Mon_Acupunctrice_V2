@@ -136,7 +136,7 @@ export default function ItemDetailSheet({ isOpen, onClose, item, onUnscheduled }
             )}
             <button onClick={handleEdit} className="w-full flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors">
               <PencilIcon className="w-5 h-5 text-sage" />
-              <span className="text-sm font-medium text-gray-900">Modifier</span>
+              <span className="text-sm font-medium text-gray-900">{item.videoUrl ? 'Modifier' : 'Creer le contenu'}</span>
             </button>
             {item.distributionStatus === 'scheduled' && (
               <button onClick={handleUnschedule} className="w-full flex items-center gap-3 p-3 rounded-lg border border-red-200 hover:bg-red-50 transition-colors">
