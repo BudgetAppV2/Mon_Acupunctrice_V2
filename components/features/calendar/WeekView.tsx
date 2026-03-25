@@ -212,45 +212,59 @@ function DayRow({ date, isToday, items, slots, onTapItem, onTapSlot, onTapEmpty 
   const filledSlot = slots.find((s) => s.status === 'filled' || s.status === 'completed');
   if (items.length > 0 || filledSlot) {
     const item = items[0];
-    const style = item?.contentStyle ?? filledSlot?.contentStyle;
-    const color = style ? getStyleColor(style) : undefined;
+    const slotStyle = filledSlot?.contentStyle;
+    const itemStyle = item?.contentStyle;
+    const color = slotStyle ? getStyleColor(slotStyle) : itemStyle ? getStyleColor(itemStyle) : undefined;
     const title = item?.title ?? 'Contenu planifié';
     const isCompleted = filledSlot?.status === 'completed' || item?.distributionStatus === 'published';
     const thumb = item?.coverImageUrl || item?.thumbnailUrl;
+    const formatLabel = filledSlot
+      ? filledSlot.format === 'reel' ? 'Reel' : filledSlot.format === 'story' ? 'Story' : 'Post'
+      : null;
 
-    // Fond teinté par style
-    const styleTint = style
-      ? { enseigner: 'bg-blue-50/50 border-blue-200', connecter: 'bg-green-50/50 border-green-200', aider: 'bg-amber-50/50 border-amber-200', inspirer: 'bg-purple-50/50 border-purple-200' }[style] ?? 'bg-white border-gray-100'
-      : 'bg-white border-gray-100';
-    const cardClass = isCompleted ? 'bg-green-50/30 border-green-200' : styleTint;
+    // Couleur de la slot (la coquille extérieure)
+    const slotBorder = isCompleted
+      ? 'border-green-200'
+      : color ? `border-2` : 'border border-gray-100';
+
+    // Couleur de l'idée (la carte intérieure)
+    const itemTint = itemStyle
+      ? { enseigner: 'bg-blue-50/60', connecter: 'bg-green-50/60', aider: 'bg-amber-50/60', inspirer: 'bg-purple-50/60' }[itemStyle] ?? 'bg-gray-50'
+      : 'bg-gray-50';
 
     return (
       <button
         onClick={() => item ? onTapItem(item) : filledSlot ? onTapSlot(filledSlot) : undefined}
-        className={`flex items-center gap-3 p-3 rounded-xl border transition-colors text-left hover:brightness-95 ${cardClass}`}
+        className={`rounded-xl transition-colors text-left hover:brightness-95 ${slotBorder} ${
+          isCompleted ? 'bg-green-50/20' : 'bg-white'
+        }`}
+        style={color && !isCompleted ? { borderColor: color } : undefined}
       >
-        <DateBadge date={date} isToday={isToday} accentColor={color} />
-        <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-gray-900 truncate">{title}</p>
-          <div className="flex items-center gap-1.5 mt-0.5">
-            {style && (
-              <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${getStyleBg(style)}`}>
-                {getStyleLabel(style)}
+        {/* En-tête du slot */}
+        <div className="flex items-center gap-3 px-3 pt-2.5 pb-1">
+          <DateBadge date={date} isToday={isToday} accentColor={color} />
+          <div className="flex items-center gap-1.5 flex-1">
+            {slotStyle && (
+              <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${getStyleBg(slotStyle)}`}>
+                {getStyleLabel(slotStyle)}
               </span>
             )}
-            {filledSlot && !isCompleted && (
-              <span className="text-[10px] text-gray-400">
-                {filledSlot.format === 'reel' ? 'Reel' : filledSlot.format === 'story' ? 'Story' : 'Post'}
-              </span>
-            )}
+            {formatLabel && <span className="text-[10px] text-gray-400">{formatLabel}</span>}
             {isCompleted && <span className="text-[10px] text-green-600 font-medium">Publié</span>}
           </div>
         </div>
-        {thumb ? (
-          <img src={thumb} alt="" className="w-9 h-9 rounded-lg object-cover shrink-0" />
-        ) : color ? (
-          <span className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: color }} />
-        ) : null}
+        {/* Carte de l'idée imbriquée */}
+        <div className={`mx-2 mb-2 mt-1 px-3 py-2 rounded-lg ${itemTint} flex items-center gap-2`}>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-medium text-gray-900 truncate">{title}</p>
+            {item && !item.videoUrl && (
+              <p className="text-[10px] text-gray-400 mt-0.5">Contenu a creer</p>
+            )}
+          </div>
+          {thumb ? (
+            <img src={thumb} alt="" className="w-10 h-10 rounded-lg object-cover shrink-0" />
+          ) : null}
+        </div>
       </button>
     );
   }

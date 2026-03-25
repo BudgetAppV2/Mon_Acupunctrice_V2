@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Timestamp } from 'firebase/firestore';
+import { Timestamp, deleteField, doc, updateDoc, serverTimestamp } from 'firebase/firestore';
+import { getFirebaseFirestore } from '@/lib/firebase';
 import { useUpdateContentItem } from '@/lib/hooks/useUpdateContentItem';
 import { useDeleteContentItem } from '@/lib/hooks/useDeleteContentItem';
 import type { ContentItem } from '@/lib/types';
@@ -43,14 +44,29 @@ export default function IdeaActions({ item, onClose }: Props) {
     onClose();
   };
 
-  const handleUnschedule = () => {
-    updateItem(item.id, { distributionStatus: 'draft', scheduledAt: null });
+  const handleUnschedule = async () => {
+    // Remettre le slot a open si lie
+    if (item.slotId) {
+      const db = getFirebaseFirestore();
+      await updateDoc(doc(db, 'calendarSlots', item.slotId), {
+        status: 'open',
+        contentItemId: deleteField(),
+        updatedAt: serverTimestamp(),
+      });
+    }
+    await updateItem(item.id, {
+      distributionStatus: 'draft',
+      workflowState: item.videoUrl ? 'ready' : 'idea',
+      scheduledAt: null,
+      slotId: null,
+    });
   };
 
   // Bouton principal selon l'etat
+  const hasVideo = !!item.videoUrl;
   let primaryLabel = '';
   let primaryAction = goEditor;
-  if (ws === 'idea') { primaryLabel = 'Creer le contenu'; }
+  if (!hasVideo) { primaryLabel = 'Creer le contenu'; }
   else if (ws === 'shot') { primaryLabel = 'Monter la video'; }
   else if (ws === 'editing') { primaryLabel = 'Continuer le montage'; }
   else if (ws === 'ready' && ds === 'draft') { primaryLabel = 'Planifier la publication'; primaryAction = () => setShowSchedule(true); }
