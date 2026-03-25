@@ -4,7 +4,6 @@ import { useSearchParams } from 'next/navigation';
 import { useState, useEffect, Suspense } from 'react';
 import { SparklesIcon } from '@heroicons/react/24/outline';
 import { CONTENT_STYLES, getStyleColor } from '@/lib/utils/contentStyles';
-import { TEMPLATES } from '@/lib/data/templates';
 import TemplateList from '@/components/features/inspiration/TemplateList';
 import type { ContentStyle } from '@/lib/types';
 
@@ -58,7 +57,7 @@ function InspirationContent() {
       </div>
 
       {/* Template list */}
-      <TemplateList templates={TEMPLATES} selectedStyle={selected} />
+      <TemplateList selectedStyle={selected} />
     </div>
   );
 }
