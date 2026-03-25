@@ -40,7 +40,7 @@ export async function generateWeekSlots(
   const weekEnd = new Date(weekStartMonday);
   weekEnd.setDate(weekStartMonday.getDate() + 7);
 
-  const existing = await getDocs(
+  const existingSnap = await getDocs(
     query(
       collection(db, 'calendarSlots'),
       where('userId', '==', userId),
@@ -48,7 +48,13 @@ export async function generateWeekSlots(
       where('scheduledDate', '<', Timestamp.fromDate(weekEnd)),
     ),
   );
-  if (!existing.empty) return [];
+  // Vérifier par jour et par pattern, pas juste "la semaine a des slots"
+  const existingDays = new Set(
+    existingSnap.docs.map((d) => {
+      const dt = d.data().scheduledDate.toDate();
+      return dt.getDay(); // 0-6
+    }),
+  );
 
   const weekNum = isoWeekNumber(weekStartMonday);
   const patterns = PHASE_1_PATTERNS[weekNum % 2];
@@ -56,7 +62,9 @@ export async function generateWeekSlots(
   const created: CalendarSlot[] = [];
 
   for (const pattern of patterns) {
-    // weekStartMonday = lundi (dayOfWeek=1), donc mardi = +1 jour, vendredi = +4 jours
+    // Skip si un slot existe déjà pour ce jour de la semaine
+    if (existingDays.has(pattern.dayOfWeek)) continue;
+
     const slotDate = new Date(weekStartMonday);
     slotDate.setDate(weekStartMonday.getDate() + (pattern.dayOfWeek - 1));
     slotDate.setHours(18, 0, 0, 0);
@@ -84,6 +92,6 @@ export async function generateWeekSlots(
     created.push({ id: ref.id, ...localData });
   }
 
-  await batch.commit();
+  if (created.length > 0) await batch.commit();
   return created;
 }

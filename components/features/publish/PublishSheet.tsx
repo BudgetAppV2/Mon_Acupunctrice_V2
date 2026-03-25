@@ -66,8 +66,8 @@ export default function PublishSheet({ isOpen, onClose, item }: Props) {
         {fbError && <p className="text-xs text-red-500">{fbError}</p>}
         {ytError && <p className="text-xs text-red-500">{ytError}</p>}
         {storyError && <p className="text-xs text-red-500">{storyError}</p>}
-        <button onClick={() => { onClose(); if (isSlotItem) router.push('/calendrier'); }} className="mt-4 px-6 py-2 bg-sage text-white rounded-xl font-medium">
-          {isSlotItem ? 'Voir le calendrier' : 'Fermer'}
+        <button onClick={() => { onClose(); router.push('/calendrier'); }} className="mt-4 px-6 py-2 bg-sage text-white rounded-xl font-medium">
+          Voir le calendrier
         </button>
       </div>
     </BottomSheet>
