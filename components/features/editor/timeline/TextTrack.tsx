@@ -1,14 +1,20 @@
 'use client';
 
+import { useRef, useCallback } from 'react';
 import { useEditorStore } from '@/lib/store/useEditorStore';
+import TrimHandle from './TrimHandle';
 
-interface Props {
-  zoomLevel: number;
-}
+interface Props { zoomLevel: number }
 
-/** Piste texte sur la timeline — blocs tappables avec selection */
+/** Piste texte sur la timeline — blocs tappables avec trim handles sur la selection */
 export default function TextTrack({ zoomLevel }: Props) {
-  const { overlays, selectedOverlayId, selectOverlay } = useEditorStore();
+  const { overlays, selectedOverlayId, selectOverlay, updateOverlay, duration } = useEditorStore();
+  const startRef = useRef({ start: 0, end: 0 });
+
+  const onDragStartFn = useCallback((o: { startTime: number; endTime: number }) => {
+    startRef.current = { start: o.startTime, end: o.endTime };
+  }, []);
+
   if (overlays.length === 0) return null;
 
   return (
@@ -28,6 +34,28 @@ export default function TextTrack({ zoomLevel }: Props) {
             }}
           >
             {o.text || '...'}
+            {isSelected && (
+              <>
+                <TrimHandle
+                  side="left"
+                  onDragStart={() => onDragStartFn(o)}
+                  onDrag={(delta) => {
+                    const ns = Math.max(0, startRef.current.start + delta / zoomLevel);
+                    if (startRef.current.end - ns >= 0.3) updateOverlay(o.id, { startTime: ns });
+                  }}
+                  onDragEnd={() => {}}
+                />
+                <TrimHandle
+                  side="right"
+                  onDragStart={() => onDragStartFn(o)}
+                  onDrag={(delta) => {
+                    const ne = Math.min(duration, startRef.current.end + delta / zoomLevel);
+                    if (ne - startRef.current.start >= 0.3) updateOverlay(o.id, { endTime: ne });
+                  }}
+                  onDragEnd={() => {}}
+                />
+              </>
+            )}
           </button>
         );
       })}
