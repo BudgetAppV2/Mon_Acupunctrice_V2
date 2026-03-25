@@ -15,17 +15,25 @@ export async function POST(request: NextRequest) {
   }
 
   try {
+    console.log('[API/publish] Calling CF publishToInstagram for', itemId);
     const res = await fetch(`${FUNCTIONS_URL}/publishToInstagram`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ data: { videoUrl, caption, itemId, coverOption, thumbOffset, coverUrl } }),
     });
 
-    if (!res.ok) return NextResponse.json({ error: 'Publication échouée' }, { status: res.status });
+    console.log('[API/publish] CF response status:', res.status);
+    if (!res.ok) {
+      const errText = await res.text().catch(() => 'no body');
+      console.error('[API/publish] CF error:', errText.substring(0, 500));
+      return NextResponse.json({ error: 'Publication échouée', details: errText.substring(0, 200) }, { status: res.status });
+    }
 
     const json = await res.json();
+    console.log('[API/publish] CF success keys:', Object.keys(json));
     return NextResponse.json(json.result || json);
-  } catch {
+  } catch (e) {
+    console.error('[API/publish] Exception:', e);
     return NextResponse.json({ error: 'Erreur de publication' }, { status: 500 });
   }
 }

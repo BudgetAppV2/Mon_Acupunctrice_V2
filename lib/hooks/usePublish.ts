@@ -24,17 +24,26 @@ export function usePublish() {
   const publish = useCallback(async (opts: PublishOptions) => {
     setPublishing(true);
     setError(null);
+    console.log('[PUBLISH] Starting publish for', opts.itemId);
+    console.log('[PUBLISH] Options:', JSON.stringify({ videoUrl: opts.videoUrl?.substring(0, 80) + '...', caption: opts.caption?.substring(0, 50), coverOption: opts.coverOption, thumbOffset: opts.thumbOffset }));
     try {
       await updateItem(opts.itemId, { distributionStatus: 'publishing' });
+      console.log('[PUBLISH] Status set to publishing');
 
       const res = await fetch('/api/publish', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(opts),
       });
-      if (!res.ok) throw new Error('Publication échouée');
+      console.log('[PUBLISH] API response status:', res.status);
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        console.error('[PUBLISH] API error:', errData);
+        throw new Error(errData.error || 'Publication échouée');
+      }
 
       const data = await res.json();
+      console.log('[PUBLISH] Success! mediaId:', data.mediaId);
       await updateItem(opts.itemId, {
         distributionStatus: 'published',
         instagramPostId: data.mediaId,
@@ -46,7 +55,9 @@ export function usePublish() {
       await updateProgression();
       return true;
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erreur de publication');
+      const msg = err instanceof Error ? err.message : 'Erreur de publication';
+      console.error('[PUBLISH] FAILED:', msg);
+      setError(msg);
       await updateItem(opts.itemId, { distributionStatus: 'failed' }).catch(() => {});
       return false;
     } finally {
