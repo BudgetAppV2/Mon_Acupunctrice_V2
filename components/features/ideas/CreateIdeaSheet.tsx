@@ -7,6 +7,7 @@ import { useUserProfile } from '@/lib/hooks/useUserProfile';
 import { getAllCategories } from '@/lib/utils/categories';
 import VoiceRecordButton from './VoiceRecordButton';
 import ContentStyleSelector from './ContentStyleSelector';
+import InspirationHint from './InspirationHint';
 import type { ContentStyle } from '@/lib/types';
 
 interface Props {
@@ -124,6 +125,10 @@ export default function CreateIdeaSheet({ isOpen, onClose, defaultStyle }: Props
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">Style</label>
           <ContentStyleSelector value={style} onChange={setStyle} />
+          <InspirationHint
+            style={style}
+            onUsePrompt={(q) => setNotes((prev) => prev ? `${prev}\n${q}` : q)}
+          />
         </div>
 
         <div>

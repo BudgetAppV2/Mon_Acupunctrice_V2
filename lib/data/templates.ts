@@ -7,6 +7,40 @@ export interface HookTemplate {
   category: 'hook' | 'caption_structure';
 }
 
+// Questions de réflexion — coaching doux, pas des formules pré-faites
+export interface ReflectionPrompt {
+  id: string;
+  style: ContentStyle;
+  question: string;
+}
+
+export const REFLECTION_PROMPTS: ReflectionPrompt[] = [
+  // ENSEIGNER
+  { id: 'r-e1', style: 'enseigner', question: 'Qu\'est-ce que tes clientes ne savent pas sur ce sujet?' },
+  { id: 'r-e2', style: 'enseigner', question: 'Quel mythe entends-tu souvent en clinique?' },
+  { id: 'r-e3', style: 'enseigner', question: 'Quelle question te pose-t-on le plus souvent?' },
+  { id: 'r-e4', style: 'enseigner', question: 'Qu\'est-ce qui te surprend encore après toutes ces années?' },
+
+  // CONNECTER
+  { id: 'r-c1', style: 'connecter', question: 'Quel moment de ta journée montre le mieux ce que tu fais?' },
+  { id: 'r-c2', style: 'connecter', question: 'Qu\'est-ce que les gens ne voient jamais de ton métier?' },
+  { id: 'r-c3', style: 'connecter', question: 'Qu\'est-ce qui t\'a fait choisir l\'acupuncture?' },
+  { id: 'r-c4', style: 'connecter', question: 'Quel petit rituel te rend heureuse à la clinique?' },
+
+  // AIDER
+  { id: 'r-a1', style: 'aider', question: 'Quel geste simple recommandes-tu souvent à tes clientes?' },
+  { id: 'r-a2', style: 'aider', question: 'Quel conseil donnerais-tu à une amie qui vit ça?' },
+  { id: 'r-a3', style: 'aider', question: 'Quel point d\'acupression montres-tu le plus souvent?' },
+  { id: 'r-a4', style: 'aider', question: 'Qu\'est-ce qu\'on peut essayer ce soir à la maison?' },
+
+  // INSPIRER
+  { id: 'r-i1', style: 'inspirer', question: 'Quel retour d\'une cliente t\'a touchée récemment?' },
+  { id: 'r-i2', style: 'inspirer', question: 'Quel changement as-tu vu chez une cliente qui t\'a marquée?' },
+  { id: 'r-i3', style: 'inspirer', question: 'Pourquoi tu fais ce métier, dans tes mots?' },
+  { id: 'r-i4', style: 'inspirer', question: 'Quel moment t\'a rappelé pourquoi tu aimes ça?' },
+];
+
+// Templates originaux — gardés pour la page Inspiration
 export const TEMPLATES: HookTemplate[] = [
   // ENSEIGNER — Hooks
   { id: 'e1', style: 'enseigner', text: 'Savais-tu que [fait surprenant]?', category: 'hook' },
