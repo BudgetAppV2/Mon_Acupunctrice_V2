@@ -74,6 +74,15 @@ export async function GET(request: NextRequest) {
       }
 
       await db.doc(`contentItems/${doc.id}`).update(updates);
+
+      // Marquer le slot lié comme completed (S02)
+      if (item.slotId) {
+        await db.doc(`calendarSlots/${item.slotId}`).update({
+          status: 'completed',
+          updatedAt: FieldValue.serverTimestamp(),
+        }).catch(() => {});
+      }
+
       // Progression (S07)
       const wk = new Date().toISOString().slice(0, 4) + '-W' + String(Math.ceil((Date.now() - new Date(new Date().getFullYear(), 0, 1).getTime()) / 604800000)).padStart(2, '0');
       await db.doc(`users/${userId}`).update({
