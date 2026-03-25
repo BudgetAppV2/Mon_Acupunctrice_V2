@@ -50,8 +50,9 @@ export async function exportWithWebCodecs(
     error: (e) => { throw e; },
   });
   vEnc.configure({
-    codec: 'avc1.4d0028', width: W, height: H, bitrate: 8_000_000, framerate: FPS,
+    codec: 'avc1.640028', width: W, height: H, bitrate: 3_500_000, framerate: FPS,
     bitrateMode: 'variable', hardwareAcceleration: 'prefer-hardware',
+    latencyMode: 'quality',
   });
 
   const video = document.createElement('video');
@@ -85,7 +86,7 @@ export async function exportWithWebCodecs(
 
     const ts = Math.round((t - trimStart) * 1e6);
     const frame = new VideoFrame(canvas, { timestamp: ts });
-    vEnc.encode(frame, { keyFrame: i % 60 === 0 });
+    vEnc.encode(frame, { keyFrame: i % 30 === 0 });
     frame.close();
     onProgress(Math.round(i / totalFrames * 100));
 
