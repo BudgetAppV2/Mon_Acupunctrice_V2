@@ -6,7 +6,7 @@ const TABS: { id: string; label: string; disabled?: boolean }[] = [
   { id: 'texte', label: 'Texte' },
   { id: 'subs', label: 'Sous-titres' },
   { id: 'audio', label: 'Audio' },
-  { id: 'images', label: 'Images', disabled: true },
+  { id: 'cover', label: 'Cover' },
 ];
 
 interface Props {

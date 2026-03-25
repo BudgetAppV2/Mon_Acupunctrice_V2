@@ -17,6 +17,7 @@ import FilterPanel from './panels/FilterPanel';
 import TextPanel from './panels/TextPanel';
 import SubtitlePanel from './panels/SubtitlePanel';
 import AudioPanel from './panels/AudioPanel';
+import CoverPanel from './panels/CoverPanel';
 import ExportButton from './ExportButton';
 import ImportModal from './ImportModal';
 import PublishSheet from '../publish/PublishSheet';
@@ -106,7 +107,7 @@ export default function EditorLayout({ itemId }: Props) {
             return fb.ok ? <CheckCircleIcon className="w-3.5 h-3.5 text-green-400" /> : <ExclamationTriangleIcon className="w-3.5 h-3.5 text-yellow-400" />;
           })()}
         </span>
-        <ExportButton onExportDone={handlePublish} />
+        <ExportButton onExportDone={handlePublish} onSwitchTab={setActiveTab} />
       </header>
 
       {/* Zone redimensionnable */}
@@ -130,6 +131,7 @@ export default function EditorLayout({ itemId }: Props) {
             {activeTab === 'texte' && <TextPanel />}
             {activeTab === 'subs' && <SubtitlePanel />}
             {activeTab === 'audio' && <AudioPanel />}
+            {activeTab === 'cover' && <CoverPanel />}
           </div>
           <Timeline />
         </div>

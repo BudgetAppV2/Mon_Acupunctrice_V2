@@ -45,6 +45,9 @@ interface EditorState {
   videoOrientation: 'portrait' | 'landscape';
   editorSplitRatio: number;
   selectedSubtitleId: string | null;
+  coverFrameOffset: number;
+  coverDataUrl: string | null;
+  coverCustomUrl: string | null;
 
   setVideoFile: (file: File) => void;
   loadVideo: (file: File, url: string) => void;
@@ -75,6 +78,9 @@ interface EditorState {
   setEditorSplitRatio: (ratio: number) => void;
   selectSubtitle: (id: string | null) => void;
   updateSubtitleTiming: (id: string, changes: { startTime?: number; endTime?: number }) => void;
+  setCoverFrame: (offset: number, dataUrl: string) => void;
+  setCoverCustom: (url: string) => void;
+  clearCover: () => void;
   reset: () => void;
 }
 
@@ -84,7 +90,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   filter: 'normal', overlays: [], selectedOverlayId: null,
   subtitles: [], subtitleStyle: 'classic' as SubtitleStyle,
   audioUrl: null, audioName: null, audioVolume: 0.3, voiceVolume: 1,
-  audioFadeIn: 0, audioFadeOut: 0, thumbnailUrl: null, videoOrientation: 'portrait', editorSplitRatio: 0.50, selectedSubtitleId: null,
+  audioFadeIn: 0, audioFadeOut: 0, thumbnailUrl: null, videoOrientation: 'portrait', editorSplitRatio: 0.50, selectedSubtitleId: null, coverFrameOffset: 0, coverDataUrl: null, coverCustomUrl: null,
 
   setVideoFile: (file) => {
     const prev = get().videoUrl;
@@ -143,6 +149,9 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   setEditorSplitRatio: (ratio) => set({ editorSplitRatio: Math.max(0.25, Math.min(0.80, ratio)) }),
   selectSubtitle: (id) => set({ selectedSubtitleId: id }),
   updateSubtitleTiming: (id, changes) => set({ subtitles: get().subtitles.map(s => s.id === id ? { ...s, ...changes } : s) }),
+  setCoverFrame: (offset, dataUrl) => set({ coverFrameOffset: offset, coverDataUrl: dataUrl, coverCustomUrl: null }),
+  setCoverCustom: (url) => set({ coverCustomUrl: url, coverDataUrl: null }),
+  clearCover: () => set({ coverFrameOffset: 0, coverDataUrl: null, coverCustomUrl: null }),
   reset: () => {
     const prev = get().videoUrl;
     if (prev) URL.revokeObjectURL(prev);
@@ -154,7 +163,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
       filter: 'normal', overlays: [], selectedOverlayId: null,
       subtitles: [], subtitleStyle: 'classic' as SubtitleStyle,
       audioUrl: null, audioName: null, audioVolume: 0.3, voiceVolume: 1,
-      audioFadeIn: 0, audioFadeOut: 0, thumbnailUrl: null, videoOrientation: 'portrait', selectedSubtitleId: null,
+      audioFadeIn: 0, audioFadeOut: 0, thumbnailUrl: null, videoOrientation: 'portrait', selectedSubtitleId: null, coverFrameOffset: 0, coverDataUrl: null, coverCustomUrl: null,
     });
   },
 }));
