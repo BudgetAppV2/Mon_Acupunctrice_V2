@@ -160,8 +160,13 @@ function CopyableCard({ text, style }: { text: string; style?: ContentStyle }) {
   const label = style ? getStyleLabel(style) : undefined;
   const bg = style ? getStyleBg(style) : 'bg-gray-50 text-gray-500';
 
+  // Fond très léger teinté par style
+  const cardBg = style
+    ? { enseigner: 'bg-blue-50/40', connecter: 'bg-green-50/40', aider: 'bg-amber-50/40', inspirer: 'bg-purple-50/40' }[style] ?? 'bg-white'
+    : 'bg-white';
+
   return (
-    <div className="flex items-start gap-3 py-3 px-3.5 rounded-xl bg-white border border-gray-100">
+    <div className={`flex items-start gap-3 py-3 px-3.5 rounded-xl border border-gray-100 ${cardBg}`}>
       {label && (
         <span className={`mt-0.5 shrink-0 text-[10px] font-semibold px-2 py-0.5 rounded-full ${bg}`}>
           {label}
