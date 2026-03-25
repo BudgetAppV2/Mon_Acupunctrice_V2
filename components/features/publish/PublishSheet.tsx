@@ -13,11 +13,14 @@ import { useUserProfile } from '@/lib/hooks/useUserProfile';
 import { useAuthStore } from '@/lib/store/useAuthStore';
 import { useEditorStore } from '@/lib/store/useEditorStore';
 import { ArrowRightIcon, ArrowLeftIcon, PaperAirplaneIcon, CalendarIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
+import { useRouter } from 'next/navigation';
 
 interface Props { isOpen: boolean; onClose: () => void; item: ContentItem }
 type CoverSelection = { type: 'frame'; offset: number } | { type: 'custom'; url: string };
 
 export default function PublishSheet({ isOpen, onClose, item }: Props) {
+  const router = useRouter();
+  const isSlotItem = !!item.slotId;
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [cover, setCover] = useState<CoverSelection>({ type: 'frame', offset: 0 });
   const [caption, setCaption] = useState(item.caption || '');
@@ -56,11 +59,16 @@ export default function PublishSheet({ isOpen, onClose, item }: Props) {
     <BottomSheet isOpen={isOpen} onClose={onClose} title="Publication">
       <div className="flex flex-col items-center py-8 gap-3">
         <CheckCircleIcon className="w-12 h-12 text-sage" />
-        <p className="text-base font-semibold text-gray-900">{showSchedule ? 'Publication planifiee!' : 'Publie sur Instagram!'}</p>
+        <p className="text-base font-semibold text-gray-900">
+          {isSlotItem ? 'Contenu pret!' : showSchedule ? 'Publication planifiee!' : 'Publie sur Instagram!'}
+        </p>
+        {isSlotItem && <p className="text-xs text-gray-400">Le Hub publiera automatiquement a 8h</p>}
         {fbError && <p className="text-xs text-red-500">{fbError}</p>}
         {ytError && <p className="text-xs text-red-500">{ytError}</p>}
         {storyError && <p className="text-xs text-red-500">{storyError}</p>}
-        <button onClick={onClose} className="mt-4 px-6 py-2 bg-sage text-white rounded-xl font-medium">Fermer</button>
+        <button onClick={() => { onClose(); if (isSlotItem) router.push('/calendrier'); }} className="mt-4 px-6 py-2 bg-sage text-white rounded-xl font-medium">
+          {isSlotItem ? 'Voir le calendrier' : 'Fermer'}
+        </button>
       </div>
     </BottomSheet>
   );
@@ -99,7 +107,21 @@ export default function PublishSheet({ isOpen, onClose, item }: Props) {
               alsoFacebook={alsoFacebook} alsoYoutube={alsoYoutube} alsoStory={alsoStory}
               onToggleFacebook={() => setAlsoFacebook(!alsoFacebook)} onToggleYoutube={() => setAlsoYoutube(!alsoYoutube)} onToggleStory={() => setAlsoStory(!alsoStory)}
             />
-            {showSchedule ? (
+            {isSlotItem ? (
+              /* Slot : pas de publish/schedule, juste sauvegarder */
+              <div className="space-y-2">
+                <div className="bg-sage/10 rounded-lg p-3 text-center">
+                  <p className="text-sm text-sage font-medium">Publication automatique a 8h</p>
+                  <p className="text-xs text-gray-400 mt-0.5">Le Hub publiera sur les plateformes activees</p>
+                </div>
+                <button onClick={() => setDone(true)} className="w-full py-3 bg-sage text-white rounded-xl font-semibold flex items-center justify-center gap-2">
+                  <CheckCircleIcon className="w-5 h-5" /> Confirmer
+                </button>
+                <button onClick={() => setStep(2)} className="w-full py-2 text-xs text-gray-400 flex items-center justify-center gap-1">
+                  <ArrowLeftIcon className="w-3 h-3" /> Modifier la caption
+                </button>
+              </div>
+            ) : showSchedule ? (
               <SchedulePicker onSchedule={handleSchedule} onCancel={() => setShowSchedule(false)} />
             ) : (
               <div className="space-y-2">

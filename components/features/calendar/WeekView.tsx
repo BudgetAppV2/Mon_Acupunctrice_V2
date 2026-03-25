@@ -216,6 +216,7 @@ function DayRow({ date, isToday, items, slots, onTapItem, onTapSlot, onTapEmpty 
     const color = style ? getStyleColor(style) : undefined;
     const title = item?.title ?? 'Contenu planifié';
     const isCompleted = filledSlot?.status === 'completed' || item?.distributionStatus === 'published';
+    const thumb = item?.coverImageUrl || item?.thumbnailUrl;
 
     return (
       <button
@@ -236,7 +237,11 @@ function DayRow({ date, isToday, items, slots, onTapItem, onTapSlot, onTapEmpty 
             {isCompleted && <span className="text-[10px] text-green-600 font-medium">Publié</span>}
           </div>
         </div>
-        {color && <span className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: color }} />}
+        {thumb ? (
+          <img src={thumb} alt="" className="w-9 h-9 rounded-lg object-cover shrink-0" />
+        ) : color ? (
+          <span className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: color }} />
+        ) : null}
       </button>
     );
   }
