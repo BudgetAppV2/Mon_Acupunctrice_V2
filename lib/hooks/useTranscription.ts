@@ -27,11 +27,25 @@ export function useTranscription() {
       // Etape 1 : Extraire l'audio en MP3 compresse via FFmpeg (~1MB/min au lieu de 50-200MB)
       setStage('extracting');
       console.log('[TRANSCRIBE] Stage: extracting audio. File size:', (videoFile.size / 1024 / 1024).toFixed(1) + 'MB');
-      const ffmpeg = await loadFFmpeg();
-      console.log('[TRANSCRIBE] FFmpeg loaded');
-      const { fetchFile } = await import('@ffmpeg/util');
-      await ffmpeg.writeFile('input.mp4', await fetchFile(videoFile));
-      console.log('[TRANSCRIBE] Video written to FFmpeg FS');
+      let ffmpeg;
+      try {
+        ffmpeg = await loadFFmpeg();
+        console.log('[TRANSCRIBE] FFmpeg loaded OK');
+      } catch (e) {
+        console.error('[TRANSCRIBE] FFmpeg load FAILED:', e);
+        throw new Error('Impossible de charger FFmpeg. Reessaie.');
+      }
+      try {
+        const { fetchFile } = await import('@ffmpeg/util');
+        console.log('[TRANSCRIBE] fetchFile imported, reading video into WASM...');
+        const fileData = await fetchFile(videoFile);
+        console.log('[TRANSCRIBE] fetchFile done, size:', fileData.byteLength, 'writing to FS...');
+        await ffmpeg.writeFile('input.mp4', fileData);
+        console.log('[TRANSCRIBE] Video written to FFmpeg FS');
+      } catch (e) {
+        console.error('[TRANSCRIBE] fetchFile/writeFile FAILED:', e);
+        throw new Error('Fichier trop volumineux pour l\'extraction audio. Essaie une video plus courte.');
+      }
       await ffmpeg.exec(['-i', 'input.mp4', '-vn', '-ar', '16000', '-ac', '1', '-b:a', '32k', 'audio.mp3']);
       console.log('[TRANSCRIBE] Audio extraction complete');
       const audioData = await ffmpeg.readFile('audio.mp3') as Uint8Array;
