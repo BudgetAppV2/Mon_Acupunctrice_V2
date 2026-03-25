@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { DocumentDuplicateIcon, CheckIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
-import { getStyleColor, getStyleLabel, getStyleBg } from '@/lib/utils/contentStyles';
+import { getStyleLabel, getStyleBg } from '@/lib/utils/contentStyles';
 import { REFLECTION_PROMPTS, TEMPLATES } from '@/lib/data/templates';
 import type { ContentStyle } from '@/lib/types';
 
@@ -11,39 +11,55 @@ interface Props {
 }
 
 export default function TemplateList({ selectedStyle }: Props) {
-  const [aiSuggestions, setAiSuggestions] = useState<string[]>([]);
+  const [aiQuestions, setAiQuestions] = useState<{ text: string; style?: ContentStyle }[]>([]);
   const [loadingAi, setLoadingAi] = useState(false);
   const [showHooks, setShowHooks] = useState(false);
 
+  // Reset les suggestions IA quand on change de filtre
+  useEffect(() => {
+    setAiQuestions([]);
+  }, [selectedStyle]);
+
   // Questions de réflexion filtrées
-  const reflections = selectedStyle === 'all'
-    ? REFLECTION_PROMPTS
-    : REFLECTION_PROMPTS.filter((p) => p.style === selectedStyle);
+  const reflections = useMemo(() => {
+    const pool = selectedStyle === 'all'
+      ? REFLECTION_PROMPTS
+      : REFLECTION_PROMPTS.filter((p) => p.style === selectedStyle);
+    return pool;
+  }, [selectedStyle]);
 
   // Hooks originaux filtrés
-  const hooks = selectedStyle === 'all'
-    ? TEMPLATES.filter((t) => t.category === 'hook')
-    : TEMPLATES.filter((t) => t.category === 'hook' && t.style === selectedStyle);
+  const hooks = useMemo(() => {
+    return selectedStyle === 'all'
+      ? TEMPLATES.filter((t) => t.category === 'hook')
+      : TEMPLATES.filter((t) => t.category === 'hook' && t.style === selectedStyle);
+  }, [selectedStyle]);
 
-  const structures = selectedStyle === 'all'
-    ? TEMPLATES.filter((t) => t.category === 'caption_structure')
-    : TEMPLATES.filter((t) => t.category === 'caption_structure' && t.style === selectedStyle);
+  const structures = useMemo(() => {
+    return selectedStyle === 'all'
+      ? TEMPLATES.filter((t) => t.category === 'caption_structure')
+      : TEMPLATES.filter((t) => t.category === 'caption_structure' && t.style === selectedStyle);
+  }, [selectedStyle]);
 
-  // Appel Claude pour des suggestions fraîches
+  // Appel Claude pour remplacer TOUTES les suggestions
   const handleRefresh = async () => {
     const styleLabel = selectedStyle === 'all' ? 'varié' : getStyleLabel(selectedStyle as ContentStyle);
+    const count = selectedStyle === 'all' ? 8 : 4;
     setLoadingAi(true);
-    setAiSuggestions([]);
     try {
+      const styles = selectedStyle === 'all'
+        ? 'Génère 2 questions par style (Enseigner, Connecter, Aider, Inspirer), 8 au total. Mets le nom du style entre crochets au début de chaque question, ex: [Enseigner] Quelle question...'
+        : `Génère exactement ${count} questions pour le style "${styleLabel}".`;
+
       const res = await fetch('/api/generate-caption-v2', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          title: `Suggestions de réflexion pour du contenu de style ${styleLabel}`,
+          title: `Questions de réflexion ${styleLabel}`,
           category: 'inspiration',
           platform: 'instagram',
           contentStyle: selectedStyle === 'all' ? 'enseigner' : selectedStyle,
-          captionDraft: `Génère exactement 3 questions de réflexion pour une acupunctrice qui crée du contenu de style "${styleLabel}". Les questions doivent l'aider à trouver SON sujet, pas lui donner une formule. Donne SEULEMENT les 3 questions, une par ligne, sans numéro ni tiret.`,
+          captionDraft: `Tu aides une acupunctrice québécoise à trouver des sujets de contenu pour ses réseaux sociaux. ${styles} Les questions doivent l'aider à puiser dans SON vécu et SA pratique — pas des formules marketing pré-faites. Chaque question doit sonner comme une question qu'une amie ou coach bienveillante poserait. Donne SEULEMENT les questions, une par ligne, sans numéro ni tiret.`,
         }),
       });
       if (res.ok) {
@@ -51,40 +67,54 @@ export default function TemplateList({ selectedStyle }: Props) {
         const lines = (data.caption as string)
           .split('\n')
           .map((l: string) => l.trim())
-          .filter((l: string) => l.length > 10 && l.endsWith('?'));
-        setAiSuggestions(lines.slice(0, 3));
+          .filter((l: string) => l.length > 10);
+
+        const parsed = lines.map((line: string) => {
+          // Extraire le style si format [Style] Question...
+          const match = line.match(/^\[(\w+)\]\s*(.+)/);
+          if (match) {
+            const styleMap: Record<string, ContentStyle> = {
+              Enseigner: 'enseigner', Connecter: 'connecter',
+              Aider: 'aider', Inspirer: 'inspirer',
+            };
+            return { text: match[2], style: styleMap[match[1]] };
+          }
+          return { text: line, style: selectedStyle === 'all' ? undefined : selectedStyle as ContentStyle };
+        });
+
+        setAiQuestions(parsed);
       }
     } catch { /* silencieux */ }
     setLoadingAi(false);
   };
 
+  // Ce qu'on affiche : IA si dispo, sinon statiques
+  const showingAi = aiQuestions.length > 0;
+  const displayCards = showingAi
+    ? aiQuestions
+    : reflections.map((p) => ({ text: p.question, style: p.style }));
+
   return (
     <div className="space-y-6 px-4">
-      {/* Section 1 : Questions de réflexion */}
+      {/* Section principale : Questions de réflexion */}
       <section>
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-xs font-semibold uppercase tracking-wider text-gray-400">
             Pense à...
           </h2>
           <button
-            onClick={handleRefresh}
+            onClick={showingAi ? () => setAiQuestions([]) : handleRefresh}
             disabled={loadingAi}
             className="flex items-center gap-1 text-xs text-sage hover:text-sage/80 disabled:opacity-40 transition-colors"
           >
             <ArrowPathIcon className={`w-3.5 h-3.5 ${loadingAi ? 'animate-spin' : ''}`} />
-            Nouvelles suggestions
+            {loadingAi ? 'Génération...' : showingAi ? 'Revenir aux classiques' : 'Nouvelles suggestions'}
           </button>
         </div>
 
         <div className="space-y-2">
-          {/* Suggestions IA si disponibles */}
-          {aiSuggestions.map((q, i) => (
-            <CopyableCard key={`ai-${i}`} text={q} style={selectedStyle === 'all' ? undefined : selectedStyle as ContentStyle} isAi />
-          ))}
-
-          {/* Questions de réflexion statiques */}
-          {reflections.map((p) => (
-            <CopyableCard key={p.id} text={p.question} style={p.style} />
+          {displayCards.map((item, i) => (
+            <CopyableCard key={`${showingAi ? 'ai' : 'static'}-${i}`} text={item.text} style={item.style} />
           ))}
         </div>
       </section>
@@ -122,9 +152,9 @@ export default function TemplateList({ selectedStyle }: Props) {
   );
 }
 
-// --- CopyableCard ---
+// --- CopyableCard --- même style pour toutes les cartes
 
-function CopyableCard({ text, style, isAi }: { text: string; style?: ContentStyle; isAi?: boolean }) {
+function CopyableCard({ text, style }: { text: string; style?: ContentStyle }) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
@@ -134,12 +164,10 @@ function CopyableCard({ text, style, isAi }: { text: string; style?: ContentStyl
   };
 
   const label = style ? getStyleLabel(style) : undefined;
-  const bg = style ? getStyleBg(style) : 'bg-gray-50 text-gray-600';
+  const bg = style ? getStyleBg(style) : 'bg-gray-50 text-gray-500';
 
   return (
-    <div className={`flex items-start gap-3 py-3 px-3.5 rounded-xl border transition-colors ${
-      isAi ? 'bg-sage/5 border-sage/20' : 'bg-white border-gray-100'
-    }`}>
+    <div className="flex items-start gap-3 py-3 px-3.5 rounded-xl bg-white border border-gray-100">
       {label && (
         <span className={`mt-0.5 shrink-0 text-[10px] font-semibold px-2 py-0.5 rounded-full ${bg}`}>
           {label}
