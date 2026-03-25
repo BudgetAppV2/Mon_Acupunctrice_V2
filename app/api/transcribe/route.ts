@@ -26,7 +26,11 @@ export async function POST(request: NextRequest) {
     }
 
     const json = await res.json();
-    return NextResponse.json(json.result || json);
+    console.log('[API/transcribe] CF response keys:', Object.keys(json));
+    console.log('[API/transcribe] CF response:', JSON.stringify(json).substring(0, 500));
+    const result = json.result || json;
+    console.log('[API/transcribe] Returning keys:', Object.keys(result));
+    return NextResponse.json(result);
   } catch {
     return NextResponse.json({ error: 'Erreur transcription' }, { status: 500 });
   }

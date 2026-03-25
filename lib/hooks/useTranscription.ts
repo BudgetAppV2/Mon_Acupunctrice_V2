@@ -113,6 +113,8 @@ export function useTranscription() {
         throw new Error(data.error || 'La transcription a echoue. Essaie avec une video plus courte.');
       }
       const data = await res.json();
+      console.log('[TRANSCRIBE] Raw response keys:', Object.keys(data));
+      console.log('[TRANSCRIBE] Raw response:', JSON.stringify(data).substring(0, 500));
       console.log('[TRANSCRIBE] Result:', data.subtitles?.length ?? 0, 'words');
 
       const words = (data.subtitles || []).map((w: { text: string; startTime: number; endTime: number }) => ({
