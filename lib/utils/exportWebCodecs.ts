@@ -6,19 +6,27 @@ import { drawSubtitles } from './drawSubtitles';
 const W = 1080, H = 1920;
 
 /**
- * Export vidéo via WebCodecs (hardware-accelerated).
- * Applique le filtre couleur via ctx.filter et incruste les textes via canvas API.
+ * Export video via WebCodecs (hardware-accelerated).
+ * audioBlob optionnel : WAV pre-extrait via FFmpeg pour eviter file.arrayBuffer() sur le fichier entier.
  */
 export async function exportWithWebCodecs(
   file: File, trimStart: number, trimEnd: number,
   onProgress: (p: number) => void,
   filterCss?: string, overlays?: TextOverlayItem[],
   subtitles?: SubtitleSegment[], subtitleStyle?: string,
+  audioBlob?: Blob | null,
 ): Promise<Blob> {
   const dur = trimEnd - trimStart;
 
+  // Decoder l'audio depuis le blob pre-extrait (pas depuis le fichier video entier)
   let audioBuf: AudioBuffer | null = null;
-  try { const ac = new AudioContext(); audioBuf = await ac.decodeAudioData(await file.arrayBuffer()); await ac.close(); } catch {}
+  if (audioBlob) {
+    try {
+      const ac = new AudioContext();
+      audioBuf = await ac.decodeAudioData(await audioBlob.arrayBuffer());
+      await ac.close();
+    } catch { /* Audio decode echoue — export sans audio */ }
+  }
 
   const nCh = audioBuf ? Math.min(audioBuf.numberOfChannels, 2) : 0;
   const sr = audioBuf?.sampleRate ?? 48000;
@@ -32,16 +40,12 @@ export async function exportWithWebCodecs(
   if (audioBuf) muxerOpts.audio = { codec: 'aac', sampleRate: sr, numberOfChannels: nCh };
   const muxer = new Muxer(muxerOpts);
 
-  const FRAME_DUR = 33333; // ~30fps in microseconds
+  const FRAME_DUR = 33333;
   const vEnc = new VideoEncoder({
     output: (chunk, meta) => {
-      // Safari produit des chunks avec duration=null.
-      // mp4-muxer.addVideoChunk passe sample.duration directement a addVideoChunkRaw
-      // qui exige un number fini. On utilise addVideoChunkRaw avec un fallback.
       const data = new Uint8Array(chunk.byteLength);
       chunk.copyTo(data);
-      const d = (chunk.duration != null && isFinite(chunk.duration) && chunk.duration > 0)
-        ? chunk.duration : FRAME_DUR;
+      const d = (chunk.duration != null && isFinite(chunk.duration) && chunk.duration > 0) ? chunk.duration : FRAME_DUR;
       muxer.addVideoChunkRaw(data, chunk.type, chunk.timestamp, d, meta);
     },
     error: (e) => { throw e; },
@@ -54,7 +58,7 @@ export async function exportWithWebCodecs(
   const video = document.createElement('video');
   video.muted = true; video.playsInline = true; video.preload = 'auto';
   video.src = URL.createObjectURL(file);
-  await new Promise<void>((res, rej) => { video.oncanplaythrough = () => res(); video.onerror = () => rej(new Error('Chargement vidéo échoué')); });
+  await new Promise<void>((res, rej) => { video.oncanplaythrough = () => res(); video.onerror = () => rej(new Error('Chargement video echoue')); });
 
   const canvas = document.createElement('canvas');
   canvas.width = W; canvas.height = H;
@@ -70,21 +74,15 @@ export async function exportWithWebCodecs(
       if (meta.mediaTime >= trimEnd) { video.pause(); resolve(); return; }
       if (meta.mediaTime < trimStart) { video.requestVideoFrameCallback(capture); return; }
 
-      // Filtre couleur via CSS filter sur le contexte canvas
       if (filterCss && filterCss !== 'none') ctx.filter = filterCss;
-      // Crop center (object-cover) — pas de bandes noires pour les Reels 9:16
       const { videoWidth: vw, videoHeight: vh } = video;
       const videoAspect = vw / vh, canvasAspect = W / H;
       let sx = 0, sy = 0, sw = vw, sh = vh;
-      if (videoAspect > canvasAspect) {
-        sw = vh * canvasAspect; sx = (vw - sw) / 2;
-      } else {
-        sh = vw / canvasAspect; sy = (vh - sh) / 2;
-      }
+      if (videoAspect > canvasAspect) { sw = vh * canvasAspect; sx = (vw - sw) / 2; }
+      else { sh = vw / canvasAspect; sy = (vh - sh) / 2; }
       ctx.drawImage(video, sx, sy, sw, sh, 0, 0, W, H);
       ctx.filter = 'none';
 
-      // Incruster les textes + sous-titres
       if (overlays?.length) drawTextOverlays(ctx, overlays, meta.mediaTime, W, H);
       if (subtitles?.length) drawSubtitles(ctx, subtitles, (subtitleStyle || 'classic') as SubtitleStyle, meta.mediaTime, W, H);
 

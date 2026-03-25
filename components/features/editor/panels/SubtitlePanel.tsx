@@ -13,7 +13,7 @@ const STYLES: { id: SubtitleStyle; label: string }[] = [
 
 export default function SubtitlePanel() {
   const { subtitles, subtitleStyle, setSubtitles, setSubtitleStyle, updateSubtitle, videoFile } = useEditorStore();
-  const { transcribe, loading, error } = useTranscription();
+  const { transcribe, loading, stage, error } = useTranscription();
 
   const handleGenerate = async () => {
     if (!videoFile) return;
@@ -30,7 +30,7 @@ export default function SubtitlePanel() {
         className="w-full flex items-center justify-center gap-2 py-2 bg-sage text-white rounded-lg text-sm font-medium disabled:opacity-50"
       >
         <SparklesIcon className="w-4 h-4" />
-        {loading ? 'Transcription en cours...' : 'Auto-générer'}
+        {stage === 'extracting' ? 'Extraction audio...' : stage === 'uploading' ? 'Envoi...' : stage === 'transcribing' ? 'Transcription...' : 'Auto-generer'}
       </button>
 
       {error && <p className="text-xs text-red-400">{error}</p>}
