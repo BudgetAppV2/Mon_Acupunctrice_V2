@@ -27,6 +27,7 @@ export async function POST(request: NextRequest) {
     const igUserId = user?.metaInstagramId;
     const accessToken = tokens?.metaAccessToken;
 
+    console.log('[STORY] igUserId:', igUserId, 'hasToken:', !!accessToken);
     if (!item.videoUrl && !item.coverImageUrl) {
       return NextResponse.json({ error: 'Pas de media (video ou image requise)' }, { status: 400 });
     }

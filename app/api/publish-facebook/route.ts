@@ -34,6 +34,7 @@ export async function POST(request: NextRequest) {
     if (!videoUrl) return NextResponse.json({ error: 'Pas de video' }, { status: 400 });
     if (!pageId || !pageToken) return NextResponse.json({ error: 'Facebook non connecte' }, { status: 400 });
 
+    console.log('[FB] Starting publish for', itemId, 'pageId:', pageId);
     // Étape 1 : Init upload
     const initRes = await fetch(`${GRAPH}/${pageId}/video_reels`, {
       method: 'POST',
@@ -41,6 +42,7 @@ export async function POST(request: NextRequest) {
       body: JSON.stringify({ upload_phase: 'start', access_token: pageToken }),
     });
     const initData = await initRes.json();
+    console.log('[FB] Init response:', JSON.stringify(initData).substring(0, 200));
     if (!initData.video_id) throw new Error(`init_failed: ${JSON.stringify(initData)}`);
 
     // Étape 2 : Upload vidéo via file_url
