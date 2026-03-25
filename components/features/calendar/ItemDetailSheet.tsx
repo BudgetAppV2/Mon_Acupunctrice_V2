@@ -2,10 +2,11 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { deleteField, Timestamp } from 'firebase/firestore';
+import { deleteField, Timestamp, doc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import BottomSheet from '@/components/ui/BottomSheet';
 import PublishSheet from '@/components/features/publish/PublishSheet';
 import { useUpdateContentItem } from '@/lib/hooks/useUpdateContentItem';
+import { getFirebaseFirestore } from '@/lib/firebase';
 import { WORKFLOW_LABELS, type ContentItem } from '@/lib/types';
 import { getCategoryLabel } from '@/lib/utils/categories';
 import { PencilIcon, XCircleIcon, PaperAirplaneIcon } from '@heroicons/react/24/outline';
@@ -31,7 +32,20 @@ export default function ItemDetailSheet({ isOpen, onClose, item, onUnscheduled }
   if (!item) return null;
 
   const handleUnschedule = async () => {
-    await updateItem(item.id, { distributionStatus: 'draft', scheduledAt: deleteField() });
+    // Remettre le slot à open si lié
+    if (item.slotId) {
+      const db = getFirebaseFirestore();
+      await updateDoc(doc(db, 'calendarSlots', item.slotId), {
+        status: 'open',
+        contentItemId: deleteField(),
+        updatedAt: serverTimestamp(),
+      });
+    }
+    await updateItem(item.id, {
+      distributionStatus: 'draft',
+      scheduledAt: deleteField(),
+      slotId: deleteField(),
+    });
     onUnscheduled();
   };
 
@@ -106,7 +120,15 @@ export default function ItemDetailSheet({ isOpen, onClose, item, onUnscheduled }
           ) : null}
 
           <div className="space-y-2 pt-2">
-            {canPublish && item.distributionStatus !== 'published' && (
+            {/* Dans un slot : publication automatique par le cron, pas de bouton publier */}
+            {item.slotId && item.distributionStatus === 'scheduled' && (
+              <div className="bg-sage/10 rounded-lg p-3 text-center">
+                <p className="text-sm text-sage font-medium">Publication automatique le matin</p>
+                <p className="text-xs text-gray-400 mt-0.5">Le Hub publie pour toi a 8h</p>
+              </div>
+            )}
+            {/* Hors slot : bouton publier manuellement */}
+            {canPublish && !item.slotId && item.distributionStatus !== 'published' && (
               <button onClick={() => setShowPublish(true)} className="w-full flex items-center gap-3 p-3 rounded-lg bg-sage text-white">
                 <PaperAirplaneIcon className="w-5 h-5" />
                 <span className="text-sm font-medium">Publier sur Instagram</span>
@@ -119,7 +141,7 @@ export default function ItemDetailSheet({ isOpen, onClose, item, onUnscheduled }
             {item.distributionStatus === 'scheduled' && (
               <button onClick={handleUnschedule} className="w-full flex items-center gap-3 p-3 rounded-lg border border-red-200 hover:bg-red-50 transition-colors">
                 <XCircleIcon className="w-5 h-5 text-red-500" />
-                <span className="text-sm font-medium text-red-600">Deprogrammer</span>
+                <span className="text-sm font-medium text-red-600">{item.slotId ? 'Retirer de cet emplacement' : 'Deprogrammer'}</span>
               </button>
             )}
           </div>

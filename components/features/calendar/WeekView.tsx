@@ -208,24 +208,33 @@ function DayRow({ date, isToday, items, slots, onTapItem, onTapSlot, onTapEmpty 
     );
   }
 
-  // Content item existant
-  if (items.length > 0) {
+  // Slot filled (non-séquence) ou content item existant
+  const filledSlot = slots.find((s) => s.status === 'filled' || s.status === 'completed');
+  if (items.length > 0 || filledSlot) {
     const item = items[0];
-    const color = item.contentStyle ? getStyleColor(item.contentStyle) : undefined;
+    const style = item?.contentStyle ?? filledSlot?.contentStyle;
+    const color = style ? getStyleColor(style) : undefined;
+    const title = item?.title ?? 'Contenu planifié';
+    const isCompleted = filledSlot?.status === 'completed' || item?.distributionStatus === 'published';
 
     return (
       <button
-        onClick={() => onTapItem(item)}
-        className="flex items-center gap-3 p-3 rounded-xl border border-gray-100 bg-white transition-colors text-left hover:bg-gray-50"
+        onClick={() => item ? onTapItem(item) : filledSlot ? onTapSlot(filledSlot) : undefined}
+        className={`flex items-center gap-3 p-3 rounded-xl border transition-colors text-left hover:bg-gray-50 ${
+          isCompleted ? 'border-green-200 bg-green-50/30' : 'border-gray-100 bg-white'
+        }`}
       >
         <DateBadge date={date} isToday={isToday} />
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-gray-900 truncate">{item.title}</p>
-          {item.contentStyle && (
-            <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${getStyleBg(item.contentStyle)}`}>
-              {getStyleLabel(item.contentStyle)}
-            </span>
-          )}
+          <p className="text-sm font-medium text-gray-900 truncate">{title}</p>
+          <div className="flex items-center gap-1.5 mt-0.5">
+            {style && (
+              <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${getStyleBg(style)}`}>
+                {getStyleLabel(style)}
+              </span>
+            )}
+            {isCompleted && <span className="text-[10px] text-green-600 font-medium">Publié</span>}
+          </div>
         </div>
         {color && <span className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: color }} />}
       </button>
