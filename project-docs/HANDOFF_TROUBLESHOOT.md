@@ -1,74 +1,85 @@
-# HANDOFF — Session Troubleshooting Phase Stratégie
-*Pour la prochaine instance Claude Desktop — Mars 2026*
+# HANDOFF — Session Troubleshoot du 24 mars 2026
+*Pour la prochaine instance Claude Desktop*
 
-## Ce qui vient d'être fait
+## Ce qui a été fait ce soir
 
-Les 9 milestones de la Phase Stratégie (S00-S08) ont été intégrés sur `main`
-et poussés sur GitHub. Tout compile (`tsc --noEmit` = 0 erreurs, `npm run build` = succès).
+### Firestore
+- Rules + indexes déployés pour `calendarSlots` et `blogSequences`
 
-### Commits sur main (du plus ancien au plus récent)
+### Calendrier — refonte majeure
+- **Vue semaine** avec toggle Semaine/Mois (défaut: semaine)
+- **DashboardBar repensé** : "2 publications cette semaine" au lieu de "Semaine 13"
+- **Streak textuel** : flamme + "semaines — t'es en feu!" (caché si 0)
+- **Slots remplis = carte imbriquée** : la slot (coquille avec style+format) contient une sous-carte de l'idée (fond teinté + titre + thumbnail)
+- **Indicateurs agrandis** en vue mois (w-1.5→w-2.5, icônes plus grosses)
+- **Jours vides** en carte pâle avec noms de jours plus foncés
+- **generateWeekSlots** corrigé : recrée les slots manquants par jour (pas par semaine)
+
+### Publication & Slots
+- **PublishSheet adapté aux slots** : "Confirmer" au lieu de "Publier maintenant", message "Publication automatique à 8h"
+- **Redirection calendrier** après publication (toujours, pas juste slots)
+- **Déprogrammer remet le slot à open** + remet le workflowState correctement (idea si pas de vidéo, ready si vidéo)
+- **Bouton contextuel** : "Créer le contenu" si pas de vidéo, "Modifier" si vidéo existe
+- **Cron fixé** : marque le calendarSlot `completed` quand un contentItem lié est publié
+
+### Inspiration & Suggestions
+- **Page Inspiration refontée** : questions de réflexion (coaching doux) en premier, hooks en section secondaire
+- **Bouton "Nouvelles suggestions"** : appelle `/api/reflection-prompts` (endpoint Claude dédié avec prompt strict)
+- **InspirationHint** dans CreateIdeaSheet : "Besoin d'inspiration?" expandable + boutons Autres/IA
+- **Cartes teintées par style** sur la page Inspiration
+- **Changement de filtre = reset** des suggestions IA
+
+### Idées
+- **IdeaCaptionSection** appelle `/api/generate-caption-v2` avec platform + contentStyle
+- **Bouton "Retirer la vidéo"** dans IdeaActions (sans supprimer l'idée)
+- **Bouton "Effacer"** sur la caption générée
+- **FillSlotSheet ne force plus workflowState: 'ready'** (garde le state original)
+
+### Types
+- `sequencePosition`, `sequenceLength`, `storyImageUrl` ajoutés à CalendarSlot
+
+## Commits (du plus ancien au plus récent)
 ```
-6fae36d  S00 Refactoring (merge direct)
-d1994bb  S01 Styles (merge direct)
-0813307  S03 Stories IG (réimplémenté)
-2d40f8f  S02 Calendrier-cadre (réimplémenté)
-054a075  S05 Optimisation plateforme (réimplémenté)
-a47b0cb  S04 Séquences blogue (réimplémenté)
-46f36cb  S06 Templates/Inspiration (réimplémenté)
-4b5ad67  S07 Progression/encouragement (réimplémenté)
-8ecf9b1  S08 Visuel enrichi (réimplémenté)
+d593f36  S08: agrandir indicateurs calendrier
+7c0eacb  Vue semaine avec toggle, DashboardBar repensé
+0b2710a  Jours vides en carte pâle, noms de jours plus foncés
+02ce070  S05: IdeaCaptionSection → generate-caption-v2
+4c436c1  Suggestions de réflexion contextuelles
+3f88a37  Inspiration: questions + bouton IA
+2882f80  Inspiration: style unifié, refresh remplace tout
+0db364d  API reflection-prompts dédiée
+4be19e1  Inspiration: fond teinté par style
+9000fa7  Cron: marquer slot completed
+1be32c7  Fix: déprogrammer remet slot à open
+9538775  PublishSheet adapté aux slots, thumbnails WeekView
+137dd9d  generateWeekSlots par jour, redirection calendrier
+b7fa826  Bouton retirer vidéo, effacer caption
+b826378  Cartes slot teintées par style
+fb16920  Carte imbriquée, déprogrammer remet state+slot
+860821a  Bouton Créer/Modifier contextuel
+1cb3a53  Fix: workflowState correct au déprogrammer
 ```
 
-## Ce qu'il faut faire maintenant
+## Ce qu'il reste à faire
 
-### 1. Déployer sur Vercel
-Le webhook GitHub→Vercel est cassé depuis le 22 mars 2026.
-Déployer via `npx vercel --prod` ou reconnecter le repo dans Vercel Settings → Git.
+### Priorité haute — UX
+1. **Bottom sheets pour filtres/sélecteurs** — remplacer tous les dropdowns natifs par des BottomSheet mobile-friendly (page Idées, Inspiration, catégories)
+2. **Milestone E01 — Éditeur Timeline Pro** — voir `project-docs/02_ROADMAP/MILESTONE_E01.md`
+   - E01-A : Divider draggable + presets (preview max / balanced / timeline max)
+   - E01-B : Timeline hauteur flexible
+   - E01-C : Trim handles sur les clips
 
-### 2. Troubleshooting et ajustements
-Benoit veut tester les nouvelles features et corriger ce qui ne fonctionne pas.
-Les features à tester :
-- **Calendrier** : slots fantômes (mardi/vendredi), FillSlotSheet, résumé semaine
-- **Styles** : sélecteur Enseigner/Connecter/Aider/Inspirer dans création d'idées
-- **Stories** : publication Story IG via le nouveau toggle
-- **Séquences blogue** : coller un lien → création des 4 slots
-- **Templates** : page /inspiration avec filtres par style
-- **Progression** : cercle hebdomadaire, compteur séries, jalons
-- **Visuel** : pastilles de couleur par style, résumé mensuel
+### Priorité moyenne — Bugs/Polish
+3. **CalendarHeader en vue mois** — dédupliquer la navigation (le header a ses propres flèches + le toggle en a aussi)
+4. **MonthSummary double-comptage** — vérifier qu'on ne compte pas slots + items en double
+5. **Auto-skip loop potentiel** — `useCalendarSlots` écrit dans Firestore depuis un `onSnapshot`
+6. **S03 Stories** — tester la publication Story IG en live (pas encore testé)
 
-### 3. Firestore
-Les nouvelles collections (`calendarSlots`, `blogSequences`) nécessitent :
-- Déployer les security rules : `firebase deploy --only firestore:rules`
-- Déployer les index : `firebase deploy --only firestore:indexes`
+### Backlog
+7. **Accents français** dans l'UI — plusieurs labels sans accents (Creer, Deprogrammer, etc.)
+8. **Tests de publication** avec Judith — flow complet slot→éditeur→export→cron→publication
 
-## Fichiers clés pour le contexte
-
-| Fichier | Rôle |
-|---------|------|
-| `CLAUDE.md` | Règles du projet (à jour) |
-| `project-docs/HANDOFF.md` | Résumé complet du projet |
-| `project-docs/02_ROADMAP/ROADMAP_STRATEGY.md` | Roadmap S01-S08 |
-| `project-docs/02_ROADMAP/analysis/CROSS_CUTTING_CONCERNS.md` | Architecture, crons, flow données |
-| `project-docs/02_ROADMAP/BRANCH_ANALYSIS_REPORT.md` | Analyse des branches |
-
-## Repo et machines
-
-- **Repo GitHub** : github.com/BudgetAppV2/Mon_Acupunctrice_V2 (privé)
-- **MacBook** (machine actuelle) : `/Users/benoitarchambault/Desktop/Mon_Acupunctrice_V2`
-- **iMac** (autre machine) : `/Users/benoitarchambault/Projects/Mon_Acupunctrice_V2`
-- **Vercel** : mon-acupunctrice-v2.vercel.app
-- **Firebase** : projet mon-acupunctrice-hub
-
-## Cron Vercel — Rappel important
-Plan Hobby : 100 crons max, mais chaque route = **1x/jour max**, précision ±59 min.
-Deux crons existants dans vercel.json :
-- `/api/cron/publish` à midi UTC (8h Montréal)
-- `/api/cron/fetch-insights` à 10h UTC (6h Montréal)
-
-## Décisions prises cette session
-- Stories API : pas de link sticker via l'API officielle (limitation Meta). Workaround : texte "Lien dans ma bio". Option future via instagrapi (API privée Python) notée dans le backlog.
-- Navigation : Stats remplacé par Inspiration dans la bottom tab bar. Stats reste accessible via /profil.
-- Slots : `slotsByDay` séparé de `itemsByDay` (pas de union type).
-- Cloud Functions : aucune modification. Tout via API routes Next.js.
-- Canva : intégration future, notée dans le backlog.
-- Timeline éditeur : améliorations (trim handles, drag-drop, snap) notées dans le backlog sous E01.
+## Repo et déploiement
+- **Dernier commit** : `1cb3a53` sur `main`
+- **Vercel** : webhook GitHub fonctionnel, auto-deploy
+- **Firebase** : rules + indexes déployés
