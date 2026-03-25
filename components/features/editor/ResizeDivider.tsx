@@ -44,7 +44,7 @@ export default function ResizeDivider({ containerHeight }: Props) {
 
   return (
     <div
-      className="shrink-0 flex items-center justify-center gap-3 bg-gray-900 cursor-row-resize touch-none select-none z-10"
+      className="shrink-0 relative flex items-center justify-center gap-3 bg-gray-900 cursor-row-resize touch-none select-none z-10"
       style={{ height: 36 }}
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
