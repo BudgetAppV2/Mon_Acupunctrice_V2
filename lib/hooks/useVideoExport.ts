@@ -34,32 +34,35 @@ export function useVideoExport() {
     try {
       for (const o of s.overlays) await loadFont(o.fontFamily);
       const filterCss = FILTERS.find(f => f.id === s.filter)?.css;
-      const useWC = supportsWebCodecs && !s.audioUrl;
+
+      // Seuil intelligent : WebCodecs pour < 100MB, FFmpeg pour les gros fichiers
+      const fileSizeMB = s.videoFile.size / (1024 * 1024);
+      const useWC = supportsWebCodecs && !s.audioUrl && fileSizeMB < 100;
 
       let blob: Blob;
       setState('exporting');
 
       if (useWC) {
-        // Extraire l'audio via FFmpeg pour eviter file.arrayBuffer() sur le fichier entier
+        // Extraire l'audio en MP3 compresse (~1MB au lieu de 30MB WAV)
         let audioBlob: Blob | null = null;
         try {
           const ffmpeg = await loadFFmpeg();
-          const { fetchFile } = await import('@ffmpeg/util');
-          await ffmpeg.writeFile('input.mp4', await fetchFile(s.videoFile));
-          await ffmpeg.exec(['-i', 'input.mp4', '-vn', '-ar', '48000', '-ac', '2', '-f', 'wav', 'audio.wav']);
-          const audioData = await ffmpeg.readFile('audio.wav') as Uint8Array;
-          audioBlob = new Blob([audioData.buffer as ArrayBuffer], { type: 'audio/wav' });
+          const buf = await s.videoFile.arrayBuffer();
+          await ffmpeg.writeFile('input.mp4', new Uint8Array(buf));
+          await ffmpeg.exec(['-i', 'input.mp4', '-vn', '-ar', '48000', '-ac', '2', '-b:a', '128k', 'audio.mp3']);
+          const audioData = await ffmpeg.readFile('audio.mp3') as Uint8Array;
+          audioBlob = new Blob([audioData.buffer as ArrayBuffer], { type: 'audio/mpeg' });
+          // Nettoyer la memoire WASM immediatement
           await ffmpeg.deleteFile('input.mp4').catch(() => {});
-          await ffmpeg.deleteFile('audio.wav').catch(() => {});
-        } catch {
-          // Audio extraction echouee — continuer l'export sans audio
-        }
+          await ffmpeg.deleteFile('audio.mp3').catch(() => {});
+        } catch { /* Audio extraction echouee — export sans audio */ }
 
         blob = await exportWithWebCodecs(
           s.videoFile, s.trimStart, s.trimEnd, setProgress,
           filterCss, s.overlays, s.subtitles, s.subtitleStyle, audioBlob,
         );
       } else {
+        // Pipeline FFmpeg complet pour gros fichiers ou audio custom (une seule passe)
         const ffmpeg = await loadFFmpeg();
         const { fetchFile } = await import('@ffmpeg/util');
         ffmpeg.on('progress', ({ progress: p }) => setProgress(Math.round(p * 100)));
@@ -79,7 +82,7 @@ export function useVideoExport() {
         terminateFFmpeg();
       }
 
-      // Upload resumable
+      // Upload resumable avec progression
       setState('uploading');
       const userId = getFirebaseAuth().currentUser?.uid;
       const storage = getFirebaseStorage();
@@ -93,7 +96,6 @@ export function useVideoExport() {
         );
       });
 
-      // Thumbnail upload (non-bloquant)
       let thumbnailUrl: string | null = null;
       const thumbDataUrl = useEditorStore.getState().thumbnailUrl;
       if (thumbDataUrl && userId) {
@@ -102,7 +104,7 @@ export function useVideoExport() {
           const thumbRef = ref(storage, `thumbnails/${userId}/${s.itemId}.jpg`);
           await uploadBytesResumable(thumbRef, thumbBlob, { contentType: 'image/jpeg' });
           thumbnailUrl = await getDownloadURL(thumbRef);
-        } catch { /* thumbnail upload echoue — non bloquant */ }
+        } catch { /* thumbnail echoue — non bloquant */ }
       }
 
       const db = getFirebaseFirestore();

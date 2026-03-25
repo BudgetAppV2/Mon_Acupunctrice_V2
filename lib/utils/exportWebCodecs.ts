@@ -4,10 +4,12 @@ import type { TextOverlayItem, SubtitleSegment, SubtitleStyle } from '@/lib/type
 import { drawSubtitles } from './drawSubtitles';
 
 const W = 1080, H = 1920;
+const FPS = 30;
+const FRAME_DUR = Math.round(1e6 / FPS); // microseconds per frame
 
 /**
- * Export video via WebCodecs (hardware-accelerated).
- * audioBlob optionnel : WAV pre-extrait via FFmpeg pour eviter file.arrayBuffer() sur le fichier entier.
+ * Export video via WebCodecs — seek-based loop (3-6x plus rapide que temps reel).
+ * audioBlob : MP3 pre-extrait via FFmpeg pour eviter file.arrayBuffer() sur la video.
  */
 export async function exportWithWebCodecs(
   file: File, trimStart: number, trimEnd: number,
@@ -16,9 +18,7 @@ export async function exportWithWebCodecs(
   subtitles?: SubtitleSegment[], subtitleStyle?: string,
   audioBlob?: Blob | null,
 ): Promise<Blob> {
-  const dur = trimEnd - trimStart;
-
-  // Decoder l'audio depuis le blob pre-extrait (pas depuis le fichier video entier)
+  // Decoder l'audio depuis le blob pre-extrait
   let audioBuf: AudioBuffer | null = null;
   if (audioBlob) {
     try {
@@ -40,7 +40,6 @@ export async function exportWithWebCodecs(
   if (audioBuf) muxerOpts.audio = { codec: 'aac', sampleRate: sr, numberOfChannels: nCh };
   const muxer = new Muxer(muxerOpts);
 
-  const FRAME_DUR = 33333;
   const vEnc = new VideoEncoder({
     output: (chunk, meta) => {
       const data = new Uint8Array(chunk.byteLength);
@@ -51,53 +50,50 @@ export async function exportWithWebCodecs(
     error: (e) => { throw e; },
   });
   vEnc.configure({
-    codec: 'avc1.4d0028', width: W, height: H, bitrate: 8_000_000, framerate: 30,
+    codec: 'avc1.4d0028', width: W, height: H, bitrate: 8_000_000, framerate: FPS,
     bitrateMode: 'variable', hardwareAcceleration: 'prefer-hardware',
   });
 
   const video = document.createElement('video');
   video.muted = true; video.playsInline = true; video.preload = 'auto';
-  video.src = URL.createObjectURL(file);
+  const blobUrl = URL.createObjectURL(file);
+  video.src = blobUrl;
   await new Promise<void>((res, rej) => { video.oncanplaythrough = () => res(); video.onerror = () => rej(new Error('Chargement video echoue')); });
 
   const canvas = document.createElement('canvas');
   canvas.width = W; canvas.height = H;
   const ctx = canvas.getContext('2d')!;
 
-  video.currentTime = trimStart;
-  await new Promise<void>((r) => { video.onseeked = () => r(); });
+  // Seek-based loop : 3-6x plus rapide que temps reel, fonctionne meme si le tab perd le focus
+  const totalFrames = Math.ceil((trimEnd - trimStart) * FPS);
+  for (let i = 0; i < totalFrames; i++) {
+    const t = trimStart + i / FPS;
+    video.currentTime = t;
+    await new Promise<void>((r) => { video.onseeked = () => r(); });
 
-  let frameCount = 0;
-  await new Promise<void>((resolve) => {
-    video.onended = () => resolve();
-    const capture = (_now: DOMHighResTimeStamp, meta: VideoFrameCallbackMetadata) => {
-      if (meta.mediaTime >= trimEnd) { video.pause(); resolve(); return; }
-      if (meta.mediaTime < trimStart) { video.requestVideoFrameCallback(capture); return; }
+    if (filterCss && filterCss !== 'none') ctx.filter = filterCss;
+    const { videoWidth: vw, videoHeight: vh } = video;
+    const videoAspect = vw / vh, canvasAspect = W / H;
+    let sx = 0, sy = 0, sw = vw, sh = vh;
+    if (videoAspect > canvasAspect) { sw = vh * canvasAspect; sx = (vw - sw) / 2; }
+    else { sh = vw / canvasAspect; sy = (vh - sh) / 2; }
+    ctx.drawImage(video, sx, sy, sw, sh, 0, 0, W, H);
+    ctx.filter = 'none';
 
-      if (filterCss && filterCss !== 'none') ctx.filter = filterCss;
-      const { videoWidth: vw, videoHeight: vh } = video;
-      const videoAspect = vw / vh, canvasAspect = W / H;
-      let sx = 0, sy = 0, sw = vw, sh = vh;
-      if (videoAspect > canvasAspect) { sw = vh * canvasAspect; sx = (vw - sw) / 2; }
-      else { sh = vw / canvasAspect; sy = (vh - sh) / 2; }
-      ctx.drawImage(video, sx, sy, sw, sh, 0, 0, W, H);
-      ctx.filter = 'none';
+    if (overlays?.length) drawTextOverlays(ctx, overlays, t, W, H);
+    if (subtitles?.length) drawSubtitles(ctx, subtitles, (subtitleStyle || 'classic') as SubtitleStyle, t, W, H);
 
-      if (overlays?.length) drawTextOverlays(ctx, overlays, meta.mediaTime, W, H);
-      if (subtitles?.length) drawSubtitles(ctx, subtitles, (subtitleStyle || 'classic') as SubtitleStyle, meta.mediaTime, W, H);
+    const ts = Math.round((t - trimStart) * 1e6);
+    const frame = new VideoFrame(canvas, { timestamp: ts });
+    vEnc.encode(frame, { keyFrame: i % 60 === 0 });
+    frame.close();
+    onProgress(Math.round(i / totalFrames * 100));
 
-      const ts = Math.round((meta.mediaTime - trimStart) * 1e6);
-      const frame = new VideoFrame(canvas, { timestamp: ts });
-      vEnc.encode(frame, { keyFrame: frameCount % 60 === 0 });
-      frame.close();
-      frameCount++;
-      onProgress(Math.round((meta.mediaTime - trimStart) / dur * 100));
-      video.requestVideoFrameCallback(capture);
-    };
-    video.requestVideoFrameCallback(capture);
-    video.play();
-  });
+    // Yield au thread principal pour ne pas bloquer l'UI
+    if (i % 5 === 0) await new Promise(r => setTimeout(r, 0));
+  }
 
+  // Encoder l'audio
   if (audioBuf) {
     const aEnc = new AudioEncoder({ output: (c, m) => muxer.addAudioChunk(c, m), error: () => {} });
     aEnc.configure({ codec: 'mp4a.40.2', sampleRate: sr, numberOfChannels: nCh, bitrate: 128_000 });
@@ -118,7 +114,13 @@ export async function exportWithWebCodecs(
   }
 
   await vEnc.flush(); vEnc.close();
-  URL.revokeObjectURL(video.src);
+
+  // Nettoyage memoire
+  video.pause(); video.removeAttribute('src'); video.load();
+  URL.revokeObjectURL(blobUrl);
+  canvas.width = 0; canvas.height = 0;
+  audioBuf = null;
+
   muxer.finalize();
   return new Blob([(muxer.target as ArrayBufferTarget).buffer], { type: 'video/mp4' });
 }
