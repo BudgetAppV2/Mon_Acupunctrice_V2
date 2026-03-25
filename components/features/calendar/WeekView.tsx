@@ -232,9 +232,9 @@ function DayRow({ date, isToday, items, slots, onTapItem, onTapSlot, onTapEmpty 
     );
   }
 
-  // Jour vide — discret
+  // Jour vide — carte pâle
   return (
-    <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl">
+    <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-white/50 border border-gray-100/60">
       <DateBadge date={date} isToday={isToday} muted />
       <p className="text-[13px] text-gray-300">—</p>
     </div>
@@ -252,8 +252,8 @@ function DateBadge({ date, isToday, accentColor, muted }: {
     : isToday
     ? '#5C7A5F'
     : muted
-    ? '#D1D5DB'
-    : '#6B7280';
+    ? '#9CA3AF'
+    : '#4B5563';
 
   return (
     <div className="text-center" style={{ minWidth: 36 }}>
