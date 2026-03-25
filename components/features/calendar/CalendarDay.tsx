@@ -17,7 +17,7 @@ interface Props {
 function CalendarDay({ date, items, slots, isCurrentMonth, isToday, onTap, onTapSlot }: Props) {
   if (!isCurrentMonth) {
     return (
-      <div className="flex flex-col items-center py-1 min-h-[48px]">
+      <div className="flex flex-col items-center py-1 min-h-[52px]">
         <span className="text-xs font-medium w-6 h-6 flex items-center justify-center text-gray-300">
           {date.getDate()}
         </span>
@@ -36,7 +36,7 @@ function CalendarDay({ date, items, slots, isCurrentMonth, isToday, onTap, onTap
   return (
     <button
       onClick={handleClick}
-      className={`flex flex-col items-center py-1 min-h-[48px] rounded-lg transition-colors ${
+      className={`flex flex-col items-center py-1 min-h-[52px] rounded-lg transition-colors ${
         isToday ? 'bg-sage/10' : 'hover:bg-gray-50'
       }`}
     >

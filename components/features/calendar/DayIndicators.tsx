@@ -1,7 +1,7 @@
 'use client';
 
 import React, { memo } from 'react';
-import { SparklesIcon, BookOpenIcon, CheckIcon } from '@heroicons/react/24/solid';
+import { SparklesIcon, BookOpenIcon, CheckIcon, PlusIcon } from '@heroicons/react/24/solid';
 import { getStyleColor } from '@/lib/utils/contentStyles';
 import type { ContentItem, CalendarSlot, ContentStyle } from '@/lib/types';
 
@@ -32,7 +32,7 @@ function DayIndicators({ items, slots }: Props) {
   const overflow = dots.length - 3;
 
   return (
-    <div className="flex items-center gap-0.5 mt-0.5 justify-center flex-wrap">
+    <div className="flex items-center gap-1 mt-0.5 justify-center flex-wrap">
       {visible.map((dot) => <DotNode key={dot.key} dot={dot} />)}
       {overflow > 0 && (
         <span className="text-[8px] font-bold text-gray-500">+{overflow}</span>
@@ -44,47 +44,50 @@ function DayIndicators({ items, slots }: Props) {
 function DotNode({ dot }: { dot: Dot }) {
   const color = dot.style ? getStyleColor(dot.style) : '#9ca3af';
 
+  // Content item — pastille pleine
   if (dot.kind === 'item') {
-    return <span className="w-1.5 h-1.5 rounded-full inline-block" style={{ backgroundColor: color }} />;
+    return <span className="w-2.5 h-2.5 rounded-full inline-block" style={{ backgroundColor: color }} />;
   }
 
-  // Slot skipped — grisé discret
+  // Slot skipped — grisé discret (petit)
   if (dot.status === 'skipped') {
-    return <span className="w-1.5 h-1.5 rounded-full bg-gray-300 opacity-50 inline-block" />;
+    return <span className="w-2 h-2 rounded-full bg-gray-300 opacity-40 inline-block" />;
   }
 
-  // Slot auto-publish — icône SparklesIcon
+  // Slot auto-publish (story séquence) — icône sparkle colorée
   if (dot.autoPublish) {
     return (
       <span className="relative inline-flex items-center justify-center">
-        <SparklesIcon className="w-2 h-2" style={{ color }} />
-        {dot.sequenceRole && <BookOpenIcon className="absolute -bottom-1 -right-1 w-1.5 h-1.5 text-gray-500" />}
+        <SparklesIcon className="w-3.5 h-3.5" style={{ color }} />
       </span>
     );
   }
 
-  // Slot open — outline pointillé
+  // Slot open — cercle pointillé coloré avec petit +
   if (dot.status === 'open') {
-    return <span className="w-1.5 h-1.5 rounded-full inline-block border border-dashed" style={{ borderColor: color }} />;
+    return (
+      <span
+        className="w-3 h-3 rounded-full inline-flex items-center justify-center"
+        style={{ border: `1.5px dashed ${color}` }}
+      >
+        <PlusIcon className="w-2 h-2" style={{ color }} />
+      </span>
+    );
   }
 
-  // Slot completed — pastille + checkmark
+  // Slot completed — pastille avec checkmark
   if (dot.status === 'completed') {
     return (
       <span className="relative inline-flex">
-        <span className="w-1.5 h-1.5 rounded-full inline-block" style={{ backgroundColor: color }} />
-        <CheckIcon className="absolute -top-0.5 -right-0.5 w-1 h-1 text-white" />
-        {dot.sequenceRole && <BookOpenIcon className="absolute -bottom-1 -right-0.5 w-1.5 h-1.5 text-gray-500" />}
+        <span className="w-2.5 h-2.5 rounded-full inline-block" style={{ backgroundColor: color }} />
+        <CheckIcon className="absolute -top-0.5 -right-0.5 w-2 h-2 text-white" />
       </span>
     );
   }
 
-  // Slot filled
+  // Slot filled — pastille pleine
   return (
-    <span className="relative inline-flex">
-      <span className="w-1.5 h-1.5 rounded-full inline-block" style={{ backgroundColor: color }} />
-      {dot.sequenceRole && <BookOpenIcon className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 text-gray-500" />}
-    </span>
+    <span className="w-2.5 h-2.5 rounded-full inline-block" style={{ backgroundColor: color }} />
   );
 }
 
