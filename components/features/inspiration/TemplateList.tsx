@@ -47,30 +47,24 @@ export default function TemplateList({ selectedStyle }: Props) {
     const count = selectedStyle === 'all' ? 8 : 4;
     setLoadingAi(true);
     try {
-      const styles = selectedStyle === 'all'
-        ? 'Génère 2 questions par style (Enseigner, Connecter, Aider, Inspirer), 8 au total. Mets le nom du style entre crochets au début de chaque question, ex: [Enseigner] Quelle question...'
+      const styleInstruction = selectedStyle === 'all'
+        ? 'Génère 2 questions par style (Enseigner, Connecter, Aider, Inspirer), 8 au total. Mets le nom du style entre crochets au début, ex: [Enseigner] Ta question ici?'
         : `Génère exactement ${count} questions pour le style "${styleLabel}".`;
 
-      const res = await fetch('/api/generate-caption-v2', {
+      const res = await fetch('/api/reflection-prompts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          title: `Questions de réflexion ${styleLabel}`,
-          category: 'inspiration',
-          platform: 'instagram',
-          contentStyle: selectedStyle === 'all' ? 'enseigner' : selectedStyle,
-          captionDraft: `Tu aides une acupunctrice québécoise à trouver des sujets de contenu pour ses réseaux sociaux. ${styles} Les questions doivent l'aider à puiser dans SON vécu et SA pratique — pas des formules marketing pré-faites. Chaque question doit sonner comme une question qu'une amie ou coach bienveillante poserait. Donne SEULEMENT les questions, une par ligne, sans numéro ni tiret.`,
+          styleInstruction,
+          styleLabel,
         }),
       });
       if (res.ok) {
         const data = await res.json();
-        const lines = (data.caption as string)
-          .split('\n')
-          .map((l: string) => l.trim())
-          .filter((l: string) => l.length > 10);
+        const lines = (data.questions as string[])
+          .filter((l: string) => l.length > 10 && l.includes('?'));
 
         const parsed = lines.map((line: string) => {
-          // Extraire le style si format [Style] Question...
           const match = line.match(/^\[(\w+)\]\s*(.+)/);
           if (match) {
             const styleMap: Record<string, ContentStyle> = {

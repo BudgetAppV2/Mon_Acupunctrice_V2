@@ -33,24 +33,17 @@ export default function InspirationHint({ style, onUsePrompt }: Props) {
     setLoadingAi(true);
     setAiQuestions([]);
     try {
-      const res = await fetch('/api/generate-caption-v2', {
+      const res = await fetch('/api/reflection-prompts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          title: `Questions de réflexion pour contenu ${getStyleLabel(style)}`,
-          category: 'inspiration',
-          platform: 'instagram',
-          contentStyle: style,
-          captionDraft: `Génère exactement 2 questions de réflexion pour une acupunctrice québécoise qui cherche un sujet de contenu de style "${getStyleLabel(style)}". Les questions doivent l'aider à puiser dans SON vécu et SA pratique — pas des formules marketing. Donne SEULEMENT les 2 questions, une par ligne, sans numéro ni tiret.`,
+          styleInstruction: `Génère exactement 2 questions pour le style "${getStyleLabel(style)}".`,
+          styleLabel: getStyleLabel(style),
         }),
       });
       if (res.ok) {
         const data = await res.json();
-        const lines = (data.caption as string)
-          .split('\n')
-          .map((l: string) => l.trim())
-          .filter((l: string) => l.length > 10);
-        setAiQuestions(lines.slice(0, 2));
+        setAiQuestions((data.questions as string[]).filter((q: string) => q.includes('?')).slice(0, 2));
       }
     } catch { /* silencieux */ }
     setLoadingAi(false);
