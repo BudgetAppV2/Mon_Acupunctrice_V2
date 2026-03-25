@@ -45,7 +45,6 @@ export default function FillSlotSheet({ isOpen, onClose, slot, onFilled }: Props
         scheduledAt: slot.scheduledDate,
         slotId: slot.id,
         distributionStatus: 'scheduled',
-        workflowState: 'ready',
         updatedAt: serverTimestamp(),
       }),
     ]);
