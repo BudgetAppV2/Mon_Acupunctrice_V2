@@ -137,7 +137,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   setAudioFade: (fadeIn, fadeOut) => set({ audioFadeIn: fadeIn, audioFadeOut: fadeOut }),
   setThumbnail: (url) => set({ thumbnailUrl: url }),
   setVideoOrientation: (o) => set({ videoOrientation: o }),
-  setEditorSplitRatio: (ratio) => set({ editorSplitRatio: Math.max(0.25, Math.min(0.80, ratio)) }),
+  setEditorSplitRatio: (ratio) => { const clamped = Math.max(0.25, Math.min(0.80, ratio)); console.log('[Store] setEditorSplitRatio:', ratio, '→', clamped); set({ editorSplitRatio: clamped }); },
   reset: () => {
     const prev = get().videoUrl;
     if (prev) URL.revokeObjectURL(prev);

@@ -22,9 +22,11 @@ export default function ResizeDivider({ containerHeight }: Props) {
   const dividerRef = useRef<HTMLDivElement>(null);
 
   const onPointerDown = useCallback((e: React.PointerEvent) => {
+    console.log('[Divider] pointerDown, target:', (e.target as HTMLElement).tagName, 'closest button:', !!(e.target as HTMLElement).closest('button'));
     // Ne pas capturer si c'est un bouton preset
     if ((e.target as HTMLElement).closest('button')) return;
 
+    console.log('[Divider] starting drag, clientY:', e.clientY, 'ratio:', editorSplitRatio);
     dragging.current = true;
     startY.current = e.clientY;
     startRatio.current = editorSplitRatio;
@@ -35,6 +37,7 @@ export default function ResizeDivider({ containerHeight }: Props) {
     if (!dragging.current || containerHeight === 0) return;
     const delta = e.clientY - startY.current;
     const newRatio = startRatio.current + delta / containerHeight;
+    console.log('[Divider] move delta:', delta, 'newRatio:', newRatio.toFixed(3), 'containerH:', containerHeight);
     setEditorSplitRatio(newRatio);
   }, [containerHeight, setEditorSplitRatio]);
 
@@ -60,8 +63,8 @@ export default function ResizeDivider({ containerHeight }: Props) {
       {PRESETS.map(({ icon: Icon, ratio, label }) => (
         <button
           key={ratio}
-          onPointerDown={(e) => e.stopPropagation()}
-          onClick={() => setEditorSplitRatio(ratio)}
+          onPointerDown={(e) => { e.stopPropagation(); console.log('[Divider] button pointerDown stopped'); }}
+          onClick={() => { console.log('[Divider] preset click ratio:', ratio); setEditorSplitRatio(ratio); }}
           className={`p-1.5 rounded transition-colors relative z-20 ${
             Math.abs(editorSplitRatio - ratio) < 0.05
               ? 'text-sage bg-sage/20'
