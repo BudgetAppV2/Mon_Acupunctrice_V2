@@ -37,7 +37,7 @@ export default function EditorLayout({ itemId }: Props) {
   const [publishItem, setPublishItem] = useState<ContentItem | null>(null);
   const [loading, setLoading] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [containerH, setContainerH] = useState(0);
+  const [containerH, setContainerH] = useState(typeof window !== 'undefined' ? window.innerHeight - 44 : 600);
 
   const handleBack = () => { reset?.(); router.push('/calendrier'); };
 
@@ -91,8 +91,8 @@ export default function EditorLayout({ itemId }: Props) {
 
   if (!videoFile && !videoUrl) return <ImportModal />;
 
-  const previewH = containerH > 0 ? containerH * editorSplitRatio : undefined;
-  const bottomH = containerH > 0 ? Math.max(containerH * (1 - editorSplitRatio) - 36, 80) : undefined;
+  const previewH = containerH * editorSplitRatio;
+  const bottomH = Math.max(containerH * (1 - editorSplitRatio) - 36, 80);
 
   return (
     <div className="fixed inset-0 flex flex-col bg-gray-950">
@@ -112,7 +112,7 @@ export default function EditorLayout({ itemId }: Props) {
       {/* Zone redimensionnable */}
       <div ref={containerRef} className="flex-1 min-h-0 flex flex-col">
         {/* Preview */}
-        <div className="flex items-center justify-center bg-black overflow-hidden transition-[height] duration-200 ease-out" style={previewH != null ? { height: previewH } : { flex: 1 }}>
+        <div className="flex items-center justify-center bg-black overflow-hidden transition-[height] duration-200 ease-out" style={{ height: previewH }}>
           <div className="relative h-full" style={{ aspectRatio: '9/16', maxWidth: '100%' }}>
             <VideoPreview interactive={activeTab === 'texte'} />
           </div>
@@ -122,7 +122,7 @@ export default function EditorLayout({ itemId }: Props) {
         <ResizeDivider containerHeight={containerH} />
 
         {/* Zone bottom */}
-        <div className="flex flex-col overflow-hidden transition-[height] duration-200 ease-out" style={bottomH != null ? { height: bottomH, paddingBottom: 'env(safe-area-inset-bottom, 0px)' } : { flex: 1, paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
+        <div className="flex flex-col overflow-hidden transition-[height] duration-200 ease-out" style={{ height: bottomH, paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
           <EditorToolbar activeTab={activeTab} onTabChange={setActiveTab} />
           <div className="flex-1 min-h-0 bg-gray-900 overflow-y-auto">
             {activeTab === 'trim' && <TrimPanel />}
