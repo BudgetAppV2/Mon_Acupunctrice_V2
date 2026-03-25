@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { useVideoExport, type ExportState } from '@/lib/hooks/useVideoExport';
 import { useEditorStore } from '@/lib/store/useEditorStore';
 import { ArrowUpTrayIcon, ExclamationCircleIcon, PaperAirplaneIcon } from '@heroicons/react/24/outline';
@@ -28,8 +28,14 @@ export default function ExportButton({ onExportDone }: Props) {
     if (state !== 'done') doneCalled.current = false;
   }, [state, onExportDone]);
 
+  const [showWarning, setShowWarning] = useState(false);
+
   const handleExport = () => {
-    if (duration > 60 && !window.confirm(`Cette video fait ${Math.round(duration)}s. L'export peut prendre 1-2 minutes. Continuer?`)) return;
+    if (duration > 60 && !showWarning) {
+      setShowWarning(true);
+      return;
+    }
+    setShowWarning(false);
     exportVideo();
   };
 
@@ -63,6 +69,18 @@ export default function ExportButton({ onExportDone }: Props) {
       {error && (
         <div className="absolute top-12 left-0 right-0 flex justify-center z-20">
           <span className="text-[10px] text-red-400 bg-gray-900/90 px-2 py-0.5 rounded-full max-w-[250px] text-center">{error}</span>
+        </div>
+      )}
+
+      {showWarning && (
+        <div className="absolute top-12 left-0 right-0 flex justify-center z-20">
+          <div className="bg-gray-900/95 border border-amber-500/50 rounded-xl px-4 py-3 mx-4 max-w-[300px] text-center">
+            <p className="text-xs text-amber-300 mb-2">Cette video fait {Math.round(duration)}s. L'export peut prendre 1-2 minutes.</p>
+            <div className="flex gap-2 justify-center">
+              <button onClick={() => setShowWarning(false)} className="text-[10px] text-gray-400 px-3 py-1 rounded-lg border border-gray-600">Annuler</button>
+              <button onClick={handleExport} className="text-[10px] text-white px-3 py-1 rounded-lg bg-sage">Continuer</button>
+            </div>
+          </div>
         </div>
       )}
     </>
