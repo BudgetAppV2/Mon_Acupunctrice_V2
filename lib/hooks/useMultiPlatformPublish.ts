@@ -32,15 +32,23 @@ export function useMultiPlatformPublish({
   const [ytError, setYtError] = useState<string | null>(null);
   const [storyError, setStoryError] = useState<string | null>(null);
 
-  const publishToApi = async (api: string, setErr: (e: string) => void) => {
+  const publishToApi = async (api: string, label: string, setErr: (e: string) => void) => {
     try {
+      console.log(`[PUBLISH] ${label}: calling ${api}`);
       const r = await fetch(api, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ itemId: item.id, uid }),
       });
-      if (!r.ok) { const d = await r.json().catch(() => ({})); setErr(d.error || 'Erreur'); }
-    } catch { setErr('Erreur'); }
+      console.log(`[PUBLISH] ${label}: status ${r.status}`);
+      if (!r.ok) {
+        const d = await r.json().catch(() => ({}));
+        console.error(`[PUBLISH] ${label} error:`, d);
+        setErr(`${label} : connexion expirée. Reconnecte dans Profil.`);
+      }
+    } catch {
+      setErr(`${label} : erreur de connexion`);
+    }
   };
 
   const handlePublish = async () => {
@@ -50,9 +58,9 @@ export function useMultiPlatformPublish({
     const ok = await publish({ videoUrl: item.videoUrl, caption, itemId: item.id, coverOption, thumbOffset, coverUrl: finalCoverUrl });
     if (ok && uid) {
       const tasks: Promise<void>[] = [];
-      if (alsoFacebook) tasks.push(publishToApi('/api/publish-facebook', setFbError));
-      if (alsoYoutube) tasks.push(publishToApi('/api/publish-youtube', setYtError));
-      if (alsoStory) tasks.push(publishToApi('/api/publish-story', setStoryError));
+      if (alsoFacebook) tasks.push(publishToApi('/api/publish-facebook', 'Facebook', setFbError));
+      if (alsoYoutube) tasks.push(publishToApi('/api/publish-youtube', 'YouTube', setYtError));
+      if (alsoStory) tasks.push(publishToApi('/api/publish-story', 'Story', setStoryError));
       await Promise.allSettled(tasks);
     }
     if (ok) setDone(true);
