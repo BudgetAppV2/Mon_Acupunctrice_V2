@@ -43,7 +43,7 @@ export function useVideoExport() {
       setState('exporting');
 
       if (useWC) {
-        // Extraire l'audio en MP3 compresse (~1MB au lieu de 30MB WAV)
+        // Extraire l'audio — FFmpeg d'abord, fallback Web Audio API (Safari iOS)
         let audioBlob: Blob | null = null;
         try {
           const ffmpeg = await loadFFmpeg();
@@ -52,10 +52,39 @@ export function useVideoExport() {
           await ffmpeg.exec(['-i', 'input.mp4', '-vn', '-ar', '48000', '-ac', '2', '-b:a', '128k', 'audio.mp3']);
           const audioData = await ffmpeg.readFile('audio.mp3') as Uint8Array;
           audioBlob = new Blob([audioData.buffer as ArrayBuffer], { type: 'audio/mpeg' });
-          // Nettoyer la memoire WASM immediatement
           await ffmpeg.deleteFile('input.mp4').catch(() => {});
           await ffmpeg.deleteFile('audio.mp3').catch(() => {});
-        } catch { /* Audio extraction echouee — export sans audio */ }
+          console.log('[EXPORT] Audio extracted via FFmpeg:', (audioBlob.size / 1024).toFixed(0) + 'KB');
+        } catch (e) {
+          console.warn('[EXPORT] FFmpeg audio failed, trying Web Audio API:', e);
+          // Fallback Web Audio API (fonctionne sur Safari iOS)
+          try {
+            const ac = new AudioContext({ sampleRate: 48000 });
+            const arrayBuf = await s.videoFile.arrayBuffer();
+            const decoded = await ac.decodeAudioData(arrayBuf);
+            await ac.close();
+            // Encoder en WAV PCM 16-bit
+            const nCh = Math.min(decoded.numberOfChannels, 2);
+            const sr = decoded.sampleRate;
+            const samples = decoded.getChannelData(0);
+            const numSamples = samples.length;
+            const wavBuf = new ArrayBuffer(44 + numSamples * 2);
+            const view = new DataView(wavBuf);
+            const w = (o: number, s: string) => { for (let i = 0; i < s.length; i++) view.setUint8(o + i, s.charCodeAt(i)); };
+            w(0,'RIFF'); view.setUint32(4, 36 + numSamples * 2, true); w(8,'WAVE');
+            w(12,'fmt '); view.setUint32(16,16,true); view.setUint16(20,1,true); view.setUint16(22,1,true);
+            view.setUint32(24,sr,true); view.setUint32(28,sr*2,true); view.setUint16(32,2,true); view.setUint16(34,16,true);
+            w(36,'data'); view.setUint32(40, numSamples * 2, true);
+            for (let i = 0; i < numSamples; i++) {
+              const s = Math.max(-1, Math.min(1, samples[i]));
+              view.setInt16(44 + i * 2, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
+            }
+            audioBlob = new Blob([wavBuf], { type: 'audio/wav' });
+            console.log('[EXPORT] Audio extracted via Web Audio:', (audioBlob.size / 1024 / 1024).toFixed(1) + 'MB');
+          } catch (e2) {
+            console.error('[EXPORT] Both audio extraction methods failed:', e2);
+          }
+        }
 
         blob = await exportWithWebCodecs(
           s.videoFile, s.trimStart, s.trimEnd, setProgress,
