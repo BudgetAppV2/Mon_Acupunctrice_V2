@@ -14,7 +14,7 @@ export default function VideoPreview({ interactive = false }: Props) {
   const bgAudioRef = useRef<HTMLAudioElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const {
-    videoUrl, isPlaying, trimStart, trimEnd, filter, audioUrl, audioVolume,
+    videoUrl, isPlaying, currentTime, trimStart, trimEnd, filter, audioUrl, audioVolume,
     setCurrentTime, setDuration, pause, togglePlayPause, seekTo,
     setThumbnail, setVideoOrientation, thumbnailUrl,
   } = useEditorStore();
@@ -152,6 +152,9 @@ export default function VideoPreview({ interactive = false }: Props) {
   return (
     <div ref={containerRef} className="relative w-full h-full flex items-center justify-center bg-black" onClick={handleTap}>
       <video ref={videoRef} src={videoUrl ?? undefined} className="w-full h-full object-cover" style={filterStyle} playsInline preload="auto" onTimeUpdate={handleTimeUpdate} onLoadedMetadata={handleLoaded} onDurationChange={handleDurationChange} onCanPlay={handleCanPlay} />
+      {(currentTime < trimStart || (trimEnd > 0 && currentTime > trimEnd)) && (
+        <div className="absolute inset-0 bg-black z-[5]" />
+      )}
       {audioUrl && <audio ref={bgAudioRef} src={audioUrl} loop />}
       {size.w > 0 && <TextOverlayLayer width={size.w} height={size.h} interactive={interactive} />}
       <SubtitlePreview />

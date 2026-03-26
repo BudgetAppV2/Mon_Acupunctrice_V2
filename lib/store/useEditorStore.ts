@@ -149,7 +149,14 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   },
   pause: () => { set({ isPlaying: false }); _videoEl?.pause(); },
   togglePlayPause: () => { if (get().isPlaying) get().pause(); else get().play(); },
-  seekTo: (t) => { const c = Math.max(0, Math.min(t, get().duration)); set({ currentTime: c }); if (_videoEl) _videoEl.currentTime = c; },
+  seekTo: (t) => {
+    // Clamp au max de la duree effective OU la duree source du premier clip (pendant le chargement, duration peut etre 0)
+    const { duration, clips } = get();
+    const maxTime = Math.max(duration, clips[0]?.duration ?? 0);
+    const c = Math.max(0, maxTime > 0 ? Math.min(t, maxTime) : t);
+    set({ currentTime: c });
+    if (_videoEl) _videoEl.currentTime = c;
+  },
   setTrim: (start, end) => {
     const { clips } = get();
     if (clips.length === 0) { set({ trimStart: start, trimEnd: end }); markEditorTouched(); return; }
