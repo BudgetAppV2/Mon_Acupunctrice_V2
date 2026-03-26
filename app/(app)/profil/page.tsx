@@ -83,10 +83,34 @@ export default function ProfilPage() {
         {user && <FacebookConnectButton uid={user.uid} facebookStatus={facebookStatus} facebookPageName={facebookPageName} />}
         {user && <YouTubeConnectButton uid={user.uid} youtubeStatus={youtubeStatus} youtubeChannelName={youtubeChannelName} />}
 
-        <a href={process.env.NEXT_PUBLIC_WIX_DASHBOARD_URL || process.env.NEXT_PUBLIC_WIX_URL || 'https://mon-acupunctrice.ca'} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 bg-white rounded-xl p-3 mb-6">
-          <ArrowTopRightOnSquareIcon className="w-5 h-5 text-sage" />
-          <div className="flex-1"><p className="text-sm font-medium text-gray-900">Mon site Wix</p><p className="text-xs text-gray-500">{process.env.NEXT_PUBLIC_WIX_URL?.replace('https://', '') || 'mon-acupunctrice.ca'}</p></div>
-        </a>
+        <h2 className="text-sm font-semibold text-gray-700 mb-2">Gestion des plateformes</h2>
+        <div className="space-y-1.5 mb-6">
+          {metaStatus === 'connected' && (
+            <a href="https://www.instagram.com/mon_acupunctrice/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 bg-white rounded-xl p-3">
+              <span className="text-lg">📷</span>
+              <div className="flex-1"><p className="text-sm font-medium text-gray-900">Instagram</p><p className="text-xs text-gray-500">Gerer mes publications</p></div>
+              <ArrowTopRightOnSquareIcon className="w-4 h-4 text-gray-400" />
+            </a>
+          )}
+          {facebookStatus === 'connected' && (
+            <a href="https://www.facebook.com/profile/342786502259046/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 bg-white rounded-xl p-3">
+              <span className="text-lg">📘</span>
+              <div className="flex-1"><p className="text-sm font-medium text-gray-900">Facebook</p><p className="text-xs text-gray-500">{facebookPageName || 'Gerer ma page'}</p></div>
+              <ArrowTopRightOnSquareIcon className="w-4 h-4 text-gray-400" />
+            </a>
+          )}
+          {youtubeStatus === 'connected' && (
+            <a href="https://studio.youtube.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 bg-white rounded-xl p-3">
+              <span className="text-lg">▶️</span>
+              <div className="flex-1"><p className="text-sm font-medium text-gray-900">YouTube Studio</p><p className="text-xs text-gray-500">{youtubeChannelName || 'Gerer ma chaine'}</p></div>
+              <ArrowTopRightOnSquareIcon className="w-4 h-4 text-gray-400" />
+            </a>
+          )}
+          <a href={process.env.NEXT_PUBLIC_WIX_DASHBOARD_URL || process.env.NEXT_PUBLIC_WIX_URL || 'https://mon-acupunctrice.ca'} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 bg-white rounded-xl p-3">
+            <ArrowTopRightOnSquareIcon className="w-5 h-5 text-sage" />
+            <div className="flex-1"><p className="text-sm font-medium text-gray-900">Mon site Wix</p><p className="text-xs text-gray-500">{process.env.NEXT_PUBLIC_WIX_URL?.replace('https://', '') || 'mon-acupunctrice.ca'}</p></div>
+          </a>
+        </div>
 
         <h2 className="text-sm font-semibold text-gray-700 mb-2">Mes categories</h2>
         <div className="space-y-1.5 mb-6">
