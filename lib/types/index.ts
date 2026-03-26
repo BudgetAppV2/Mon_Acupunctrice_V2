@@ -169,4 +169,4 @@ export const WORKFLOW_LABELS: Record<WorkflowState, string> = {
 
 // Re-export des types editeur pour backward compat
 export type { TextOverlayItem, SubtitleSegment, SubtitleStyle, TextStylePreset, TextAnimation } from './editor';
-export type { JamendoTrack, SubtitleWord } from './editor';
+export type { JamendoTrack, SubtitleWord, VideoClip } from './editor';

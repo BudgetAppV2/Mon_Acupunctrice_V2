@@ -1,34 +1,52 @@
 import { create } from 'zustand';
 import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { getFirebaseFirestore } from '@/lib/firebase';
-import type { TextOverlayItem, SubtitleSegment, SubtitleStyle } from '@/lib/types';
+import type { TextOverlayItem, SubtitleSegment, SubtitleStyle, VideoClip } from '@/lib/types';
 
 let _videoEl: HTMLVideoElement | null = null;
 let _editorTouched = false;
 
-export function registerVideoElement(el: HTMLVideoElement | null) {
-  _videoEl = el;
-}
+export function registerVideoElement(el: HTMLVideoElement | null) { _videoEl = el; }
 
-// Marque l'item comme "touche" dans l'editeur (une seule fois par session)
 function markEditorTouched() {
   if (_editorTouched) return;
   const id = useEditorStore.getState().itemId;
   if (!id) return;
   _editorTouched = true;
-  updateDoc(doc(getFirebaseFirestore(), 'contentItems', id), {
-    editorTouchedAt: serverTimestamp(),
-  }).catch(() => {});
+  updateDoc(doc(getFirebaseFirestore(), 'contentItems', id), { editorTouchedAt: serverTimestamp() }).catch(() => {});
+}
+
+// --- Multi-clip helpers ---
+
+function recalcTimelineStarts(clips: VideoClip[]): VideoClip[] {
+  let t = 0;
+  return clips.map(c => { const u = { ...c, timelineStart: t }; t += c.trimEnd - c.trimStart; return u; });
+}
+
+function syncLegacyFields(clips: VideoClip[]) {
+  const first = clips[0];
+  return {
+    videoFile: first?.file ?? null,
+    videoUrl: first?.blobUrl ?? null,
+    trimStart: first?.trimStart ?? 0,
+    trimEnd: first?.trimEnd ?? 0,
+    duration: clips.reduce((sum, c) => sum + (c.trimEnd - c.trimStart), 0),
+  };
 }
 
 interface EditorState {
+  // Multi-clip
+  clips: VideoClip[];
+  activeClipId: string | null;
+  // Legacy fields (synced via syncLegacyFields for retrocompat)
   videoFile: File | null;
   videoUrl: string | null;
   duration: number;
-  currentTime: number;
-  isPlaying: boolean;
   trimStart: number;
   trimEnd: number;
+  // Editor state
+  currentTime: number;
+  isPlaying: boolean;
   itemId: string | null;
   filter: string;
   overlays: TextOverlayItem[];
@@ -49,7 +67,7 @@ interface EditorState {
   coverDataUrl: string | null;
   coverCustomUrl: string | null;
   captions: { instagram: string; facebook: string; youtube: string } | null;
-
+  // Actions
   setVideoFile: (file: File) => void;
   loadVideo: (file: File, url: string) => void;
   setDuration: (d: number) => void;
@@ -85,10 +103,17 @@ interface EditorState {
   clearCover: () => void;
   setCaptions: (c: { instagram: string; facebook: string; youtube: string }) => void;
   updateCaption: (platform: 'instagram' | 'facebook' | 'youtube', text: string) => void;
+  // Multi-clip actions
+  addClip: (file: File, blobUrl: string) => void;
+  removeClip: (id: string) => void;
+  updateClipTrim: (id: string, trimStart: number, trimEnd: number) => void;
+  setActiveClip: (id: string | null) => void;
+  initClipDuration: (clipId: string, duration: number) => void;
   reset: () => void;
 }
 
 export const useEditorStore = create<EditorState>((set, get) => ({
+  clips: [], activeClipId: null,
   videoFile: null, videoUrl: null, duration: 0, currentTime: 0,
   isPlaying: false, trimStart: 0, trimEnd: 0, itemId: null,
   filter: 'normal', overlays: [], selectedOverlayId: null,
@@ -97,16 +122,23 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   audioFadeIn: 0, audioFadeOut: 0, thumbnailUrl: null, videoOrientation: 'portrait', editorSplitRatio: 0.50, selectedSubtitleId: null, coverFrameOffset: 0, coverDataUrl: null, coverCustomUrl: null, captions: null,
 
   setVideoFile: (file) => {
-    const prev = get().videoUrl;
-    if (prev) URL.revokeObjectURL(prev);
-    set({ videoFile: file, videoUrl: URL.createObjectURL(file), trimStart: 0, trimEnd: 0, currentTime: 0, isPlaying: false });
+    get().clips.forEach(c => { if (c.blobUrl) URL.revokeObjectURL(c.blobUrl); });
+    const clip: VideoClip = { id: crypto.randomUUID(), file, blobUrl: URL.createObjectURL(file), duration: 0, trimStart: 0, trimEnd: 0, timelineStart: 0 };
+    const clips = [clip];
+    set({ clips, activeClipId: clip.id, ...syncLegacyFields(clips), currentTime: 0, isPlaying: false });
   },
   loadVideo: (file, url) => {
-    const prev = get().videoUrl;
-    if (prev) URL.revokeObjectURL(prev);
-    set({ videoFile: file, videoUrl: url, trimStart: 0, trimEnd: 0, currentTime: 0, isPlaying: false });
+    get().clips.forEach(c => { if (c.blobUrl) URL.revokeObjectURL(c.blobUrl); });
+    const clip: VideoClip = { id: crypto.randomUUID(), file, blobUrl: url, duration: 0, trimStart: 0, trimEnd: 0, timelineStart: 0 };
+    const clips = [clip];
+    set({ clips, activeClipId: clip.id, ...syncLegacyFields(clips), currentTime: 0, isPlaying: false });
   },
-  setDuration: (d) => { const { trimEnd } = get(); set({ duration: d, trimEnd: trimEnd === 0 ? d : trimEnd }); },
+  setDuration: (d) => {
+    const { clips } = get();
+    if (clips.length === 0) return;
+    const updated = recalcTimelineStarts(clips.map((c, i) => i === 0 ? { ...c, duration: d, trimEnd: c.trimEnd === 0 ? d : c.trimEnd } : c));
+    set({ clips: updated, ...syncLegacyFields(updated) });
+  },
   setCurrentTime: (t) => set({ currentTime: t }),
   play: () => {
     const { trimEnd, currentTime: ct, trimStart: ts } = get();
@@ -116,7 +148,12 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   pause: () => { set({ isPlaying: false }); _videoEl?.pause(); },
   togglePlayPause: () => { if (get().isPlaying) get().pause(); else get().play(); },
   seekTo: (t) => { const c = Math.max(0, Math.min(t, get().duration)); set({ currentTime: c }); if (_videoEl) _videoEl.currentTime = c; },
-  setTrim: (start, end) => { set({ trimStart: start, trimEnd: end }); markEditorTouched(); },
+  setTrim: (start, end) => {
+    const { clips } = get();
+    if (clips.length === 0) { set({ trimStart: start, trimEnd: end }); markEditorTouched(); return; }
+    const updated = recalcTimelineStarts(clips.map((c, i) => i === 0 ? { ...c, trimStart: start, trimEnd: end } : c));
+    set({ clips: updated, ...syncLegacyFields(updated) }); markEditorTouched();
+  },
   setItemId: (id) => set({ itemId: id }),
   setFilter: (name) => { set({ filter: name }); markEditorTouched(); },
   setOverlays: (overlays) => set({ overlays }),
@@ -126,19 +163,11 @@ export const useEditorStore = create<EditorState>((set, get) => ({
     markEditorTouched();
   },
   updateOverlay: (id, changes) => { set({ overlays: get().overlays.map(o => o.id === id ? { ...o, ...changes } : o) }); markEditorTouched(); },
-  removeOverlay: (id) => {
-    const s = get();
-    set({ overlays: s.overlays.filter(o => o.id !== id), selectedOverlayId: s.selectedOverlayId === id ? null : s.selectedOverlayId });
-  },
+  removeOverlay: (id) => { const s = get(); set({ overlays: s.overlays.filter(o => o.id !== id), selectedOverlayId: s.selectedOverlayId === id ? null : s.selectedOverlayId }); },
   duplicateOverlay: (id) => {
-    const src = get().overlays.find(o => o.id === id);
-    if (!src) return;
-    const gap = 0.3, dur = src.endTime - src.startTime;
-    const newStart = Math.min(src.endTime + gap, get().duration);
-    const newEnd = Math.min(newStart + dur, get().duration);
-    const newId = `txt_${Date.now()}`;
-    set({ overlays: [...get().overlays, { ...src, id: newId, text: '', startTime: newStart, endTime: newEnd }], selectedOverlayId: newId });
-    markEditorTouched();
+    const src = get().overlays.find(o => o.id === id); if (!src) return;
+    const gap = 0.3, dur = src.endTime - src.startTime, newStart = Math.min(src.endTime + gap, get().duration), newEnd = Math.min(newStart + dur, get().duration), newId = `txt_${Date.now()}`;
+    set({ overlays: [...get().overlays, { ...src, id: newId, text: '', startTime: newStart, endTime: newEnd }], selectedOverlayId: newId }); markEditorTouched();
   },
   selectOverlay: (id) => set({ selectedOverlayId: id }),
   setSubtitles: (subs) => { set({ subtitles: subs }); markEditorTouched(); },
@@ -159,12 +188,35 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   clearCover: () => set({ coverFrameOffset: 0, coverDataUrl: null, coverCustomUrl: null }),
   setCaptions: (c) => set({ captions: c }),
   updateCaption: (platform, text) => { const c = get().captions; if (c) set({ captions: { ...c, [platform]: text } }); },
+  // --- Multi-clip actions ---
+  addClip: (file, blobUrl) => {
+    const clip: VideoClip = { id: crypto.randomUUID(), file, blobUrl, duration: 0, trimStart: 0, trimEnd: 0, timelineStart: 0 };
+    const clips = recalcTimelineStarts([...get().clips, clip]);
+    set({ clips, activeClipId: clip.id, ...syncLegacyFields(clips) }); markEditorTouched();
+  },
+  initClipDuration: (clipId, duration) => {
+    const clips = recalcTimelineStarts(get().clips.map(c => c.id === clipId ? { ...c, duration, trimEnd: c.trimEnd === 0 ? duration : c.trimEnd } : c));
+    set({ clips, ...syncLegacyFields(clips) });
+  },
+  removeClip: (id) => {
+    const { clips, activeClipId } = get();
+    const removed = clips.find(c => c.id === id);
+    if (removed?.blobUrl) URL.revokeObjectURL(removed.blobUrl);
+    const filtered = recalcTimelineStarts(clips.filter(c => c.id !== id));
+    const newActive = activeClipId === id ? (filtered[0]?.id ?? null) : activeClipId;
+    set({ clips: filtered, activeClipId: newActive, ...syncLegacyFields(filtered) });
+    // TODO M3: gerer les overlays/sous-titres orphelins positionnes sur le clip supprime
+  },
+  updateClipTrim: (id, trimStart, trimEnd) => {
+    const clips = recalcTimelineStarts(get().clips.map(c => c.id === id ? { ...c, trimStart, trimEnd } : c));
+    set({ clips, ...syncLegacyFields(clips) }); markEditorTouched();
+  },
+  setActiveClip: (id) => set({ activeClipId: id }),
   reset: () => {
-    const prev = get().videoUrl;
-    if (prev) URL.revokeObjectURL(prev);
-    _videoEl = null;
-    _editorTouched = false;
+    get().clips.forEach(c => { if (c.blobUrl) URL.revokeObjectURL(c.blobUrl); });
+    _videoEl = null; _editorTouched = false;
     set({
+      clips: [], activeClipId: null,
       videoFile: null, videoUrl: null, duration: 0, currentTime: 0,
       isPlaying: false, trimStart: 0, trimEnd: 0, itemId: null,
       filter: 'normal', overlays: [], selectedOverlayId: null,

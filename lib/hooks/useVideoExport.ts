@@ -26,6 +26,7 @@ export function useVideoExport() {
   const exportVideo = useCallback(async () => {
     const s = useEditorStore.getState();
     if (!s.videoFile || !s.itemId) return;
+    if (s.clips.length > 1) { setState('error'); setError('L\'export multi-clip sera disponible prochainement. Seul le premier clip est exporte.'); return; }
 
     setState('preparing');
     setProgress(0);

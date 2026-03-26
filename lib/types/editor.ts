@@ -38,6 +38,21 @@ export interface SubtitleSegment {
 
 export type SubtitleStyle = 'classic' | 'tiktok' | 'karaoke';
 
+// --- Video Clips (multi-clip M1) ---
+
+export interface VideoClip {
+  id: string;
+  file: File | null;
+  blobUrl: string;
+  duration: number;
+  trimStart: number;
+  trimEnd: number;
+  timelineStart: number;
+  sourceVideoUrl?: string;
+}
+
+// --- Audio / Jamendo ---
+
 export interface JamendoTrack {
   id: string;
   name: string;

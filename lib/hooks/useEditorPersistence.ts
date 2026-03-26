@@ -31,6 +31,11 @@ export function useEditorPersistence(itemId: string | null) {
         audioFadeOut: state.audioFadeOut,
         coverFrameOffset: state.coverFrameOffset,
         coverCustomUrl: state.coverCustomUrl,
+        // Clips serialises sans File/blobUrl (non-serialisables)
+        clips: state.clips.map(c => ({
+          id: c.id, duration: c.duration, trimStart: c.trimStart, trimEnd: c.trimEnd,
+          timelineStart: c.timelineStart, sourceVideoUrl: c.sourceVideoUrl,
+        })),
       };
 
       // Comparaison shallow pour eviter les ecritures inutiles

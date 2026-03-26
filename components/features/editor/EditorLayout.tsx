@@ -84,7 +84,9 @@ export default function EditorLayout({ itemId }: Props) {
           if (data.editorData && !cancelled) {
             const ed = data.editorData;
             const s = useEditorStore.getState();
-            if (ed.trimStart != null && ed.trimEnd != null) s.setTrim(ed.trimStart, ed.trimEnd);
+            // Restaurer les metadonnees du premier clip (trim via les clips serialises)
+            if (ed.clips?.[0]?.trimStart != null) s.setTrim(ed.clips[0].trimStart, ed.clips[0].trimEnd);
+            else if (ed.trimStart != null && ed.trimEnd != null) s.setTrim(ed.trimStart, ed.trimEnd);
             if (ed.overlays?.length) s.setOverlays(ed.overlays);
             if (ed.subtitles?.length) s.setSubtitles(ed.subtitles);
             if (ed.subtitleStyle) s.setSubtitleStyle(ed.subtitleStyle);
