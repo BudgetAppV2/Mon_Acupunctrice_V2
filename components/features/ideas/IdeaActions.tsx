@@ -63,7 +63,7 @@ export default function IdeaActions({ item, onClose }: Props) {
   };
 
   // Bouton principal selon l'etat
-  const hasVideo = !!item.videoUrl;
+  const hasVideo = !!(item.videoUrl || item.sourceVideoUrl);
   let primaryLabel = '';
   let primaryAction = goEditor;
   if (!hasVideo) { primaryLabel = 'Creer le contenu'; }
@@ -96,7 +96,7 @@ export default function IdeaActions({ item, onClose }: Props) {
 
       {/* Secondaires */}
       <div className="flex flex-wrap gap-2">
-        {item.videoUrl && ds !== 'published' && (
+        {(item.videoUrl || item.sourceVideoUrl) && ds !== 'published' && (
           <button onClick={goEditor} className="flex items-center gap-1.5 px-3 py-1.5 border border-gray-200 rounded-lg text-xs text-gray-700">
             <PencilIcon className="w-3.5 h-3.5" /> Editeur
           </button>
