@@ -171,7 +171,7 @@ interface Props {
 - Lire `item.captions?.youtube || item.caption` pour le titre/description
 - Ne plus ajouter de hashtags hardcodés (c'est dans la caption YouTube générée)
 
-### 6. Construire le transcript depuis les sous-titres
+### 6. Construire le transcript depuis les sous-titres OU l'audio
 
 **Fichier :** `components/features/publish/PublishSheet.tsx` ou nouveau util
 
@@ -182,6 +182,20 @@ function buildTranscript(subtitles: SubtitleSegment[]): string {
 }
 ```
 Passer le transcript au CaptionEditor et à l'API.
+
+**Si pas de sous-titres :** Le CaptionEditor doit offrir un bouton "Transcrire d'abord" qui :
+1. Appelle `useTranscription.transcribe(videoFile)` pour générer les sous-titres
+2. Met à jour le store Zustand avec les sous-titres
+3. Utilise la transcription fraîche pour générer les captions
+
+**Flow dans CaptionEditor :**
+```
+Sous-titres dans le store ?
+  → OUI : bouton "Générer avec l'IA" utilise la transcription
+  → NON : bouton "Transcrire et générer" qui fait les 2 étapes en séquence
+```
+
+Dans les deux cas, le fallback reste titre/notes si la transcription échoue.
 
 ## Contraintes
 - NE PAS modifier les Cloud Functions
