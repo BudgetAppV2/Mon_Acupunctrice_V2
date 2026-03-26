@@ -3,13 +3,10 @@
 interface Props {
   facebookPageId: string | null;
   youtubeChannelId: string | null;
-  metaStatus: string | null;
   alsoFacebook: boolean;
   alsoYoutube: boolean;
-  alsoStory: boolean;
   onToggleFacebook: () => void;
   onToggleYoutube: () => void;
-  onToggleStory: () => void;
 }
 
 function Toggle({ checked, onToggle }: { checked: boolean; onToggle: () => void }) {
@@ -20,12 +17,8 @@ function Toggle({ checked, onToggle }: { checked: boolean; onToggle: () => void 
   );
 }
 
-/** Toggles Facebook + Story Instagram + YouTube dans le flux de publication */
-export default function PlatformToggles({
-  facebookPageId, youtubeChannelId, metaStatus,
-  alsoFacebook, alsoYoutube, alsoStory,
-  onToggleFacebook, onToggleYoutube, onToggleStory,
-}: Props) {
+/** Toggles Facebook + YouTube dans le flux de publication */
+export default function PlatformToggles({ facebookPageId, youtubeChannelId, alsoFacebook, alsoYoutube, onToggleFacebook, onToggleYoutube }: Props) {
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between bg-gray-50 rounded-lg px-3 py-2">
@@ -38,12 +31,6 @@ export default function PlatformToggles({
           <span className="text-xs text-gray-400">Connecte Facebook dans Profil</span>
         )}
       </div>
-      {metaStatus === 'connected' && (
-        <div className="flex items-center justify-between bg-gray-50 rounded-lg px-3 py-2">
-          <span className="text-sm text-gray-700">Publier aussi en Story Instagram</span>
-          <Toggle checked={alsoStory} onToggle={onToggleStory} />
-        </div>
-      )}
       <div className="flex items-center justify-between bg-gray-50 rounded-lg px-3 py-2">
         {youtubeChannelId ? (
           <>
