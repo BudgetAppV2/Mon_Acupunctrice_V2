@@ -4,8 +4,9 @@ import { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { getDoc, doc } from 'firebase/firestore';
 import { useEditorStore } from '@/lib/store/useEditorStore';
+import { useEditorPersistence } from '@/lib/hooks/useEditorPersistence';
 import { getFirebaseFirestore } from '@/lib/firebase';
-import { ArrowLeftIcon, CheckCircleIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline';
+import { ArrowLeftIcon, CheckCircleIcon, ExclamationTriangleIcon, CloudArrowUpIcon } from '@heroicons/react/24/outline';
 import { getDurationFeedback } from '@/lib/utils/platformOptimization';
 import type { ContentItem } from '@/lib/types';
 import VideoPreview from './VideoPreview';
@@ -39,10 +40,10 @@ export default function EditorLayout({ itemId }: Props) {
   const [loading, setLoading] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerH, setContainerH] = useState(typeof window !== 'undefined' ? window.innerHeight - 44 : 600);
+  const { saving, saved } = useEditorPersistence(videoFile ? itemId : null);
 
   const handleBack = () => { reset?.(); router.push('/calendrier'); };
 
-  // Mesurer la hauteur disponible (entre header et safe-area)
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
@@ -70,6 +71,22 @@ export default function EditorLayout({ itemId }: Props) {
             const file = new File([blob], 'existing.mp4', { type: 'video/mp4' });
             useEditorStore.getState().loadVideo(file, URL.createObjectURL(file));
           }
+          // Restaurer les donnees editables sauvegardees
+          if (data.editorData && !cancelled) {
+            const ed = data.editorData;
+            const s = useEditorStore.getState();
+            if (ed.trimStart != null && ed.trimEnd != null) s.setTrim(ed.trimStart, ed.trimEnd);
+            if (ed.overlays?.length) s.setOverlays(ed.overlays);
+            if (ed.subtitles?.length) s.setSubtitles(ed.subtitles);
+            if (ed.subtitleStyle) s.setSubtitleStyle(ed.subtitleStyle);
+            if (ed.filter && ed.filter !== 'normal') s.setFilter(ed.filter);
+            if (ed.audioUrl) s.setAudioTrack(ed.audioUrl, ed.audioName || '');
+            if (ed.voiceVolume != null) s.setVoiceVolume(ed.voiceVolume);
+            if (ed.audioVolume != null) s.setAudioVolume(ed.audioVolume);
+            if (ed.audioFadeIn != null || ed.audioFadeOut != null) s.setAudioFade(ed.audioFadeIn || 0, ed.audioFadeOut || 0);
+            if (ed.coverFrameOffset) s.setCoverFrame(ed.coverFrameOffset, '');
+            if (ed.coverCustomUrl) s.setCoverCustom(ed.coverCustomUrl);
+          }
         }
       } catch { /* ImportModal s'affichera */ }
       if (!cancelled) setLoading(false);
@@ -84,20 +101,12 @@ export default function EditorLayout({ itemId }: Props) {
     if (snap.exists()) { setPublishItem({ id: snap.id, ...snap.data() } as ContentItem); setShowPublish(true); }
   };
 
-  if (loading) return (
-    <div className="fixed inset-0 flex items-center justify-center bg-gray-950">
-      <div className="w-8 h-8 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-    </div>
-  );
-
+  if (loading) return (<div className="fixed inset-0 flex items-center justify-center bg-gray-950"><div className="w-8 h-8 border-2 border-white/30 border-t-white rounded-full animate-spin" /></div>);
   if (!videoFile && !videoUrl) return <ImportModal />;
-
-  const previewH = containerH * editorSplitRatio;
-  const bottomH = Math.max(containerH * (1 - editorSplitRatio) - 36, 80);
+  const previewH = containerH * editorSplitRatio, bottomH = Math.max(containerH * (1 - editorSplitRatio) - 36, 80);
 
   return (
     <div className="fixed inset-0 flex flex-col bg-gray-950">
-      {/* Header */}
       <header className="flex items-center justify-between px-4 bg-gray-900/90 shrink-0 z-10" style={{ height: 'calc(44px + env(safe-area-inset-top, 0px))', paddingTop: 'env(safe-area-inset-top, 0px)' }}>
         <button onClick={handleBack} className="text-white p-1"><ArrowLeftIcon className="w-5 h-5" /></button>
         <span className="text-xs text-gray-300 font-mono flex items-center gap-1.5">
@@ -106,23 +115,19 @@ export default function EditorLayout({ itemId }: Props) {
             const fb = getDurationFeedback(Math.floor(duration), 'instagram');
             return fb.ok ? <CheckCircleIcon className="w-3.5 h-3.5 text-green-400" /> : <ExclamationTriangleIcon className="w-3.5 h-3.5 text-yellow-400" />;
           })()}
+          {saving && <CloudArrowUpIcon className="w-3.5 h-3.5 text-gray-500 animate-pulse" />}
+          {saved && !saving && <CheckCircleIcon className="w-3.5 h-3.5 text-green-500" />}
         </span>
         <ExportButton onExportDone={handlePublish} onSwitchTab={setActiveTab} />
       </header>
 
-      {/* Zone redimensionnable */}
       <div ref={containerRef} className="flex-1 min-h-0 flex flex-col">
-        {/* Preview */}
         <div className="flex items-center justify-center bg-black overflow-hidden transition-[height] duration-200 ease-out" style={{ height: previewH }}>
           <div className="relative h-full" style={{ aspectRatio: '9/16', maxWidth: '100%' }}>
             <VideoPreview interactive={activeTab === 'texte'} />
           </div>
         </div>
-
-        {/* Divider */}
         <ResizeDivider containerHeight={containerH} />
-
-        {/* Zone bottom */}
         <div className="flex flex-col overflow-hidden transition-[height] duration-200 ease-out" style={{ height: bottomH, paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
           <EditorToolbar activeTab={activeTab} onTabChange={setActiveTab} />
           <div className="flex-1 min-h-0 bg-gray-900 overflow-y-auto">

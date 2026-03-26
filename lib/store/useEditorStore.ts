@@ -60,6 +60,7 @@ interface EditorState {
   setTrim: (start: number, end: number) => void;
   setItemId: (id: string) => void;
   setFilter: (name: string) => void;
+  setOverlays: (overlays: TextOverlayItem[]) => void;
   addOverlay: (text?: string) => void;
   updateOverlay: (id: string, changes: Partial<TextOverlayItem>) => void;
   removeOverlay: (id: string) => void;
@@ -115,6 +116,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   setTrim: (start, end) => { set({ trimStart: start, trimEnd: end }); markEditorTouched(); },
   setItemId: (id) => set({ itemId: id }),
   setFilter: (name) => { set({ filter: name }); markEditorTouched(); },
+  setOverlays: (overlays) => set({ overlays }),
   addOverlay: (text) => {
     const id = crypto.randomUUID(); const { duration } = get();
     set({ overlays: [...get().overlays, { id, text: text || 'Texte', fontFamily: 'Inter', fontSize: 32, fill: '#ffffff', x: 0.5, y: 0.5, startTime: 0, endTime: duration || 10, style: 'classic' as const, animation: 'none' as const }], selectedOverlayId: id });
