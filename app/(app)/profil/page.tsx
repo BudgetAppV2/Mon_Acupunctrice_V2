@@ -11,7 +11,7 @@ import YouTubeConnectButton from '@/components/features/profile/YouTubeConnectBu
 import StatsSummary from '@/components/features/profile/StatsSummary';
 import MilestonesList from '@/components/features/profile/MilestonesList';
 import { useProgression } from '@/lib/hooks/useProgression';
-import { ArrowTopRightOnSquareIcon, ArrowRightStartOnRectangleIcon, XMarkIcon, ChevronRightIcon, PlusIcon } from '@heroicons/react/24/outline';
+import { ArrowTopRightOnSquareIcon, ArrowRightStartOnRectangleIcon, XMarkIcon, ChevronRightIcon, PlusIcon, CameraIcon, FilmIcon, PlayCircleIcon } from '@heroicons/react/24/outline';
 import { CheckCircleIcon, ClockIcon, SparklesIcon } from '@heroicons/react/24/solid';
 
 export default function ProfilPage() {
@@ -87,21 +87,21 @@ export default function ProfilPage() {
         <div className="space-y-1.5 mb-6">
           {metaStatus === 'connected' && (
             <a href="https://www.instagram.com/mon_acupunctrice/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 bg-white rounded-xl p-3">
-              <span className="text-lg">📷</span>
+              <CameraIcon className="w-5 h-5 text-pink-500" />
               <div className="flex-1"><p className="text-sm font-medium text-gray-900">Instagram</p><p className="text-xs text-gray-500">Gerer mes publications</p></div>
               <ArrowTopRightOnSquareIcon className="w-4 h-4 text-gray-400" />
             </a>
           )}
           {facebookStatus === 'connected' && (
             <a href="https://www.facebook.com/profile/342786502259046/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 bg-white rounded-xl p-3">
-              <span className="text-lg">📘</span>
+              <FilmIcon className="w-5 h-5 text-blue-600" />
               <div className="flex-1"><p className="text-sm font-medium text-gray-900">Facebook</p><p className="text-xs text-gray-500">{facebookPageName || 'Gerer ma page'}</p></div>
               <ArrowTopRightOnSquareIcon className="w-4 h-4 text-gray-400" />
             </a>
           )}
           {youtubeStatus === 'connected' && (
             <a href="https://studio.youtube.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 bg-white rounded-xl p-3">
-              <span className="text-lg">▶️</span>
+              <PlayCircleIcon className="w-5 h-5 text-red-500" />
               <div className="flex-1"><p className="text-sm font-medium text-gray-900">YouTube Studio</p><p className="text-xs text-gray-500">{youtubeChannelName || 'Gerer ma chaine'}</p></div>
               <ArrowTopRightOnSquareIcon className="w-4 h-4 text-gray-400" />
             </a>
