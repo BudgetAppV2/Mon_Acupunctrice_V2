@@ -52,6 +52,13 @@ export default function EditorLayout({ itemId }: Props) {
     return () => obs.disconnect();
   }, []);
 
+  // Anti-swipe Safari iOS dans la zone timeline
+  useEffect(() => {
+    const p = (e: TouchEvent) => { if ((e.target as HTMLElement)?.closest('[data-timeline]')) e.preventDefault(); };
+    document.addEventListener('touchmove', p, { passive: false });
+    return () => document.removeEventListener('touchmove', p);
+  }, []);
+
   useEffect(() => {
     let cancelled = false;
     setItemId(itemId);
@@ -97,18 +104,14 @@ export default function EditorLayout({ itemId }: Props) {
     return () => { cancelled = true; reset(); };
   }, [itemId, setItemId, reset]);
 
-  const handlePublish = async () => {
-    const db = getFirebaseFirestore();
-    const snap = await getDoc(doc(db, 'contentItems', itemId));
-    if (snap.exists()) { setPublishItem({ id: snap.id, ...snap.data() } as ContentItem); setShowPublish(true); }
-  };
+  const handlePublish = async () => { const db = getFirebaseFirestore(); const snap = await getDoc(doc(db, 'contentItems', itemId)); if (snap.exists()) { setPublishItem({ id: snap.id, ...snap.data() } as ContentItem); setShowPublish(true); } };
 
   if (loading) return (<div className="fixed inset-0 flex items-center justify-center bg-gray-950"><div className="w-8 h-8 border-2 border-white/30 border-t-white rounded-full animate-spin" /></div>);
   if (!videoFile && !videoUrl) return <ImportModal />;
   const previewH = containerH * editorSplitRatio, bottomH = Math.max(containerH * (1 - editorSplitRatio) - 36, 80);
 
   return (
-    <div className="fixed inset-0 flex flex-col bg-gray-950">
+    <div className="fixed inset-0 flex flex-col bg-gray-950 overscroll-none" style={{ touchAction: 'pan-y', overscrollBehaviorX: 'none' }}>
       <header className="flex items-center justify-between px-4 bg-gray-900/90 shrink-0 z-10" style={{ height: 'calc(44px + env(safe-area-inset-top, 0px))', paddingTop: 'env(safe-area-inset-top, 0px)' }}>
         <button onClick={handleBack} className="text-white p-1"><ArrowLeftIcon className="w-5 h-5" /></button>
         <span className="text-xs text-gray-300 font-mono flex items-center gap-1.5">

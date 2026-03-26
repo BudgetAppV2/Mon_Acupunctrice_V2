@@ -101,6 +101,7 @@ export default function Timeline() {
   return (
     <div
       ref={containerRef}
+      data-timeline
       className="bg-gray-950 flex-1 min-h-[60px] relative select-none touch-none"
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}

@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useCallback } from 'react';
+import { useRef, useCallback, useState } from 'react';
 
 interface Props {
   side: 'left' | 'right';
@@ -10,6 +10,7 @@ interface Props {
 }
 
 export default function TrimHandle({ side, onDrag, onDragStart, onDragEnd }: Props) {
+  const [active, setActive] = useState(false);
   const dragging = useRef(false);
   const startX = useRef(0);
   const rafRef = useRef<number | null>(null);
@@ -19,6 +20,7 @@ export default function TrimHandle({ side, onDrag, onDragStart, onDragEnd }: Pro
     e.stopPropagation();
     e.preventDefault();
     dragging.current = true;
+    setActive(true);
     startX.current = e.clientX;
     handleRef.current?.setPointerCapture(e.pointerId);
     onDragStart();
@@ -30,15 +32,13 @@ export default function TrimHandle({ side, onDrag, onDragStart, onDragEnd }: Pro
     e.preventDefault();
     const delta = e.clientX - startX.current;
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    rafRef.current = requestAnimationFrame(() => {
-      onDrag(delta);
-      rafRef.current = null;
-    });
+    rafRef.current = requestAnimationFrame(() => { onDrag(delta); rafRef.current = null; });
   }, [onDrag]);
 
   const onPointerUp = useCallback((e: React.PointerEvent) => {
     if (!dragging.current) return;
     dragging.current = false;
+    setActive(false);
     if (rafRef.current) { cancelAnimationFrame(rafRef.current); rafRef.current = null; }
     handleRef.current?.releasePointerCapture(e.pointerId);
     onDragEnd();
@@ -47,6 +47,7 @@ export default function TrimHandle({ side, onDrag, onDragStart, onDragEnd }: Pro
   return (
     <div
       ref={handleRef}
+      data-trim-handle
       className={`absolute top-0 h-full z-20 flex items-center justify-center cursor-col-resize touch-none ${
         side === 'left' ? '-left-3' : '-right-3'
       }`}
@@ -55,8 +56,7 @@ export default function TrimHandle({ side, onDrag, onDragStart, onDragEnd }: Pro
       onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}
     >
-      {/* Barre visible */}
-      <div className="w-1 h-full bg-white/60 hover:bg-white rounded-full transition-colors" />
+      <div className={`${active ? 'w-1.5 bg-amber-400' : 'w-1 bg-white/60 hover:bg-white'} h-full rounded-full transition-all duration-100`} />
     </div>
   );
 }
