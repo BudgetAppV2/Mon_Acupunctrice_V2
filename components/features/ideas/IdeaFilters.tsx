@@ -1,29 +1,33 @@
 'use client';
 
 import { useState } from 'react';
-import type { WorkflowState } from '@/lib/types';
+import type { WorkflowState, ContentStyle } from '@/lib/types';
 import { WORKFLOW_LABELS } from '@/lib/types';
-import { useUserProfile } from '@/lib/hooks/useUserProfile';
-import { getAllCategories, getCategoryLabel } from '@/lib/utils/categories';
-import { FunnelIcon, TagIcon } from '@heroicons/react/24/outline';
+import { FunnelIcon, SparklesIcon } from '@heroicons/react/24/outline';
 import FilterSheet from './FilterSheet';
 
 const STATUS_OPTIONS = Object.entries(WORKFLOW_LABELS).map(([v, l]) => ({ value: v, label: l }));
 
+const STYLE_OPTIONS: { value: string; label: string }[] = [
+  { value: 'enseigner', label: 'Enseigner' },
+  { value: 'connecter', label: 'Connecter' },
+  { value: 'aider', label: 'Aider' },
+  { value: 'inspirer', label: 'Inspirer' },
+];
+
 interface Props {
   selectedStatus?: WorkflowState;
-  selectedCategory?: string;
+  selectedStyle?: ContentStyle;
   onStatusChange: (status?: WorkflowState) => void;
-  onCategoryChange: (category?: string) => void;
+  onStyleChange: (style?: ContentStyle) => void;
 }
 
-export default function IdeaFilters({ selectedStatus, selectedCategory, onStatusChange, onCategoryChange }: Props) {
-  const { customCategories } = useUserProfile();
+export default function IdeaFilters({ selectedStatus, selectedStyle, onStatusChange, onStyleChange }: Props) {
   const [statusOpen, setStatusOpen] = useState(false);
-  const [categoryOpen, setCategoryOpen] = useState(false);
+  const [styleOpen, setStyleOpen] = useState(false);
 
   const statusLabel = selectedStatus ? WORKFLOW_LABELS[selectedStatus] : 'Tous statuts';
-  const catLabel = selectedCategory ? getCategoryLabel(selectedCategory) : 'Toute categorie';
+  const styleLabel = selectedStyle ? STYLE_OPTIONS.find(s => s.value === selectedStyle)?.label : 'Tous styles';
 
   return (
     <>
@@ -39,23 +43,23 @@ export default function IdeaFilters({ selectedStatus, selectedCategory, onStatus
           {statusLabel}
         </button>
         <button
-          onClick={() => setCategoryOpen(true)}
+          onClick={() => setStyleOpen(true)}
           className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition ${
-            selectedCategory ? 'bg-sage/10 text-sage' : 'bg-gray-100 text-gray-600'
+            selectedStyle ? 'bg-sage/10 text-sage' : 'bg-gray-100 text-gray-600'
           }`}
         >
-          <TagIcon className="w-4 h-4" />
-          {selectedCategory && <span className="w-1.5 h-1.5 rounded-full bg-sage" />}
-          {catLabel}
+          <SparklesIcon className="w-4 h-4" />
+          {selectedStyle && <span className="w-1.5 h-1.5 rounded-full bg-sage" />}
+          {styleLabel}
         </button>
       </div>
 
       <FilterSheet isOpen={statusOpen} onClose={() => setStatusOpen(false)} title="Statut"
         options={STATUS_OPTIONS} selected={selectedStatus}
         onSelect={(v) => onStatusChange(v as WorkflowState | undefined)} />
-      <FilterSheet isOpen={categoryOpen} onClose={() => setCategoryOpen(false)} title="Categorie"
-        options={getAllCategories(customCategories)} selected={selectedCategory}
-        onSelect={onCategoryChange} />
+      <FilterSheet isOpen={styleOpen} onClose={() => setStyleOpen(false)} title="Style"
+        options={STYLE_OPTIONS} selected={selectedStyle}
+        onSelect={(v) => onStyleChange(v as ContentStyle | undefined)} />
     </>
   );
 }

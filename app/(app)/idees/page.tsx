@@ -8,19 +8,21 @@ import IdeaFilters from '@/components/features/ideas/IdeaFilters';
 import IdeaList from '@/components/features/ideas/IdeaList';
 import CreateIdeaSheet from '@/components/features/ideas/CreateIdeaSheet';
 import IdeaDetailSheet from '@/components/features/ideas/IdeaDetailSheet';
-import type { ContentItem, WorkflowState } from '@/lib/types';
+import type { ContentItem, WorkflowState, ContentStyle } from '@/lib/types';
 
 export default function IdeesPage() {
   const [selectedStatus, setSelectedStatus] = useState<WorkflowState>();
-  const [selectedCategory, setSelectedCategory] = useState<string>();
+  const [selectedStyle, setSelectedStyle] = useState<ContentStyle>();
   const [sheetOpen, setSheetOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<ContentItem | null>(null);
   const [detailOpen, setDetailOpen] = useState(false);
 
-  const { data, loading, error } = useContentItems({
+  const { data: allData, loading, error } = useContentItems({
     status: selectedStatus,
-    categories: selectedCategory ? [selectedCategory] : undefined,
   });
+
+  // Filtre par style côté client (pas de query Firestore nécessaire)
+  const data = selectedStyle ? allData.filter(i => i.contentStyle === selectedStyle) : allData;
   const { deleteItem } = useDeleteContentItem();
 
   const handleSelect = (item: ContentItem) => {
@@ -40,9 +42,9 @@ export default function IdeesPage() {
       <div className="px-4 py-3">
         <IdeaFilters
           selectedStatus={selectedStatus}
-          selectedCategory={selectedCategory}
+          selectedStyle={selectedStyle}
           onStatusChange={setSelectedStatus}
-          onCategoryChange={setSelectedCategory}
+          onStyleChange={setSelectedStyle}
         />
       </div>
 
