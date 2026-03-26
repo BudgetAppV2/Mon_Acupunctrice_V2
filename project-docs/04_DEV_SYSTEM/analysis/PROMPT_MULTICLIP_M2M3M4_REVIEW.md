@@ -49,7 +49,8 @@ les mêmes standards de qualité.
 ### M3 — Interactions
 - Long press (300ms) + drag vs tap (< 300ms) : est-ce que la distinction est fiable sur mobile ?
 - Drag-to-reorder + E01-D drag-to-reposition : y a-t-il un conflit de gestes ?
-- `splitClip` : les deux clips résultants partagent le même `file` et `blobUrl` — est-ce problématique pour le cleanup (revokeObjectURL) ?
+- `duplicateClip` : le clone partage le même `file` et `blobUrl` — faut-il un refcount pour éviter de révoquer le blobUrl quand un seul des deux est supprimé ?
+- `splitClip` : les deux clips résultants partagent le même `file` et `blobUrl` — même problème de refcount pour le cleanup (revokeObjectURL) ?
 - Le bouton "Couper" : faut-il recalculer les overlays/sous-titres après un split ou est-ce acceptable de ne rien faire ?
 - Suppression d'un clip : les overlays/sous-titres orphelins sont-ils gérés ?
 - Le réordonnement et les overlays en temps global : est-ce que les overlays deviennent incohérents après un reorder ?

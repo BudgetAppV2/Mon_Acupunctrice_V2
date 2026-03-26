@@ -34,6 +34,11 @@ reorderClips: (fromIndex: number, toIndex: number) => void;
 splitClip: (id: string, globalSplitTime: number) => void;
 ```
 
+**duplicateClip :** Crée une copie d'un clip (même `file`, même `blobUrl`, mêmes trim points).
+Le nouveau clip est inséré juste après l'original. Judith peut ensuite trim chacun
+différemment pour couper un bout au milieu d'une séquence.
+IMPORTANT : ne PAS révoquer le `blobUrl` du clone (c'est le même fichier source).
+
 **reorderClips :** Déplace un clip de `fromIndex` à `toIndex` dans le tableau.
 Recalcule les `timelineStart` de tous les clips.
 Les overlays/sous-titres ne sont PAS ajustés (ils sont en temps global et
