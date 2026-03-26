@@ -8,6 +8,7 @@ import { useProgression } from './useProgression';
 interface PublishOptions {
   videoUrl: string;
   caption: string;
+  captions?: { instagram: string; facebook: string; youtube: string };
   itemId: string;
   coverOption: 'frame' | 'custom';
   thumbOffset?: number;
@@ -48,6 +49,7 @@ export function usePublish() {
         distributionStatus: 'published',
         instagramPostId: data.mediaId,
         caption: opts.caption,
+        ...(opts.captions ? { captions: opts.captions } : {}),
         coverOption: opts.coverOption,
         thumbOffset: opts.thumbOffset ?? null,
         coverImageUrl: opts.coverUrl ?? null,

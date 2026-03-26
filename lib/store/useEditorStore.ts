@@ -48,6 +48,7 @@ interface EditorState {
   coverFrameOffset: number;
   coverDataUrl: string | null;
   coverCustomUrl: string | null;
+  captions: { instagram: string; facebook: string; youtube: string } | null;
 
   setVideoFile: (file: File) => void;
   loadVideo: (file: File, url: string) => void;
@@ -82,6 +83,8 @@ interface EditorState {
   setCoverFrame: (offset: number, dataUrl: string) => void;
   setCoverCustom: (url: string) => void;
   clearCover: () => void;
+  setCaptions: (c: { instagram: string; facebook: string; youtube: string }) => void;
+  updateCaption: (platform: 'instagram' | 'facebook' | 'youtube', text: string) => void;
   reset: () => void;
 }
 
@@ -91,7 +94,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   filter: 'normal', overlays: [], selectedOverlayId: null,
   subtitles: [], subtitleStyle: 'classic' as SubtitleStyle,
   audioUrl: null, audioName: null, audioVolume: 0.3, voiceVolume: 1,
-  audioFadeIn: 0, audioFadeOut: 0, thumbnailUrl: null, videoOrientation: 'portrait', editorSplitRatio: 0.50, selectedSubtitleId: null, coverFrameOffset: 0, coverDataUrl: null, coverCustomUrl: null,
+  audioFadeIn: 0, audioFadeOut: 0, thumbnailUrl: null, videoOrientation: 'portrait', editorSplitRatio: 0.50, selectedSubtitleId: null, coverFrameOffset: 0, coverDataUrl: null, coverCustomUrl: null, captions: null,
 
   setVideoFile: (file) => {
     const prev = get().videoUrl;
@@ -154,6 +157,8 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   setCoverFrame: (offset, dataUrl) => set({ coverFrameOffset: offset, coverDataUrl: dataUrl, coverCustomUrl: null }),
   setCoverCustom: (url) => set({ coverCustomUrl: url, coverDataUrl: null }),
   clearCover: () => set({ coverFrameOffset: 0, coverDataUrl: null, coverCustomUrl: null }),
+  setCaptions: (c) => set({ captions: c }),
+  updateCaption: (platform, text) => { const c = get().captions; if (c) set({ captions: { ...c, [platform]: text } }); },
   reset: () => {
     const prev = get().videoUrl;
     if (prev) URL.revokeObjectURL(prev);
@@ -165,7 +170,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
       filter: 'normal', overlays: [], selectedOverlayId: null,
       subtitles: [], subtitleStyle: 'classic' as SubtitleStyle,
       audioUrl: null, audioName: null, audioVolume: 0.3, voiceVolume: 1,
-      audioFadeIn: 0, audioFadeOut: 0, thumbnailUrl: null, videoOrientation: 'portrait', selectedSubtitleId: null, coverFrameOffset: 0, coverDataUrl: null, coverCustomUrl: null,
+      audioFadeIn: 0, audioFadeOut: 0, thumbnailUrl: null, videoOrientation: 'portrait', selectedSubtitleId: null, coverFrameOffset: 0, coverDataUrl: null, coverCustomUrl: null, captions: null,
     });
   },
 }));

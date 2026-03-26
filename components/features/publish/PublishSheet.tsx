@@ -20,12 +20,19 @@ export default function PublishSheet({ isOpen, onClose, item }: Props) {
   const router = useRouter();
   const isSlotItem = !!item.slotId;
   const [step, setStep] = useState<1 | 2>(1);
-  const [caption, setCaption] = useState(item.caption || '');
   const [showSchedule, setShowSchedule] = useState(false);
   const [done, setDone] = useState(false);
   const { publish, schedule, publishing, error } = usePublish();
   const uid = useAuthStore((s) => s.user?.uid);
   const { facebookPageId, youtubeChannelId, metaStatus } = useUserProfile();
+
+  // Captions multi-plateformes depuis le store
+  const storeCaptions = useEditorStore((s) => s.captions);
+  const setCaptions = useEditorStore((s) => s.setCaptions);
+  const subtitles = useEditorStore((s) => s.subtitles);
+  const captions = storeCaptions || { instagram: item.caption || '', facebook: item.caption || '', youtube: item.caption || '' };
+  const caption = captions.instagram; // retrocompat : caption IG pour la CF
+  const transcript = subtitles.length > 0 ? subtitles.map(s => s.text).join(' ') : undefined;
 
   // Cover depuis le store editeur (selectionnee dans l'onglet Cover avant l'export)
   const coverDataUrl = useEditorStore((s) => s.coverDataUrl);
@@ -52,7 +59,7 @@ export default function PublishSheet({ isOpen, onClose, item }: Props) {
   const {
     handlePublish, fbError, ytError, storyError,
     alsoFacebook, setAlsoFacebook, alsoYoutube, setAlsoYoutube, alsoStory, setAlsoStory,
-  } = useMultiPlatformPublish({ item, uid, caption, coverOption: coverOpt, thumbOffset: thumbOff, coverUrl, publish, uploadFrameAsCover: uploadCover, setDone });
+  } = useMultiPlatformPublish({ item, uid, caption, captions: storeCaptions || undefined, coverOption: coverOpt, thumbOffset: thumbOff, coverUrl, publish, uploadFrameAsCover: uploadCover, setDone });
 
   const handleSchedule = async (date: Date) => {
     const finalCoverUrl = await uploadCover();
@@ -80,7 +87,7 @@ export default function PublishSheet({ isOpen, onClose, item }: Props) {
       <div className="space-y-4">
         {step === 1 && (
           <>
-            <CaptionEditor caption={caption} onChange={setCaption} title={item.title} category={item.category} notes={item.notes} />
+            <CaptionEditor captions={captions} onCaptionsChange={setCaptions} title={item.title} category={item.category} notes={item.notes} contentStyle={item.contentStyle} transcript={transcript} />
             <button onClick={() => setStep(2)} className="w-full py-3 bg-sage text-white rounded-xl font-medium flex items-center justify-center gap-2">
               Continuer <CheckCircleIcon className="w-4 h-4" />
             </button>

@@ -7,11 +7,12 @@ interface Options {
   item: ContentItem;
   uid: string | undefined;
   caption: string;
+  captions?: { instagram: string; facebook: string; youtube: string };
   coverOption: 'frame' | 'custom';
   thumbOffset?: number;
   coverUrl?: string;
   publish: (opts: {
-    videoUrl: string; caption: string; itemId: string;
+    videoUrl: string; caption: string; captions?: { instagram: string; facebook: string; youtube: string }; itemId: string;
     coverOption: 'frame' | 'custom'; thumbOffset?: number; coverUrl?: string;
   }) => Promise<boolean>;
   uploadFrameAsCover: () => Promise<string | undefined>;
@@ -23,7 +24,7 @@ interface Options {
  * Extrait de PublishSheet pour respecter la limite de 150 lignes.
  */
 export function useMultiPlatformPublish({
-  item, uid, caption, coverOption, thumbOffset, coverUrl, publish, uploadFrameAsCover, setDone,
+  item, uid, caption, captions, coverOption, thumbOffset, coverUrl, publish, uploadFrameAsCover, setDone,
 }: Options) {
   const [alsoFacebook, setAlsoFacebook] = useState(false);
   const [alsoYoutube, setAlsoYoutube] = useState(false);
@@ -55,7 +56,7 @@ export function useMultiPlatformPublish({
     if (!item.videoUrl) return;
     setFbError(null); setYtError(null); setStoryError(null);
     const finalCoverUrl = coverUrl || await uploadFrameAsCover();
-    const ok = await publish({ videoUrl: item.videoUrl, caption, itemId: item.id, coverOption, thumbOffset, coverUrl: finalCoverUrl });
+    const ok = await publish({ videoUrl: item.videoUrl, caption, captions, itemId: item.id, coverOption, thumbOffset, coverUrl: finalCoverUrl });
     if (ok && uid) {
       const tasks: Promise<void>[] = [];
       if (alsoFacebook) tasks.push(publishToApi('/api/publish-facebook', 'Facebook', setFbError));

@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
     const tokens = tokensSnap.data();
 
     const videoUrl = item.videoUrl;
-    const caption = item.caption || '';
+    const caption = item.captions?.facebook || item.caption || '';
     const pageId = user?.facebookPageId;
     const pageToken = tokens?.facebookPageAccessToken;
 

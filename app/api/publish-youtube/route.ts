@@ -42,19 +42,20 @@ export async function POST(request: NextRequest) {
     if (!refreshToken) return NextResponse.json({ error: 'YouTube non connecte' }, { status: 400 });
 
     const videoUrl = item.videoUrl;
-    const caption = item.caption || item.title || '';
+    // Utiliser la caption YouTube dediee si disponible
+    const ytCaption = item.captions?.youtube || item.caption || item.title || '';
     if (!videoUrl) return NextResponse.json({ error: 'Pas de video' }, { status: 400 });
 
     // 1. Refresh access token
     const accessToken = await refreshAccessToken(refreshToken);
 
-    // 2. Télécharger la vidéo
+    // 2. Telecharger la video
     const videoRes = await fetch(videoUrl);
     if (!videoRes.ok) throw new Error('video_download_failed');
     const videoBlob = await videoRes.arrayBuffer();
 
-    // 3. Description YouTube avec lien Wix
-    const description = `${caption}\n\n#Shorts #Acupuncture #SanteNaturelle\n\nPrendre rendez-vous : ${WIX_URL}`;
+    // 3. Description YouTube — la caption YT inclut deja le lien si generee par l'IA
+    const description = ytCaption.includes(WIX_URL) ? ytCaption : `${ytCaption}\n\nPrendre rendez-vous : ${WIX_URL}`;
 
     // 4. Initier le resumable upload
     const initRes = await fetch(

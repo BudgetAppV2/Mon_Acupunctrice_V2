@@ -3,96 +3,94 @@
 import { useState } from 'react';
 import { SparklesIcon } from '@heroicons/react/24/outline';
 import type { ContentStyle } from '@/lib/types';
-import type { PublishPlatform } from '@/lib/utils/platformOptimization';
+
+type Platform = 'instagram' | 'facebook' | 'youtube';
+type Captions = { instagram: string; facebook: string; youtube: string };
+
+const TABS: { id: Platform; label: string; maxChars: number }[] = [
+  { id: 'instagram', label: 'IG', maxChars: 2200 },
+  { id: 'facebook', label: 'FB', maxChars: 5000 },
+  { id: 'youtube', label: 'YT', maxChars: 5000 },
+];
 
 interface Props {
-  caption: string;
-  onChange: (v: string) => void;
+  captions: Captions | null;
+  onCaptionsChange: (c: Captions) => void;
   title: string;
   category: string;
   notes?: string;
   contentStyle?: ContentStyle;
+  transcript?: string;
 }
 
-const PLATFORMS: { id: PublishPlatform; label: string }[] = [
-  { id: 'instagram', label: 'IG' },
-  { id: 'facebook', label: 'FB' },
-  { id: 'youtube', label: 'YT' },
-];
-
-/** Textarea + bouton IA avec selecteur de plateforme (v2) et fallback v1 */
-export default function CaptionEditor({ caption, onChange, title, category, notes, contentStyle }: Props) {
+export default function CaptionEditor({ captions, onCaptionsChange, title, category, notes, contentStyle, transcript }: Props) {
   const [generating, setGenerating] = useState(false);
-  const [platform, setPlatform] = useState<PublishPlatform>('instagram');
+  const [activeTab, setActiveTab] = useState<Platform>('instagram');
+  const current = captions?.[activeTab] || '';
+  const tab = TABS.find(t => t.id === activeTab)!;
 
   const handleGenerate = async () => {
     setGenerating(true);
     try {
-      // Tentative v2 : plateforme + style de contenu
-      const res = await fetch('/api/generate-caption-v2', {
+      const res = await fetch('/api/generate-captions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title, category, notes, platform, contentStyle }),
+        body: JSON.stringify({ transcript, title, category, contentStyle, notes }),
       });
-      if (!res.ok) throw new Error('v2 failed');
+      if (!res.ok) throw new Error();
       const data = await res.json();
-      if (data.caption) { onChange(data.caption); return; }
-      throw new Error('no caption');
+      if (data.instagram && data.facebook && data.youtube) {
+        onCaptionsChange(data);
+        return;
+      }
+      throw new Error('format invalide');
     } catch {
-      // Fallback vers v1 si v2 echoue
+      // Fallback : generer une seule caption via l'ancienne route
       try {
-        const res = await fetch('/api/generate-caption', {
+        const res = await fetch('/api/generate-caption-v2', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ title, category, notes }),
+          body: JSON.stringify({ title, category, notes, platform: 'instagram', contentStyle }),
         });
-        if (!res.ok) throw new Error();
-        const data = await res.json();
-        if (data.caption) onChange(data.caption);
-      } catch {
-        // Garder la caption existante si les deux APIs echouent
-      }
-    } finally {
-      setGenerating(false);
-    }
+        if (res.ok) {
+          const d = await res.json();
+          if (d.caption) onCaptionsChange({ instagram: d.caption, facebook: d.caption, youtube: d.caption });
+        }
+      } catch { /* garder les captions existantes */ }
+    } finally { setGenerating(false); }
+  };
+
+  const handleChange = (text: string) => {
+    const updated = { ...(captions || { instagram: '', facebook: '', youtube: '' }), [activeTab]: text };
+    onCaptionsChange(updated);
   };
 
   return (
     <div className="space-y-2">
-      {/* Selecteur de plateforme */}
+      {/* Tabs IG/FB/YT */}
       <div className="flex gap-2">
-        {PLATFORMS.map(p => (
-          <button
-            key={p.id}
-            onClick={() => setPlatform(p.id)}
+        {TABS.map(t => (
+          <button key={t.id} onClick={() => setActiveTab(t.id)}
             className={`flex-1 py-1.5 rounded-lg text-xs font-semibold border transition-colors ${
-              platform === p.id
-                ? 'bg-sage text-white border-sage'
-                : 'bg-white text-gray-600 border-gray-200'
-            }`}
-          >
-            {p.label}
-          </button>
+              activeTab === t.id ? 'bg-sage text-white border-sage' : 'bg-white text-gray-600 border-gray-200'
+            }`}>{t.label}</button>
         ))}
       </div>
 
-      <button
-        onClick={handleGenerate}
-        disabled={generating}
-        className="w-full py-2 border border-sage/30 bg-sage/5 rounded-lg text-sm text-sage font-medium flex items-center justify-center gap-2 disabled:opacity-50"
-      >
+      <button onClick={handleGenerate} disabled={generating}
+        className="w-full py-2 border border-sage/30 bg-sage/5 rounded-lg text-sm text-sage font-medium flex items-center justify-center gap-2 disabled:opacity-50">
         <SparklesIcon className="w-4 h-4" />
-        {generating ? 'Generation...' : 'Generer avec l\'IA'}
+        {generating ? 'Generation...' : transcript ? 'Generer (transcription)' : 'Generer avec l\'IA'}
       </button>
 
-      <textarea
-        value={caption}
-        onChange={e => onChange(e.target.value)}
-        rows={6}
+      <textarea value={current} onChange={e => handleChange(e.target.value)} rows={6}
         className="w-full bg-gray-50 border border-gray-200 rounded-lg p-3 text-sm text-gray-800 resize-none"
-        placeholder="Ta caption..."
-      />
-      <p className="text-[10px] text-gray-400">{caption.length} caracteres</p>
+        placeholder={`Caption ${tab.label}...`} />
+
+      <div className="flex justify-between">
+        <p className="text-[10px] text-gray-400">{current.length} / {tab.maxChars}</p>
+        {transcript && <span className="text-[10px] text-sage">Transcription disponible</span>}
+      </div>
     </div>
   );
 }
