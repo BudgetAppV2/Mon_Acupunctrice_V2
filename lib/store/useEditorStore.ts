@@ -30,7 +30,9 @@ function syncLegacyFields(clips: VideoClip[]) {
     videoUrl: first?.blobUrl ?? null,
     trimStart: first?.trimStart ?? 0,
     trimEnd: first?.trimEnd ?? 0,
-    duration: clips.reduce((sum, c) => sum + (c.trimEnd - c.trimStart), 0),
+    // duration = durée SOURCE du premier clip (pour la timeline/zoom)
+    // PAS la durée trimmée — sinon le zoom recalcule et le bloc remplit toute la largeur
+    duration: first?.duration ?? 0,
   };
 }
 
