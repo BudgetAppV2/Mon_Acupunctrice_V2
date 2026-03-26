@@ -105,6 +105,7 @@ export interface ContentItem {
   notes?: string;
   workflowState: WorkflowState;
   videoUrl?: string;
+  sourceVideoUrl?: string;
   thumbnailUrl?: string;
   distributionStatus: DistributionStatus;
   scheduledAt?: Timestamp;

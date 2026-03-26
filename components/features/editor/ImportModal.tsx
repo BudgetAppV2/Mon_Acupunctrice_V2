@@ -3,12 +3,15 @@
 import { useRef, useEffect, useState } from 'react';
 import { useEditorStore } from '@/lib/store/useEditorStore';
 import { useMediaRecorder } from '@/lib/hooks/useMediaRecorder';
+import { useVideoSourceUpload } from '@/lib/hooks/useVideoSourceUpload';
 import { XMarkIcon, FolderOpenIcon, VideoCameraIcon, ComputerDesktopIcon } from '@heroicons/react/24/outline';
 
 type Mode = null | 'webcam' | 'screen';
 
 export default function ImportModal() {
   const loadVideo = useEditorStore((s) => s.loadVideo);
+  const itemId = useEditorStore((s) => s.itemId);
+  const { uploadSource } = useVideoSourceUpload();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const previewRef = useRef<HTMLVideoElement>(null);
   const [mode, setMode] = useState<Mode>(null);
@@ -30,7 +33,7 @@ export default function ImportModal() {
 
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0];
-    if (f) loadVideo(f, URL.createObjectURL(f));
+    if (f) { loadVideo(f, URL.createObjectURL(f)); if (itemId) uploadSource(f, itemId); }
   };
 
   const handleWebcam = async () => {
@@ -48,6 +51,7 @@ export default function ImportModal() {
     if (!result) return; // annulé
     cleanup();
     loadVideo(result.file, result.url);
+    if (itemId) uploadSource(result.file, itemId);
   };
 
   const handleCancel = () => {

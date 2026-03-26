@@ -23,6 +23,9 @@ export function deriveWorkflowState(item: Partial<ContentItem>): WorkflowState {
   // 5. Video importee mais pas touchee
   if (item.videoUrl) return 'shot';
 
+  // 5b. Video source uploadee mais pas exportee
+  if (item.sourceVideoUrl) return 'shot';
+
   // 6. Date planifiee sans video
   if (item.scheduledAt) return 'planned';
 

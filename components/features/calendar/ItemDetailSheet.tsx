@@ -113,9 +113,9 @@ export default function ItemDetailSheet({ isOpen, onClose, item, onUnscheduled }
             <div className="flex justify-center">
               <img src={(item.coverImageUrl || item.thumbnailUrl)!} alt="" className="rounded-lg w-28" style={{ aspectRatio: '9/16', objectFit: 'cover' }} />
             </div>
-          ) : item.videoUrl ? (
+          ) : (item.videoUrl || item.sourceVideoUrl) ? (
             <div className="flex justify-center">
-              <VideoThumbnail videoUrl={item.videoUrl} className="rounded-lg w-28 h-auto" />
+              <VideoThumbnail videoUrl={(item.videoUrl || item.sourceVideoUrl)!} className="rounded-lg w-28 h-auto" />
             </div>
           ) : null}
 
@@ -136,7 +136,7 @@ export default function ItemDetailSheet({ isOpen, onClose, item, onUnscheduled }
             )}
             <button onClick={handleEdit} className="w-full flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors">
               <PencilIcon className="w-5 h-5 text-sage" />
-              <span className="text-sm font-medium text-gray-900">{item.videoUrl ? 'Modifier' : 'Creer le contenu'}</span>
+              <span className="text-sm font-medium text-gray-900">{(item.videoUrl || item.sourceVideoUrl) ? 'Modifier' : 'Creer le contenu'}</span>
             </button>
             {item.distributionStatus === 'scheduled' && (
               <button onClick={handleUnschedule} className="w-full flex items-center gap-3 p-3 rounded-lg border border-red-200 hover:bg-red-50 transition-colors">

@@ -64,8 +64,10 @@ export default function EditorLayout({ itemId }: Props) {
         if (cancelled) return;
         if (snap.exists()) {
           const data = snap.data();
-          if (data.videoUrl && !useEditorStore.getState().videoFile) {
-            const res = await fetch(`/api/proxy-video?url=${encodeURIComponent(data.videoUrl)}`);
+          // Prioriser sourceVideoUrl (video source pre-export) sur videoUrl (video exportee)
+          const loadUrl = data.sourceVideoUrl || data.videoUrl;
+          if (loadUrl && !useEditorStore.getState().videoFile) {
+            const res = await fetch(`/api/proxy-video?url=${encodeURIComponent(loadUrl)}`);
             if (cancelled) return;
             const blob = await res.blob();
             const file = new File([blob], 'existing.mp4', { type: 'video/mp4' });
