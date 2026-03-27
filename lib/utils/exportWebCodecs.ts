@@ -30,6 +30,8 @@ export async function exportWithWebCodecs(
 
   const nCh = audioBuf ? Math.min(audioBuf.numberOfChannels, 2) : 0;
   const sr = audioBuf?.sampleRate ?? 48000;
+  // Guard : si 0 channels, l'audio est invalide — ne pas l'inclure
+  const hasValidAudio = audioBuf != null && nCh >= 1;
 
   const muxerOpts: ConstructorParameters<typeof Muxer>[0] = {
     target: new ArrayBufferTarget(),
@@ -37,7 +39,7 @@ export async function exportWithWebCodecs(
     fastStart: 'in-memory',
     firstTimestampBehavior: 'offset',
   };
-  if (audioBuf) muxerOpts.audio = { codec: 'aac', sampleRate: sr, numberOfChannels: nCh };
+  if (hasValidAudio) muxerOpts.audio = { codec: 'aac', sampleRate: sr, numberOfChannels: nCh };
   const muxer = new Muxer(muxerOpts);
 
   const vEnc = new VideoEncoder({
@@ -94,8 +96,8 @@ export async function exportWithWebCodecs(
     if (i % 5 === 0) await new Promise(r => setTimeout(r, 0));
   }
 
-  // Encoder l'audio
-  if (audioBuf) {
+  // Encoder l'audio (seulement si au moins 1 channel valide)
+  if (hasValidAudio && audioBuf) {
     const aEnc = new AudioEncoder({ output: (c, m) => muxer.addAudioChunk(c, m), error: () => {} });
     aEnc.configure({ codec: 'mp4a.40.2', sampleRate: sr, numberOfChannels: nCh, bitrate: 128_000 });
     const startSmp = Math.floor(trimStart * sr);

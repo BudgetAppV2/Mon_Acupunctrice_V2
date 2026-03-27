@@ -64,8 +64,8 @@ export function useVideoExport() {
             const arrayBuf = await s.videoFile.arrayBuffer();
             const decoded = await ac.decodeAudioData(arrayBuf);
             await ac.close();
-            // Encoder en WAV PCM 16-bit
-            const nCh = Math.min(decoded.numberOfChannels, 2);
+            // Encoder en WAV PCM 16-bit (mono)
+            if (decoded.numberOfChannels < 1) throw new Error('Audio has 0 channels');
             const sr = decoded.sampleRate;
             const samples = decoded.getChannelData(0);
             const numSamples = samples.length;
