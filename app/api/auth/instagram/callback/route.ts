@@ -48,7 +48,7 @@ export async function GET(request: NextRequest) {
       metaAccessToken: longData.access_token,
       metaTokenExpiresAt: expiresAt,
       updatedAt: new Date(),
-    });
+    }, { merge: true });
     await db.doc(`users/${uid}`).set({
       metaInstagramId: igId,
       metaStatus: 'connected',
