@@ -102,4 +102,4 @@ Chaque prompt doit suivre le format one-shot standard :
 
 ## Référence
 - `CLAUDE.md`
-- `skills/oneshot-prompt-writer/SKILL.md` (si disponible — format des prompts)
+- `skills/oneshot-prompt-writer/SKILL.md` ← **LIS CE FICHIER EN PREMIER** pour le format exact des prompts one-shot (structure obligatoire, règles, conventions)
