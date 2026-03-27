@@ -52,7 +52,7 @@ export async function exportWithWebCodecs(
       const ts = chunk.timestamp / 1e6; // microseconds → seconds
       const dur = (chunk.duration ?? 33333) / 1e6;
       const pkt = new EncodedPacket(data, chunk.type === 'key' ? 'key' : 'delta', ts, dur);
-      await videoSource.add(pkt, meta ?? undefined);
+      await videoSource.add(pkt, meta || undefined);
     },
     error: (e) => { throw e; },
   });
@@ -102,13 +102,26 @@ export async function exportWithWebCodecs(
   await vEnc.flush(); vEnc.close();
 
   // --- Audio : transmux les packets du source (trim par timestamp) ---
-  if (audioSink && audioSource) {
+  if (audioSink && audioSource && audioTrack) {
     const startPkt = await audioSink.getKeyPacket(trimStart);
     if (startPkt) {
+      let isFirst = true;
       for await (const pkt of audioSink.packets(startPkt)) {
         if (pkt.timestamp >= trimEnd) break;
         const adjusted = new EncodedPacket(pkt.data, pkt.type, pkt.timestamp - trimStart, pkt.duration);
-        await audioSource.add(adjusted);
+        if (isFirst) {
+          // Premier packet : fournir les metadonnees audio (requis par Mediabunny)
+          await audioSource.add(adjusted, {
+            decoderConfig: {
+              codec: audioTrack.codec === 'aac' ? 'mp4a.40.2' : audioTrack.codec,
+              numberOfChannels: audioTrack.numberOfChannels,
+              sampleRate: audioTrack.sampleRate,
+            },
+          } as EncodedAudioChunkMetadata);
+          isFirst = false;
+        } else {
+          await audioSource.add(adjusted);
+        }
       }
     }
   }
