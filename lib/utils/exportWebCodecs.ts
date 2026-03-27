@@ -46,10 +46,12 @@ export async function exportWithWebCodecs(
   let input: Input | null = null;
   let audioTrack: Awaited<ReturnType<Input['getPrimaryAudioTrack']>> | null = null;
   try {
+    console.log('[EXPORT] 1/7 Demuxing source file (' + (file.size / 1024 / 1024).toFixed(1) + 'MB)...');
     input = new Input({ source: new BlobSource(file), formats: ALL_FORMATS });
     audioTrack = await input.getPrimaryAudioTrack();
+    console.log('[EXPORT] 1/7 Audio track:', audioTrack ? audioTrack.numberOfChannels + 'ch ' + audioTrack.sampleRate + 'Hz ' + audioTrack.codec : 'NONE');
   } catch (e) {
-    console.warn('[EXPORT] Mediabunny demux failed (fMP4?):', e);
+    console.warn('[EXPORT] 1/7 Mediabunny demux failed (fMP4?):', e);
     input?.dispose();
     input = null;
   }
@@ -62,6 +64,7 @@ export async function exportWithWebCodecs(
   await new Promise<void>((res, rej) => { video.oncanplaythrough = () => res(); video.onerror = () => rej(new Error('Chargement video echoue')); });
 
   const { w: W, h: H } = computeExportSize(video.videoWidth, video.videoHeight);
+  console.log('[EXPORT] 2/7 Source: ' + video.videoWidth + 'x' + video.videoHeight + ' → Export: ' + W + 'x' + H);
 
   // --- Canvas avec couleurs P3 si disponible ---
   const canvas = document.createElement('canvas');
@@ -100,10 +103,12 @@ export async function exportWithWebCodecs(
     output.addAudioTrack(audioFallbackSource);
   }
 
+  console.log('[EXPORT] 3/7 Audio path:', canTransmux ? 'TRANSMUX' : 'FALLBACK (AudioBufferSource)', isIOS ? '(iOS)' : '(desktop)');
   await output.start();
 
   // --- Boucle seek-based : dessiner sur le canvas, CanvasSource encode ---
   const totalFrames = Math.ceil((trimEnd - trimStart) * FPS);
+  console.log('[EXPORT] 4/7 Encoding ' + totalFrames + ' frames at ' + FPS + 'fps (' + W + 'x' + H + ', ' + (BITRATE/1e6) + 'Mbps)...');
   const frameDur = 1 / FPS;
   for (let i = 0; i < totalFrames; i++) {
     const t = trimStart + i / FPS;
@@ -128,9 +133,11 @@ export async function exportWithWebCodecs(
     if (i % 3 === 0) await new Promise(r => setTimeout(r, 0));
   }
   canvasSource.close();
+  console.log('[EXPORT] 5/7 Video encoding done');
 
   // --- Audio : transmux les packets du source (trim par timestamp) ---
   if (audioSink && audioSource && audioTrack) {
+    console.log('[EXPORT] 5/7 Audio transmux starting...');
     try {
       const startPkt = await audioSink.getKeyPacket(trimStart);
       if (startPkt) {
@@ -160,6 +167,7 @@ export async function exportWithWebCodecs(
 
   // Fallback : remplir le AudioBufferSource pre-ajoute
   if (audioFallbackSource) {
+    console.log('[EXPORT] 6/7 AudioBufferSource fallback: decoding audio...');
     try {
       const ac = new AudioContext({ sampleRate: 48000 });
       const arrayBuf = await file.arrayBuffer();
@@ -175,10 +183,11 @@ export async function exportWithWebCodecs(
           const trimmedBuf = new AudioBuffer({ length: trimmedLength, sampleRate: sr, numberOfChannels: nCh });
           for (let ch = 0; ch < nCh; ch++) trimmedBuf.copyToChannel(decoded.getChannelData(ch).subarray(startSmp, endSmp), ch);
           await audioFallbackSource.add(trimmedBuf);
+          console.log('[EXPORT] 6/7 Audio fallback: ' + nCh + 'ch, ' + sr + 'Hz, ' + trimmedLength + ' samples OK');
         }
       }
     } catch (e) {
-      console.warn('[EXPORT] AudioBufferSource fallback failed:', e);
+      console.warn('[EXPORT] 6/7 AudioBufferSource fallback FAILED:', e);
     }
     audioFallbackSource.close();
   }
@@ -190,9 +199,12 @@ export async function exportWithWebCodecs(
   canvas.width = 0; canvas.height = 0;
   input?.dispose();
 
+  console.log('[EXPORT] 7/7 Finalizing MP4...');
   await output.finalize();
   onProgress(100);
 
   const buf = (output.target as BufferTarget).buffer;
-  return new Blob(buf ? [buf] : [], { type: 'video/mp4' });
+  const blob = new Blob(buf ? [buf] : [], { type: 'video/mp4' });
+  console.log('[EXPORT] DONE! Size: ' + (blob.size / 1024 / 1024).toFixed(1) + 'MB');
+  return blob;
 }
