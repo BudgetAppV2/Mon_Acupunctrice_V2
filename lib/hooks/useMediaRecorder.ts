@@ -21,14 +21,11 @@ export function useMediaRecorder() {
   const cancelledRef = useRef(false);
 
   const startWebcam = useCallback(async () => {
-    // Sur mobile, la caméra frontale ignore les constraints width/height
-    // et renvoie du landscape — laisser le device choisir sa résolution native
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    const s = await navigator.mediaDevices.getUserMedia(
-      isMobile
-        ? { video: { facingMode: 'user' }, audio: true }
-        : { video: { facingMode: 'user', width: { ideal: 1080 }, height: { ideal: 1920 } }, audio: true },
-    );
+    // Demander la resolution la plus haute possible — Safari iOS respecte ideal
+    const s = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: 'user', width: { ideal: 1920 }, height: { ideal: 1080 } },
+      audio: true,
+    });
     streamRef.current = s;
     setStream(s);
     return s;

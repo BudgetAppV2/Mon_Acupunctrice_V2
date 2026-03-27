@@ -10,8 +10,31 @@ import { drawSubtitles } from './drawSubtitles';
 
 registerAacEncoder();
 
-const W = 1080, H = 1920;
+const MAX_W = 1080, MAX_H = 1920;
 const FPS = 30;
+const BITRATE = 12_000_000; // 12 Mbps — suffisant pour 1080p net
+
+/** Calcule la resolution d'export optimale en 9:16 basee sur la source */
+function computeExportSize(srcW: number, srcH: number): { w: number; h: number } {
+  // Source en portrait natif (ex: 1080x1920) — utiliser tel quel capped au max
+  if (srcH > srcW) {
+    const w = Math.min(srcW, MAX_W);
+    const h = Math.round(w * 16 / 9);
+    return { w: w % 2 === 0 ? w : w - 1, h: h % 2 === 0 ? h : h - 1 };
+  }
+  // Source en paysage (ex: 640x480) — la hauteur source limite la qualite
+  // En 9:16, la largeur = hauteur_source * 9/16 (on crop le paysage en portrait)
+  const cropH = srcH;
+  const cropW = Math.round(cropH * 9 / 16);
+  // Ne jamais upscaler au-dela de 2x
+  const scale = Math.min(2, MAX_H / cropH);
+  let w = Math.round(cropW * scale);
+  let h = Math.round(cropH * scale);
+  // H.264 exige des dimensions paires
+  if (w % 2 !== 0) w--;
+  if (h % 2 !== 0) h--;
+  return { w, h };
+}
 
 /** Fallback : decode audio via Web Audio API, encode AAC via Mediabunny AudioBufferSource */
 async function addAudioViaBufferSource(file: File, trimStart: number, trimEnd: number, output: Output) {
@@ -63,6 +86,15 @@ export async function exportWithWebCodecs(
     target: new BufferTarget(),
   });
 
+  // Charger la video pour connaitre la resolution source AVANT de configurer l'encoder
+  const video = document.createElement('video');
+  video.muted = true; video.playsInline = true; video.preload = 'auto';
+  const blobUrl = URL.createObjectURL(file);
+  video.src = blobUrl;
+  await new Promise<void>((res, rej) => { video.oncanplaythrough = () => res(); video.onerror = () => rej(new Error('Chargement video echoue')); });
+
+  const { w: W, h: H } = computeExportSize(video.videoWidth, video.videoHeight);
+
   const videoSource = new EncodedVideoPacketSource('avc');
   output.addVideoTrack(videoSource);
 
@@ -109,20 +141,15 @@ export async function exportWithWebCodecs(
     error: (e) => { throw e; },
   });
   vEnc.configure({
-    codec: 'avc1.640028', width: W, height: H, bitrate: 8_000_000, framerate: FPS,
+    codec: 'avc1.640028', width: W, height: H, bitrate: BITRATE, framerate: FPS,
     bitrateMode: 'variable', hardwareAcceleration: 'prefer-hardware',
     latencyMode: 'quality',
   });
 
-  const video = document.createElement('video');
-  video.muted = true; video.playsInline = true; video.preload = 'auto';
-  const blobUrl = URL.createObjectURL(file);
-  video.src = blobUrl;
-  await new Promise<void>((res, rej) => { video.oncanplaythrough = () => res(); video.onerror = () => rej(new Error('Chargement video echoue')); });
-
   const canvas = document.createElement('canvas');
   canvas.width = W; canvas.height = H;
-  const ctx = canvas.getContext('2d')!;
+  // Preserver les couleurs Display P3 si disponible (iPhone)
+  const ctx = (canvas.getContext('2d', { colorSpace: 'display-p3' }) ?? canvas.getContext('2d'))!;
 
   const totalFrames = Math.ceil((trimEnd - trimStart) * FPS);
   for (let i = 0; i < totalFrames; i++) {
