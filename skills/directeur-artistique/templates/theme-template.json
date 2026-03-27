@@ -1,0 +1,24 @@
+{
+  "$schema": "VideoTheme schema pour le directeur artistique",
+  "id": "snake_case_unique",
+  "name": "Nom affiché (2-3 mots)",
+  "description": "Description courte — 1 phrase qui décrit l'ambiance",
+  "fontTitle": "Nom Google Font exact (ex: Bebas Neue)",
+  "fontSubtitle": "Nom Google Font exact (ex: Inter)",
+  "subtitleStyle": "classic | tiktok | karaoke | bold_outline | pill | karaoke_pro",
+  "paletteId": "ID d'une palette dans designKnowledge.ts",
+  "filterId": "ID d'un filtre dans FILTERS_V2",
+  "defaultAnimation": "none | fade_in | typewriter | scale_pop | slide_up | bounce",
+  "defaultTextEffect": "none | outline | double_outline | glow | pill",
+  "titleFontSize": "60-84 (px sur canvas 1080)",
+  "subtitleFontSize": "48-56 (px sur canvas 1080)",
+
+  "_validation": {
+    "contraste_WCAG": "≥ 4.5:1 entre text et background de la palette",
+    "font_pairing": "titre et corps ne doivent PAS être du même type (2 serif, 2 display)",
+    "taille_hook": "titleFontSize ≥ 60px",
+    "taille_sous_titres": "subtitleFontSize ≥ 48px",
+    "palette_existe": "paletteId doit exister dans designKnowledge.ts",
+    "filtre_existe": "filterId doit exister dans FILTERS_V2"
+  }
+}
