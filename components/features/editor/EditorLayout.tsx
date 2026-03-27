@@ -41,20 +41,8 @@ export default function EditorLayout({ itemId }: Props) {
 
   const handleBack = () => { reset?.(); router.push('/calendrier'); };
 
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-    const obs = new ResizeObserver(([e]) => setContainerH(e.contentRect.height));
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
-
-  // Anti-swipe Safari iOS dans la zone timeline
-  useEffect(() => {
-    const p = (e: TouchEvent) => { if ((e.target as HTMLElement)?.closest('[data-timeline]')) e.preventDefault(); };
-    document.addEventListener('touchmove', p, { passive: false });
-    return () => document.removeEventListener('touchmove', p);
-  }, []);
+  useEffect(() => { const el = containerRef.current; if (!el) return; const obs = new ResizeObserver(([e]) => setContainerH(e.contentRect.height)); obs.observe(el); return () => obs.disconnect(); }, []);
+  useEffect(() => { const p = (e: TouchEvent) => { if ((e.target as HTMLElement)?.closest('[data-timeline]')) e.preventDefault(); }; document.addEventListener('touchmove', p, { passive: false }); return () => document.removeEventListener('touchmove', p); }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -115,7 +103,7 @@ export default function EditorLayout({ itemId }: Props) {
       <header className="flex items-center justify-between px-4 bg-gray-900/90 shrink-0 z-10" style={{ height: 'calc(44px + env(safe-area-inset-top, 0px))', paddingTop: 'env(safe-area-inset-top, 0px)' }}>
         <button onClick={handleBack} className="text-white p-1"><ArrowLeftIcon className="w-5 h-5" /></button>
         <span className="text-xs text-gray-300 font-mono flex items-center gap-1.5">
-          {formatTime(currentTime)} / {formatTime(duration)}
+          {fmt(currentTime)} / {fmt(duration)}
           {duration > 0 && (() => {
             const fb = getDurationFeedback(Math.floor(duration), 'instagram');
             return fb.ok ? <CheckCircleIcon className="w-3.5 h-3.5 text-green-400" /> : <ExclamationTriangleIcon className="w-3.5 h-3.5 text-yellow-400" />;
