@@ -50,6 +50,23 @@ export default function TextEditView({ overlay }: Props) {
       <StyleSelector value={overlay.style} onChange={(id, props) => update({ style: id as TextStylePreset, ...props })} />
       <AnimationSelector value={overlay.animation} onChange={v => update({ animation: v as TextAnimation })} />
 
+      <div>
+        <label className="text-xs text-gray-500">Effet</label>
+        <div className="flex gap-1 mt-0.5">
+          {([['none', 'Aucun'], ['outline', 'Contour'], ['double_outline', 'Double'], ['glow', 'Glow'], ['pill', 'Pill']] as const).map(([eff, label]) => (
+            <button
+              key={eff}
+              onClick={() => update({ effect: eff })}
+              className={`px-2 py-1 rounded text-[10px] font-medium transition ${
+                (overlay.effect ?? 'none') === eff ? 'bg-sage/20 ring-1 ring-sage text-white' : 'bg-gray-800 text-gray-400'
+              }`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      </div>
+
       <div className="grid grid-cols-2 gap-2">
         <div>
           <label className="text-xs text-gray-500">Debut : {overlay.startTime.toFixed(1)}s</label>

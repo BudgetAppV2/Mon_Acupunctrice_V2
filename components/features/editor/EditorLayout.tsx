@@ -19,22 +19,19 @@ import TextPanel from './panels/TextPanel';
 import SubtitlePanel from './panels/SubtitlePanel';
 import AudioPanel from './panels/AudioPanel';
 import CoverPanel from './panels/CoverPanel';
+import ThemePanel from './panels/ThemePanel';
 import ExportButton from './ExportButton';
 import ImportModal from './ImportModal';
 import PublishSheet from '../publish/PublishSheet';
 
-function formatTime(s: number): string {
-  const m = Math.floor(s / 60);
-  const sec = Math.floor(s % 60);
-  return `${m.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
-}
+const fmt = (s: number) => `${Math.floor(s / 60).toString().padStart(2, '0')}:${Math.floor(s % 60).toString().padStart(2, '0')}`;
 
 interface Props { itemId: string }
 
 export default function EditorLayout({ itemId }: Props) {
   const { videoFile, videoUrl, currentTime, duration, editorSplitRatio, setItemId, reset } = useEditorStore();
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState('trim');
+  const [activeTab, setActiveTab] = useState('style');
   const [showPublish, setShowPublish] = useState(false);
   const [publishItem, setPublishItem] = useState<ContentItem | null>(null);
   const [loading, setLoading] = useState(true);
@@ -139,6 +136,7 @@ export default function EditorLayout({ itemId }: Props) {
         <div className="flex flex-col overflow-hidden transition-[height] duration-200 ease-out" style={{ height: bottomH, paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
           <EditorToolbar activeTab={activeTab} onTabChange={setActiveTab} />
           <div className="flex-1 min-h-0 bg-gray-900 overflow-y-auto">
+            {activeTab === 'style' && <ThemePanel />}
             {activeTab === 'trim' && <TrimPanel />}
             {activeTab === 'filtres' && <FilterPanel />}
             {activeTab === 'texte' && <TextPanel />}

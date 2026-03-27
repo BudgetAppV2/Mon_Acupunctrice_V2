@@ -172,7 +172,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   addOverlay: (text) => {
     const id = crypto.randomUUID(); const { duration, activeThemeId } = get();
     const theme = getTheme(activeThemeId);
-    set({ overlays: [...get().overlays, { id, text: text || 'Texte', fontFamily: theme.fontTitle, fontSize: 32, fill: '#ffffff', x: 0.5, y: 0.5, startTime: 0, endTime: duration || 10, style: 'classic' as const, animation: 'none' as const }], selectedOverlayId: id });
+    set({ overlays: [...get().overlays, { id, text: text || 'Texte', fontFamily: theme.fontTitle, fontSize: 32, fill: '#ffffff', x: 0.5, y: 0.5, startTime: 0, endTime: duration || 10, style: 'classic' as const, animation: 'none' as const, effect: theme.defaultTextEffect }], selectedOverlayId: id });
     markEditorTouched();
   },
   updateOverlay: (id, changes) => { set({ overlays: get().overlays.map(o => o.id === id ? { ...o, ...changes } : o) }); markEditorTouched(); },
@@ -199,7 +199,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   setCoverFrame: (offset, dataUrl) => set({ coverFrameOffset: offset, coverDataUrl: dataUrl, coverCustomUrl: null }),
   setCoverCustom: (url) => set({ coverCustomUrl: url, coverDataUrl: null }),
   clearCover: () => set({ coverFrameOffset: 0, coverDataUrl: null, coverCustomUrl: null }),
-  setActiveTheme: (id) => { const theme = getTheme(id); const themeFilter = getThemeFilter(theme); set({ activeThemeId: id, filter: themeFilter.id }); },
+  setActiveTheme: (id) => { const theme = getTheme(id); const themeFilter = getThemeFilter(theme); set({ activeThemeId: id, filter: themeFilter.id, subtitleStyle: theme.subtitleStyle as SubtitleStyle }); },
   setCaptions: (c) => set({ captions: c }),
   updateCaption: (platform, text) => { const c = get().captions; if (c) set({ captions: { ...c, [platform]: text } }); },
   // --- Multi-clip actions ---

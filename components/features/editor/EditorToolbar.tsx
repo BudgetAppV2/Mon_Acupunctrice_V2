@@ -1,6 +1,7 @@
 'use client';
 
 const TABS: { id: string; label: string; disabled?: boolean }[] = [
+  { id: 'style', label: 'Style' },
   { id: 'trim', label: 'Trim' },
   { id: 'filtres', label: 'Filtres' },
   { id: 'texte', label: 'Texte' },

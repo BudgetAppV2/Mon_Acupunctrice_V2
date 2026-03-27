@@ -4,6 +4,7 @@ import { useRef, useEffect, useState } from 'react';
 import { useEditorStore, registerVideoElement } from '@/lib/store/useEditorStore';
 import { PlayIcon, PauseIcon } from '@heroicons/react/24/solid';
 import { FILTERS } from '@/lib/utils/filters';
+import { useCanvasPreview } from '@/lib/hooks/useCanvasPreview';
 import TextOverlayLayer from './text/TextOverlay';
 import SubtitlePreview from './subtitles/SubtitlePreview';
 
@@ -59,85 +60,30 @@ export default function VideoPreview({ interactive = false }: Props) {
     }
   };
 
-  const trySetDuration = (video: HTMLVideoElement) => {
-    if (video.duration && isFinite(video.duration) && video.duration > 0) {
-      setDuration(video.duration);
-      return true;
-    }
+  const trySetDuration = (v: HTMLVideoElement) => {
+    if (v.duration && isFinite(v.duration) && v.duration > 0) { setDuration(v.duration); return true; }
     return false;
   };
-
-  const handleLoaded = () => {
-    const video = videoRef.current;
-    if (!video) return;
-    trySetDuration(video);
-    // Détecter l'orientation — sur iPhone la webcam enregistre en landscape
-    // L'orientation est stockée pour que l'export FFmpeg puisse corriger avec transpose
-    const isLandscape = video.videoWidth > video.videoHeight;
-    setVideoOrientation(isLandscape ? 'landscape' : 'portrait');
-  };
-
-  const handleDurationChange = () => {
-    if (videoRef.current) trySetDuration(videoRef.current);
-  };
-
-  // onCanPlay est plus fiable que onLoadedMetadata sur Safari iOS pour les blobs
+  const handleLoaded = () => { const v = videoRef.current; if (!v) return; trySetDuration(v); setVideoOrientation(v.videoWidth > v.videoHeight ? 'landscape' : 'portrait'); };
+  const handleDurationChange = () => { if (videoRef.current) trySetDuration(videoRef.current); };
   const handleCanPlay = () => {
-    const video = videoRef.current;
-    if (!video) return;
-    trySetDuration(video);
-    // Capturer la miniature ici — la frame est décodée, contrairement à loadedmetadata
+    const v = videoRef.current; if (!v) return; trySetDuration(v);
     if (thumbnailUrl) return;
     setTimeout(() => {
-      try {
-        const canvas = document.createElement('canvas');
-        canvas.width = 90;
-        canvas.height = 160;
-        canvas.getContext('2d')!.drawImage(video, 0, 0, 90, 160);
-        const url = canvas.toDataURL('image/jpeg', 0.8);
-        if (url !== 'data:,' && url.length > 100) setThumbnail(url);
-      } catch { /* fallback gradient dans FilterPanel */ }
+      try { const c = document.createElement('canvas'); c.width = 90; c.height = 160; c.getContext('2d')!.drawImage(v, 0, 0, 90, 160); const u = c.toDataURL('image/jpeg', 0.8); if (u !== 'data:,' && u.length > 100) setThumbnail(u); } catch {}
     }, 200);
   };
 
-  // Fallback pour Safari iOS — les blobs peuvent avoir duration=Infinity
-  // Aussi : s'assurer que la duration est capturée même si les events ne fire pas
+  // Safari iOS fallback — duration=Infinity on blobs
   useEffect(() => {
-    const video = videoRef.current;
-    if (!video || !videoUrl) return;
-
-    const check = () => {
-      if (video.duration && isFinite(video.duration) && video.duration > 0) {
-        setDuration(video.duration);
-        return true;
-      }
-      return false;
-    };
-
-    // Essayer immédiatement
+    const v = videoRef.current; if (!v || !videoUrl) return;
+    const check = () => { if (v.duration && isFinite(v.duration) && v.duration > 0) { setDuration(v.duration); return true; } return false; };
     if (check()) return;
-
-    // Écouter les events directement sur l'élément
-    const onMeta = () => check();
-    const onCanPlay = () => check();
-    const onDurChange = () => check();
-    video.addEventListener('loadedmetadata', onMeta);
-    video.addEventListener('canplay', onCanPlay);
-    video.addEventListener('durationchange', onDurChange);
-
-    // Polling fallback toutes les 500ms pendant 10s
-    const interval = setInterval(() => {
-      if (check()) clearInterval(interval);
-    }, 500);
-    const timeout = setTimeout(() => clearInterval(interval), 10000);
-
-    return () => {
-      video.removeEventListener('loadedmetadata', onMeta);
-      video.removeEventListener('canplay', onCanPlay);
-      video.removeEventListener('durationchange', onDurChange);
-      clearInterval(interval);
-      clearTimeout(timeout);
-    };
+    const cb = () => check();
+    v.addEventListener('loadedmetadata', cb); v.addEventListener('canplay', cb); v.addEventListener('durationchange', cb);
+    const iv = setInterval(() => { if (check()) clearInterval(iv); }, 500);
+    const to = setTimeout(() => clearInterval(iv), 10000);
+    return () => { v.removeEventListener('loadedmetadata', cb); v.removeEventListener('canplay', cb); v.removeEventListener('durationchange', cb); clearInterval(iv); clearTimeout(to); };
   }, [videoUrl, setDuration]);
 
   const handleTap = () => {
@@ -146,10 +92,12 @@ export default function VideoPreview({ interactive = false }: Props) {
     togglePlayPause();
   };
 
+  const frameUrl = useCanvasPreview(videoRef.current, size.w, size.h);
+  const showCanvasFrame = !!frameUrl && !isPlaying && !interactive;
+
   const filterDef = FILTERS.find(f => f.id === filter);
   const filterStyle = filterDef && filterDef.css !== 'none' ? { filter: filterDef.css } : undefined;
 
-  // Hors-trim : cacher la vidéo et laisser le fond noir du conteneur visible
   const isOutOfTrim = trimEnd > 0 && (currentTime < trimStart || currentTime > trimEnd);
 
   return (
@@ -166,8 +114,9 @@ export default function VideoPreview({ interactive = false }: Props) {
         onCanPlay={handleCanPlay}
       />
       {audioUrl && <audio ref={bgAudioRef} src={audioUrl} loop />}
-      {size.w > 0 && <TextOverlayLayer width={size.w} height={size.h} interactive={interactive} />}
-      <SubtitlePreview />
+      {showCanvasFrame && <img src={frameUrl} alt="" className="absolute inset-0 w-full h-full object-cover pointer-events-none" />}
+      {(!showCanvasFrame || interactive) && size.w > 0 && <TextOverlayLayer width={size.w} height={size.h} interactive={interactive} />}
+      {!showCanvasFrame && <SubtitlePreview />}
       {showControls && !interactive && (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           <div className="w-14 h-14 rounded-full bg-black/50 flex items-center justify-center">

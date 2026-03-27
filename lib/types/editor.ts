@@ -20,6 +20,7 @@ export interface TextOverlayItem {
   endTime: number;
   style: TextStylePreset;
   animation: TextAnimation;
+  effect?: 'none' | 'outline' | 'double_outline' | 'glow' | 'pill';
 }
 
 export interface SubtitleWord {
