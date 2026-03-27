@@ -134,7 +134,104 @@ export async function exportWithWebCodecs(
         }
       }
     } catch (e) {
-      console.warn('[EXPORT] Audio transmux failed, continuing without audio:', e);
+      console.warn('[EXPORT] Audio transmux failed, trying Web Audio fallback:', e);
+      // Fallback : Web Audio API decode → AudioEncoder AAC → Mediabunny output
+      try {
+        const ac = new AudioContext({ sampleRate: 48000 });
+        const arrayBuf = await file.arrayBuffer();
+        const decoded = await ac.decodeAudioData(arrayBuf);
+        await ac.close();
+        if (decoded.numberOfChannels >= 1) {
+          const nCh = Math.min(decoded.numberOfChannels, 2);
+          const sr = decoded.sampleRate;
+          console.log('[EXPORT] Web Audio fallback: ' + nCh + 'ch, ' + sr + 'Hz, encoding AAC...');
+          // Re-create audio source if needed (may not have been added due to demux failure)
+          if (!audioSource) {
+            audioSource = new EncodedAudioPacketSource('aac');
+            output.addAudioTrack(audioSource);
+          }
+          const fallbackDone = new Promise<void>((resolve, reject) => {
+            let isFirstChunk = true;
+            const aEnc = new AudioEncoder({
+              output: async (chunk, meta) => {
+                const data = new Uint8Array(chunk.byteLength);
+                chunk.copyTo(data);
+                const pkt = new EncodedPacket(data, chunk.type === 'key' ? 'key' : 'delta', chunk.timestamp / 1e6, (chunk.duration ?? 0) / 1e6);
+                if (isFirstChunk && meta) {
+                  await audioSource!.add(pkt, meta);
+                  isFirstChunk = false;
+                } else {
+                  await audioSource!.add(pkt);
+                }
+              },
+              error: (err) => reject(err),
+            });
+            aEnc.configure({ codec: 'mp4a.40.2', sampleRate: sr, numberOfChannels: nCh, bitrate: 128_000 });
+            const startSmp = Math.floor(trimStart * sr);
+            const endSmp = Math.min(Math.floor(trimEnd * sr), decoded.length);
+            const CHUNK_SIZE = 1024;
+            for (let i = startSmp; i < endSmp; i += CHUNK_SIZE) {
+              const len = Math.min(CHUNK_SIZE, endSmp - i);
+              const planar = new Float32Array(len * nCh);
+              for (let ch = 0; ch < nCh; ch++) planar.set(decoded.getChannelData(ch).subarray(i, i + len), ch * len);
+              const ad = new AudioData({
+                format: 'f32-planar', sampleRate: sr, numberOfFrames: len,
+                numberOfChannels: nCh, timestamp: Math.round((i - startSmp) / sr * 1e6), data: planar,
+              });
+              aEnc.encode(ad); ad.close();
+            }
+            aEnc.flush().then(() => { aEnc.close(); resolve(); }).catch(reject);
+          });
+          await fallbackDone;
+          console.log('[EXPORT] Web Audio fallback: audio encoded successfully');
+        }
+      } catch (e2) {
+        console.warn('[EXPORT] Web Audio fallback also failed, exporting without audio:', e2);
+      }
+    }
+  } else if (!audioTrack) {
+    // Demux a echoue (fMP4 iPhone) — tenter Web Audio directement
+    console.log('[EXPORT] No audio track from demux, trying Web Audio fallback...');
+    try {
+      const ac = new AudioContext({ sampleRate: 48000 });
+      const arrayBuf = await file.arrayBuffer();
+      const decoded = await ac.decodeAudioData(arrayBuf);
+      await ac.close();
+      if (decoded.numberOfChannels >= 1) {
+        const nCh = Math.min(decoded.numberOfChannels, 2);
+        const sr = decoded.sampleRate;
+        console.log('[EXPORT] Web Audio fallback: ' + nCh + 'ch, ' + sr + 'Hz');
+        const fbAudioSource = new EncodedAudioPacketSource('aac');
+        output.addAudioTrack(fbAudioSource);
+        const done = new Promise<void>((resolve, reject) => {
+          let first = true;
+          const aEnc = new AudioEncoder({
+            output: async (chunk, meta) => {
+              const data = new Uint8Array(chunk.byteLength);
+              chunk.copyTo(data);
+              const pkt = new EncodedPacket(data, chunk.type === 'key' ? 'key' : 'delta', chunk.timestamp / 1e6, (chunk.duration ?? 0) / 1e6);
+              if (first && meta) { await fbAudioSource.add(pkt, meta); first = false; }
+              else { await fbAudioSource.add(pkt); }
+            },
+            error: (err) => reject(err),
+          });
+          aEnc.configure({ codec: 'mp4a.40.2', sampleRate: sr, numberOfChannels: nCh, bitrate: 128_000 });
+          const startSmp = Math.floor(trimStart * sr);
+          const endSmp = Math.min(Math.floor(trimEnd * sr), decoded.length);
+          for (let i = startSmp; i < endSmp; i += 1024) {
+            const len = Math.min(1024, endSmp - i);
+            const planar = new Float32Array(len * nCh);
+            for (let ch = 0; ch < nCh; ch++) planar.set(decoded.getChannelData(ch).subarray(i, i + len), ch * len);
+            const ad = new AudioData({ format: 'f32-planar', sampleRate: sr, numberOfFrames: len, numberOfChannels: nCh, timestamp: Math.round((i - startSmp) / sr * 1e6), data: planar });
+            aEnc.encode(ad); ad.close();
+          }
+          aEnc.flush().then(() => { aEnc.close(); resolve(); }).catch(reject);
+        });
+        await done;
+        console.log('[EXPORT] Web Audio fallback: audio encoded OK');
+      }
+    } catch (e) {
+      console.warn('[EXPORT] Web Audio fallback failed, exporting without audio:', e);
     }
   }
   onProgress(95);
