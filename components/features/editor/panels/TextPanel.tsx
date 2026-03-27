@@ -1,6 +1,7 @@
 'use client';
 
 import { useEditorStore } from '@/lib/store/useEditorStore';
+import { getTheme } from '@/lib/data/videoThemes';
 import { PlusIcon, Bars3BottomLeftIcon } from '@heroicons/react/24/outline';
 import TextEditView from './TextEditView';
 
@@ -17,10 +18,11 @@ export default function TextPanel() {
     const n = 5;
     const blockDur = Math.round((duration / n) * 10) / 10;
     const store = useEditorStore.getState();
+    const theme = getTheme(store.activeThemeId);
     const newOverlays = Array.from({ length: n }, (_, i) => ({
       id: `txt_${Date.now()}_${i}`,
       text: `Texte ${i + 1}`,
-      fontFamily: 'Inter',
+      fontFamily: theme.fontTitle,
       fontSize: 24,
       fill: '#ffffff',
       x: 0.5,

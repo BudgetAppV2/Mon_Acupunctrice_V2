@@ -7,8 +7,11 @@ import { SparklesIcon } from '@heroicons/react/24/outline';
 
 const STYLES: { id: SubtitleStyle; label: string }[] = [
   { id: 'classic', label: 'Classique' },
+  { id: 'bold_outline', label: 'Bold' },
   { id: 'tiktok', label: 'TikTok' },
-  { id: 'karaoke', label: 'Karaoké' },
+  { id: 'pill', label: 'Pill' },
+  { id: 'karaoke', label: 'Karaoke' },
+  { id: 'karaoke_pro', label: 'Karaoke Pro' },
 ];
 
 export default function SubtitlePanel() {

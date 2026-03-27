@@ -170,8 +170,9 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   setFilter: (name) => { set({ filter: name }); markEditorTouched(); },
   setOverlays: (overlays) => set({ overlays }),
   addOverlay: (text) => {
-    const id = crypto.randomUUID(); const { duration } = get();
-    set({ overlays: [...get().overlays, { id, text: text || 'Texte', fontFamily: 'Inter', fontSize: 32, fill: '#ffffff', x: 0.5, y: 0.5, startTime: 0, endTime: duration || 10, style: 'classic' as const, animation: 'none' as const }], selectedOverlayId: id });
+    const id = crypto.randomUUID(); const { duration, activeThemeId } = get();
+    const theme = getTheme(activeThemeId);
+    set({ overlays: [...get().overlays, { id, text: text || 'Texte', fontFamily: theme.fontTitle, fontSize: 32, fill: '#ffffff', x: 0.5, y: 0.5, startTime: 0, endTime: duration || 10, style: 'classic' as const, animation: 'none' as const }], selectedOverlayId: id });
     markEditorTouched();
   },
   updateOverlay: (id, changes) => { set({ overlays: get().overlays.map(o => o.id === id ? { ...o, ...changes } : o) }); markEditorTouched(); },

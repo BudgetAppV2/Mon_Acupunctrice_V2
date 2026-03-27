@@ -1,6 +1,7 @@
 import { Muxer, ArrayBufferTarget } from 'mp4-muxer';
 import { drawTextOverlays } from './drawOverlays';
 import type { TextOverlayItem, SubtitleSegment, SubtitleStyle } from '@/lib/types';
+import type { ColorPalette } from '@/lib/data/designKnowledge';
 import { drawSubtitles } from './drawSubtitles';
 
 const W = 1080, H = 1920;
@@ -16,7 +17,7 @@ export async function exportWithWebCodecs(
   onProgress: (p: number) => void,
   filterCss?: string, overlays?: TextOverlayItem[],
   subtitles?: SubtitleSegment[], subtitleStyle?: string,
-  audioBlob?: Blob | null,
+  audioBlob?: Blob | null, paletteColors?: ColorPalette | null,
 ): Promise<Blob> {
   // Decoder l'audio depuis le blob pre-extrait
   let audioBuf: AudioBuffer | null = null;
@@ -82,7 +83,7 @@ export async function exportWithWebCodecs(
     ctx.filter = 'none';
 
     if (overlays?.length) drawTextOverlays(ctx, overlays, t, W, H);
-    if (subtitles?.length) drawSubtitles(ctx, subtitles, (subtitleStyle || 'classic') as SubtitleStyle, t, W, H);
+    if (subtitles?.length) drawSubtitles(ctx, subtitles, (subtitleStyle || 'classic') as SubtitleStyle, t, W, H, paletteColors);
 
     const ts = Math.round((t - trimStart) * 1e6);
     const frame = new VideoFrame(canvas, { timestamp: ts });

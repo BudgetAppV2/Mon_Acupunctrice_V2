@@ -8,6 +8,7 @@ import { getFirebaseFirestore, getFirebaseAuth, getFirebaseStorage } from '@/lib
 import { exportWithWebCodecs } from '@/lib/utils/exportWebCodecs';
 import { FILTERS } from '@/lib/utils/filters';
 import { loadFont } from '@/lib/utils/fontLoader';
+import { getTheme, getThemePalette } from '@/lib/data/videoThemes';
 import { useFFmpeg } from './useFFmpeg';
 
 export type ExportState = 'idle' | 'preparing' | 'exporting' | 'uploading' | 'done' | 'error';
@@ -80,9 +81,11 @@ export function useVideoExport() {
       }
 
       const filterCss = FILTERS.find(f => f.id === s.filter)?.css ?? 'none';
+      const theme = getTheme(s.activeThemeId);
+      const palette = getThemePalette(theme);
       const blob = await exportWithWebCodecs(
         s.videoFile, s.trimStart, s.trimEnd, setProgress,
-        filterCss, s.overlays, s.subtitles, s.subtitleStyle, audioBlob,
+        filterCss, s.overlays, s.subtitles, s.subtitleStyle, audioBlob, palette,
       );
 
       // Upload resumable avec progression
