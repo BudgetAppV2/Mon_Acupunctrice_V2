@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { getFirebaseFirestore } from '@/lib/firebase';
+import { getTheme, getThemeFilter } from '@/lib/data/videoThemes';
 import type { TextOverlayItem, SubtitleSegment, SubtitleStyle, VideoClip } from '@/lib/types';
 
 let _videoEl: HTMLVideoElement | null = null;
@@ -46,6 +47,7 @@ interface EditorState {
   duration: number;
   trimStart: number;
   trimEnd: number;
+  activeThemeId: string;
   // Editor state
   currentTime: number;
   isPlaying: boolean;
@@ -103,6 +105,7 @@ interface EditorState {
   setCoverFrame: (offset: number, dataUrl: string) => void;
   setCoverCustom: (url: string) => void;
   clearCover: () => void;
+  setActiveTheme: (id: string) => void;
   setCaptions: (c: { instagram: string; facebook: string; youtube: string }) => void;
   updateCaption: (platform: 'instagram' | 'facebook' | 'youtube', text: string) => void;
   // Multi-clip actions
@@ -115,7 +118,7 @@ interface EditorState {
 }
 
 export const useEditorStore = create<EditorState>((set, get) => ({
-  clips: [], activeClipId: null,
+  clips: [], activeClipId: null, activeThemeId: 'sage_zen',
   videoFile: null, videoUrl: null, duration: 0, currentTime: 0,
   isPlaying: false, trimStart: 0, trimEnd: 0, itemId: null,
   filter: 'normal', overlays: [], selectedOverlayId: null,
@@ -195,6 +198,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   setCoverFrame: (offset, dataUrl) => set({ coverFrameOffset: offset, coverDataUrl: dataUrl, coverCustomUrl: null }),
   setCoverCustom: (url) => set({ coverCustomUrl: url, coverDataUrl: null }),
   clearCover: () => set({ coverFrameOffset: 0, coverDataUrl: null, coverCustomUrl: null }),
+  setActiveTheme: (id) => { const theme = getTheme(id); const themeFilter = getThemeFilter(theme); set({ activeThemeId: id, filter: themeFilter.id }); },
   setCaptions: (c) => set({ captions: c }),
   updateCaption: (platform, text) => { const c = get().captions; if (c) set({ captions: { ...c, [platform]: text } }); },
   // --- Multi-clip actions ---
@@ -225,7 +229,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
     get().clips.forEach(c => { if (c.blobUrl) URL.revokeObjectURL(c.blobUrl); });
     _videoEl = null; _editorTouched = false;
     set({
-      clips: [], activeClipId: null,
+      clips: [], activeClipId: null, activeThemeId: 'sage_zen',
       videoFile: null, videoUrl: null, duration: 0, currentTime: 0,
       isPlaying: false, trimStart: 0, trimEnd: 0, itemId: null,
       filter: 'normal', overlays: [], selectedOverlayId: null,

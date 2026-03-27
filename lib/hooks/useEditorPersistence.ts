@@ -23,6 +23,7 @@ export function useEditorPersistence(itemId: string | null) {
         subtitles: state.subtitles,
         subtitleStyle: state.subtitleStyle,
         filter: state.filter,
+        activeThemeId: state.activeThemeId,
         audioUrl: state.audioUrl,
         audioName: state.audioName,
         voiceVolume: state.voiceVolume,

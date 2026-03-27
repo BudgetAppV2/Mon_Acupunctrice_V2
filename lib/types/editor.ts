@@ -36,7 +36,7 @@ export interface SubtitleSegment {
   words: SubtitleWord[];
 }
 
-export type SubtitleStyle = 'classic' | 'tiktok' | 'karaoke';
+export type SubtitleStyle = 'classic' | 'tiktok' | 'karaoke' | 'bold_outline' | 'pill' | 'karaoke_pro';
 
 // --- Video Clips (multi-clip M1) ---
 

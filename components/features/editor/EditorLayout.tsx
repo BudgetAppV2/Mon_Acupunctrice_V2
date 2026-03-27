@@ -97,6 +97,7 @@ export default function EditorLayout({ itemId }: Props) {
             if (ed.audioFadeIn != null || ed.audioFadeOut != null) s.setAudioFade(ed.audioFadeIn || 0, ed.audioFadeOut || 0);
             if (ed.coverFrameOffset) s.setCoverFrame(ed.coverFrameOffset, '');
             if (ed.coverCustomUrl) s.setCoverCustom(ed.coverCustomUrl);
+            if (ed.activeThemeId) s.setActiveTheme(ed.activeThemeId);
           }
         }
       } catch { /* ImportModal s'affichera */ }
