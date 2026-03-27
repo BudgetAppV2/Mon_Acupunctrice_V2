@@ -50,7 +50,7 @@ export async function exportWithWebCodecs(
     error: (e) => { throw e; },
   });
   vEnc.configure({
-    codec: 'avc1.640028', width: W, height: H, bitrate: 3_500_000, framerate: FPS,
+    codec: 'avc1.640028', width: W, height: H, bitrate: 8_000_000, framerate: FPS,
     bitrateMode: 'variable', hardwareAcceleration: 'prefer-hardware',
     latencyMode: 'quality',
   });
