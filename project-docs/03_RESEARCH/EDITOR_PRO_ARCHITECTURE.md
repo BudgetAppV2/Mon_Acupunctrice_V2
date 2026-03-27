@@ -393,83 +393,107 @@ function drawSticker(ctx: CanvasRenderingContext2D, sticker: StickerItem, global
 }
 ```
 
-## 9. Plan d'implémentation
+## 9. Plan d'implémentation (révisé suite à review Gemini CLI)
 
-### Phase 1 — Fondation visuelle (Mois 1)
+### Principes de la review Gemini
 
-**P1.1 — Système de fonts (1 prompt)**
-- 30 fonts Google Fonts
-- Sélecteur catégorisé dans TextPanel
+1. **Thèmes > Options individuelles** — Judith ne veut pas 30 fonts × 8 effets × 11 animations.
+   Elle veut cliquer "Minimal & Chic" et que tout s'applique. Le concept de `VideoTheme`
+   en 1 clic est prioritaire sur les contrôles individuels.
+2. **Preview haute qualité** — Les effets doivent être prévisualisables AVANT l'export.
+   Un bouton pause qui génère la frame courante avec tous les effets via Canvas.
+3. **Word-wrap** — Le texte doit gérer les retours à la ligne automatiquement.
+4. **Auto-silence removal** — Feature "wow" : couper les silences > 0.8s automatiquement.
+5. **LUTs reportées** — getImageData pixel-par-pixel est trop lent (50ms/frame = 90s
+   pour 60s de vidéo). Reporté en Phase 4 ou après OffscreenCanvas Worker.
+
+Voir la review complète : `project-docs/03_RESEARCH/EDITOR_PRO_ARCHITECTURE_REVIEW.md`
+
+### Phase 1 — Thèmes, typographie et sous-titres pro (Mois 1)
+
+Objectif : impact visuel immédiat, 0 risque de performance, 0 nouvelle dépendance.
+
+**P1.1 — Système de fonts + word-wrap (1 prompt)**
+- 15 fonts Google Fonts clés (pas 30 — trop de choix = fatigue cognitive)
+- Sélecteur catégorisé dans TextPanel (Impact / Élégant / Moderne / Cursif)
 - Chargement Canvas via document.fonts.load()
+- Fonction utilitaire `wrapText()` pour le Canvas (retour à la ligne auto)
 
-**P1.2 — Effets texte (2 prompts)**
-- 8 effets (outline, double_outline, glow, gradient, shadow_3d, pill, emboss)
-- Sélecteur d'effet dans TextPanel
+**P1.2 — Sous-titres pro (2 prompts)**
+- 3 nouveaux styles : `bold_outline`, `pill`, `karaoke_pro`
+- Karaoke amélioré : mot actif en surbrillance + légèrement plus grand (scale 1.1)
+- Algorithme de groupement amélioré (pauses > 300ms, ponctuation, max 37 chars/ligne)
+- Rendu Canvas dans drawSubtitles.ts
+
+**P1.3 — Système de Thèmes (VideoTheme) (2 prompts)**
+- Interface `VideoTheme` (palette, fonts, subtitleStyle, filter, animation)
+- 4-6 thèmes prédéfinis pour Judith (Minimal Chic, Nature Zen, Bold Energy, Soft Pastel)
+- Sélecteur de thème dans l'éditeur (1 tap = tout s'applique)
+- Le thème contrôle : font titre + font sous-titres + style sous-titres + filtre + couleurs
+- Les options individuelles restent accessibles dans un mode "Avancé"
+
+**P1.4 — Effets texte de base (1 prompt)**
+- 3 effets prioritaires : `outline`, `glow`, `pill_background`
 - Rendu Canvas dans drawOverlays.ts
+- Contrôlés par le thème actif OU manuellement en mode avancé
 
-**P1.3 — Animations texte (2 prompts)**
-- 11 animations (fade, typewriter, word_reveal, scale_pop, slide, bounce, rotate, blur, wave, glitch)
-- Fonctions d'easing en pur JS
-- Rendu frame-by-frame dans l'export
-
-**P1.4 — Filtres enrichis (1 prompt)**
+**P1.5 — Filtres enrichis (1 prompt)**
 - 10 presets CSS (vs 5 actuels)
 - Preview temps réel via CSS filter
+- Chaque thème a un filtre par défaut
 
-**P1.5 — Sous-titres V2 (2 prompts)**
-- 10 styles (vs 3 actuels)
-- Algorithme de groupement amélioré
-- Rendu Canvas pour chaque style
+### Phase 2 — Qualité et animations (Mois 2)
 
-### Phase 2 — Effets cinématiques (Mois 2)
+**P2.1 — Export Worker OffscreenCanvas (1 prompt)**
+- Déplacer l'export dans un Web Worker pour ne pas bloquer l'UI
+- OffscreenCanvas supporté sur Safari iOS 16.5+
+- L'UI reste réactive pendant l'export
 
-**P2.1 — LUTs cinématiques (2 prompts)**
-- Parser de fichier .cube
-- Application pixel-par-pixel dans l'export
-- 5 LUTs pré-packagées
-- UI de sélection LUT avec preview
+**P2.2 — Animations texte (2 prompts)**
+- 5 animations prioritaires : fade_in, typewriter, scale_pop, slide_up, bounce
+- Fonctions d'easing en pur JS (pas de librairie)
+- Rendu frame-by-frame dans l'export
 
-**P2.2 — Grain film + vignette (1 prompt)**
-- Grain noise overlay (Canvas 2D)
-- Vignette radiale (Canvas 2D)
-- Contrôles d'intensité
+**P2.3 — Preview haute qualité (1 prompt)**
+- Bouton "pause" qui génère la frame courante avec TOUS les effets via Canvas
+- Affiche au-dessus de la preview DOM pour que Judith voie le résultat final
+- Pas d'export complet — juste la frame courante
 
-**P2.3 — Transitions (3 prompts, après multi-clip M2)**
-- 12 transitions Canvas 2D
+**P2.4 — Audio ducking (2 prompts)**
+- Détection voix par amplitude (simple, pas de ML)
+- Auto-baisse musique de fond quand Judith parle
+- Web Audio API natif
+
+### Phase 3 — Templates et contenu riche (Mois 3)
+
+**P3.1 — Templates V1 (3 prompts)**
+- Schema JSON pour les templates
+- 4 templates de base (1 par style de contenu)
+- Application d'un template = applique le thème + positionne les sections
+
+**P3.2 — Auto-silence removal (1 prompt)**
+- Scanner l'audio pour détecter les silences > 0.8s
+- Couper automatiquement (créer des clips sans les silences)
+- Feature "wow" très impact pour le rythme des Reels
+
+**P3.3 — Stickers Lottie (2 prompts)**
+- Intégration lottie-web (250KB)
+- Bibliothèque de stickers santé/bien-être
+- Rendu frame-by-frame dans l'export via goToAndStop()
+
+**P3.4 — Transitions (3 prompts, nécessite multi-clip M2)**
+- 6 transitions prioritaires : dissolve, slide, wipe, zoom, blur, circle reveal
 - UI de sélection entre les clips
 - Rendu dans l'export
 
-**P2.4 — Templates V1 (3 prompts)**
-- Schema JSON
-- 4 templates de base (1 par style)
-- Application d'un template sur une vidéo
+### Phase 4 — Polish et avancé (Mois 4-6)
 
-### Phase 3 — Contenu riche (Mois 3)
-
-**P3.1 — Stickers Lottie (2 prompts)**
-- Intégration lottie-web
-- Bibliothèque de stickers
-- Rendu frame-by-frame dans l'export
-
-**P3.2 — Audio ducking (2 prompts)**
-- Détection voix (Silero VAD ou amplitude-based)
-- Auto-baisse musique pendant la parole
-
-**P3.3 — Export Worker (1 prompt)**
-- OffscreenCanvas dans Web Worker
-- Export en arrière-plan sans bloquer l'UI
-
-**P3.4 — Templates V2 (2 prompts)**
-- 12 templates complets
-- Placeholders éditables
-- Preview de template avant application
-
-### Phase 4 — Polish (Mois 4-6)
-
-**P4.1 — WebGL preview (si nécessaire)**
-**P4.2 — Undo/redo**
-**P4.3 — Presets de style complets**
-**P4.4 — WebGPU (quand iOS 26 est majoritaire)**
+**P4.1 — LUTs cinématiques (2 prompts, après OffscreenCanvas Worker)**
+**P4.2 — Grain film + vignette + light leaks (1 prompt)**
+**P4.3 — Animations texte avancées (wave, glitch, rotate) (1 prompt)**
+**P4.4 — Templates V2 (12 templates complets) (2 prompts)**
+**P4.5 — Undo/redo (1 prompt)**
+**P4.6 — WebGPU exploration (quand iOS 26 est majoritaire)**
 
 ## 10. Dépendances
 
