@@ -1,28 +1,51 @@
 // Helpers de publication extraits du cron pour garder le cron lisible
 
-const FUNCTIONS_URL = process.env.FIREBASE_FUNCTIONS_URL;
-const GRAPH_FB = 'https://graph.facebook.com/v25.0';
 const GRAPH_IG = 'https://graph.instagram.com/v25.0';
+const GRAPH_FB = 'https://graph.facebook.com/v25.0';
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 const WIX_URL = process.env.NEXT_PUBLIC_WIX_URL || 'https://mon-acupunctrice.ca';
+const POLL_INTERVAL_MS = 5_000;
+const POLL_TIMEOUT_MS = 90_000;
 
-export async function publishInstagram(item: Record<string, unknown>): Promise<string | null> {
-  if (!FUNCTIONS_URL) throw new Error('FIREBASE_FUNCTIONS_URL missing');
-  const res = await fetch(`${FUNCTIONS_URL}/publishToInstagram`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      data: {
-        videoUrl: item.videoUrl, caption: item.caption || '',
-        itemId: item._id, coverOption: item.coverOption,
-        thumbOffset: item.thumbOffset, coverUrl: item.coverImageUrl,
-      },
-    }),
+/** Publie un Reel Instagram via les tokens Firestore (plus de Cloud Function V1) */
+export async function publishInstagram(
+  item: Record<string, unknown>,
+  igAccountId: string,
+  accessToken: string,
+): Promise<string | null> {
+  const createParams = new URLSearchParams({
+    media_type: 'REELS',
+    video_url: item.videoUrl as string,
+    caption: (item.caption || '') as string,
+    access_token: accessToken,
   });
-  if (!res.ok) throw new Error(`instagram_failed: ${res.status}`);
-  const data = await res.json();
-  return (data.result?.mediaId || data.mediaId) ?? null;
+  if (item.coverOption === 'custom' && item.coverImageUrl) {
+    createParams.set('cover_url', item.coverImageUrl as string);
+  } else if (item.thumbOffset !== undefined && item.thumbOffset !== null) {
+    createParams.set('thumb_offset', String(Math.round(item.thumbOffset as number)));
+  }
+
+  const createRes = await fetch(`${GRAPH_IG}/${igAccountId}/media`, { method: 'POST', body: createParams });
+  const createData = await createRes.json();
+  if (!createData.id) throw new Error(`ig_container_failed: ${JSON.stringify(createData)}`);
+
+  const start = Date.now();
+  while (Date.now() - start < POLL_TIMEOUT_MS) {
+    const statusRes = await fetch(`${GRAPH_IG}/${createData.id}?fields=status_code&access_token=${accessToken}`);
+    const statusData = await statusRes.json();
+    if (statusData.status_code === 'FINISHED') break;
+    if (statusData.status_code === 'ERROR') throw new Error('ig_processing_error');
+    await new Promise(r => setTimeout(r, POLL_INTERVAL_MS));
+  }
+
+  const pubRes = await fetch(`${GRAPH_IG}/${igAccountId}/media_publish`, {
+    method: 'POST',
+    body: new URLSearchParams({ creation_id: createData.id, access_token: accessToken }),
+  });
+  const pubData = await pubRes.json();
+  if (!pubData.id) throw new Error(`ig_publish_failed: ${JSON.stringify(pubData)}`);
+  return pubData.id;
 }
 
 export async function publishFacebook(

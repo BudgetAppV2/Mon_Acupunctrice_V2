@@ -38,7 +38,11 @@ export async function GET(request: NextRequest) {
       const user = userSnap.data() || {};
       const tokens = tokensSnap.data() || {};
 
-      const igPostId = await publishInstagram(item);
+      const igAccountId = user.metaInstagramId as string;
+      const igToken = tokens.metaAccessToken as string;
+      if (!igAccountId || !igToken) throw new Error('Instagram non connecte');
+
+      const igPostId = await publishInstagram(item, igAccountId, igToken);
 
       const updates: Record<string, unknown> = {
         distributionStatus: 'published',
