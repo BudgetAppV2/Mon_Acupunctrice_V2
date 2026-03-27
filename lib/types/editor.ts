@@ -2,7 +2,7 @@
 
 export type TextStylePreset = 'classic' | 'neon' | 'gold' | 'shadow' | 'bubbly' | 'minimal' | 'dark_pill';
 
-export type TextAnimation = 'none' | 'fade' | 'slide_up' | 'slide_left' | 'bounce' | 'zoom';
+export type TextAnimation = 'none' | 'fade' | 'fade_in' | 'slide_up' | 'slide_left' | 'bounce' | 'zoom' | 'scale_pop' | 'typewriter';
 
 export interface TextOverlayItem {
   id: string;

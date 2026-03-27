@@ -6,7 +6,7 @@ import { getDoc, doc } from 'firebase/firestore';
 import { useEditorStore } from '@/lib/store/useEditorStore';
 import { useEditorPersistence } from '@/lib/hooks/useEditorPersistence';
 import { getFirebaseFirestore } from '@/lib/firebase';
-import { ArrowLeftIcon, CheckCircleIcon, ExclamationTriangleIcon, CloudArrowUpIcon } from '@heroicons/react/24/outline';
+import { ArrowLeftIcon, CheckCircleIcon, ExclamationTriangleIcon, CloudArrowUpIcon, ArrowUturnLeftIcon, ArrowUturnRightIcon } from '@heroicons/react/24/outline';
 import { getDurationFeedback } from '@/lib/utils/platformOptimization';
 import type { ContentItem } from '@/lib/types';
 import VideoPreview from './VideoPreview';
@@ -23,6 +23,7 @@ import ThemePanel from './panels/ThemePanel';
 import ExportButton from './ExportButton';
 import ImportModal from './ImportModal';
 import PublishSheet from '../publish/PublishSheet';
+import { useUndoRedo } from '@/lib/store/useUndoRedo';
 
 const fmt = (s: number) => `${Math.floor(s / 60).toString().padStart(2, '0')}:${Math.floor(s % 60).toString().padStart(2, '0')}`;
 
@@ -80,6 +81,7 @@ export default function EditorLayout({ itemId }: Props) {
             if (ed.voiceVolume != null) s.setVoiceVolume(ed.voiceVolume);
             if (ed.audioVolume != null) s.setAudioVolume(ed.audioVolume);
             if (ed.audioFadeIn != null || ed.audioFadeOut != null) s.setAudioFade(ed.audioFadeIn || 0, ed.audioFadeOut || 0);
+            if (ed.audioDucking) s.setAudioDucking(true);
             if (ed.coverFrameOffset) s.setCoverFrame(ed.coverFrameOffset, '');
             if (ed.coverCustomUrl) s.setCoverCustom(ed.coverCustomUrl);
             if (ed.activeThemeId) s.setActiveTheme(ed.activeThemeId);
@@ -101,7 +103,11 @@ export default function EditorLayout({ itemId }: Props) {
   return (
     <div className="fixed inset-0 flex flex-col bg-gray-950 overscroll-none" style={{ touchAction: 'pan-y', overscrollBehaviorX: 'none' }}>
       <header className="flex items-center justify-between px-4 bg-gray-900/90 shrink-0 z-10" style={{ height: 'calc(44px + env(safe-area-inset-top, 0px))', paddingTop: 'env(safe-area-inset-top, 0px)' }}>
-        <button onClick={handleBack} className="text-white p-1"><ArrowLeftIcon className="w-5 h-5" /></button>
+        <div className="flex items-center gap-1">
+          <button onClick={handleBack} className="text-white p-1"><ArrowLeftIcon className="w-5 h-5" /></button>
+          <button onClick={useUndoRedo.getState().undo} disabled={!useUndoRedo.getState().canUndo} className="text-white p-1 disabled:opacity-30"><ArrowUturnLeftIcon className="w-4 h-4" /></button>
+          <button onClick={useUndoRedo.getState().redo} disabled={!useUndoRedo.getState().canRedo} className="text-white p-1 disabled:opacity-30"><ArrowUturnRightIcon className="w-4 h-4" /></button>
+        </div>
         <span className="text-xs text-gray-300 font-mono flex items-center gap-1.5">
           {fmt(currentTime)} / {fmt(duration)}
           {duration > 0 && (() => {

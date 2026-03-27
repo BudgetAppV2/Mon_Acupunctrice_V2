@@ -21,8 +21,9 @@ export const TEXT_STYLES: TextStyleDef[] = [
 export const TEXT_ANIMATIONS = [
   { id: 'none', label: 'Aucune' },
   { id: 'fade', label: 'Fondu' },
+  { id: 'typewriter', label: 'Machine' },
+  { id: 'scale_pop', label: 'Pop' },
   { id: 'slide_up', label: 'Glisser haut' },
-  { id: 'slide_left', label: 'Glisser gauche' },
   { id: 'bounce', label: 'Rebond' },
   { id: 'zoom', label: 'Zoom' },
 ] as const;

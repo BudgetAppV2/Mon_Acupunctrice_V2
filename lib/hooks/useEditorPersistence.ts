@@ -30,6 +30,7 @@ export function useEditorPersistence(itemId: string | null) {
         audioVolume: state.audioVolume,
         audioFadeIn: state.audioFadeIn,
         audioFadeOut: state.audioFadeOut,
+        audioDucking: state.audioDucking,
         coverFrameOffset: state.coverFrameOffset,
         coverCustomUrl: state.coverCustomUrl,
         // Clips serialises sans File/blobUrl (non-serialisables)

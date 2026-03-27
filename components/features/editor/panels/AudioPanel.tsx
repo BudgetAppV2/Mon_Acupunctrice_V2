@@ -69,6 +69,14 @@ export default function AudioPanel() {
             <input type="range" min={0} max={3} step={0.5} value={audioFadeOut} onChange={e => setAudioFade(audioFadeIn, +e.target.value)} className="w-full accent-sage" />
           </div>
         </div>
+        <button
+          onClick={() => setAudioDucking(!audioDucking)}
+          className={`w-full py-1.5 rounded-lg text-xs font-medium transition ${
+            audioDucking ? 'bg-sage/20 text-sage border border-sage/40' : 'bg-gray-800 text-gray-400'
+          }`}
+        >
+          {audioDucking ? 'Auto-ducking actif' : 'Activer auto-ducking'}
+        </button>
       </div>
     );
   }
