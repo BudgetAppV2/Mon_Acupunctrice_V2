@@ -136,7 +136,7 @@ export const PALETTES: ColorPalette[] = [
     id: 'terre_chaleur',
     name: 'Terre & Chaleur',
     text: '#FFFFFF',
-    accent: '#C4956A',     // terracotta chaud
+    accent: '#B07D4F',     // terracotta plus foncé (contraste 3.2:1 sur blanc)
     background: 'rgba(196, 149, 106, 0.7)',
     stroke: '#5C3D21',
   },
@@ -152,15 +152,15 @@ export const PALETTES: ColorPalette[] = [
     id: 'minimal_pro',
     name: 'Minimal Pro',
     text: '#1A1A1A',
-    accent: '#E8E0D5',     // beige chaud
+    accent: '#5C7A5F',     // sage (assez foncé pour contraster sur blanc)
     background: 'rgba(255, 255, 255, 0.85)',
-    stroke: '#000000',
+    stroke: '#FFFFFF',     // stroke BLANC sur texte foncé (pas noir sur noir!)
   },
   {
     id: 'sunset_healing',
     name: 'Sunset Healing',
     text: '#FFFFFF',
-    accent: '#E8A87C',     // pêche doré
+    accent: '#C48A5C',     // pêche plus foncé (contraste 3.0+ sur blanc)
     background: 'rgba(232, 168, 124, 0.7)',
     stroke: '#6B3A24',
   },
@@ -175,10 +175,10 @@ export const PALETTES: ColorPalette[] = [
   {
     id: 'pantone_2026',
     name: 'Pantone 2026',
-    text: '#2D3436',       // charcoal foncé
-    accent: '#87A878',     // sage green (Pantone complementary)
+    text: '#FFFFFF',       // blanc sur fond sombre (vidéo) avec stroke charcoal
+    accent: '#5C7A5F',     // sage green (Pantone complementary, assez foncé)
     background: 'rgba(245, 240, 235, 0.9)', // Cloud Dancer off-white
-    stroke: '#1A1A1A',
+    stroke: '#2D3436',     // charcoal foncé pour le contraste
   },
 ];
 
