@@ -72,6 +72,7 @@ interface EditorState {
   coverDataUrl: string | null;
   coverCustomUrl: string | null;
   captions: { instagram: string; facebook: string; youtube: string } | null;
+  silenceRanges: { start: number; end: number }[];
   // Actions
   setVideoFile: (file: File) => void;
   loadVideo: (file: File, url: string) => void;
@@ -99,6 +100,7 @@ interface EditorState {
   setVoiceVolume: (v: number) => void;
   setAudioFade: (fadeIn: number, fadeOut: number) => void;
   setAudioDucking: (on: boolean) => void;
+  setSilenceRanges: (ranges: { start: number; end: number }[]) => void;
   setThumbnail: (url: string) => void;
   setVideoOrientation: (o: 'portrait' | 'landscape') => void;
   setEditorSplitRatio: (ratio: number) => void;
@@ -126,7 +128,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   filter: 'normal', overlays: [], selectedOverlayId: null,
   subtitles: [], subtitleStyle: 'classic' as SubtitleStyle,
   audioUrl: null, audioName: null, audioVolume: 0.3, voiceVolume: 1,
-  audioFadeIn: 0, audioFadeOut: 0, audioDucking: false, thumbnailUrl: null, videoOrientation: 'portrait', editorSplitRatio: 0.50, selectedSubtitleId: null, coverFrameOffset: 0, coverDataUrl: null, coverCustomUrl: null, captions: null,
+  audioFadeIn: 0, audioFadeOut: 0, audioDucking: false, thumbnailUrl: null, videoOrientation: 'portrait', editorSplitRatio: 0.50, selectedSubtitleId: null, coverFrameOffset: 0, coverDataUrl: null, coverCustomUrl: null, captions: null, silenceRanges: [],
 
   setVideoFile: (file) => {
     get().clips.forEach(c => { if (c.blobUrl) URL.revokeObjectURL(c.blobUrl); });
@@ -194,6 +196,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   setVoiceVolume: (v) => set({ voiceVolume: v }),
   setAudioFade: (fadeIn, fadeOut) => set({ audioFadeIn: fadeIn, audioFadeOut: fadeOut }),
   setAudioDucking: (on) => set({ audioDucking: on }),
+  setSilenceRanges: (ranges) => set({ silenceRanges: ranges }),
   setThumbnail: (url) => set({ thumbnailUrl: url }),
   setVideoOrientation: (o) => set({ videoOrientation: o }),
   setEditorSplitRatio: (ratio) => set({ editorSplitRatio: Math.max(0.25, Math.min(0.80, ratio)) }),
