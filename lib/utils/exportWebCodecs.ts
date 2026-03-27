@@ -1,7 +1,7 @@
 import {
   Input, Output, BlobSource, BufferTarget,
   Mp4OutputFormat, EncodedVideoPacketSource, EncodedAudioPacketSource,
-  EncodedPacketSink, EncodedPacket, MP4,
+  EncodedPacketSink, EncodedPacket, ALL_FORMATS,
 } from 'mediabunny';
 import { drawTextOverlays } from './drawOverlays';
 import type { TextOverlayItem, SubtitleSegment, SubtitleStyle } from '@/lib/types';
@@ -22,8 +22,16 @@ export async function exportWithWebCodecs(
   subtitles?: SubtitleSegment[], subtitleStyle?: string,
 ): Promise<Blob> {
   // --- Demuxer le source pour l'audio ---
-  const input = new Input({ source: new BlobSource(file), formats: [MP4] });
-  const audioTrack = await input.getPrimaryAudioTrack();
+  let input: Input | null = null;
+  let audioTrack: Awaited<ReturnType<Input['getPrimaryAudioTrack']>> | null = null;
+  try {
+    input = new Input({ source: new BlobSource(file), formats: ALL_FORMATS });
+    audioTrack = await input.getPrimaryAudioTrack();
+  } catch (e) {
+    console.warn('[EXPORT] Mediabunny demux failed (fMP4?), exporting without audio:', e);
+    input?.dispose();
+    input = null;
+  }
 
   // --- Configurer le muxer Mediabunny ---
   const output = new Output({
@@ -103,26 +111,30 @@ export async function exportWithWebCodecs(
 
   // --- Audio : transmux les packets du source (trim par timestamp) ---
   if (audioSink && audioSource && audioTrack) {
-    const startPkt = await audioSink.getKeyPacket(trimStart);
-    if (startPkt) {
-      let isFirst = true;
-      for await (const pkt of audioSink.packets(startPkt)) {
-        if (pkt.timestamp >= trimEnd) break;
-        const adjusted = new EncodedPacket(pkt.data, pkt.type, pkt.timestamp - trimStart, pkt.duration);
-        if (isFirst) {
-          // Premier packet : fournir les metadonnees audio (requis par Mediabunny)
-          await audioSource.add(adjusted, {
-            decoderConfig: {
-              codec: audioTrack.codec === 'aac' ? 'mp4a.40.2' : audioTrack.codec,
-              numberOfChannels: audioTrack.numberOfChannels,
-              sampleRate: audioTrack.sampleRate,
-            },
-          } as EncodedAudioChunkMetadata);
-          isFirst = false;
-        } else {
-          await audioSource.add(adjusted);
+    try {
+      const startPkt = await audioSink.getKeyPacket(trimStart);
+      if (startPkt) {
+        let isFirst = true;
+        for await (const pkt of audioSink.packets(startPkt)) {
+          if (pkt.timestamp >= trimEnd) break;
+          if (!pkt.data || pkt.data.length < 2) continue; // skip empty/config packets
+          const adjusted = new EncodedPacket(pkt.data, pkt.type, pkt.timestamp - trimStart, pkt.duration);
+          if (isFirst) {
+            await audioSource.add(adjusted, {
+              decoderConfig: {
+                codec: audioTrack.codec === 'aac' ? 'mp4a.40.2' : audioTrack.codec,
+                numberOfChannels: audioTrack.numberOfChannels,
+                sampleRate: audioTrack.sampleRate,
+              },
+            } as EncodedAudioChunkMetadata);
+            isFirst = false;
+          } else {
+            await audioSource.add(adjusted);
+          }
         }
       }
+    } catch (e) {
+      console.warn('[EXPORT] Audio transmux failed, continuing without audio:', e);
     }
   }
   onProgress(95);
@@ -131,7 +143,7 @@ export async function exportWithWebCodecs(
   video.pause(); video.removeAttribute('src'); video.load();
   URL.revokeObjectURL(blobUrl);
   canvas.width = 0; canvas.height = 0;
-  input.dispose();
+  input?.dispose();
 
   await output.finalize();
   onProgress(100);
