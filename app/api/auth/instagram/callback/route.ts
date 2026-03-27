@@ -31,8 +31,6 @@ export async function GET(request: NextRequest) {
     const tokenData = await tokenRes.json();
     if (!tokenData.access_token) throw new Error(`token_exchange_failed: ${JSON.stringify(tokenData)}`);
 
-    const igId = String(tokenData.user_id);
-
     // 2. Short-lived → long-lived token (60 jours)
     const longRes = await fetch(
       `https://graph.instagram.com/access_token?grant_type=ig_exchange_token&client_secret=${secret}&access_token=${tokenData.access_token}`,
@@ -41,6 +39,11 @@ export async function GET(request: NextRequest) {
     if (!longData.access_token) throw new Error(`long_lived_exchange_failed: ${JSON.stringify(longData)}`);
 
     const expiresAt = new Date(Date.now() + (longData.expires_in || 5184000) * 1000);
+
+    // 3. Obtenir le bon ID Instagram via Graph API (user_id = legacy ID requis pour publier)
+    const meRes = await fetch(`https://graph.instagram.com/v25.0/me?fields=user_id,username&access_token=${longData.access_token}`);
+    const meData = await meRes.json();
+    const igId = meData.user_id || String(tokenData.user_id);
 
     // 5. Sauvegarder dans Firestore (Admin SDK — bypass rules)
     const db = getAdminFirestore();
