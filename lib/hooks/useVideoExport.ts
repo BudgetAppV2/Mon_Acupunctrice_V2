@@ -17,6 +17,7 @@ export function useVideoExport() {
   const [state, setState] = useState<ExportState>('idle');
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
+  const abortRef = { current: null as AbortController | null };
   const { load: loadFFmpeg, terminate: terminateFFmpeg } = useFFmpeg();
 
   const supportsWebCodecs = typeof window !== 'undefined'
@@ -28,6 +29,9 @@ export function useVideoExport() {
     if (!s.videoFile || !s.itemId) return;
     if (s.clips.length > 1) { setState('error'); setError('L\'export multi-clip sera disponible prochainement. Seul le premier clip est exporte.'); return; }
 
+    abortRef.current?.abort();
+    const ac = new AbortController();
+    abortRef.current = ac;
     setState('preparing');
     setProgress(0);
     setError(null);
@@ -85,7 +89,7 @@ export function useVideoExport() {
       const palette = getThemePalette(theme);
       const blob = await exportWithWebCodecs(
         s.videoFile, s.trimStart, s.trimEnd, setProgress,
-        filterCss, s.overlays, s.subtitles, s.subtitleStyle, audioBlob, palette,
+        filterCss, s.overlays, s.subtitles, s.subtitleStyle, audioBlob, palette, ac.signal,
       );
 
       // Upload resumable avec progression
@@ -133,5 +137,7 @@ export function useVideoExport() {
     }
   }, [supportsWebCodecs, loadFFmpeg, terminateFFmpeg]);
 
-  return { exportVideo, state, progress, error, supportsWebCodecs };
+  const cancelExport = useCallback(() => { abortRef.current?.abort(); setState('idle'); setProgress(0); }, []);
+
+  return { exportVideo, cancelExport, state, progress, error, supportsWebCodecs };
 }

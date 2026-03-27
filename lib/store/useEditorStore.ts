@@ -63,6 +63,7 @@ interface EditorState {
   voiceVolume: number;
   audioFadeIn: number;
   audioFadeOut: number;
+  audioDucking: boolean;
   thumbnailUrl: string | null;
   videoOrientation: 'portrait' | 'landscape';
   editorSplitRatio: number;
@@ -97,6 +98,7 @@ interface EditorState {
   setAudioVolume: (v: number) => void;
   setVoiceVolume: (v: number) => void;
   setAudioFade: (fadeIn: number, fadeOut: number) => void;
+  setAudioDucking: (on: boolean) => void;
   setThumbnail: (url: string) => void;
   setVideoOrientation: (o: 'portrait' | 'landscape') => void;
   setEditorSplitRatio: (ratio: number) => void;
@@ -124,7 +126,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   filter: 'normal', overlays: [], selectedOverlayId: null,
   subtitles: [], subtitleStyle: 'classic' as SubtitleStyle,
   audioUrl: null, audioName: null, audioVolume: 0.3, voiceVolume: 1,
-  audioFadeIn: 0, audioFadeOut: 0, thumbnailUrl: null, videoOrientation: 'portrait', editorSplitRatio: 0.50, selectedSubtitleId: null, coverFrameOffset: 0, coverDataUrl: null, coverCustomUrl: null, captions: null,
+  audioFadeIn: 0, audioFadeOut: 0, audioDucking: false, thumbnailUrl: null, videoOrientation: 'portrait', editorSplitRatio: 0.50, selectedSubtitleId: null, coverFrameOffset: 0, coverDataUrl: null, coverCustomUrl: null, captions: null,
 
   setVideoFile: (file) => {
     get().clips.forEach(c => { if (c.blobUrl) URL.revokeObjectURL(c.blobUrl); });
@@ -187,10 +189,11 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   setSubtitleStyle: (s) => { set({ subtitleStyle: s }); markEditorTouched(); },
   updateSubtitle: (id, text) => set({ subtitles: get().subtitles.map(s => s.id === id ? { ...s, text } : s) }),
   setAudioTrack: (url, name) => { set({ audioUrl: url, audioName: name }); markEditorTouched(); },
-  removeAudio: () => set({ audioUrl: null, audioName: null, audioFadeIn: 0, audioFadeOut: 0 }),
+  removeAudio: () => set({ audioUrl: null, audioName: null, audioFadeIn: 0, audioFadeOut: 0, audioDucking: false }),
   setAudioVolume: (v) => set({ audioVolume: v }),
   setVoiceVolume: (v) => set({ voiceVolume: v }),
   setAudioFade: (fadeIn, fadeOut) => set({ audioFadeIn: fadeIn, audioFadeOut: fadeOut }),
+  setAudioDucking: (on) => set({ audioDucking: on }),
   setThumbnail: (url) => set({ thumbnailUrl: url }),
   setVideoOrientation: (o) => set({ videoOrientation: o }),
   setEditorSplitRatio: (ratio) => set({ editorSplitRatio: Math.max(0.25, Math.min(0.80, ratio)) }),
@@ -236,7 +239,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
       filter: 'normal', overlays: [], selectedOverlayId: null,
       subtitles: [], subtitleStyle: 'classic' as SubtitleStyle,
       audioUrl: null, audioName: null, audioVolume: 0.3, voiceVolume: 1,
-      audioFadeIn: 0, audioFadeOut: 0, thumbnailUrl: null, videoOrientation: 'portrait', selectedSubtitleId: null, coverFrameOffset: 0, coverDataUrl: null, coverCustomUrl: null, captions: null,
+      audioFadeIn: 0, audioFadeOut: 0, audioDucking: false, thumbnailUrl: null, videoOrientation: 'portrait', selectedSubtitleId: null, coverFrameOffset: 0, coverDataUrl: null, coverCustomUrl: null, captions: null,
     });
   },
 }));

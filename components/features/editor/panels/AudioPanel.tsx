@@ -9,8 +9,8 @@ const MOODS = ['relaxing', 'acoustic', 'ambient', 'energetic'] as const;
 
 export default function AudioPanel() {
   const {
-    audioUrl, audioName, audioVolume, voiceVolume, audioFadeIn, audioFadeOut,
-    setAudioTrack, removeAudio, setAudioVolume, setVoiceVolume, setAudioFade,
+    audioUrl, audioName, audioVolume, voiceVolume, audioFadeIn, audioFadeOut, audioDucking,
+    setAudioTrack, removeAudio, setAudioVolume, setVoiceVolume, setAudioFade, setAudioDucking,
   } = useEditorStore();
   const { tracks, loading, search } = useMusicSearch();
   const [query, setQuery] = useState('');

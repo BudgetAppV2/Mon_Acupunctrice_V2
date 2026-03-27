@@ -18,6 +18,7 @@ export async function exportWithWebCodecs(
   filterCss?: string, overlays?: TextOverlayItem[],
   subtitles?: SubtitleSegment[], subtitleStyle?: string,
   audioBlob?: Blob | null, paletteColors?: ColorPalette | null,
+  signal?: AbortSignal,
 ): Promise<Blob> {
   // Decoder l'audio depuis le blob pre-extrait
   let audioBuf: AudioBuffer | null = null;
@@ -91,8 +92,8 @@ export async function exportWithWebCodecs(
     frame.close();
     onProgress(Math.round(i / totalFrames * 100));
 
-    // Yield au thread principal pour ne pas bloquer l'UI
-    if (i % 5 === 0) await new Promise(r => setTimeout(r, 0));
+    if (signal?.aborted) { vEnc.close(); video.pause(); URL.revokeObjectURL(blobUrl); throw new Error('Export annule'); }
+    if (i % 3 === 0) await new Promise(r => setTimeout(r, 0));
   }
 
   // Encoder l'audio
