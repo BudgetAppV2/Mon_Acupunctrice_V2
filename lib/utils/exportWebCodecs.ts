@@ -1,53 +1,58 @@
-import { Muxer, ArrayBufferTarget } from 'mp4-muxer';
+import {
+  Input, Output, BlobSource, BufferTarget,
+  Mp4OutputFormat, EncodedVideoPacketSource, EncodedAudioPacketSource,
+  EncodedPacketSink, EncodedPacket, MP4,
+} from 'mediabunny';
 import { drawTextOverlays } from './drawOverlays';
 import type { TextOverlayItem, SubtitleSegment, SubtitleStyle } from '@/lib/types';
 import { drawSubtitles } from './drawSubtitles';
 
 const W = 1080, H = 1920;
 const FPS = 30;
-const FRAME_DUR = Math.round(1e6 / FPS); // microseconds per frame
 
 /**
- * Export video via WebCodecs — seek-based loop (3-6x plus rapide que temps reel).
- * audioBlob : MP3 pre-extrait via FFmpeg pour eviter file.arrayBuffer() sur la video.
+ * Export video via WebCodecs + Mediabunny.
+ * Video: seek-based canvas rendering → VideoEncoder → Mediabunny output
+ * Audio: demux du source MP4 → transmux direct (pas de re-encode)
  */
 export async function exportWithWebCodecs(
   file: File, trimStart: number, trimEnd: number,
   onProgress: (p: number) => void,
   filterCss?: string, overlays?: TextOverlayItem[],
   subtitles?: SubtitleSegment[], subtitleStyle?: string,
-  audioBlob?: Blob | null,
 ): Promise<Blob> {
-  // Decoder l'audio depuis le blob pre-extrait
-  let audioBuf: AudioBuffer | null = null;
-  if (audioBlob) {
-    try {
-      const ac = new AudioContext();
-      audioBuf = await ac.decodeAudioData(await audioBlob.arrayBuffer());
-      await ac.close();
-    } catch { /* Audio decode echoue — export sans audio */ }
+  // --- Demuxer le source pour l'audio ---
+  const input = new Input({ source: new BlobSource(file), formats: [MP4] });
+  const audioTrack = await input.getPrimaryAudioTrack();
+
+  // --- Configurer le muxer Mediabunny ---
+  const output = new Output({
+    format: new Mp4OutputFormat({ fastStart: 'in-memory' }),
+    target: new BufferTarget(),
+  });
+
+  const videoSource = new EncodedVideoPacketSource('avc');
+  output.addVideoTrack(videoSource);
+
+  let audioSource: EncodedAudioPacketSource | null = null;
+  let audioSink: EncodedPacketSink | null = null;
+  if (audioTrack && audioTrack.numberOfChannels >= 1 && audioTrack.codec) {
+    audioSource = new EncodedAudioPacketSource(audioTrack.codec);
+    output.addAudioTrack(audioSource);
+    audioSink = new EncodedPacketSink(audioTrack);
   }
 
-  const nCh = audioBuf ? Math.min(audioBuf.numberOfChannels, 2) : 0;
-  const sr = audioBuf?.sampleRate ?? 48000;
-  // Guard : si 0 channels, l'audio est invalide — ne pas l'inclure
-  const hasValidAudio = audioBuf != null && nCh >= 1;
+  await output.start();
 
-  const muxerOpts: ConstructorParameters<typeof Muxer>[0] = {
-    target: new ArrayBufferTarget(),
-    video: { codec: 'avc', width: W, height: H },
-    fastStart: 'in-memory',
-    firstTimestampBehavior: 'offset',
-  };
-  if (hasValidAudio) muxerOpts.audio = { codec: 'aac', sampleRate: sr, numberOfChannels: nCh };
-  const muxer = new Muxer(muxerOpts);
-
+  // --- Video : encode via WebCodecs + Canvas ---
   const vEnc = new VideoEncoder({
-    output: (chunk, meta) => {
+    output: async (chunk, meta) => {
       const data = new Uint8Array(chunk.byteLength);
       chunk.copyTo(data);
-      const d = (chunk.duration != null && isFinite(chunk.duration) && chunk.duration > 0) ? chunk.duration : FRAME_DUR;
-      muxer.addVideoChunkRaw(data, chunk.type, chunk.timestamp, d, meta);
+      const ts = chunk.timestamp / 1e6; // microseconds → seconds
+      const dur = (chunk.duration ?? 33333) / 1e6;
+      const pkt = new EncodedPacket(data, chunk.type === 'key' ? 'key' : 'delta', ts, dur);
+      await videoSource.add(pkt, meta ?? undefined);
     },
     error: (e) => { throw e; },
   });
@@ -67,7 +72,6 @@ export async function exportWithWebCodecs(
   canvas.width = W; canvas.height = H;
   const ctx = canvas.getContext('2d')!;
 
-  // Seek-based loop : 3-6x plus rapide que temps reel, fonctionne meme si le tab perd le focus
   const totalFrames = Math.ceil((trimEnd - trimStart) * FPS);
   for (let i = 0; i < totalFrames; i++) {
     const t = trimStart + i / FPS;
@@ -90,40 +94,35 @@ export async function exportWithWebCodecs(
     const frame = new VideoFrame(canvas, { timestamp: ts });
     vEnc.encode(frame, { keyFrame: i % 30 === 0 });
     frame.close();
-    onProgress(Math.round(i / totalFrames * 100));
+    onProgress(Math.round(i / totalFrames * 90));
 
-    // Yield au thread principal pour ne pas bloquer l'UI
-    if (i % 5 === 0) await new Promise(r => setTimeout(r, 0));
-  }
-
-  // Encoder l'audio (seulement si au moins 1 channel valide)
-  if (hasValidAudio && audioBuf) {
-    const aEnc = new AudioEncoder({ output: (c, m) => muxer.addAudioChunk(c, m), error: () => {} });
-    aEnc.configure({ codec: 'mp4a.40.2', sampleRate: sr, numberOfChannels: nCh, bitrate: 128_000 });
-    const startSmp = Math.floor(trimStart * sr);
-    const endSmp = Math.min(Math.floor(trimEnd * sr), audioBuf.length);
-    const CHUNK = 1024;
-    for (let i = startSmp; i < endSmp; i += CHUNK) {
-      const len = Math.min(CHUNK, endSmp - i);
-      const planar = new Float32Array(len * nCh);
-      for (let ch = 0; ch < nCh; ch++) planar.set(audioBuf.getChannelData(ch).subarray(i, i + len), ch * len);
-      const ad = new AudioData({
-        format: 'f32-planar', sampleRate: sr, numberOfFrames: len,
-        numberOfChannels: nCh, timestamp: Math.round((i - startSmp) / sr * 1e6), data: planar,
-      });
-      aEnc.encode(ad); ad.close();
-    }
-    await aEnc.flush(); aEnc.close();
+    if (i % 3 === 0) await new Promise(r => setTimeout(r, 0));
   }
 
   await vEnc.flush(); vEnc.close();
 
-  // Nettoyage memoire
+  // --- Audio : transmux les packets du source (trim par timestamp) ---
+  if (audioSink && audioSource) {
+    const startPkt = await audioSink.getKeyPacket(trimStart);
+    if (startPkt) {
+      for await (const pkt of audioSink.packets(startPkt)) {
+        if (pkt.timestamp >= trimEnd) break;
+        const adjusted = new EncodedPacket(pkt.data, pkt.type, pkt.timestamp - trimStart, pkt.duration);
+        await audioSource.add(adjusted);
+      }
+    }
+  }
+  onProgress(95);
+
+  // --- Cleanup ---
   video.pause(); video.removeAttribute('src'); video.load();
   URL.revokeObjectURL(blobUrl);
   canvas.width = 0; canvas.height = 0;
-  audioBuf = null;
+  input.dispose();
 
-  muxer.finalize();
-  return new Blob([(muxer.target as ArrayBufferTarget).buffer], { type: 'video/mp4' });
+  await output.finalize();
+  onProgress(100);
+
+  const buf = (output.target as BufferTarget).buffer;
+  return new Blob(buf ? [buf] : [], { type: 'video/mp4' });
 }

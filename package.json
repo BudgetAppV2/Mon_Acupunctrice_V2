@@ -17,6 +17,7 @@
     "firebase": "^11.0.0",
     "firebase-admin": "^13.7.0",
     "fix-webm-duration": "^1.0.6",
+    "mediabunny": "^1.40.1",
     "mp4-muxer": "^5.2.2",
     "next": "^15.2.0",
     "react": "^19.0.0",
