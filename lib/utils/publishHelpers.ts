@@ -59,8 +59,8 @@ export async function publishFacebook(
   if (!initData.video_id) throw new Error('fb_init_failed');
 
   const uploadRes = await fetch(initData.upload_url, {
-    method: 'POST', headers: { Authorization: `OAuth ${pageToken}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ file_url: item.videoUrl }),
+    method: 'POST',
+    headers: { Authorization: `OAuth ${pageToken}`, file_url: item.videoUrl as string },
   });
   const uploadData = await uploadRes.json();
   if (!uploadData.success) throw new Error('fb_upload_failed');
