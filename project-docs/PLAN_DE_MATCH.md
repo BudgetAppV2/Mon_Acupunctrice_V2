@@ -35,8 +35,9 @@
 
 ## 2. Objectif
 
-Transformer l'éditeur de base en un outil de qualité professionnelle (CapCut-level)
-pour que le contenu de Judith accroche davantage sur les réseaux sociaux.
+Transformer l'éditeur de base en un **éditeur pro talking-head pour Judith** —
+pas un CapCut générique, mais un outil optimisé pour son use case spécifique
+(face caméra, acupuncture, Reels 30-90s) qui produit du contenu visuellement pro.
 
 ---
 
@@ -116,46 +117,61 @@ Déjà utilisé : validation des 7 palettes → trouvé 2 palettes cassées (Min
 
 ---
 
-## 6. Plan d'implémentation — 4 phases, ~26 prompts
+## 6. Plan d'implémentation — 5 phases (ajout Phase 0 convergence, review Codex)
 
-### Phase 1 — Thèmes, typographie et sous-titres pro (Mois 1, ~7 prompts)
+### Phase 0 — Convergence code/architecture (préalable, ~3 prompts)
+
+Aligner le code actif avec la nouvelle architecture AVANT d'ajouter des features.
+
+| ID | Prompt | Scope |
+|----|--------|-------|
+| P0.1 | Convergence store + types | Ajouter `activeTheme` au store, types V2 dans editor.ts, persistance thème |
+| P0.2 | Unifier les sources de vérité | Migrer FILTERS → FILTERS_V2, unifier catalogues fonts (fontLoader → designKnowledge), intégrer wrapText dans drawOverlays |
+| P0.3 | Nettoyer le double pipeline export | Retirer le chemin FFmpeg (inutile Safari iOS), consolider sur WebCodecs uniquement |
+
+### Phase 1 — Thèmes, typographie et sous-titres pro + preview (Mois 1, ~7 prompts)
 
 | ID | Prompt | Scope | Dépendances |
 |----|--------|-------|-------------|
-| P1.1 | Fonts (15) + word-wrap Canvas | Chargement Google Fonts, sélecteur catégorisé TextPanel, `wrapText()` dans drawOverlays | — |
-| P1.2 | Sous-titres pro | 3 nouveaux styles (bold_outline, pill, karaoke_pro), algorithme groupement amélioré | P1.1 |
-| P1.3 | Système de Thèmes UI | ThemeSelector widget, `activeTheme` dans store, application 1-clic | P1.1, P1.2 |
-| P1.4 | Effets texte | 3 effets (outline, glow, pill_background) dans drawOverlays Canvas | P1.1 |
-| P1.5 | Filtres enrichis | 10 presets CSS (vs 5 actuels), chaque thème a un filtre par défaut | — |
+| P1.1 | Fonts (15) + word-wrap Canvas | Chargement Google Fonts, sélecteur catégorisé TextPanel, wrapText dans drawOverlays | P0 |
+| P1.2 | Sous-titres pro | 3 nouveaux styles (bold_outline, pill, karaoke_pro), algorithme groupement | P1.1 |
+| P1.3 | Effets texte | 3 effets (outline, glow, pill_background) dans drawOverlays | P1.1 |
+| P1.4 | Filtres enrichis | 10 presets CSS, chaque thème a un filtre par défaut | P0.2 |
+| P1.5 | Système de Thèmes UI | ThemeSelector, application 1-clic, 5 thèmes max au lancement | P1.1-P1.4 |
+| P1.6 | Preview haute qualité | Frame Canvas sur pause avec tous les effets (AVEC les thèmes, pas après) | P1.5 |
 
-**Impact attendu :** Les vidéos de Judith passent de "amateur" à "pro" immédiatement.
+**Stop/go avec Judith après Phase 1** — Validation que les thèmes et sous-titres améliorent son contenu.
 
-### Phase 2 — Qualité et animations (Mois 2, ~6 prompts)
+### Phase 2 — Worker, animations et undo/redo (Mois 2, ~5 prompts)
 
 | ID | Prompt | Scope |
 |----|--------|-------|
 | P2.1 | Export Worker OffscreenCanvas | Export en arrière-plan, UI réactive |
 | P2.2 | Animations texte (5) | fade_in, typewriter, scale_pop, slide_up, bounce |
-| P2.3 | Preview haute qualité | Frame courante avec tous effets via Canvas sur pause |
-| P2.4 | Audio ducking | Auto-baisse musique quand voix détectée |
+| P2.3 | Audio ducking | Auto-baisse musique quand voix détectée |
+| P2.4 | Undo/redo | Zustand temporal middleware (avant templates et auto-silence) |
 
-### Phase 3 — Templates et contenu riche (Mois 3, ~9 prompts)
+**Stop/go avec Judith après Phase 2**
+
+### Phase 3 — Templates, auto-silence et contenu riche (Mois 3, ~7 prompts)
 
 | ID | Prompt | Scope |
 |----|--------|-------|
-| P3.1 | Templates V1 | Schema JSON, 4 templates (1/style), application template = thème + sections |
-| P3.2 | Auto-silence removal | Scanner audio, couper silences > 0.8s, rythme pro |
-| P3.3 | Stickers Lottie | lottie-web (250KB), bibliothèque santé, rendu frame-by-frame |
-| P3.4 | Transitions | 6 transitions Canvas 2D entre clips (nécessite multi-clip M2) |
+| P3.1 | Auto-silence removal | Scanner audio, couper silences > 0.8s (plus d'impact que Lottie/LUTs) |
+| P3.2 | Templates V1 | Schema JSON, 4 templates (1/style) |
+| P3.3 | Stickers Lottie | lottie-web (250KB), rendu frame-by-frame |
+| P3.4 | Transitions | 6 transitions Canvas 2D (nécessite multi-clip M2) |
+
+**Stop/go avec Judith après Phase 3**
 
 ### Phase 4 — Polish et avancé (Mois 4-6, ~4 prompts)
 
 | ID | Prompt | Scope |
 |----|--------|-------|
-| P4.1 | LUTs cinématiques | Parser .cube, 5 LUTs pré-packagées (après Worker P2.1) |
+| P4.1 | LUTs cinématiques | Parser .cube, 5 LUTs (après Worker P2.1) |
 | P4.2 | Grain film + vignette | Canvas 2D overlay effects |
-| P4.3 | Templates V2 | 12 templates complets, placeholders éditables |
-| P4.4 | Undo/redo | Zustand temporal middleware |
+| P4.3 | Templates V2 | 12 templates complets |
+| P4.4 | Animations texte avancées | wave, glitch, rotate |
 
 ---
 
@@ -166,8 +182,12 @@ Déjà utilisé : validation des 7 palettes → trouvé 2 palettes cassées (Min
 | LUTs getImageData lent (~50ms/frame) | Export 2-3x plus long | Reporter après OffscreenCanvas Worker (Phase 4) |
 | Lottie-web Canvas renderer compatibility | Stickers pas rendus dans l'export | Tester goToAndStop() sur Safari iOS avant Phase 3 |
 | Font loading latence | Première frame sans la bonne font | Précharger les fonts du thème actif au chargement de l'éditeur |
-| Trop de thèmes → choix paralysant | Judith n'utilise pas les thèmes | Commencer avec 4-5 thèmes, ajouter progressivement |
+| Trop de thèmes → choix paralysant | Judith n'utilise pas les thèmes | Commencer avec 5 thèmes max, ajouter progressivement |
 | Preview HQ vs export divergent | Judith déçue du résultat final | Le preview Canvas utilise les mêmes fonctions que l'export |
+| Double pipeline export (FFmpeg/WebCodecs) | Features pro seulement dans WebCodecs, FFmpeg diverge | Phase 0 : retirer le chemin FFmpeg (inutile Safari iOS) |
+| Migration Firestore editorData | Anciens items n'ont pas activeTheme | Défaut theme "sage_zen" si pas de thème sauvegardé |
+| Fonts dans Worker Safari | document.fonts indisponible dans Worker | Précharger les fonts AVANT de démarrer le Worker |
+| Duplication FILTERS vs FILTERS_V2 | Source de vérité ambigüe | Phase 0 : unifier en une seule source |
 
 ---
 
