@@ -13,20 +13,38 @@ export async function GET(request: NextRequest) {
   const db = getAdminFirestore();
   const now = new Date();
 
-  const snap = await db.collection('contentItems')
-    .where('distributionStatus', '==', 'scheduled')
-    .where('scheduledAt', '<=', now)
-    .limit(10)
-    .get();
+  let snap;
+  try {
+    snap = await db.collection('contentItems')
+      .where('distributionStatus', '==', 'scheduled')
+      .where('scheduledAt', '<=', now)
+      .limit(10)
+      .get();
+  } catch (err) {
+    console.error('[cron/publish] Firestore query failed:', err);
+    return NextResponse.json(
+      { error: 'Firestore query failed', details: err instanceof Error ? err.message : String(err) },
+      { status: 500 },
+    );
+  }
 
-  if (snap.empty) return NextResponse.json({ processed: 0, published: 0, failed: 0 });
+  if (snap.empty) {
+    console.log('[cron/publish] No scheduled items found at', now.toISOString());
+    return NextResponse.json({ processed: 0, published: 0, failed: 0 });
+  }
+
+  console.log(`[cron/publish] Found ${snap.size} items to publish`);
 
   let published = 0, failed = 0;
 
   for (const doc of snap.docs) {
     const item = { _id: doc.id, ...doc.data() } as Record<string, unknown>;
     const userId = item.userId as string;
-    if (!userId || !item.videoUrl) { failed++; continue; }
+    if (!userId || !item.videoUrl) {
+      console.warn(`[cron/publish] Skipping ${doc.id}: missing userId=${!!userId} videoUrl=${!!item.videoUrl}`);
+      failed++;
+      continue;
+    }
 
     await db.doc(`contentItems/${doc.id}`).update({ distributionStatus: 'publishing' });
 
@@ -90,7 +108,8 @@ export async function GET(request: NextRequest) {
         'progressData.lastActiveWeek': wk,
       }).catch(() => {});
       published++;
-    } catch {
+    } catch (err) {
+      console.error(`[cron/publish] Failed to publish ${doc.id}:`, err);
       await db.doc(`contentItems/${doc.id}`).update({ distributionStatus: 'failed' }).catch(() => {});
       failed++;
     }
