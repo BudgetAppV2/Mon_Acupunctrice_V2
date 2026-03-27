@@ -67,7 +67,7 @@ export async function publishFacebook(
 
   const pubRes = await fetch(`${GRAPH_FB}/${pageId}/video_reels`, {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ upload_phase: 'finish', video_id: initData.video_id, description: item.caption || '', access_token: pageToken }),
+    body: JSON.stringify({ upload_phase: 'finish', video_id: initData.video_id, video_state: 'PUBLISHED', description: item.caption || '', access_token: pageToken }),
   });
   const pubData = await pubRes.json();
   if (!pubData.success) throw new Error('fb_publish_failed');
