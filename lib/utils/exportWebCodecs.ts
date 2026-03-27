@@ -66,12 +66,36 @@ export async function exportWithWebCodecs(
   const videoSource = new EncodedVideoPacketSource('avc');
   output.addVideoTrack(videoSource);
 
+  // Préparer les tracks audio AVANT output.start()
+  // On ajoute soit EncodedAudioPacketSource (transmux) soit AudioBufferSource (fallback)
+  // mais on doit décider AVANT start() car on ne peut pas ajouter de tracks après
   let audioSource: EncodedAudioPacketSource | null = null;
   let audioSink: EncodedPacketSink | null = null;
-  if (audioTrack && audioTrack.numberOfChannels >= 1 && audioTrack.codec) {
-    audioSource = new EncodedAudioPacketSource(audioTrack.codec);
+  let audioFallbackSource: AudioBufferSource | null = null;
+  // Tester si on peut vraiment lire les packets audio (fMP4 iPhone crash au transmux)
+  let canTransmux = audioTrack && audioTrack.numberOfChannels >= 1 && audioTrack.codec;
+  if (canTransmux && audioTrack) {
+    try {
+      const testSink = new EncodedPacketSink(audioTrack);
+      const testPkt = await testSink.getFirstPacket();
+      if (!testPkt || !testPkt.data || testPkt.data.length < 2) {
+        console.warn('[EXPORT] Audio packets unreadable (fMP4?), using fallback');
+        canTransmux = false;
+      }
+    } catch {
+      console.warn('[EXPORT] Audio packet test failed (fMP4?), using fallback');
+      canTransmux = false;
+    }
+  }
+
+  if (canTransmux) {
+    audioSource = new EncodedAudioPacketSource(audioTrack!.codec!);
     output.addAudioTrack(audioSource);
-    audioSink = new EncodedPacketSink(audioTrack);
+    audioSink = new EncodedPacketSink(audioTrack!);
+  } else {
+    // Pas de transmux possible — pré-ajouter AudioBufferSource pour le fallback
+    audioFallbackSource = new AudioBufferSource({ codec: 'aac', bitrate: 128_000 });
+    output.addAudioTrack(audioFallbackSource);
   }
 
   await output.start();
@@ -158,20 +182,37 @@ export async function exportWithWebCodecs(
         }
       }
     } catch (e) {
-      console.warn('[EXPORT] Audio transmux failed, trying AudioBufferSource fallback:', e);
-      try {
-        await addAudioViaBufferSource(file, trimStart, trimEnd, output);
-      } catch (e2) {
-        console.warn('[EXPORT] AudioBufferSource fallback also failed, exporting without audio:', e2);
-      }
+      console.warn('[EXPORT] Audio transmux failed, cannot recover (track already added as EncodedAudioPacketSource):', e);
+      // Le track est déjà ajouté comme EncodedAudioPacketSource, on ne peut pas le changer
+      // L'audio sera absente mais l'export ne crashera pas
     }
-  } else if (!audioTrack) {
-    // Demux echoue (fMP4 iPhone) — tenter AudioBufferSource directement
+  }
+
+  // Fallback : si on a un AudioBufferSource pré-ajouté, le remplir maintenant
+  if (audioFallbackSource) {
+    console.log('[EXPORT] Using AudioBufferSource fallback for audio...');
     try {
-      await addAudioViaBufferSource(file, trimStart, trimEnd, output);
+      const ac = new AudioContext({ sampleRate: 48000 });
+      const arrayBuf = await file.arrayBuffer();
+      const decoded = await ac.decodeAudioData(arrayBuf);
+      await ac.close();
+      if (decoded.numberOfChannels >= 1) {
+        const sr = decoded.sampleRate;
+        const nCh = Math.min(decoded.numberOfChannels, 2);
+        const startSmp = Math.floor(trimStart * sr);
+        const endSmp = Math.min(Math.floor(trimEnd * sr), decoded.length);
+        const trimmedLength = endSmp - startSmp;
+        if (trimmedLength > 0) {
+          const trimmedBuf = new AudioBuffer({ length: trimmedLength, sampleRate: sr, numberOfChannels: nCh });
+          for (let ch = 0; ch < nCh; ch++) trimmedBuf.copyToChannel(decoded.getChannelData(ch).subarray(startSmp, endSmp), ch);
+          await audioFallbackSource.add(trimmedBuf);
+          console.log('[EXPORT] AudioBufferSource fallback: ' + nCh + 'ch, ' + sr + 'Hz, OK');
+        }
+      }
     } catch (e) {
-      console.warn('[EXPORT] AudioBufferSource failed, exporting without audio:', e);
+      console.warn('[EXPORT] AudioBufferSource fallback failed, exporting without audio:', e);
     }
+    audioFallbackSource.close();
   }
   onProgress(95);
 
