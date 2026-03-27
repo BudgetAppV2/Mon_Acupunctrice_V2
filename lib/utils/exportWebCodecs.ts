@@ -72,20 +72,16 @@ export async function exportWithWebCodecs(
   let audioSource: EncodedAudioPacketSource | null = null;
   let audioSink: EncodedPacketSink | null = null;
   let audioFallbackSource: AudioBufferSource | null = null;
-  // Tester si on peut vraiment lire les packets audio (fMP4 iPhone crash au transmux)
-  let canTransmux = audioTrack && audioTrack.numberOfChannels >= 1 && audioTrack.codec;
-  if (canTransmux && audioTrack) {
-    try {
-      const testSink = new EncodedPacketSink(audioTrack);
-      const testPkt = await testSink.getFirstPacket();
-      if (!testPkt || !testPkt.data || testPkt.data.length < 2) {
-        console.warn('[EXPORT] Audio packets unreadable (fMP4?), using fallback');
-        canTransmux = false;
-      }
-    } catch {
-      console.warn('[EXPORT] Audio packet test failed (fMP4?), using fallback');
-      canTransmux = false;
-    }
+  // Decider si on transmux (rapide, copie les packets AAC) ou fallback (decode+re-encode)
+  // Sur Safari iOS, le transmux crash sur les fMP4 iPhone (trun box bug)
+  // => toujours utiliser le fallback AudioBufferSource sur iOS
+  const isIOS = typeof navigator !== 'undefined' && (
+    /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
+  );
+  let canTransmux = !isIOS && audioTrack && audioTrack.numberOfChannels >= 1 && audioTrack.codec;
+  if (isIOS) {
+    console.log('[EXPORT] iOS detected, skipping transmux, using AudioBufferSource fallback');
   }
 
   if (canTransmux) {
