@@ -149,12 +149,22 @@ export default function VideoPreview({ interactive = false }: Props) {
   const filterDef = FILTERS.find(f => f.id === filter);
   const filterStyle = filterDef && filterDef.css !== 'none' ? { filter: filterDef.css } : undefined;
 
+  // Hors-trim : cacher la vidéo et laisser le fond noir du conteneur visible
+  const isOutOfTrim = trimEnd > 0 && (currentTime < trimStart || currentTime > trimEnd);
+
   return (
     <div ref={containerRef} className="relative w-full h-full flex items-center justify-center bg-black" onClick={handleTap}>
-      <video ref={videoRef} src={videoUrl ?? undefined} className="w-full h-full object-cover" style={filterStyle} playsInline preload="auto" onTimeUpdate={handleTimeUpdate} onLoadedMetadata={handleLoaded} onDurationChange={handleDurationChange} onCanPlay={handleCanPlay} />
-      {(currentTime < trimStart || (trimEnd > 0 && currentTime > trimEnd)) && (
-        <div className="absolute inset-0 bg-black z-[5]" />
-      )}
+      <video
+        ref={videoRef}
+        src={videoUrl ?? undefined}
+        className="w-full h-full object-cover"
+        style={{ ...filterStyle, visibility: isOutOfTrim ? 'hidden' : 'visible' }}
+        playsInline preload="auto"
+        onTimeUpdate={handleTimeUpdate}
+        onLoadedMetadata={handleLoaded}
+        onDurationChange={handleDurationChange}
+        onCanPlay={handleCanPlay}
+      />
       {audioUrl && <audio ref={bgAudioRef} src={audioUrl} loop />}
       {size.w > 0 && <TextOverlayLayer width={size.w} height={size.h} interactive={interactive} />}
       <SubtitlePreview />
