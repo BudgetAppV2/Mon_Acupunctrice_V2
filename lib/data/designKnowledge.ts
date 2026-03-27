@@ -37,6 +37,26 @@ export const CANVAS = {
 // ─────────────────────────────────────────────
 
 export const FONT_MIN_SIZE = 45; // px minimum pour lisibilité mobile
+export const SUBTITLE_MIN_SIZE = 48; // px minimum sous-titres (confirmé par données terrain)
+export const HOOK_MIN_SIZE = 60; // px minimum hooks (gros texte, bold condensé)
+
+// Règles de design validées par les données terrain (VISUAL_ANALYSIS_RESEARCH.md)
+export const DESIGN_RULES = {
+  /** Stroke minimum 2px noir sur tout texte vidéo (non négociable) */
+  minStrokeWidth: 2,
+  /** Hooks : toujours majuscules + font bold condensée */
+  hookUppercase: true,
+  /** 1 animation max par élément */
+  maxAnimationsPerElement: 1,
+  /** Sous-titres dans 80% des Reels performants */
+  subtitlesRecommended: true,
+  /** Hook dans les 2 premières secondes */
+  hookMaxDelay: 2,
+  /** Filtre warm subtil pour 3/4 des contenus santé */
+  defaultFilterWarm: true,
+  /** CTA avec background pill = tendance montante */
+  ctaUsePill: true,
+} as const;
 
 export interface FontDef {
   family: string;
@@ -124,9 +144,9 @@ export const PALETTES: ColorPalette[] = [
     id: 'ocean_calm',
     name: 'Océan Calme',
     text: '#FFFFFF',
-    accent: '#6BA3BE',     // bleu doux
-    background: 'rgba(107, 163, 190, 0.7)',
-    stroke: '#2A4F5F',
+    accent: '#6B8F71',     // vert terreux (ajusté — le teal est moins courant en MTC)
+    background: 'rgba(107, 143, 113, 0.7)',
+    stroke: '#2A4F3F',
   },
   {
     id: 'minimal_pro',
@@ -143,6 +163,22 @@ export const PALETTES: ColorPalette[] = [
     accent: '#E8A87C',     // pêche doré
     background: 'rgba(232, 168, 124, 0.7)',
     stroke: '#6B3A24',
+  },
+  {
+    id: 'dark_clinic',
+    name: 'Dark Clinic',
+    text: '#FFFFFF',
+    accent: '#87A878',     // sage sur fond sombre
+    background: 'rgba(26, 26, 46, 0.85)',
+    stroke: '#000000',
+  },
+  {
+    id: 'pantone_2026',
+    name: 'Pantone 2026',
+    text: '#2D3436',       // charcoal foncé
+    accent: '#87A878',     // sage green (Pantone complementary)
+    background: 'rgba(245, 240, 235, 0.9)', // Cloud Dancer off-white
+    stroke: '#1A1A1A',
   },
 ];
 
