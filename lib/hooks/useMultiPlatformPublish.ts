@@ -12,7 +12,7 @@ interface Options {
   thumbOffset?: number;
   coverUrl?: string;
   publish: (opts: {
-    videoUrl: string; caption: string; captions?: { instagram: string; facebook: string; youtube: string }; itemId: string;
+    videoUrl: string; caption: string; captions?: { instagram: string; facebook: string; youtube: string }; itemId: string; uid: string;
     coverOption: 'frame' | 'custom'; thumbOffset?: number; coverUrl?: string;
   }) => Promise<boolean>;
   uploadFrameAsCover: () => Promise<string | undefined>;
@@ -39,7 +39,7 @@ export function useMultiPlatformPublish({
     if (!item.videoUrl) return;
     setFbError(null); setYtError(null);
     const finalCoverUrl = coverUrl || await uploadFrameAsCover();
-    const ok = await publish({ videoUrl: item.videoUrl, caption, captions, itemId: item.id, coverOption, thumbOffset, coverUrl: finalCoverUrl });
+    const ok = await publish({ videoUrl: item.videoUrl, caption, captions, itemId: item.id, uid: uid!, coverOption, thumbOffset, coverUrl: finalCoverUrl });
     if (ok && uid) {
       const tasks: Promise<void>[] = [];
       if (alsoFacebook) tasks.push(publishToApi('/api/publish-facebook', 'Facebook', setFbError));

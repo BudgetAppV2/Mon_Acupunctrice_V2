@@ -6,6 +6,7 @@ const REDIRECT_URI = 'https://mon-acupunctrice-v2.vercel.app/api/auth/youtube/ca
 const SCOPES = [
   'https://www.googleapis.com/auth/youtube.upload',
   'https://www.googleapis.com/auth/youtube.readonly',
+  'https://www.googleapis.com/auth/youtube',
 ].join(' ');
 
 /** GET /api/auth/youtube?uid=xxx — Redirige vers Google OAuth */

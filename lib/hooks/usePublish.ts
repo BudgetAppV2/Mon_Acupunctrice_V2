@@ -10,6 +10,7 @@ interface PublishOptions {
   caption: string;
   captions?: { instagram: string; facebook: string; youtube: string };
   itemId: string;
+  uid: string;
   coverOption: 'frame' | 'custom';
   thumbOffset?: number;
   coverUrl?: string;
@@ -28,13 +29,19 @@ export function usePublish() {
     console.log('[PUBLISH] Starting publish for', opts.itemId);
     console.log('[PUBLISH] Options:', JSON.stringify({ videoUrl: opts.videoUrl?.substring(0, 80) + '...', caption: opts.caption?.substring(0, 50), coverOption: opts.coverOption, thumbOffset: opts.thumbOffset }));
     try {
-      await updateItem(opts.itemId, { distributionStatus: 'publishing', caption: opts.caption });
-      console.log('[PUBLISH] Status set to publishing, caption saved to Firestore');
+      await updateItem(opts.itemId, {
+        distributionStatus: 'publishing',
+        caption: opts.caption,
+        ...(opts.captions ? { captions: opts.captions } : {}),
+        coverOption: opts.coverOption,
+        thumbOffset: opts.thumbOffset ?? null,
+        coverImageUrl: opts.coverUrl ?? null,
+      });
 
-      const res = await fetch('/api/publish', {
+      const res = await fetch('/api/publish-instagram', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(opts),
+        body: JSON.stringify({ itemId: opts.itemId, uid: opts.uid }),
       });
       console.log('[PUBLISH] API response status:', res.status);
       if (!res.ok) {
@@ -45,15 +52,6 @@ export function usePublish() {
 
       const data = await res.json();
       console.log('[PUBLISH] Success! mediaId:', data.mediaId);
-      await updateItem(opts.itemId, {
-        distributionStatus: 'published',
-        instagramPostId: data.mediaId,
-        caption: opts.caption,
-        ...(opts.captions ? { captions: opts.captions } : {}),
-        coverOption: opts.coverOption,
-        thumbOffset: opts.thumbOffset ?? null,
-        coverImageUrl: opts.coverUrl ?? null,
-      });
       await updateProgression();
       return true;
     } catch (err) {

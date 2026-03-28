@@ -1,74 +1,115 @@
-import { Muxer, ArrayBufferTarget } from 'mp4-muxer';
+import {
+  Input, Output, BlobSource, BufferTarget,
+  Mp4OutputFormat, CanvasSource, EncodedAudioPacketSource,
+  EncodedPacketSink, EncodedPacket, ALL_FORMATS, AudioBufferSource,
+} from 'mediabunny';
+import { registerAacEncoder } from '@mediabunny/aac-encoder';
 import { drawTextOverlays } from './drawOverlays';
 import type { TextOverlayItem, SubtitleSegment, SubtitleStyle } from '@/lib/types';
-import type { ColorPalette } from '@/lib/data/designKnowledge';
 import { drawSubtitles } from './drawSubtitles';
 
-const W = 1080, H = 1920;
+registerAacEncoder();
+
+const MAX_W = 1080, MAX_H = 1920;
 const FPS = 30;
-const FRAME_DUR = Math.round(1e6 / FPS); // microseconds per frame
+const BITRATE = 12_000_000;
+
+/** Calcule la resolution d'export optimale en 9:16 basee sur la source */
+function computeExportSize(srcW: number, srcH: number): { w: number; h: number } {
+  if (srcH > srcW) {
+    const w = Math.min(srcW, MAX_W);
+    const h = Math.round(w * 16 / 9);
+    return { w: w % 2 === 0 ? w : w - 1, h: h % 2 === 0 ? h : h - 1 };
+  }
+  const cropH = srcH;
+  const cropW = Math.round(cropH * 9 / 16);
+  const scale = Math.min(2, MAX_H / cropH);
+  let w = Math.round(cropW * scale);
+  let h = Math.round(cropH * scale);
+  if (w % 2 !== 0) w--;
+  if (h % 2 !== 0) h--;
+  return { w, h };
+}
 
 /**
- * Export video via WebCodecs — seek-based loop (3-6x plus rapide que temps reel).
- * audioBlob : MP3 pre-extrait via FFmpeg pour eviter file.arrayBuffer() sur la video.
+ * Export video via Mediabunny CanvasSource + audio transmux/fallback.
+ * Video: seek-based canvas rendering → CanvasSource (Mediabunny gere l'encodage)
+ * Audio: demux transmux direct OU AudioBufferSource fallback (Safari iOS)
  */
 export async function exportWithWebCodecs(
   file: File, trimStart: number, trimEnd: number,
   onProgress: (p: number) => void,
   filterCss?: string, overlays?: TextOverlayItem[],
   subtitles?: SubtitleSegment[], subtitleStyle?: string,
-  audioBlob?: Blob | null, paletteColors?: ColorPalette | null,
-  signal?: AbortSignal,
 ): Promise<Blob> {
-  // Decoder l'audio depuis le blob pre-extrait
-  let audioBuf: AudioBuffer | null = null;
-  if (audioBlob) {
-    try {
-      const ac = new AudioContext();
-      audioBuf = await ac.decodeAudioData(await audioBlob.arrayBuffer());
-      await ac.close();
-    } catch { /* Audio decode echoue — export sans audio */ }
+  // --- Demuxer le source pour l'audio ---
+  let input: Input | null = null;
+  let audioTrack: Awaited<ReturnType<Input['getPrimaryAudioTrack']>> | null = null;
+  try {
+    console.log('[EXPORT] 1/7 Demuxing source file (' + (file.size / 1024 / 1024).toFixed(1) + 'MB)...');
+    input = new Input({ source: new BlobSource(file), formats: ALL_FORMATS });
+    audioTrack = await input.getPrimaryAudioTrack();
+    console.log('[EXPORT] 1/7 Audio track:', audioTrack ? audioTrack.numberOfChannels + 'ch ' + audioTrack.sampleRate + 'Hz ' + audioTrack.codec : 'NONE');
+  } catch (e) {
+    console.warn('[EXPORT] 1/7 Mediabunny demux failed (fMP4?):', e);
+    input?.dispose();
+    input = null;
   }
 
-  const nCh = audioBuf ? Math.min(audioBuf.numberOfChannels, 2) : 0;
-  const sr = audioBuf?.sampleRate ?? 48000;
-
-  const muxerOpts: ConstructorParameters<typeof Muxer>[0] = {
-    target: new ArrayBufferTarget(),
-    video: { codec: 'avc', width: W, height: H },
-    fastStart: 'in-memory',
-    firstTimestampBehavior: 'offset',
-  };
-  if (audioBuf) muxerOpts.audio = { codec: 'aac', sampleRate: sr, numberOfChannels: nCh };
-  const muxer = new Muxer(muxerOpts);
-
-  const vEnc = new VideoEncoder({
-    output: (chunk, meta) => {
-      const data = new Uint8Array(chunk.byteLength);
-      chunk.copyTo(data);
-      const d = (chunk.duration != null && isFinite(chunk.duration) && chunk.duration > 0) ? chunk.duration : FRAME_DUR;
-      muxer.addVideoChunkRaw(data, chunk.type, chunk.timestamp, d, meta);
-    },
-    error: (e) => { throw e; },
-  });
-  vEnc.configure({
-    codec: 'avc1.640028', width: W, height: H, bitrate: 8_000_000, framerate: FPS,
-    bitrateMode: 'variable', hardwareAcceleration: 'prefer-hardware',
-    latencyMode: 'quality',
-  });
-
+  // --- Charger la video pour connaitre la resolution source ---
   const video = document.createElement('video');
   video.muted = true; video.playsInline = true; video.preload = 'auto';
   const blobUrl = URL.createObjectURL(file);
   video.src = blobUrl;
   await new Promise<void>((res, rej) => { video.oncanplaythrough = () => res(); video.onerror = () => rej(new Error('Chargement video echoue')); });
 
+  const { w: W, h: H } = computeExportSize(video.videoWidth, video.videoHeight);
+  console.log('[EXPORT] 2/7 Source: ' + video.videoWidth + 'x' + video.videoHeight + ' → Export: ' + W + 'x' + H);
+
+  // --- Canvas avec couleurs P3 si disponible ---
   const canvas = document.createElement('canvas');
   canvas.width = W; canvas.height = H;
-  const ctx = canvas.getContext('2d')!;
+  const ctx = (canvas.getContext('2d', { colorSpace: 'display-p3' }) ?? canvas.getContext('2d'))!;
 
-  // Seek-based loop : 3-6x plus rapide que temps reel, fonctionne meme si le tab perd le focus
+  // --- Configurer le muxer Mediabunny ---
+  const output = new Output({
+    format: new Mp4OutputFormat({ fastStart: 'in-memory' }),
+    target: new BufferTarget(),
+  });
+
+  // Video : CanvasSource gere VideoEncoder en interne
+  const canvasSource = new CanvasSource(canvas, {
+    codec: 'avc', bitrate: BITRATE, bitrateMode: 'variable',
+    hardwareAcceleration: 'prefer-hardware', latencyMode: 'quality',
+  });
+  output.addVideoTrack(canvasSource);
+
+  // Audio : transmux (desktop) ou AudioBufferSource fallback (iOS)
+  let audioSource: EncodedAudioPacketSource | null = null;
+  let audioSink: EncodedPacketSink | null = null;
+  let audioFallbackSource: AudioBufferSource | null = null;
+  const isIOS = typeof navigator !== 'undefined' && (
+    /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
+  );
+  const canTransmux = !isIOS && audioTrack && audioTrack.numberOfChannels >= 1 && audioTrack.codec;
+
+  if (canTransmux) {
+    audioSource = new EncodedAudioPacketSource(audioTrack!.codec!);
+    output.addAudioTrack(audioSource);
+    audioSink = new EncodedPacketSink(audioTrack!);
+  } else {
+    audioFallbackSource = new AudioBufferSource({ codec: 'aac', bitrate: 128_000 });
+    output.addAudioTrack(audioFallbackSource);
+  }
+
+  console.log('[EXPORT] 3/7 Audio path:', canTransmux ? 'TRANSMUX' : 'FALLBACK (AudioBufferSource)', isIOS ? '(iOS)' : '(desktop)');
+  await output.start();
+
+  // --- Boucle seek-based : dessiner sur le canvas, CanvasSource encode ---
   const totalFrames = Math.ceil((trimEnd - trimStart) * FPS);
+  console.log('[EXPORT] 4/7 Encoding ' + totalFrames + ' frames at ' + FPS + 'fps (' + W + 'x' + H + ', ' + (BITRATE/1e6) + 'Mbps)...');
+  const frameDur = 1 / FPS;
   for (let i = 0; i < totalFrames; i++) {
     const t = trimStart + i / FPS;
     video.currentTime = t;
@@ -84,46 +125,86 @@ export async function exportWithWebCodecs(
     ctx.filter = 'none';
 
     if (overlays?.length) drawTextOverlays(ctx, overlays, t, W, H);
-    if (subtitles?.length) drawSubtitles(ctx, subtitles, (subtitleStyle || 'classic') as SubtitleStyle, t, W, H, paletteColors);
+    if (subtitles?.length) drawSubtitles(ctx, subtitles, (subtitleStyle || 'classic') as SubtitleStyle, t, W, H);
 
-    const ts = Math.round((t - trimStart) * 1e6);
-    const frame = new VideoFrame(canvas, { timestamp: ts });
-    vEnc.encode(frame, { keyFrame: i % 30 === 0 });
-    frame.close();
-    onProgress(Math.round(i / totalFrames * 100));
+    await canvasSource.add(t - trimStart, frameDur);
+    onProgress(Math.round(i / totalFrames * 90));
 
-    if (signal?.aborted) { vEnc.close(); video.pause(); URL.revokeObjectURL(blobUrl); throw new Error('Export annule'); }
     if (i % 3 === 0) await new Promise(r => setTimeout(r, 0));
   }
+  canvasSource.close();
+  console.log('[EXPORT] 5/7 Video encoding done');
 
-  // Encoder l'audio
-  if (audioBuf) {
-    const aEnc = new AudioEncoder({ output: (c, m) => muxer.addAudioChunk(c, m), error: () => {} });
-    aEnc.configure({ codec: 'mp4a.40.2', sampleRate: sr, numberOfChannels: nCh, bitrate: 128_000 });
-    const startSmp = Math.floor(trimStart * sr);
-    const endSmp = Math.min(Math.floor(trimEnd * sr), audioBuf.length);
-    const CHUNK = 1024;
-    for (let i = startSmp; i < endSmp; i += CHUNK) {
-      const len = Math.min(CHUNK, endSmp - i);
-      const planar = new Float32Array(len * nCh);
-      for (let ch = 0; ch < nCh; ch++) planar.set(audioBuf.getChannelData(ch).subarray(i, i + len), ch * len);
-      const ad = new AudioData({
-        format: 'f32-planar', sampleRate: sr, numberOfFrames: len,
-        numberOfChannels: nCh, timestamp: Math.round((i - startSmp) / sr * 1e6), data: planar,
-      });
-      aEnc.encode(ad); ad.close();
+  // --- Audio : transmux les packets du source (trim par timestamp) ---
+  if (audioSink && audioSource && audioTrack) {
+    console.log('[EXPORT] 5/7 Audio transmux starting...');
+    try {
+      const startPkt = await audioSink.getKeyPacket(trimStart);
+      if (startPkt) {
+        let isFirst = true;
+        for await (const pkt of audioSink.packets(startPkt)) {
+          if (pkt.timestamp >= trimEnd) break;
+          if (!pkt.data || pkt.data.length < 2) continue;
+          const adjusted = new EncodedPacket(pkt.data, pkt.type, pkt.timestamp - trimStart, pkt.duration);
+          if (isFirst) {
+            await audioSource.add(adjusted, {
+              decoderConfig: {
+                codec: audioTrack.codec === 'aac' ? 'mp4a.40.2' : audioTrack.codec,
+                numberOfChannels: audioTrack.numberOfChannels,
+                sampleRate: audioTrack.sampleRate,
+              },
+            } as EncodedAudioChunkMetadata);
+            isFirst = false;
+          } else {
+            await audioSource.add(adjusted);
+          }
+        }
+      }
+    } catch (e) {
+      console.warn('[EXPORT] Audio transmux failed:', e);
     }
-    await aEnc.flush(); aEnc.close();
   }
 
-  await vEnc.flush(); vEnc.close();
+  // Fallback : remplir le AudioBufferSource pre-ajoute
+  if (audioFallbackSource) {
+    console.log('[EXPORT] 6/7 AudioBufferSource fallback: decoding audio...');
+    try {
+      const ac = new AudioContext({ sampleRate: 48000 });
+      const arrayBuf = await file.arrayBuffer();
+      const decoded = await ac.decodeAudioData(arrayBuf);
+      await ac.close();
+      if (decoded.numberOfChannels >= 1) {
+        const sr = decoded.sampleRate;
+        const nCh = Math.min(decoded.numberOfChannels, 2);
+        const startSmp = Math.floor(trimStart * sr);
+        const endSmp = Math.min(Math.floor(trimEnd * sr), decoded.length);
+        const trimmedLength = endSmp - startSmp;
+        if (trimmedLength > 0) {
+          const trimmedBuf = new AudioBuffer({ length: trimmedLength, sampleRate: sr, numberOfChannels: nCh });
+          for (let ch = 0; ch < nCh; ch++) trimmedBuf.copyToChannel(decoded.getChannelData(ch).subarray(startSmp, endSmp), ch);
+          await audioFallbackSource.add(trimmedBuf);
+          console.log('[EXPORT] 6/7 Audio fallback: ' + nCh + 'ch, ' + sr + 'Hz, ' + trimmedLength + ' samples OK');
+        }
+      }
+    } catch (e) {
+      console.warn('[EXPORT] 6/7 AudioBufferSource fallback FAILED:', e);
+    }
+    audioFallbackSource.close();
+  }
+  onProgress(95);
 
-  // Nettoyage memoire
+  // --- Cleanup ---
   video.pause(); video.removeAttribute('src'); video.load();
   URL.revokeObjectURL(blobUrl);
   canvas.width = 0; canvas.height = 0;
-  audioBuf = null;
+  input?.dispose();
 
-  muxer.finalize();
-  return new Blob([(muxer.target as ArrayBufferTarget).buffer], { type: 'video/mp4' });
+  console.log('[EXPORT] 7/7 Finalizing MP4...');
+  await output.finalize();
+  onProgress(100);
+
+  const buf = (output.target as BufferTarget).buffer;
+  const blob = new Blob(buf ? [buf] : [], { type: 'video/mp4' });
+  console.log('[EXPORT] DONE! Size: ' + (blob.size / 1024 / 1024).toFixed(1) + 'MB');
+  return blob;
 }

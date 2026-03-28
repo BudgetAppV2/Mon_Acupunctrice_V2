@@ -8,8 +8,6 @@ import { getFirebaseFirestore, getFirebaseAuth, getFirebaseStorage } from '@/lib
 import { exportWithWebCodecs } from '@/lib/utils/exportWebCodecs';
 import { FILTERS } from '@/lib/utils/filters';
 import { loadFont } from '@/lib/utils/fontLoader';
-import { getTheme, getThemePalette } from '@/lib/data/videoThemes';
-import { useFFmpeg } from './useFFmpeg';
 
 export type ExportState = 'idle' | 'preparing' | 'exporting' | 'uploading' | 'done' | 'error';
 
@@ -17,8 +15,6 @@ export function useVideoExport() {
   const [state, setState] = useState<ExportState>('idle');
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
-  const abortRef = { current: null as AbortController | null };
-  const { load: loadFFmpeg, terminate: terminateFFmpeg } = useFFmpeg();
 
   const supportsWebCodecs = typeof window !== 'undefined'
     && typeof VideoEncoder !== 'undefined'
@@ -27,11 +23,8 @@ export function useVideoExport() {
   const exportVideo = useCallback(async () => {
     const s = useEditorStore.getState();
     if (!s.videoFile || !s.itemId) return;
-    if (s.clips.length > 1) { setState('error'); setError('L\'export multi-clip sera disponible prochainement. Seul le premier clip est exporte.'); return; }
+    if (s.clips.length > 1) { setState('error'); setError('L\'export multi-clip sera disponible prochainement.'); return; }
 
-    abortRef.current?.abort();
-    const ac = new AbortController();
-    abortRef.current = ac;
     setState('preparing');
     setProgress(0);
     setError(null);
@@ -42,54 +35,14 @@ export function useVideoExport() {
       }
 
       for (const o of s.overlays) await loadFont(o.fontFamily);
+      const filterCss = FILTERS.find(f => f.id === s.filter)?.css ?? 'none';
 
       setState('exporting');
 
-      // Extraire l'audio — FFmpeg d'abord, fallback Web Audio API (Safari iOS)
-      let audioBlob: Blob | null = null;
-      try {
-        const ffmpeg = await loadFFmpeg();
-        const buf = await s.videoFile.arrayBuffer();
-        await ffmpeg.writeFile('input.mp4', new Uint8Array(buf));
-        await ffmpeg.exec(['-i', 'input.mp4', '-vn', '-ar', '48000', '-ac', '2', '-b:a', '128k', 'audio.mp3']);
-        const audioData = await ffmpeg.readFile('audio.mp3') as Uint8Array;
-        audioBlob = new Blob([audioData.buffer as ArrayBuffer], { type: 'audio/mpeg' });
-        await ffmpeg.deleteFile('input.mp4').catch(() => {});
-        await ffmpeg.deleteFile('audio.mp3').catch(() => {});
-        terminateFFmpeg();
-      } catch {
-        // Fallback Web Audio API (fonctionne sur Safari iOS)
-        try {
-          const ac = new AudioContext({ sampleRate: 48000 });
-          const arrayBuf = await s.videoFile.arrayBuffer();
-          const decoded = await ac.decodeAudioData(arrayBuf);
-          await ac.close();
-          const sr = decoded.sampleRate;
-          const samples = decoded.getChannelData(0);
-          const numSamples = samples.length;
-          const wavBuf = new ArrayBuffer(44 + numSamples * 2);
-          const view = new DataView(wavBuf);
-          const w = (o: number, str: string) => { for (let i = 0; i < str.length; i++) view.setUint8(o + i, str.charCodeAt(i)); };
-          w(0,'RIFF'); view.setUint32(4, 36 + numSamples * 2, true); w(8,'WAVE');
-          w(12,'fmt '); view.setUint32(16,16,true); view.setUint16(20,1,true); view.setUint16(22,1,true);
-          view.setUint32(24,sr,true); view.setUint32(28,sr*2,true); view.setUint16(32,2,true); view.setUint16(34,16,true);
-          w(36,'data'); view.setUint32(40, numSamples * 2, true);
-          for (let i = 0; i < numSamples; i++) {
-            const v = Math.max(-1, Math.min(1, samples[i]));
-            view.setInt16(44 + i * 2, v < 0 ? v * 0x8000 : v * 0x7FFF, true);
-          }
-          audioBlob = new Blob([wavBuf], { type: 'audio/wav' });
-        } catch {
-          // Pas d'audio — export sans son
-        }
-      }
-
-      const filterCss = FILTERS.find(f => f.id === s.filter)?.css ?? 'none';
-      const theme = getTheme(s.activeThemeId);
-      const palette = getThemePalette(theme);
+      // Mediabunny gere l'audio en transmuxant depuis le source — plus besoin de FFmpeg ou Web Audio
       const blob = await exportWithWebCodecs(
         s.videoFile, s.trimStart, s.trimEnd, setProgress,
-        filterCss, s.overlays, s.subtitles, s.subtitleStyle, audioBlob, palette, ac.signal,
+        filterCss, s.overlays, s.subtitles, s.subtitleStyle,
       );
 
       // Upload resumable avec progression
@@ -135,9 +88,7 @@ export function useVideoExport() {
         setError(msg);
       }
     }
-  }, [supportsWebCodecs, loadFFmpeg, terminateFFmpeg]);
+  }, [supportsWebCodecs]);
 
-  const cancelExport = useCallback(() => { abortRef.current?.abort(); setState('idle'); setProgress(0); }, []);
-
-  return { exportVideo, cancelExport, state, progress, error, supportsWebCodecs };
+  return { exportVideo, state, progress, error, supportsWebCodecs };
 }

@@ -65,6 +65,7 @@ export async function POST(request: NextRequest) {
       body: JSON.stringify({
         upload_phase: 'finish',
         video_id: initData.video_id,
+        video_state: 'PUBLISHED',
         description: caption,
         access_token: pageToken,
       }),
