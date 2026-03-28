@@ -64,9 +64,9 @@ Screen recording analysé frame par frame. Frames clés dans `project-docs/04_LO
 | EP-3 | Overlay Components | Frontend | 6-8h | ✅ FAIT |
 | EP-4 | Template System (3 core) | Frontend | 5-7h | ✅ FAIT |
 | EP-5 | Film Effects | Frontend | 3-4h | ✅ FAIT (intégré dans sceneRenderer) |
-| EP-6 | Export Integration | Integration | 4-6h | ⚠️ PARTIEL — buildExportScene existe mais pas encore branché dans exportWebCodecs.ts |
-| EP-7 | UI — Template picker + preview | Frontend | 4-5h | ❌ À FAIRE |
-| EP-8 | LUTs cinématiques (WebGL) | Frontend | 6-8h | ❌ À FAIRE |
+| EP-6 | Export Integration | Integration | 4-6h | ✅ FAIT — renderScene branché dans exportWebCodecs.ts, backward compatible |
+| EP-7 | UI — Template picker + preview | Frontend | 4-5h | ✅ FAIT — TemplatePicker + TemplateCustomizer dans ThemePanel |
+| EP-8 | LUTs cinématiques (WebGL) | Frontend | 6-8h | ✅ FAIT — parser .cube, renderer WebGL 2.0, 6 presets, LutPanel UI |
 
 ### Aussi récupéré de l'ancien plan (Phase 1-2) :
 | Élément | Status |
