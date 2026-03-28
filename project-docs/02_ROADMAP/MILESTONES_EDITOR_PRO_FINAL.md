@@ -66,6 +66,7 @@ Screen recording analysé frame par frame. Frames clés dans `project-docs/04_LO
 | EP-5 | Film Effects | Frontend | 3-4h | ✅ FAIT (intégré dans sceneRenderer) |
 | EP-6 | Export Integration | Integration | 4-6h | ⚠️ PARTIEL — buildExportScene existe mais pas encore branché dans exportWebCodecs.ts |
 | EP-7 | UI — Template picker + preview | Frontend | 4-5h | ❌ À FAIRE |
+| EP-8 | LUTs cinématiques (WebGL) | Frontend | 6-8h | ❌ À FAIRE |
 
 ### Aussi récupéré de l'ancien plan (Phase 1-2) :
 | Élément | Status |
@@ -522,4 +523,90 @@ Enseigner : Playfair Display (titre) + Inter (corps)
 Connecter : Libre Baskerville (titre) + Inter (corps)
 Aider     : Montserrat (titre, bold) + Inter (corps)
 Inspirer  : Cormorant Garamond (titre) + Inter (corps)
+```
+
+---
+
+## Milestone EP-8 : LUTs cinématiques (WebGL)
+
+**Type :** Frontend
+**Priorité :** Medium
+**Temps estimé :** 6-8h
+**Dépendances :** EP-6 (export integration complété)
+
+### Objectif
+Ajouter des LUTs cinématiques (color grading) pour donner un look film
+professionnel aux vidéos de Judith. Les LUTs transforment les couleurs
+de la vidéo source pour créer des ambiances spécifiques (warm cinema,
+cold teal, vintage, etc.) — c'est ce qui différencie visuellement une
+vidéo iPhone brute d'un contenu color-gradé pro.
+
+### Recherche validée (EDITOR_PRO_RESEARCH.md)
+- `glfx.js` (~20KB, MIT) — filtres WebGL rapides, fonctionne sur Safari iOS
+- `webgl-lut-filter` (npm, MIT) — applique des LUTs 3D via WebGL
+- Safari iOS supporte WebGL 2.0 depuis iOS 15+
+- Les fichiers `.cube` sont le format standard pour les LUTs 3D
+
+### Deliverables
+- [ ] Parser de fichiers `.cube` (`lib/editor/lutParser.ts`)
+  - Parse les fichiers LUT 3D au format .cube (standard industrie)
+  - Convertit en texture 3D utilisable par WebGL
+- [ ] Renderer WebGL pour les LUTs (`lib/editor/lutRenderer.ts`)
+  - Prend un canvas 2D frame, applique la LUT via WebGL, retourne le résultat
+  - Utilise `glfx.js` ou implémentation WebGL custom (shader GLSL)
+  - Fallback : si WebGL non disponible, applique une approximation CSS
+- [ ] 6-8 LUTs pré-packagées (`lib/data/luts/`)  :
+  - `warm-cinema.cube` — tons chauds dorés (idéal pour Enseigner/Inspirer)
+  - `soft-wellness.cube` — tons doux désaturés (idéal pour bien-être)
+  - `cold-teal.cube` — teintes bleu-vert (contenu plus sérieux/médical)
+  - `vintage-film.cube` — aspect film pellicule (Connecter nostalgique)
+  - `bright-clean.cube` — couleurs vives nettoyées (Aider dynamique)
+  - `golden-hour.cube` — lumière dorée fin de journée
+- [ ] Intégration dans le SceneGraph comme `EffectLayer` type `lut`
+- [ ] Sélecteur de LUT dans le UI (thumbnail preview de chaque LUT)
+- [ ] Intégration dans le pipeline d'export (appliqué sur chaque frame)
+
+### Approche technique
+Le LUT est appliqué comme étape dans le pipeline de rendering :
+```
+video frame → drawImage sur canvas 2D → [LUT via WebGL] → overlays/sous-titres → encode
+```
+
+L'application WebGL se fait sur un canvas WebGL séparé :
+1. Copier la frame du canvas 2D vers une texture WebGL
+2. Appliquer le shader LUT (lookup dans la texture 3D)
+3. Copier le résultat vers le canvas 2D principal
+4. Continuer avec les overlays et sous-titres
+
+Cette approche garde le pipeline Canvas 2D intact — le WebGL est
+utilisé uniquement pour le color grading, pas pour le rendering général.
+
+### Contraintes
+- Doit fonctionner sur Safari iOS (WebGL 2.0)
+- Le pipeline frame-by-frame seek-based doit rester intact
+- Les LUTs doivent être légères (< 500KB chacune)
+- Ne pas dégrader significativement les performances d'export
+- Les fichiers .cube peuvent être trouvés gratuitement (Creative Commons)
+  ou générés via DaVinci Resolve / Photoshop
+
+### Definition of Done
+- [ ] Le parser .cube fonctionne avec les fichiers standard
+- [ ] Au moins 6 LUTs pré-packagées avec des noms descriptifs
+- [ ] Le sélecteur montre une preview de chaque LUT (thumbnail)
+- [ ] L'export vidéo avec LUT appliquée → vidéo color-gradée visuellement pro
+- [ ] Fonctionne sur Safari iOS
+- [ ] Fallback gracieux si WebGL non disponible
+
+### Fichiers
+```
+📄 NEW:
+- lib/editor/lutParser.ts (parser .cube)
+- lib/editor/lutRenderer.ts (application WebGL)
+- lib/data/luts/ (dossier avec 6-8 fichiers .cube)
+- components/editor/panels/LutPanel.tsx (sélecteur UI)
+
+✏️ MODIFY:
+- lib/editor/sceneRenderer.ts (ajouter le support EffectLayer type 'lut')
+- lib/editor/sceneGraph.ts (ajouter 'lut' aux types d'effets)
+- lib/utils/exportWebCodecs.ts (intégrer le LUT dans la boucle de frames)
 ```
