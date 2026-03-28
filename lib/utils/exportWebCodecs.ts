@@ -5,12 +5,14 @@ import {
 } from 'mediabunny';
 import { registerAacEncoder } from '@mediabunny/aac-encoder';
 import { drawTextOverlays } from './drawOverlays';
-import type { TextOverlayItem, SubtitleSegment, SubtitleStyle } from '@/lib/types';
+import type { TextOverlayItem, SubtitleSegment, SubtitleStyle, SubtitleFamily, SubtitlePosition } from '@/lib/types';
 import { drawSubtitles } from './drawSubtitles';
 import type { SceneGraph } from '@/lib/editor/sceneGraph';
 import { renderScene } from '@/lib/editor/sceneRenderer';
 import { applyLut } from '@/lib/editor/lutRenderer';
 import { getLutData } from '@/lib/data/luts/presets';
+import { renderSubtitlesPro } from '@/lib/editor/subtitleEngine';
+import { toProSegments } from './subtitleProAdapter';
 
 registerAacEncoder();
 
@@ -46,6 +48,10 @@ export async function exportWithWebCodecs(
   filterCss?: string, overlays?: TextOverlayItem[],
   subtitles?: SubtitleSegment[], subtitleStyle?: string,
   scene?: SceneGraph | null, lutId?: string | null,
+  subtitleFamily?: SubtitleFamily | null,
+  subtitlePosition?: SubtitlePosition,
+  subtitleAnimation?: 'fade' | 'slide-left' | 'slide-up' | 'pop' | 'none',
+  subtitleAccentColor?: string,
 ): Promise<Blob> {
   // --- Demuxer le source pour l'audio ---
   let input: Input | null = null;
@@ -135,12 +141,21 @@ export async function exportWithWebCodecs(
       if (lutData) applyLut(ctx, lutData, lutId, W, H);
     }
 
-    // Rendu scene graph (templates/overlays animes) ou legacy (overlays + subtitles basiques)
+    // Rendu scene graph (templates/overlays animes) ou legacy overlays
     if (scene) {
       renderScene(ctx, scene, t - trimStart, W, H);
     } else {
       if (overlays?.length) drawTextOverlays(ctx, overlays, t, W, H);
-      if (subtitles?.length) drawSubtitles(ctx, subtitles, (subtitleStyle || 'classic') as SubtitleStyle, t, W, H);
+      // Sous-titres V1 uniquement si pas de famille Pro active
+      if (subtitles?.length && !subtitleFamily) {
+        drawSubtitles(ctx, subtitles, (subtitleStyle || 'classic') as SubtitleStyle, t, W, H);
+      }
+    }
+
+    // Sous-titres Pro — rendu par-dessus la scene si famille selectionnee
+    if (subtitleFamily && subtitles?.length) {
+      const proSegs = toProSegments(subtitles, subtitlePosition ?? 'bottom-center', subtitleAnimation ?? 'fade');
+      renderSubtitlesPro(ctx, proSegs, subtitleFamily, t, W, H, { accentColor: subtitleAccentColor ?? '#E91E8C' });
     }
 
     await canvasSource.add(t - trimStart, frameDur);

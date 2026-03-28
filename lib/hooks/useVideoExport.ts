@@ -55,6 +55,7 @@ export function useVideoExport() {
       const blob = await exportWithWebCodecs(
         s.videoFile, s.trimStart, s.trimEnd, setProgress,
         filterCss, s.overlays, s.subtitles, s.subtitleStyle, scene, s.activeLutId,
+        s.subtitleFamily, s.subtitlePosition, s.subtitleAnimation, s.subtitleAccentColor,
       );
 
       // Upload resumable avec progression

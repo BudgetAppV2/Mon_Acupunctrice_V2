@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { getFirebaseFirestore } from '@/lib/firebase';
 import { getTheme, getThemeFilter } from '@/lib/data/videoThemes';
-import type { TextOverlayItem, SubtitleSegment, SubtitleStyle, VideoClip } from '@/lib/types';
+import type { TextOverlayItem, SubtitleSegment, SubtitleStyle, VideoClip, SubtitleFamily, SubtitlePosition } from '@/lib/types';
 
 let _videoEl: HTMLVideoElement | null = null;
 let _editorTouched = false;
@@ -75,6 +75,10 @@ interface EditorState {
   silenceRanges: { start: number; end: number }[];
   activeLutId: string | null;
   activeTemplateId: string | null;
+  subtitleFamily: SubtitleFamily | null;
+  subtitlePosition: SubtitlePosition;
+  subtitleAnimation: 'fade' | 'slide-left' | 'slide-up' | 'pop' | 'none';
+  subtitleAccentColor: string;
   templateTitle: string;
   templatePoints: string[];
   templateQuote: string;
@@ -109,6 +113,10 @@ interface EditorState {
   setSilenceRanges: (ranges: { start: number; end: number }[]) => void;
   setLut: (id: string | null) => void;
   setTemplate: (id: string | null) => void;
+  setSubtitleFamily: (f: SubtitleFamily | null) => void;
+  setSubtitlePosition: (p: SubtitlePosition) => void;
+  setSubtitleAnimation: (a: 'fade' | 'slide-left' | 'slide-up' | 'pop' | 'none') => void;
+  setSubtitleAccentColor: (c: string) => void;
   setTemplateTitle: (t: string) => void;
   setTemplatePoints: (pts: string[]) => void;
   setTemplateQuote: (q: string) => void;
@@ -141,6 +149,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   subtitles: [], subtitleStyle: 'classic' as SubtitleStyle,
   audioUrl: null, audioName: null, audioVolume: 0.3, voiceVolume: 1,
   audioFadeIn: 0, audioFadeOut: 0, audioDucking: false, thumbnailUrl: null, videoOrientation: 'portrait', editorSplitRatio: 0.50, selectedSubtitleId: null, coverFrameOffset: 0, coverDataUrl: null, coverCustomUrl: null, captions: null, silenceRanges: [], activeLutId: null, activeTemplateId: null, templateTitle: '', templatePoints: [], templateQuote: '', templateCta: '',
+  subtitleFamily: null, subtitlePosition: 'bottom-center' as SubtitlePosition, subtitleAnimation: 'fade' as const, subtitleAccentColor: '#E91E8C',
 
   setVideoFile: (file) => {
     get().clips.forEach(c => { if (c.blobUrl) URL.revokeObjectURL(c.blobUrl); });
@@ -211,6 +220,10 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   setSilenceRanges: (ranges) => set({ silenceRanges: ranges }),
   setLut: (id) => { set({ activeLutId: id }); markEditorTouched(); },
   setTemplate: (id) => set({ activeTemplateId: id }),
+  setSubtitleFamily: (f) => { set({ subtitleFamily: f }); markEditorTouched(); },
+  setSubtitlePosition: (p) => { set({ subtitlePosition: p }); markEditorTouched(); },
+  setSubtitleAnimation: (a) => { set({ subtitleAnimation: a }); markEditorTouched(); },
+  setSubtitleAccentColor: (c) => { set({ subtitleAccentColor: c }); markEditorTouched(); },
   setTemplateTitle: (t) => set({ templateTitle: t }),
   setTemplatePoints: (pts) => set({ templatePoints: pts }),
   setTemplateQuote: (q) => set({ templateQuote: q }),

@@ -10,6 +10,8 @@ import { buildExportScene } from '@/lib/editor/buildExportScene';
 import { renderScene } from '@/lib/editor/sceneRenderer';
 import { applyLut } from '@/lib/editor/lutRenderer';
 import { getLutData } from '@/lib/data/luts/presets';
+import { renderSubtitlesPro } from '@/lib/editor/subtitleEngine';
+import { toProSegments } from '@/lib/utils/subtitleProAdapter';
 import type { SceneGraph } from '@/lib/editor/sceneGraph';
 import type { SubtitleStyle } from '@/lib/types';
 
@@ -74,18 +76,25 @@ export function useRealtimeCanvas(
       if (lutData) applyLut(ctx, lutData, s.activeLutId, w, h);
     }
 
-    // 4. Scene graph (overlays animes + effets) ou legacy
+    // 4. Scene graph (overlays animes + effets) ou legacy overlays
     const time = s.currentTime;
     const scene = sceneRef.current;
     if (scene) {
       renderScene(ctx, scene, time - s.trimStart, w, h);
     } else {
       if (s.overlays.length > 0) drawTextOverlays(ctx, s.overlays, time, w, h);
-      if (s.subtitles.length > 0) {
+      // Sous-titres V1 uniquement si pas de famille Pro active
+      if (s.subtitles.length > 0 && !s.subtitleFamily) {
         const theme = getTheme(s.activeThemeId);
         const palette = getThemePalette(theme);
         drawSubtitles(ctx, s.subtitles, s.subtitleStyle as SubtitleStyle, time, w, h, palette);
       }
+    }
+
+    // 5. Sous-titres Pro — rendu par-dessus la scene si famille selectionnee
+    if (s.subtitleFamily && s.subtitles.length > 0) {
+      const proSegs = toProSegments(s.subtitles, s.subtitlePosition, s.subtitleAnimation);
+      renderSubtitlesPro(ctx, proSegs, s.subtitleFamily, time, w, h, { accentColor: s.subtitleAccentColor });
     }
   }, [videoEl, canvasEl]);
 
