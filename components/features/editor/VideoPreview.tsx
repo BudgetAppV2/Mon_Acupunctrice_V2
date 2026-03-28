@@ -1,17 +1,16 @@
 'use client';
 
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState, useCallback } from 'react';
 import { useEditorStore, registerVideoElement } from '@/lib/store/useEditorStore';
 import { PlayIcon, PauseIcon } from '@heroicons/react/24/solid';
-import { FILTERS } from '@/lib/utils/filters';
-import { useCanvasPreview } from '@/lib/hooks/useCanvasPreview';
+import { useRealtimeCanvas } from '@/lib/hooks/useRealtimeCanvas';
 import TextOverlayLayer from './text/TextOverlay';
-import SubtitlePreview from './subtitles/SubtitlePreview';
 
 interface Props { interactive?: boolean }
 
 export default function VideoPreview({ interactive = false }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const bgAudioRef = useRef<HTMLAudioElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const {
@@ -25,13 +24,24 @@ export default function VideoPreview({ interactive = false }: Props) {
 
   useEffect(() => { registerVideoElement(videoRef.current); return () => registerVideoElement(null); }, []);
 
+  // Resize canvas quand le conteneur change
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
-    const obs = new ResizeObserver(([e]) => setSize({ w: e.contentRect.width, h: e.contentRect.height }));
+    const obs = new ResizeObserver(([e]) => {
+      const { width: cw, height: ch } = e.contentRect;
+      setSize({ w: cw, h: ch });
+      if (canvasRef.current) {
+        canvasRef.current.width = Math.round(cw * (window.devicePixelRatio > 2 ? 2 : window.devicePixelRatio || 1));
+        canvasRef.current.height = Math.round(ch * (window.devicePixelRatio > 2 ? 2 : window.devicePixelRatio || 1));
+      }
+    });
     obs.observe(el);
     return () => obs.disconnect();
   }, []);
+
+  // Canvas temps reel — remplace le rendu DOM pour overlays/sous-titres/effets
+  useRealtimeCanvas(videoRef.current, canvasRef.current);
 
   useEffect(() => {
     if (isPlaying) { hideTimer.current = setTimeout(() => setShowControls(false), 2000); }
@@ -39,31 +49,22 @@ export default function VideoPreview({ interactive = false }: Props) {
     return () => { if (hideTimer.current) clearTimeout(hideTimer.current); };
   }, [isPlaying]);
 
-  // Sync musique de fond avec la vidéo
   useEffect(() => {
     const a = bgAudioRef.current;
     if (!a || !audioUrl) return;
     a.volume = audioVolume;
-    if (isPlaying) a.play().catch(() => {});
-    else a.pause();
+    if (isPlaying) a.play().catch(() => {}); else a.pause();
   }, [isPlaying, audioVolume, audioUrl]);
 
-  const handleTimeUpdate = () => {
-    const video = videoRef.current;
-    if (!video) return;
-    setCurrentTime(video.currentTime);
-    if (video.currentTime >= trimEnd && trimEnd > 0) { seekTo(trimStart); pause(); }
-    // Garder l'audio sync avec la vidéo
+  const handleTimeUpdate = useCallback(() => {
+    const v = videoRef.current; if (!v) return;
+    setCurrentTime(v.currentTime);
+    if (v.currentTime >= trimEnd && trimEnd > 0) { seekTo(trimStart); pause(); }
     const a = bgAudioRef.current;
-    if (a && audioUrl && Math.abs(a.currentTime - video.currentTime) > 0.3) {
-      a.currentTime = video.currentTime;
-    }
-  };
+    if (a && audioUrl && Math.abs(a.currentTime - v.currentTime) > 0.3) a.currentTime = v.currentTime;
+  }, [trimStart, trimEnd, audioUrl, setCurrentTime, seekTo, pause]);
 
-  const trySetDuration = (v: HTMLVideoElement) => {
-    if (v.duration && isFinite(v.duration) && v.duration > 0) { setDuration(v.duration); return true; }
-    return false;
-  };
+  const trySetDuration = (v: HTMLVideoElement) => { if (v.duration && isFinite(v.duration) && v.duration > 0) { setDuration(v.duration); return true; } return false; };
   const handleLoaded = () => { const v = videoRef.current; if (!v) return; trySetDuration(v); setVideoOrientation(v.videoWidth > v.videoHeight ? 'landscape' : 'portrait'); };
   const handleDurationChange = () => { if (videoRef.current) trySetDuration(videoRef.current); };
   const handleCanPlay = () => {
@@ -74,7 +75,7 @@ export default function VideoPreview({ interactive = false }: Props) {
     }, 200);
   };
 
-  // Safari iOS fallback — duration=Infinity on blobs
+  // Safari iOS fallback duration
   useEffect(() => {
     const v = videoRef.current; if (!v || !videoUrl) return;
     const check = () => { if (v.duration && isFinite(v.duration) && v.duration > 0) { setDuration(v.duration); return true; } return false; };
@@ -86,37 +87,22 @@ export default function VideoPreview({ interactive = false }: Props) {
     return () => { v.removeEventListener('loadedmetadata', cb); v.removeEventListener('canplay', cb); v.removeEventListener('durationchange', cb); clearInterval(iv); clearTimeout(to); };
   }, [videoUrl, setDuration]);
 
-  const handleTap = () => {
-    if (interactive) return;
-    setShowControls(true);
-    togglePlayPause();
-  };
-
-  const frameUrl = useCanvasPreview(videoRef.current, size.w, size.h);
-  const showCanvasFrame = !!frameUrl && !isPlaying && !interactive;
-
-  const filterDef = FILTERS.find(f => f.id === filter);
-  const filterStyle = filterDef && filterDef.css !== 'none' ? { filter: filterDef.css } : undefined;
-
-  const isOutOfTrim = trimEnd > 0 && (currentTime < trimStart || currentTime > trimEnd);
+  const handleTap = () => { if (interactive) return; setShowControls(true); togglePlayPause(); };
 
   return (
     <div ref={containerRef} className="relative w-full h-full flex items-center justify-center bg-black" onClick={handleTap}>
-      <video
-        ref={videoRef}
-        src={videoUrl ?? undefined}
-        className="w-full h-full object-cover"
-        style={{ ...filterStyle, visibility: isOutOfTrim ? 'hidden' : 'visible' }}
+      {/* Video cachee visuellement — reste dans le DOM pour audio + timing */}
+      {/* Video invisible mais audible — le canvas dessine par-dessus */}
+      <video ref={videoRef} src={videoUrl ?? undefined}
+        className="absolute inset-0 w-full h-full opacity-0 pointer-events-none"
         playsInline preload="auto"
-        onTimeUpdate={handleTimeUpdate}
-        onLoadedMetadata={handleLoaded}
-        onDurationChange={handleDurationChange}
-        onCanPlay={handleCanPlay}
-      />
+        onTimeUpdate={handleTimeUpdate} onLoadedMetadata={handleLoaded}
+        onDurationChange={handleDurationChange} onCanPlay={handleCanPlay} />
       {audioUrl && <audio ref={bgAudioRef} src={audioUrl} loop />}
-      {showCanvasFrame && <img src={frameUrl} alt="" className="absolute inset-0 w-full h-full object-cover pointer-events-none" />}
-      {(!showCanvasFrame || interactive) && size.w > 0 && <TextOverlayLayer width={size.w} height={size.h} interactive={interactive} />}
-      {!showCanvasFrame && <SubtitlePreview />}
+      {/* Canvas temps reel — affiche video + filtres + LUT + overlays + sous-titres */}
+      <canvas ref={canvasRef} className="w-full h-full object-contain" style={{ imageRendering: 'auto' }} />
+      {/* TextOverlayLayer DOM seulement en mode interactif (drag-and-drop) */}
+      {interactive && size.w > 0 && <TextOverlayLayer width={size.w} height={size.h} interactive />}
       {showControls && !interactive && (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           <div className="w-14 h-14 rounded-full bg-black/50 flex items-center justify-center">
