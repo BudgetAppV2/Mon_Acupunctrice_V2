@@ -55,17 +55,29 @@ Screen recording analysé frame par frame. Frames clés dans `project-docs/04_LO
 
 ## Résumé des milestones
 
-| ID | Nom | Type | Temps | Dépendances |
-|----|-----|------|-------|-------------|
-| EP-0 | Scene Graph & Animation Engine | Frontend | 6-8h | Aucune |
-| EP-1 | Subtitle Engine Pro | Frontend | 10-12h | EP-0 |
-| EP-1b | Fix Whisper français | Backend | 2-3h | Aucune |
-| EP-2 | Font System (15 Google Fonts) | Frontend | 3-4h | Aucune |
-| EP-3 | Overlay Components | Frontend | 6-8h | EP-0 |
-| EP-4 | Template System (3 core) | Frontend | 5-7h | EP-1, EP-2, EP-3 |
-| EP-5 | Film Effects | Frontend | 3-4h | EP-0 |
-| EP-6 | Export Integration | Integration | 4-6h | EP-0, EP-1 |
-| EP-7 | UI — Template picker + preview | Frontend | 4-5h | EP-4 |
+| ID | Nom | Type | Temps | Status |
+|----|-----|------|-------|--------|
+| EP-0 | Scene Graph & Animation Engine | Frontend | 6-8h | ✅ FAIT |
+| EP-1 | Subtitle Engine Pro | Frontend | 10-12h | ✅ FAIT |
+| EP-1b | Fix Whisper français | Backend | 2-3h | ✅ FAIT |
+| EP-2 | Font System (15 Google Fonts) | Frontend | 3-4h | ✅ FAIT (via ancien plan Phase 1 — fontLoader + FontSelector + designKnowledge) |
+| EP-3 | Overlay Components | Frontend | 6-8h | ✅ FAIT |
+| EP-4 | Template System (3 core) | Frontend | 5-7h | ✅ FAIT |
+| EP-5 | Film Effects | Frontend | 3-4h | ✅ FAIT (intégré dans sceneRenderer) |
+| EP-6 | Export Integration | Integration | 4-6h | ⚠️ PARTIEL — buildExportScene existe mais pas encore branché dans exportWebCodecs.ts |
+| EP-7 | UI — Template picker + preview | Frontend | 4-5h | ❌ À FAIRE |
+
+### Aussi récupéré de l'ancien plan (Phase 1-2) :
+| Élément | Status |
+|---------|--------|
+| designKnowledge.ts (338 lignes — fonts, palettes, safe zones, règles) | ✅ En place |
+| fontLoader.ts (chargement on-demand Google Fonts) | ✅ En place |
+| FontSelector.tsx (sélecteur par catégories avec preview) | ✅ En place |
+| drawOverlays.ts enrichi (animations + effets texte) | ✅ En place |
+| videoThemes.ts (8 thèmes prédéfinis) | ✅ En place |
+| ThemePanel.tsx (sélecteur de thèmes) | ✅ En place |
+| useCanvasPreview.ts (preview Canvas HQ) | ✅ En place |
+| useUndoRedo.ts (50 snapshots) | ✅ En place |
 
 ---
 

@@ -3,6 +3,7 @@
 import { useState, useCallback } from 'react';
 import { ref, uploadBytesResumable } from 'firebase/storage';
 import { getFirebaseStorage, getFirebaseAuth } from '@/lib/firebase';
+import { fixFrenchWord } from '@/lib/utils/frenchPostProcess';
 import { groupWords } from '@/lib/utils/subtitleGrouper';
 import type { SubtitleSegment } from '@/lib/types';
 
@@ -118,7 +119,7 @@ export function useTranscription() {
       console.log('[TRANSCRIBE] Result:', data.subtitles?.length ?? 0, 'words');
 
       const words = (data.subtitles || []).map((w: { text: string; startTime: number; endTime: number }) => ({
-        word: w.text, start: w.startTime, end: w.endTime,
+        word: fixFrenchWord(w.text), start: w.startTime, end: w.endTime,
       }));
 
       const segments = groupWords(words);

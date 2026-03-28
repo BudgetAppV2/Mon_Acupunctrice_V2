@@ -39,6 +39,29 @@ export interface SubtitleSegment {
 
 export type SubtitleStyle = 'classic' | 'tiktok' | 'karaoke' | 'bold_outline' | 'pill' | 'karaoke_pro';
 
+// --- Subtitle Engine Pro ---
+
+export type SubtitleFamily = 'narratif' | 'boldHighlight' | 'minimalWellness';
+export type SubtitleDisplayType = 'narration' | 'highlight' | 'citation' | 'karaoke';
+export type SubtitlePosition =
+  | 'top-left' | 'top-center' | 'top-right'
+  | 'center-left' | 'center' | 'center-right'
+  | 'bottom-left' | 'bottom-center' | 'bottom-right';
+
+export interface HighlightedWord {
+  wordIndex: number;
+  color: string;
+}
+
+export interface SubtitleSegmentPro extends SubtitleSegment {
+  displayType: SubtitleDisplayType;
+  position: SubtitlePosition;
+  highlightedWords?: HighlightedWord[];
+  fontFamily?: string;
+  fontSize?: number; // ratio de la largeur (ex: 0.045)
+  animation?: 'fade' | 'slide-left' | 'slide-up' | 'pop' | 'none';
+}
+
 // --- Video Clips (multi-clip M1) ---
 
 export interface VideoClip {
