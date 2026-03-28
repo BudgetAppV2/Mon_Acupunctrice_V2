@@ -8,6 +8,7 @@ import { getFirebaseFirestore, getFirebaseAuth, getFirebaseStorage } from '@/lib
 import { exportWithWebCodecs } from '@/lib/utils/exportWebCodecs';
 import { FILTERS } from '@/lib/utils/filters';
 import { loadFont } from '@/lib/utils/fontLoader';
+import { buildExportScene } from '@/lib/editor/buildExportScene';
 
 export type ExportState = 'idle' | 'preparing' | 'exporting' | 'uploading' | 'done' | 'error';
 
@@ -39,10 +40,21 @@ export function useVideoExport() {
 
       setState('exporting');
 
-      // Mediabunny gere l'audio en transmuxant depuis le source — plus besoin de FFmpeg ou Web Audio
+      // Construire le SceneGraph — template ou overlays existants
+      const scene = buildExportScene({
+        duration: s.trimEnd - s.trimStart,
+        overlays: s.overlays,
+        subtitles: s.subtitles,
+        templateId: s.activeTemplateId ?? undefined,
+        templateConfig: s.activeTemplateId ? {
+          title: s.templateTitle, points: s.templatePoints,
+          quote: s.templateQuote, cta: s.templateCta, duration: s.trimEnd - s.trimStart,
+        } : undefined,
+      });
+
       const blob = await exportWithWebCodecs(
         s.videoFile, s.trimStart, s.trimEnd, setProgress,
-        filterCss, s.overlays, s.subtitles, s.subtitleStyle,
+        filterCss, s.overlays, s.subtitles, s.subtitleStyle, scene, s.activeLutId,
       );
 
       // Upload resumable avec progression

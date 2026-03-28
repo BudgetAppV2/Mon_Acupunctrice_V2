@@ -7,6 +7,10 @@ import { registerAacEncoder } from '@mediabunny/aac-encoder';
 import { drawTextOverlays } from './drawOverlays';
 import type { TextOverlayItem, SubtitleSegment, SubtitleStyle } from '@/lib/types';
 import { drawSubtitles } from './drawSubtitles';
+import type { SceneGraph } from '@/lib/editor/sceneGraph';
+import { renderScene } from '@/lib/editor/sceneRenderer';
+import { applyLut } from '@/lib/editor/lutRenderer';
+import { getLutData } from '@/lib/data/luts/presets';
 
 registerAacEncoder();
 
@@ -41,6 +45,7 @@ export async function exportWithWebCodecs(
   onProgress: (p: number) => void,
   filterCss?: string, overlays?: TextOverlayItem[],
   subtitles?: SubtitleSegment[], subtitleStyle?: string,
+  scene?: SceneGraph | null, lutId?: string | null,
 ): Promise<Blob> {
   // --- Demuxer le source pour l'audio ---
   let input: Input | null = null;
@@ -124,8 +129,19 @@ export async function exportWithWebCodecs(
     ctx.drawImage(video, sx, sy, sw, sh, 0, 0, W, H);
     ctx.filter = 'none';
 
-    if (overlays?.length) drawTextOverlays(ctx, overlays, t, W, H);
-    if (subtitles?.length) drawSubtitles(ctx, subtitles, (subtitleStyle || 'classic') as SubtitleStyle, t, W, H);
+    // LUT color grading (applique apres drawImage, avant overlays)
+    if (lutId) {
+      const lutData = getLutData(lutId);
+      if (lutData) applyLut(ctx, lutData, lutId, W, H);
+    }
+
+    // Rendu scene graph (templates/overlays animes) ou legacy (overlays + subtitles basiques)
+    if (scene) {
+      renderScene(ctx, scene, t - trimStart, W, H);
+    } else {
+      if (overlays?.length) drawTextOverlays(ctx, overlays, t, W, H);
+      if (subtitles?.length) drawSubtitles(ctx, subtitles, (subtitleStyle || 'classic') as SubtitleStyle, t, W, H);
+    }
 
     await canvasSource.add(t - trimStart, frameDur);
     onProgress(Math.round(i / totalFrames * 90));

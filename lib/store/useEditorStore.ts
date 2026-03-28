@@ -73,6 +73,12 @@ interface EditorState {
   coverCustomUrl: string | null;
   captions: { instagram: string; facebook: string; youtube: string } | null;
   silenceRanges: { start: number; end: number }[];
+  activeLutId: string | null;
+  activeTemplateId: string | null;
+  templateTitle: string;
+  templatePoints: string[];
+  templateQuote: string;
+  templateCta: string;
   // Actions
   setVideoFile: (file: File) => void;
   loadVideo: (file: File, url: string) => void;
@@ -101,6 +107,12 @@ interface EditorState {
   setAudioFade: (fadeIn: number, fadeOut: number) => void;
   setAudioDucking: (on: boolean) => void;
   setSilenceRanges: (ranges: { start: number; end: number }[]) => void;
+  setLut: (id: string | null) => void;
+  setTemplate: (id: string | null) => void;
+  setTemplateTitle: (t: string) => void;
+  setTemplatePoints: (pts: string[]) => void;
+  setTemplateQuote: (q: string) => void;
+  setTemplateCta: (c: string) => void;
   setThumbnail: (url: string) => void;
   setVideoOrientation: (o: 'portrait' | 'landscape') => void;
   setEditorSplitRatio: (ratio: number) => void;
@@ -128,7 +140,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   filter: 'normal', overlays: [], selectedOverlayId: null,
   subtitles: [], subtitleStyle: 'classic' as SubtitleStyle,
   audioUrl: null, audioName: null, audioVolume: 0.3, voiceVolume: 1,
-  audioFadeIn: 0, audioFadeOut: 0, audioDucking: false, thumbnailUrl: null, videoOrientation: 'portrait', editorSplitRatio: 0.50, selectedSubtitleId: null, coverFrameOffset: 0, coverDataUrl: null, coverCustomUrl: null, captions: null, silenceRanges: [],
+  audioFadeIn: 0, audioFadeOut: 0, audioDucking: false, thumbnailUrl: null, videoOrientation: 'portrait', editorSplitRatio: 0.50, selectedSubtitleId: null, coverFrameOffset: 0, coverDataUrl: null, coverCustomUrl: null, captions: null, silenceRanges: [], activeLutId: null, activeTemplateId: null, templateTitle: '', templatePoints: [], templateQuote: '', templateCta: '',
 
   setVideoFile: (file) => {
     get().clips.forEach(c => { if (c.blobUrl) URL.revokeObjectURL(c.blobUrl); });
@@ -197,6 +209,12 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   setAudioFade: (fadeIn, fadeOut) => set({ audioFadeIn: fadeIn, audioFadeOut: fadeOut }),
   setAudioDucking: (on) => set({ audioDucking: on }),
   setSilenceRanges: (ranges) => set({ silenceRanges: ranges }),
+  setLut: (id) => { set({ activeLutId: id }); markEditorTouched(); },
+  setTemplate: (id) => set({ activeTemplateId: id }),
+  setTemplateTitle: (t) => set({ templateTitle: t }),
+  setTemplatePoints: (pts) => set({ templatePoints: pts }),
+  setTemplateQuote: (q) => set({ templateQuote: q }),
+  setTemplateCta: (c) => set({ templateCta: c }),
   setThumbnail: (url) => set({ thumbnailUrl: url }),
   setVideoOrientation: (o) => set({ videoOrientation: o }),
   setEditorSplitRatio: (ratio) => set({ editorSplitRatio: Math.max(0.25, Math.min(0.80, ratio)) }),

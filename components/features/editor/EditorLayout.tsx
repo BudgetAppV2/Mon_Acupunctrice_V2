@@ -20,6 +20,7 @@ import SubtitlePanel from './panels/SubtitlePanel';
 import AudioPanel from './panels/AudioPanel';
 import CoverPanel from './panels/CoverPanel';
 import ThemePanel from './panels/ThemePanel';
+import LutPanel from './panels/LutPanel';
 import ExportButton from './ExportButton';
 import ImportModal from './ImportModal';
 import PublishSheet from '../publish/PublishSheet';
@@ -132,7 +133,7 @@ export default function EditorLayout({ itemId }: Props) {
           <div className="flex-1 min-h-0 bg-gray-900 overflow-y-auto">
             {activeTab === 'style' && <ThemePanel />}
             {activeTab === 'trim' && <TrimPanel />}
-            {activeTab === 'filtres' && <FilterPanel />}
+            {activeTab === 'filtres' && <><FilterPanel /><LutPanel /></>}
             {activeTab === 'texte' && <TextPanel />}
             {activeTab === 'subs' && <SubtitlePanel />}
             {activeTab === 'audio' && <AudioPanel />}

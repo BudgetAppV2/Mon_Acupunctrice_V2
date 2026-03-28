@@ -4,6 +4,8 @@ import { useEffect } from 'react';
 import { useEditorStore } from '@/lib/store/useEditorStore';
 import { VIDEO_THEMES, getThemePalette } from '@/lib/data/videoThemes';
 import { loadFont } from '@/lib/utils/fontLoader';
+import TemplatePicker from './TemplatePicker';
+import TemplateCustomizer from './TemplateCustomizer';
 
 export default function ThemePanel() {
   const { activeThemeId, setActiveTheme } = useEditorStore();
@@ -21,7 +23,8 @@ export default function ThemePanel() {
   };
 
   return (
-    <div className="px-3 py-2">
+    <div className="px-3 py-2 space-y-3">
+      <span className="text-xs text-gray-400">Themes</span>
       <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
         {VIDEO_THEMES.map(theme => {
           const palette = getThemePalette(theme);
@@ -40,21 +43,19 @@ export default function ThemePanel() {
                 <div className="w-3 h-3 rounded-full border border-gray-600" style={{ backgroundColor: palette.text }} />
                 <div className="w-3 h-3 rounded-full border border-gray-600" style={{ backgroundColor: palette.stroke }} />
               </div>
-              <span
-                className="text-[10px] text-gray-300 truncate w-full text-center"
-                style={{ fontFamily: `"${theme.fontTitle}", sans-serif` }}
-              >
+              <span className="text-[10px] text-gray-300 truncate w-full text-center"
+                style={{ fontFamily: `"${theme.fontTitle}", sans-serif` }}>
                 {theme.fontTitle.split(' ')[0]}
               </span>
-              <span className={`text-[9px] font-medium truncate w-full text-center ${
-                isActive ? 'text-sage' : 'text-gray-500'
-              }`}>
+              <span className={`text-[9px] font-medium truncate w-full text-center ${isActive ? 'text-sage' : 'text-gray-500'}`}>
                 {theme.name}
               </span>
             </button>
           );
         })}
       </div>
+      <TemplatePicker />
+      <TemplateCustomizer />
     </div>
   );
 }

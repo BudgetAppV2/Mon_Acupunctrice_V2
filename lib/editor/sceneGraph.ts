@@ -103,9 +103,11 @@ export interface ShapeLayer extends BaseLayer {
 
 export interface EffectLayer extends BaseLayer {
   type: 'effect';
-  effect: 'grain' | 'vignette' | 'gradient' | 'warmFilter';
+  effect: 'grain' | 'vignette' | 'gradient' | 'warmFilter' | 'lut';
   intensity: number; // 0-1
   config?: Record<string, number | string>;
+  /** ID de la LUT pour effect='lut' */
+  lutId?: string;
 }
 
 export interface SubtitleLayer extends BaseLayer {

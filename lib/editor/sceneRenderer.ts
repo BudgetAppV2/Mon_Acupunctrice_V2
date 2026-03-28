@@ -5,6 +5,8 @@
 
 import type { SceneGraph, SceneLayer, TextLayer, ShapeLayer, EffectLayer } from './sceneGraph';
 import { resolveAnimation } from './sceneGraph';
+import { applyLut } from './lutRenderer';
+import { getLutData } from '@/lib/data/luts/presets';
 
 /** Dessine le SceneGraph complet a l'instant t sur le canvas */
 export function renderScene(
@@ -135,6 +137,9 @@ function renderEffect(ctx: CanvasRenderingContext2D, layer: EffectLayer, w: numb
     ctx.globalAlpha = 0.04 * i;
     for (let j = 0; j < 500; j++) { const c = Math.random() > 0.5 ? 255 : 0; ctx.fillStyle = `rgb(${c},${c},${c})`; ctx.fillRect(Math.random() * w, Math.random() * h, 1.5, 1.5); }
     ctx.globalAlpha = 1;
+  } else if (layer.effect === 'lut' && layer.lutId) {
+    const lutData = getLutData(layer.lutId);
+    if (lutData) applyLut(ctx, lutData, layer.lutId, w, h, i);
   }
 }
 

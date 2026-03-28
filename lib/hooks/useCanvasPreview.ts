@@ -6,6 +6,10 @@ import { FILTERS } from '@/lib/utils/filters';
 import { drawTextOverlays } from '@/lib/utils/drawOverlays';
 import { drawSubtitles } from '@/lib/utils/drawSubtitles';
 import { getTheme, getThemePalette } from '@/lib/data/videoThemes';
+import { buildExportScene } from '@/lib/editor/buildExportScene';
+import { renderScene } from '@/lib/editor/sceneRenderer';
+import { applyLut } from '@/lib/editor/lutRenderer';
+import { getLutData } from '@/lib/data/luts/presets';
 import type { SubtitleStyle } from '@/lib/types';
 
 /**
@@ -51,12 +55,32 @@ export function useCanvasPreview(
       ctx.drawImage(videoEl, sx, sy, sw, sh, 0, 0, w, h);
       ctx.filter = 'none';
 
-      if (s.overlays.length > 0) drawTextOverlays(ctx, s.overlays, s.currentTime, w, h);
+      // LUT color grading
+      if (s.activeLutId) {
+        const lutData = getLutData(s.activeLutId);
+        if (lutData) applyLut(ctx, lutData, s.activeLutId, w, h);
+      }
 
-      if (s.subtitles.length > 0) {
-        const theme = getTheme(s.activeThemeId);
-        const palette = getThemePalette(theme);
-        drawSubtitles(ctx, s.subtitles, s.subtitleStyle as SubtitleStyle, s.currentTime, w, h, palette);
+      // Rendu scene graph (template/overlays animes) ou legacy
+      const scene = buildExportScene({
+        duration: s.trimEnd - s.trimStart,
+        overlays: s.overlays,
+        subtitles: s.subtitles,
+        templateId: s.activeTemplateId ?? undefined,
+        templateConfig: s.activeTemplateId ? {
+          title: s.templateTitle, points: s.templatePoints,
+          quote: s.templateQuote, cta: s.templateCta, duration: s.trimEnd - s.trimStart,
+        } : undefined,
+      });
+      if (scene) {
+        renderScene(ctx, scene, s.currentTime - s.trimStart, w, h);
+      } else {
+        if (s.overlays.length > 0) drawTextOverlays(ctx, s.overlays, s.currentTime, w, h);
+        if (s.subtitles.length > 0) {
+          const theme = getTheme(s.activeThemeId);
+          const palette = getThemePalette(theme);
+          drawSubtitles(ctx, s.subtitles, s.subtitleStyle as SubtitleStyle, s.currentTime, w, h, palette);
+        }
       }
 
       setFrameUrl(canvas.toDataURL('image/jpeg', 0.92));
