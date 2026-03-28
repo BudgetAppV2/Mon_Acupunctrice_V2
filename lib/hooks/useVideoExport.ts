@@ -36,6 +36,7 @@ export function useVideoExport() {
       }
 
       for (const o of s.overlays) await loadFont(o.fontFamily);
+      if (s.subtitleFontFamily && s.subtitleFontFamily !== 'Inter') await loadFont(s.subtitleFontFamily);
       const filterCss = FILTERS.find(f => f.id === s.filter)?.css ?? 'none';
 
       setState('exporting');
@@ -56,6 +57,7 @@ export function useVideoExport() {
         s.videoFile, s.trimStart, s.trimEnd, setProgress,
         filterCss, s.overlays, s.subtitles, s.subtitleStyle, scene, s.activeLutId,
         s.subtitleFamily, s.subtitlePosition, s.subtitleAnimation, s.subtitleAccentColor,
+        s.subtitleOverrides, s.subtitleFontFamily,
       );
 
       // Upload resumable avec progression

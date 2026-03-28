@@ -5,7 +5,7 @@ import {
 } from 'mediabunny';
 import { registerAacEncoder } from '@mediabunny/aac-encoder';
 import { drawTextOverlays } from './drawOverlays';
-import type { TextOverlayItem, SubtitleSegment, SubtitleStyle, SubtitleFamily, SubtitlePosition } from '@/lib/types';
+import type { TextOverlayItem, SubtitleSegment, SubtitleStyle, SubtitleFamily, SubtitlePosition, SubtitleDisplayType } from '@/lib/types';
 import { drawSubtitles } from './drawSubtitles';
 import type { SceneGraph } from '@/lib/editor/sceneGraph';
 import { renderScene } from '@/lib/editor/sceneRenderer';
@@ -52,6 +52,8 @@ export async function exportWithWebCodecs(
   subtitlePosition?: SubtitlePosition,
   subtitleAnimation?: 'fade' | 'slide-left' | 'slide-up' | 'pop' | 'none',
   subtitleAccentColor?: string,
+  subtitleOverrides?: Record<string, { position?: SubtitlePosition; fontSize?: number }>,
+  subtitleFontFamily?: string,
 ): Promise<Blob> {
   // --- Demuxer le source pour l'audio ---
   let input: Input | null = null;
@@ -154,8 +156,12 @@ export async function exportWithWebCodecs(
 
     // Sous-titres Pro — rendu par-dessus la scene si famille selectionnee
     if (subtitleFamily && subtitles?.length) {
-      const proSegs = toProSegments(subtitles, subtitlePosition ?? 'bottom-center', subtitleAnimation ?? 'fade');
-      renderSubtitlesPro(ctx, proSegs, subtitleFamily, t, W, H, { accentColor: subtitleAccentColor ?? '#E91E8C' });
+      const proSegs = toProSegments(subtitles, subtitlePosition ?? 'bottom-center', subtitleAnimation ?? 'fade', 'narration' as SubtitleDisplayType, subtitleOverrides ?? {});
+      renderSubtitlesPro(ctx, proSegs, subtitleFamily, t, W, H, {
+        accentColor: subtitleAccentColor ?? '#E91E8C',
+        fontTitle: subtitleFontFamily ?? 'Inter',
+        fontBody: subtitleFontFamily ?? 'Inter',
+      });
     }
 
     await canvasSource.add(t - trimStart, frameDur);

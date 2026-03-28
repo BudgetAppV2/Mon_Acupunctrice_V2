@@ -1,10 +1,17 @@
 'use client';
 
 import { useRef, useEffect, useState, useCallback } from 'react';
+import dynamic from 'next/dynamic';
 import { useEditorStore, registerVideoElement } from '@/lib/store/useEditorStore';
 import { PlayIcon, PauseIcon } from '@heroicons/react/24/solid';
 import { useRealtimeCanvas } from '@/lib/hooks/useRealtimeCanvas';
 import TextOverlayLayer from './text/TextOverlay';
+
+// Konva ne supporte pas SSR — chargement uniquement côté client
+const SubtitleInteractionLayer = dynamic(
+  () => import('./subtitles/SubtitleInteractionLayer'),
+  { ssr: false },
+);
 
 interface Props { interactive?: boolean }
 
@@ -16,7 +23,7 @@ export default function VideoPreview({ interactive = false }: Props) {
   const {
     videoUrl, isPlaying, currentTime, trimStart, trimEnd, filter, audioUrl, audioVolume,
     setCurrentTime, setDuration, pause, togglePlayPause, seekTo,
-    setThumbnail, setVideoOrientation, thumbnailUrl,
+    setThumbnail, setVideoOrientation, thumbnailUrl, subtitleFamily,
   } = useEditorStore();
   const [showControls, setShowControls] = useState(true);
   const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -103,6 +110,10 @@ export default function VideoPreview({ interactive = false }: Props) {
       <canvas ref={canvasRef} className="w-full h-full object-contain" style={{ imageRendering: 'auto' }} />
       {/* TextOverlayLayer DOM seulement en mode interactif (drag-and-drop) */}
       {interactive && size.w > 0 && <TextOverlayLayer width={size.w} height={size.h} interactive />}
+      {/* Couche Konva pour interaction sous-titres Pro (drag position + resize fontSize) */}
+      {interactive && subtitleFamily && size.w > 0 && (
+        <SubtitleInteractionLayer width={size.w} height={size.h} />
+      )}
       {showControls && !interactive && (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           <div className="w-14 h-14 rounded-full bg-black/50 flex items-center justify-center">

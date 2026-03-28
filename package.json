@@ -18,11 +18,13 @@
     "firebase": "^11.0.0",
     "firebase-admin": "^13.7.0",
     "fix-webm-duration": "^1.0.6",
+    "konva": "^10.2.3",
     "mediabunny": "^1.40.1",
     "mp4-muxer": "^5.2.2",
     "next": "^15.2.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-konva": "^19.2.3",
     "recharts": "^3.8.0",
     "zustand": "^5.0.0"
   },

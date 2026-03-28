@@ -19,14 +19,15 @@ interface Props {
   onChange: (p: SubtitlePosition) => void;
 }
 
+// Picker compact — raccourci rapide (le drag Konva est le mode principal)
 export default function SubtitlePositionPicker({ value, onChange }: Props) {
   return (
-    <div className="grid grid-cols-3 gap-1">
+    <div className="inline-grid grid-cols-3 gap-0.5">
       {POSITIONS.map(pos => (
         <button
           key={pos}
           onClick={() => onChange(pos)}
-          className={`py-1.5 rounded text-sm font-medium transition ${
+          className={`w-7 h-6 rounded text-xs font-medium transition ${
             value === pos
               ? 'bg-sage text-white'
               : 'bg-gray-800 text-gray-400 hover:bg-gray-700'

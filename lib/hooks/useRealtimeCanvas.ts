@@ -93,8 +93,12 @@ export function useRealtimeCanvas(
 
     // 5. Sous-titres Pro — rendu par-dessus la scene si famille selectionnee
     if (s.subtitleFamily && s.subtitles.length > 0) {
-      const proSegs = toProSegments(s.subtitles, s.subtitlePosition, s.subtitleAnimation);
-      renderSubtitlesPro(ctx, proSegs, s.subtitleFamily, time, w, h, { accentColor: s.subtitleAccentColor });
+      const proSegs = toProSegments(s.subtitles, s.subtitlePosition, s.subtitleAnimation, 'narration', s.subtitleOverrides);
+      renderSubtitlesPro(ctx, proSegs, s.subtitleFamily, time, w, h, {
+        accentColor: s.subtitleAccentColor,
+        fontTitle: s.subtitleFontFamily,
+        fontBody: s.subtitleFontFamily,
+      });
     }
   }, [videoEl, canvasEl]);
 

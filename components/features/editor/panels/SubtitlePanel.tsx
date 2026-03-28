@@ -5,6 +5,11 @@ import { useTranscription } from '@/lib/hooks/useTranscription';
 import type { SubtitleStyle, SubtitleFamily } from '@/lib/types';
 import { SparklesIcon } from '@heroicons/react/24/outline';
 import SubtitlePositionPicker from './SubtitlePositionPicker';
+import { loadFont } from '@/lib/utils/fontLoader';
+
+const SUBTITLE_FONTS = [
+  'Inter', 'Montserrat', 'Oswald', 'Playfair Display', 'Lora', 'Dancing Script',
+];
 
 const FAMILIES: { id: SubtitleFamily; label: string }[] = [
   { id: 'narratif', label: 'Narratif' },
@@ -32,9 +37,10 @@ const V1_STYLES: { id: SubtitleStyle; label: string }[] = [
 export default function SubtitlePanel() {
   const {
     subtitles, subtitleStyle, subtitleFamily,
-    subtitlePosition, subtitleAnimation,
+    subtitlePosition, subtitleAnimation, subtitleFontFamily,
     setSubtitles, setSubtitleStyle, updateSubtitle,
-    setSubtitleFamily, setSubtitlePosition, setSubtitleAnimation, videoFile,
+    setSubtitleFamily, setSubtitlePosition, setSubtitleAnimation,
+    setSubtitleFontFamily, videoFile,
   } = useEditorStore();
   const { transcribe, loading, stage, error } = useTranscription();
 
@@ -104,6 +110,23 @@ export default function SubtitlePanel() {
                     </button>
                   ))}
                 </div>
+              </div>
+
+              <div>
+                <p className="text-[10px] text-gray-500 mb-1 uppercase tracking-wide">Police</p>
+                <select
+                  value={subtitleFontFamily}
+                  onChange={e => {
+                    const f = e.target.value;
+                    setSubtitleFontFamily(f);
+                    loadFont(f).catch(() => {});
+                  }}
+                  className="w-full bg-gray-800 text-white text-xs rounded px-2 py-1.5 border border-gray-700"
+                >
+                  {SUBTITLE_FONTS.map(f => (
+                    <option key={f} value={f}>{f}</option>
+                  ))}
+                </select>
               </div>
             </>
           )}
