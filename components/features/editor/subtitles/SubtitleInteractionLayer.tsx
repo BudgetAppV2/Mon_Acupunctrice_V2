@@ -101,7 +101,7 @@ export default function SubtitleInteractionLayer({ width, height }: Props) {
               }}
               onDragStart={(e) => {
                 // Cacher le bord pendant le drag — seul le texte canvas doit bouger
-                e.target.stroke('transparent');
+                (e.target as Konva.Rect).stroke('transparent');
                 e.target.getLayer()?.batchDraw();
               }}
               onDragMove={(e) => {
