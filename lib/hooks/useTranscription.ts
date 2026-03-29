@@ -1,13 +1,17 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { ref, uploadBytesResumable } from 'firebase/storage';
-import { getFirebaseStorage, getFirebaseAuth } from '@/lib/firebase';
-import { fixFrenchWord } from '@/lib/utils/frenchPostProcess';
+import { fixFrenchWord, fixFrenchText, capitalizeFirst } from '@/lib/utils/frenchPostProcess';
 import { groupWords } from '@/lib/utils/subtitleGrouper';
 import type { SubtitleSegment } from '@/lib/types';
 
-/** Encode un Float32Array mono en WAV PCM 16-bit */
+const SAMPLE_RATE = 16000;
+const CHUNK_SAMPLES = 300 * SAMPLE_RATE;  // 5 min
+const OVERLAP_SAMPLES = 2 * SAMPLE_RATE;  // 2 sec overlap
+const STEP_SAMPLES = CHUNK_SAMPLES - OVERLAP_SAMPLES;
+const STEP_SECONDS = STEP_SAMPLES / SAMPLE_RATE; // 298s
+
+/** Encode un Float32Array mono en WAV PCM 16-bit (nécessaire iOS Safari) */
 function encodeWav(samples: Float32Array, sampleRate: number): ArrayBuffer {
   const numSamples = samples.length;
   const buffer = new ArrayBuffer(44 + numSamples * 2);
@@ -35,6 +39,53 @@ function encodeWav(samples: Float32Array, sampleRate: number): ArrayBuffer {
   return buffer;
 }
 
+type RawWord = { text: string; startTime: number; endTime: number };
+
+/**
+ * Fusionne les mots de plusieurs chunks en corrigeant les offsets.
+ * Chaque chunk non-final est tronqué à STEP_SECONDS pour éviter les doublons
+ * dans la zone d'overlap : le chunk suivant couvre cette zone depuis son début.
+ */
+export function mergeChunkWords(
+  chunkResults: RawWord[][],
+  offsets: number[]
+): { word: string; start: number; end: number }[] {
+  const merged: { word: string; start: number; end: number }[] = [];
+
+  for (let i = 0; i < chunkResults.length; i++) {
+    const isLast = i === chunkResults.length - 1;
+    const offset = offsets[i];
+
+    for (const w of chunkResults[i]) {
+      // Ignorer les mots de fin de chunk couverts par l'overlap du chunk suivant
+      if (!isLast && w.startTime >= STEP_SECONDS) continue;
+      merged.push({
+        word: fixFrenchWord(w.text),
+        start: w.startTime + offset,
+        end: w.endTime + offset,
+      });
+    }
+  }
+
+  return merged;
+}
+
+async function transcribeBlob(blob: Blob): Promise<RawWord[]> {
+  // Ne pas setter Content-Type : le browser le set avec le boundary multipart
+  const formData = new FormData();
+  formData.append('audio', blob, 'audio.wav');
+
+  const res = await fetch('/api/transcribe', { method: 'POST', body: formData });
+
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({})) as { error?: string };
+    throw new Error(data.error || 'La transcription a échoué. Essaie avec une vidéo plus courte.');
+  }
+
+  const data = await res.json() as { subtitles?: RawWord[] };
+  return data.subtitles ?? [];
+}
+
 export type TranscriptionStage = 'idle' | 'extracting' | 'uploading' | 'transcribing';
 
 export function useTranscription() {
@@ -47,87 +98,62 @@ export function useTranscription() {
     setError(null);
 
     try {
-      const userId = getFirebaseAuth().currentUser?.uid;
-      if (!userId) throw new Error('Non connecte');
-
-      // Etape 1 : Extraire l'audio via Web Audio API
+      // Étape 1 : Extraire l'audio via AudioContext (nécessaire iOS Safari)
       setStage('extracting');
-      console.log('[TRANSCRIBE] Stage: extracting audio. File size:', (videoFile.size / 1024 / 1024).toFixed(1) + 'MB');
 
-      let uploadBlob: Blob;
-      let storagePath: string;
+      const ac = new AudioContext({ sampleRate: SAMPLE_RATE });
+      const arrayBuf = await videoFile.arrayBuffer();
+      const audioBuf = await ac.decodeAudioData(arrayBuf);
+      await ac.close();
 
-      try {
-        // Créer un blob URL et décoder via AudioContext
-        // On utilise decodeAudioData sur le arrayBuffer du fichier
-        // Safari iOS supporte ça même sans FFmpeg
-        const ac = new AudioContext({ sampleRate: 16000 });
-        console.log('[TRANSCRIBE] AudioContext created, reading file...');
-        
-        const arrayBuf = await videoFile.arrayBuffer();
-        console.log('[TRANSCRIBE] ArrayBuffer read OK:', (arrayBuf.byteLength / 1024 / 1024).toFixed(1) + 'MB, decoding...');
-        
-        const audioBuf = await ac.decodeAudioData(arrayBuf);
-        console.log('[TRANSCRIBE] Audio decoded:', audioBuf.duration.toFixed(1) + 's,', audioBuf.numberOfChannels, 'ch,', audioBuf.sampleRate + 'Hz');
-        await ac.close();
+      const mono = audioBuf.getChannelData(0);
 
-        const mono = audioBuf.getChannelData(0);
-        const wavBuffer = encodeWav(mono, 16000);
-        uploadBlob = new Blob([wavBuffer], { type: 'audio/wav' });
-        storagePath = `transcriptions/${userId}/${Date.now()}.wav`;
-        console.log('[TRANSCRIBE] WAV created:', (uploadBlob.size / 1024).toFixed(0) + 'KB');
-      } catch (e) {
-        console.error('[TRANSCRIBE] Audio extraction FAILED:', e instanceof Error ? e.message : e);
-        
-        // Fallback : uploader la vidéo directement (la CF doit gérer)
-        console.warn('[TRANSCRIBE] Fallback: uploading full video');
-        uploadBlob = videoFile;
-        storagePath = `transcriptions/${userId}/${Date.now()}.mp4`;
-      }
-
-      // Etape 2 : Upload
-      setStage('uploading');
-      console.log('[TRANSCRIBE] Uploading', storagePath.split('.').pop(), (uploadBlob.size / 1024 / 1024).toFixed(1) + 'MB');
-      const storage = getFirebaseStorage();
-      await new Promise<void>((resolve, reject) => {
-        const task = uploadBytesResumable(ref(storage, storagePath), uploadBlob);
-        task.on('state_changed',
-          (snap) => console.log('[TRANSCRIBE] Upload:', Math.round(snap.bytesTransferred / snap.totalBytes * 100) + '%'),
-          (err) => { console.error('[TRANSCRIBE] Upload error:', err); reject(err); },
-          () => { console.log('[TRANSCRIBE] Upload complete'); resolve(); },
-        );
-      });
-
-      // Etape 3 : Whisper
+      // Étape 2 : Transcription via AssemblyAI (avec chunking si > 5 min)
       setStage('transcribing');
-      console.log('[TRANSCRIBE] Calling Whisper via', storagePath);
-      const res = await fetch('/api/transcribe', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ storagePath }),
-      });
 
-      console.log('[TRANSCRIBE] Whisper status:', res.status);
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        console.error('[TRANSCRIBE] Whisper error:', data);
-        throw new Error(data.error || 'La transcription a echoue. Essaie avec une video plus courte.');
+      let words: { word: string; start: number; end: number }[];
+
+      if (mono.length <= CHUNK_SAMPLES) {
+        // Vidéo courte : envoi direct
+        const wav = encodeWav(mono, SAMPLE_RATE);
+        const blob = new Blob([wav], { type: 'audio/wav' });
+        const rawWords = await transcribeBlob(blob);
+
+        words = rawWords.map(w => ({
+          word: fixFrenchWord(w.text),
+          start: w.startTime,
+          end: w.endTime,
+        }));
+      } else {
+        // Vidéo longue : chunks de 5 min avec overlap 2s
+        const chunks: Float32Array[] = [];
+        const offsets: number[] = [];
+
+        for (let start = 0; start < mono.length; start += STEP_SAMPLES) {
+          const end = Math.min(start + CHUNK_SAMPLES, mono.length);
+          chunks.push(mono.slice(start, end));
+          offsets.push(start / SAMPLE_RATE);
+        }
+
+        const chunkResults: RawWord[][] = [];
+        for (const chunk of chunks) {
+          const wav = encodeWav(chunk, SAMPLE_RATE);
+          const blob = new Blob([wav], { type: 'audio/wav' });
+          chunkResults.push(await transcribeBlob(blob));
+        }
+
+        words = mergeChunkWords(chunkResults, offsets);
       }
-      const data = await res.json();
-      console.log('[TRANSCRIBE] Raw response keys:', Object.keys(data));
-      console.log('[TRANSCRIBE] Raw response:', JSON.stringify(data).substring(0, 500));
-      console.log('[TRANSCRIBE] Result:', data.subtitles?.length ?? 0, 'words');
-
-      const words = (data.subtitles || []).map((w: { text: string; startTime: number; endTime: number }) => ({
-        word: fixFrenchWord(w.text), start: w.startTime, end: w.endTime,
-      }));
 
       const segments = groupWords(words);
-      console.log('[TRANSCRIBE] Grouped into', segments.length, 'segments');
-      return segments;
+
+      // Capitaliser le premier mot de chaque segment + corrections textuelles
+      return segments.map(seg => ({
+        ...seg,
+        text: capitalizeFirst(fixFrenchText(seg.text)),
+      }));
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Erreur de transcription';
-      console.error('[TRANSCRIBE] FAILED:', msg);
       setError(msg);
       return [];
     } finally {

@@ -1,7 +1,21 @@
 /**
- * Post-traitement des transcriptions Whisper pour le francais.
- * Corrige les apostrophes manquantes et les contractions courantes.
+ * Post-traitement des transcriptions pour le français.
+ * Corrige les apostrophes manquantes, les contractions courantes,
+ * et le vocabulaire spécifique à l'acupuncture.
  */
+
+// Corrections de vocabulaire spécifiques à l'acupuncture
+const VOCABULARY_CORRECTIONS: [RegExp, string][] = [
+  [/\bmeridians\b/gi, 'méridiens'],
+  [/\bmeridian\b/gi, 'méridien'],
+  [/\bmeridiens\b/g, 'méridiens'],
+  [/\bacuponcture\b/gi, 'acupuncture'],
+  [/\bacuponction\b/gi, 'acupuncture'],
+  [/\bchi gong\b/gi, 'qigong'],
+  [/\bqi gong\b/gi, 'qigong'],
+  [/\baiguilles d acupuncture\b/gi, "aiguilles d'acupuncture"],
+  [/\bmedecine traditionnelle chinoise\b/gi, 'médecine traditionnelle chinoise'],
+];
 
 const ELISION_PATTERNS: [RegExp, string][] = [
   [/\bl (?=[aeéèêiïîoôuùûyhAEÉÈÊIÏÎOÔUÙÛYH])/g, "l'"],
@@ -26,11 +40,20 @@ export function fixFrenchWord(word: string): string {
   return fixed;
 }
 
-/** Corrige une phrase complete */
+/** Corrige une phrase complète (élisions + vocabulaire acupuncture) */
 export function fixFrenchText(text: string): string {
   let fixed = text;
   for (const [pattern, replacement] of ELISION_PATTERNS) {
     fixed = fixed.replace(pattern, replacement);
   }
+  for (const [pattern, replacement] of VOCABULARY_CORRECTIONS) {
+    fixed = fixed.replace(pattern, replacement);
+  }
   return fixed;
+}
+
+/** Capitalise le premier caractère d'un texte */
+export function capitalizeFirst(text: string): string {
+  if (!text) return text;
+  return text.charAt(0).toUpperCase() + text.slice(1);
 }

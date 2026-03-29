@@ -1,36 +1,97 @@
+export const maxDuration = 60;
+
 import { NextRequest, NextResponse } from 'next/server';
 
-const FUNCTIONS_URL = process.env.FIREBASE_FUNCTIONS_URL;
+const ASSEMBLYAI_API_KEY = process.env.ASSEMBLYAI_API_KEY;
+const ASSEMBLYAI_BASE = 'https://api.assemblyai.com/v2';
 
-/** Proxy vers la Cloud Function transcribeAudio (Whisper + Claude) */
 export async function POST(request: NextRequest) {
-  const body = await request.json();
-  const { storagePath } = body;
-
-  if (!storagePath) {
-    return NextResponse.json({ error: 'storagePath requis' }, { status: 400 });
+  if (!ASSEMBLYAI_API_KEY) {
+    return NextResponse.json({ error: 'ASSEMBLYAI_API_KEY non configurée' }, { status: 500 });
   }
-  if (!FUNCTIONS_URL) {
-    return NextResponse.json({ error: 'FIREBASE_FUNCTIONS_URL non configurée' }, { status: 500 });
+
+  const formData = await request.formData();
+  const audio = formData.get('audio') as Blob | null;
+
+  if (!audio) {
+    return NextResponse.json({ error: 'Champ audio requis' }, { status: 400 });
   }
 
   try {
-    const res = await fetch(`${FUNCTIONS_URL}/transcribeAudio`, {
+    // Étape 1 : Upload binaire vers AssemblyAI
+    const uploadRes = await fetch(`${ASSEMBLYAI_BASE}/upload`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ data: { storagePath, cleanup: true } }),
+      headers: {
+        authorization: ASSEMBLYAI_API_KEY,
+        'content-type': 'application/octet-stream',
+      },
+      body: audio,
     });
 
-    if (!res.ok) {
-      return NextResponse.json({ error: 'Transcription échouée' }, { status: res.status });
+    if (!uploadRes.ok) {
+      return NextResponse.json({ error: 'Upload AssemblyAI échoué' }, { status: 500 });
     }
 
-    const json = await res.json();
-    console.log('[API/transcribe] CF response keys:', Object.keys(json));
-    console.log('[API/transcribe] CF response:', JSON.stringify(json).substring(0, 500));
-    const result = json.result || json;
-    console.log('[API/transcribe] Returning keys:', Object.keys(result));
-    return NextResponse.json(result);
+    const { upload_url } = await uploadRes.json() as { upload_url: string };
+
+    // Étape 2 : Lancer la transcription
+    const transcriptRes = await fetch(`${ASSEMBLYAI_BASE}/transcript`, {
+      method: 'POST',
+      headers: {
+        authorization: ASSEMBLYAI_API_KEY,
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        audio_url: upload_url,
+        language_code: 'fr',
+        word_boost: ['acupuncture', 'meridien', 'qi', 'yin', 'yang', 'aiguille'],
+        punctuate: true,
+      }),
+    });
+
+    if (!transcriptRes.ok) {
+      return NextResponse.json({ error: 'Lancement transcription échoué' }, { status: 500 });
+    }
+
+    const { id } = await transcriptRes.json() as { id: string };
+
+    // Étape 3 : Polling jusqu'à completion (max 120s, poll toutes les 2s)
+    const deadline = Date.now() + 120_000;
+    while (Date.now() < deadline) {
+      await new Promise(r => setTimeout(r, 2000));
+
+      const pollRes = await fetch(`${ASSEMBLYAI_BASE}/transcript/${id}`, {
+        headers: { authorization: ASSEMBLYAI_API_KEY },
+      });
+
+      if (!pollRes.ok) continue;
+
+      const result = await pollRes.json() as {
+        status: string;
+        error?: string;
+        words?: { text: string; start: number; end: number }[];
+      };
+
+      if (result.status === 'error') {
+        return NextResponse.json(
+          { error: result.error || 'Transcription échouée' },
+          { status: 500 }
+        );
+      }
+
+      if (result.status === 'completed') {
+        // Normaliser les word timestamps : AssemblyAI retourne ms → convertir en secondes
+        const subtitles = (result.words ?? []).map(w => ({
+          text: w.text,
+          startTime: w.start / 1000,
+          endTime: w.end / 1000,
+        }));
+
+        return NextResponse.json({ subtitles });
+      }
+    }
+
+    return NextResponse.json({ error: 'Timeout transcription' }, { status: 504 });
   } catch {
     return NextResponse.json({ error: 'Erreur transcription' }, { status: 500 });
   }
