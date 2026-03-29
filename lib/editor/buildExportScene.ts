@@ -53,7 +53,7 @@ export function buildExportScene(opts: BuildOptions): SceneGraph | null {
     const layer: TextLayer = {
       id: o.id, type: 'text', startTime: o.startTime, endTime: o.endTime,
       zIndex: 10, position: { x: o.x, y: o.y }, animations: anims,
-      text: o.text, fontFamily: o.fontFamily, fontSize: o.fontSize / 375 * 0.28,
+      text: o.text, fontFamily: o.fontFamily, fontSize: o.fontSize / 375,
       color: o.fill, align: 'center', maxWidthRatio: 0.85,
     };
 
