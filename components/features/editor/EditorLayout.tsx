@@ -39,7 +39,7 @@ export default function EditorLayout({ itemId }: Props) {
   const [loading, setLoading] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerH, setContainerH] = useState(typeof window !== 'undefined' ? window.innerHeight - 44 : 600);
-  const { saving, saved } = useEditorPersistence(videoFile ? itemId : null);
+  const { saving, saved, saveError } = useEditorPersistence(videoFile ? itemId : null);
 
   const handleBack = () => { reset?.(); router.push('/calendrier'); };
 
@@ -129,6 +129,7 @@ export default function EditorLayout({ itemId }: Props) {
           })()}
           {saving && <CloudArrowUpIcon className="w-3.5 h-3.5 text-gray-500 animate-pulse" />}
           {saved && !saving && <CheckCircleIcon className="w-3.5 h-3.5 text-green-500" />}
+          {saveError && <ExclamationTriangleIcon className="w-3.5 h-3.5 text-red-400" />}
         </span>
         <ExportButton onExportDone={handlePublish} onSwitchTab={setActiveTab} />
       </header>
