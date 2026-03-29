@@ -37,9 +37,13 @@ export default function EditorLayout({ itemId }: Props) {
   const [showPublish, setShowPublish] = useState(false);
   const [publishItem, setPublishItem] = useState<ContentItem | null>(null);
   const [loading, setLoading] = useState(true);
+  // Gate: n'activer la persistance qu'après que le restore Firestore soit terminé
+  // pour éviter que les setters intermédiaires (setActiveTheme → setSubtitles) ne
+  // déclenchent un debounce qui écraserait les données Firestore avant la fin du restore.
+  const [restoreReady, setRestoreReady] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerH, setContainerH] = useState(typeof window !== 'undefined' ? window.innerHeight - 44 : 600);
-  const { saving, saved, saveError } = useEditorPersistence(videoFile ? itemId : null);
+  const { saving, saved, saveError } = useEditorPersistence((restoreReady && videoFile) ? itemId : null);
 
   const handleBack = () => { reset?.(); router.push('/calendrier'); };
 
@@ -50,8 +54,9 @@ export default function EditorLayout({ itemId }: Props) {
     let cancelled = false;
     setItemId(itemId);
     setLoading(true);
+    setRestoreReady(false);
     const loadExisting = async () => {
-      if (useEditorStore.getState().videoFile) { if (!cancelled) setLoading(false); return; }
+      if (useEditorStore.getState().videoFile) { if (!cancelled) { setRestoreReady(true); setLoading(false); } return; }
       try {
         const db = getFirebaseFirestore();
         const snap = await getDoc(doc(db, 'contentItems', itemId));
@@ -101,10 +106,10 @@ export default function EditorLayout({ itemId }: Props) {
           }
         }
       } catch { /* ImportModal s'affichera */ }
-      if (!cancelled) setLoading(false);
+      if (!cancelled) { setRestoreReady(true); setLoading(false); }
     };
     loadExisting();
-    return () => { cancelled = true; reset(); };
+    return () => { cancelled = true; setRestoreReady(false); reset(); };
   }, [itemId, setItemId, reset]);
 
   const handlePublish = async () => { const db = getFirebaseFirestore(); const snap = await getDoc(doc(db, 'contentItems', itemId)); if (snap.exists()) { setPublishItem({ id: snap.id, ...snap.data() } as ContentItem); setShowPublish(true); } };

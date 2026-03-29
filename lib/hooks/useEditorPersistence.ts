@@ -51,6 +51,11 @@ export function useEditorPersistence(itemId: string | null) {
   useEffect(() => {
     if (!itemId) return;
 
+    // Initialiser avec l'état courant pour éviter que les setters de restore
+    // (setActiveTheme, setSubtitles, etc.) déclenchent une sauvegarde intermédiaire
+    // qui écraserait les bonnes données Firestore avant que le restore soit complet.
+    lastJsonRef.current = JSON.stringify(buildEditorData(useEditorStore.getState()));
+
     const unsub = useEditorStore.subscribe((state) => {
       const editorData = buildEditorData(state);
 
