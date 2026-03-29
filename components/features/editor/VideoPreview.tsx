@@ -13,9 +13,9 @@ const SubtitleInteractionLayer = dynamic(
   { ssr: false },
 );
 
-interface Props { interactive?: boolean }
+interface Props { interactive?: boolean; subtitleInteractive?: boolean }
 
-export default function VideoPreview({ interactive = false }: Props) {
+export default function VideoPreview({ interactive = false, subtitleInteractive = false }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const bgAudioRef = useRef<HTMLAudioElement>(null);
@@ -94,7 +94,7 @@ export default function VideoPreview({ interactive = false }: Props) {
     return () => { v.removeEventListener('loadedmetadata', cb); v.removeEventListener('canplay', cb); v.removeEventListener('durationchange', cb); clearInterval(iv); clearTimeout(to); };
   }, [videoUrl, setDuration]);
 
-  const handleTap = () => { if (interactive) return; setShowControls(true); togglePlayPause(); };
+  const handleTap = () => { if (interactive || subtitleInteractive) return; setShowControls(true); togglePlayPause(); };
 
   return (
     <div ref={containerRef} className="relative w-full h-full flex items-center justify-center bg-black" onClick={handleTap}>
@@ -111,7 +111,7 @@ export default function VideoPreview({ interactive = false }: Props) {
       {/* TextOverlayLayer DOM seulement en mode interactif (drag-and-drop) */}
       {interactive && size.w > 0 && <TextOverlayLayer width={size.w} height={size.h} interactive />}
       {/* Couche Konva pour interaction sous-titres Pro (drag position + resize fontSize) */}
-      {interactive && subtitleFamily && size.w > 0 && (
+      {(interactive || subtitleInteractive) && subtitleFamily && size.w > 0 && (
         <SubtitleInteractionLayer width={size.w} height={size.h} />
       )}
       {showControls && !interactive && (

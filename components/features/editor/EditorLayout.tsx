@@ -124,7 +124,7 @@ export default function EditorLayout({ itemId }: Props) {
       <div ref={containerRef} className="flex-1 min-h-0 flex flex-col">
         <div className="flex items-center justify-center bg-black overflow-hidden transition-[height] duration-200 ease-out" style={{ height: previewH }}>
           <div className="relative h-full" style={{ aspectRatio: '9/16', maxWidth: '100%' }}>
-            <VideoPreview interactive={activeTab === 'texte'} />
+            <VideoPreview interactive={activeTab === 'texte'} subtitleInteractive={activeTab === 'subs'} />
           </div>
         </div>
         <ResizeDivider containerHeight={containerH} />

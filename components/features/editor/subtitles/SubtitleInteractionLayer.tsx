@@ -21,7 +21,7 @@ function coordsToPosition(x: number, y: number, w: number, h: number): SubtitleP
 export default function SubtitleInteractionLayer({ width, height }: Props) {
   const {
     subtitles, subtitlePosition, subtitleOverrides,
-    currentTime, setSubtitleOverride,
+    currentTime, setSubtitleOverride, setSubtitlePosition,
   } = useEditorStore();
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const transformerRef = useRef<Konva.Transformer>(null);
@@ -47,41 +47,67 @@ export default function SubtitleInteractionLayer({ width, height }: Props) {
     }
   }, [visibleSegs, selectedId]);
 
+  // Coordonnées du handle fantôme (position globale par défaut)
+  const ghostCoords = positionToCoords(subtitlePosition, width, height);
+
   return (
     <Stage
       width={width} height={height}
-      style={{ position: 'absolute', inset: 0 }}
+      style={{ position: 'absolute', top: 0, left: 0, zIndex: 10, pointerEvents: 'auto' }}
     >
       <Layer>
-        {visibleSegs.map(seg => {
-          const ov = subtitleOverrides[seg.id] ?? {};
-          const pos = ov.position ?? subtitlePosition;
-          const { x, y } = positionToCoords(pos, width, height);
-          const isSelected = seg.id === selectedId;
+        {visibleSegs.length > 0 ? (
+          // Handles pour les segments actifs au temps courant
+          visibleSegs.map(seg => {
+            const ov = subtitleOverrides[seg.id] ?? {};
+            const pos = ov.position ?? subtitlePosition;
+            const { x, y } = positionToCoords(pos, width, height);
+            const isSelected = seg.id === selectedId;
 
-          return (
-            <Circle
-              key={seg.id}
-              ref={(node) => { nodeRefs.current[seg.id] = node; }}
-              x={x} y={y} radius={18}
-              fill={isSelected ? '#5C7A5F' : 'rgba(255,255,255,0.65)'}
-              stroke={isSelected ? '#3d5240' : 'rgba(255,255,255,0.9)'}
-              strokeWidth={2}
-              draggable
-              onClick={() => setSelectedId(seg.id)}
-              onTap={() => setSelectedId(seg.id)}
-              onDragEnd={(e) => {
-                const node = e.target as Konva.Circle;
-                const newPos = coordsToPosition(node.x(), node.y(), width, height);
-                setSubtitleOverride(seg.id, { position: newPos });
-                // Snap visuel vers le centre de la zone
-                const snapped = positionToCoords(newPos, width, height);
-                node.position(snapped);
-                node.getLayer()?.batchDraw();
-              }}
-            />
-          );
-        })}
+            return (
+              <Circle
+                key={seg.id}
+                ref={(node) => { nodeRefs.current[seg.id] = node; }}
+                x={x} y={y} radius={22}
+                fill={isSelected ? '#5C7A5F' : 'rgba(92,122,95,0.8)'}
+                stroke={isSelected ? '#3d5240' : '#ffffff'}
+                strokeWidth={2.5}
+                draggable
+                onClick={() => setSelectedId(seg.id)}
+                onTap={() => setSelectedId(seg.id)}
+                onDragEnd={(e) => {
+                  const node = e.target as Konva.Circle;
+                  const newPos = coordsToPosition(node.x(), node.y(), width, height);
+                  setSubtitleOverride(seg.id, { position: newPos });
+                  // Snap visuel vers le centre de la zone
+                  const snapped = positionToCoords(newPos, width, height);
+                  node.position(snapped);
+                  node.getLayer()?.batchDraw();
+                }}
+              />
+            );
+          })
+        ) : (
+          // Handle fantôme — aucun segment actif, montre la position globale
+          // Glisser ce handle change subtitlePosition pour tous les segments
+          <Circle
+            x={ghostCoords.x}
+            y={ghostCoords.y}
+            radius={22}
+            fill="rgba(92,122,95,0.5)"
+            stroke="rgba(255,255,255,0.75)"
+            strokeWidth={2}
+            draggable
+            onDragEnd={(e) => {
+              const node = e.target as Konva.Circle;
+              const newPos = coordsToPosition(node.x(), node.y(), width, height);
+              setSubtitlePosition(newPos);
+              const snapped = positionToCoords(newPos, width, height);
+              node.position(snapped);
+              node.getLayer()?.batchDraw();
+            }}
+          />
+        )}
         <Transformer
           ref={transformerRef}
           rotateEnabled={false}
