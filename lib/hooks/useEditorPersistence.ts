@@ -59,6 +59,8 @@ export function useEditorPersistence(itemId: string | null) {
       if (json === lastJsonRef.current) return;
       lastJsonRef.current = json;
       pendingDataRef.current = editorData;
+      // DEBUG TEMP
+      console.log('[persist-subscribe] filter:', editorData.filter, 'subtitles:', editorData.subtitles.length, new Error().stack?.split('\n')[2]);
 
       if (timerRef.current) clearTimeout(timerRef.current);
       timerRef.current = setTimeout(async () => {
