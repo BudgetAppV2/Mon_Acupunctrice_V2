@@ -182,7 +182,11 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   setCurrentTime: (t) => set({ currentTime: t }),
   play: () => {
     const { trimEnd, currentTime: ct, trimStart: ts } = get();
-    if (ct >= trimEnd && trimEnd > 0) { if (_videoEl) _videoEl.currentTime = ts; set({ currentTime: ts }); }
+    // Toujours démarrer dans la zone trim : si on est avant trimStart ou après trimEnd, revenir à trimStart
+    if (ct < ts || (ct >= trimEnd && trimEnd > 0)) {
+      if (_videoEl) _videoEl.currentTime = ts;
+      set({ currentTime: ts });
+    }
     set({ isPlaying: true }); _videoEl?.play();
   },
   pause: () => { set({ isPlaying: false }); _videoEl?.pause(); },

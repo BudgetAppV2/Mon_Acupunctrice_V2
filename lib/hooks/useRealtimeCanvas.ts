@@ -94,7 +94,13 @@ export function useRealtimeCanvas(
       }
     }
 
-    // 5. Sous-titres Pro — rendu par-dessus la scene si famille selectionnee
+    // 5. Zone hors-trim — overlay sombre si le curseur est en dehors des handles
+    if (s.trimEnd > 0 && (s.currentTime < s.trimStart || s.currentTime > s.trimEnd)) {
+      ctx.fillStyle = 'rgba(0,0,0,0.65)';
+      ctx.fillRect(0, 0, w, h);
+    }
+
+    // 6. Sous-titres Pro — rendu par-dessus la scene si famille selectionnee
     if (s.subtitleFamily && s.subtitles.length > 0) {
       const proSegs = toProSegments(s.subtitles, s.subtitlePosition, s.subtitleAnimation, 'narration', s.subtitleOverrides);
       const preset = s.subtitlePresetId ? TEXT_STYLE_PRESETS.find(p => p.id === s.subtitlePresetId) : null;
@@ -143,15 +149,21 @@ export function useRealtimeCanvas(
       rafRef.current = requestAnimationFrame(loop);
     }
 
-    // Redessiner aussi quand le store change (pour les changements en pause)
+    // Redessiner quand le store change (overlays, sous-titres, LUT, etc. en pause)
     const unsub = useEditorStore.subscribe(() => {
       if (!useEditorStore.getState().isPlaying) drawFrame();
     });
+
+    // Redessiner APRÈS que le seek video soit terminé (seekTo est asynchrone —
+    // le store se met à jour immédiatement mais la frame video n'est disponible qu'au seeked)
+    const onSeeked = () => { if (!useEditorStore.getState().isPlaying) drawFrame(); };
+    videoEl.addEventListener('seeked', onSeeked);
 
     return () => {
       activeRef.current = false;
       cancelAnimationFrame(rafRef.current);
       unsub();
+      videoEl.removeEventListener('seeked', onSeeked);
     };
   }, [videoEl, canvasEl, drawFrame]);
 }

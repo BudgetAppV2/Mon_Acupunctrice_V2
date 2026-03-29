@@ -80,9 +80,9 @@ export default function SubtitleInteractionLayer({ width, height }: Props) {
               y={cy - rectH / 2}
               width={rectW}
               height={rectH}
-              stroke={isSelected ? 'rgba(255,255,255,0.7)' : 'rgba(255,255,255,0.2)'}
-              strokeWidth={isSelected ? 1.5 : 1}
-              dash={[4, 6]}
+              stroke={isSelected ? 'rgba(255,255,255,0.7)' : 'transparent'}
+              strokeWidth={isSelected ? 1.5 : 0}
+              dash={isSelected ? [4, 6] : []}
               fill="transparent"
               draggable
               onClick={(e) => {
