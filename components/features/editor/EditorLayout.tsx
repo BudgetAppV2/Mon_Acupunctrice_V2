@@ -70,6 +70,8 @@ export default function EditorLayout({ itemId }: Props) {
           // Restaurer les donnees editables sauvegardees
           if (data.editorData && !cancelled) {
             const ed = data.editorData;
+            // DEBUG TEMP — à retirer après diagnostic
+            console.log('[restore] editorData keys:', Object.keys(ed), 'subtitles:', ed.subtitles?.length ?? 0, 'lut:', ed.activeLutId, 'filter:', ed.filter);
             const s = useEditorStore.getState();
             // Restaurer les metadonnees du premier clip (trim via les clips serialises)
             // Thème en premier — définit les valeurs par défaut (filter, subtitleStyle)
@@ -100,7 +102,7 @@ export default function EditorLayout({ itemId }: Props) {
             if (ed.coverCustomUrl) s.setCoverCustom(ed.coverCustomUrl);
           }
         }
-      } catch { /* ImportModal s'affichera */ }
+      } catch (e) { console.error('[loadExisting] error:', e); /* ImportModal s'affichera */ }
       if (!cancelled) setLoading(false);
     };
     loadExisting();
