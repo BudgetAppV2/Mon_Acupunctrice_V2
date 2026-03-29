@@ -34,7 +34,7 @@ function buildEditorData(state: ReturnType<typeof useEditorStore.getState>) {
     // Clips serialisés sans File/blobUrl (non-serialisables)
     clips: state.clips.map(c => ({
       id: c.id, duration: c.duration, trimStart: c.trimStart, trimEnd: c.trimEnd,
-      timelineStart: c.timelineStart, sourceVideoUrl: c.sourceVideoUrl,
+      timelineStart: c.timelineStart, sourceVideoUrl: c.sourceVideoUrl ?? null,
     })),
   };
 }
