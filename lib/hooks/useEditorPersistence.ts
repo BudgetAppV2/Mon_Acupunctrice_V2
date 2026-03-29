@@ -86,15 +86,9 @@ export function useEditorPersistence(itemId: string | null) {
     return () => {
       unsub();
       if (timerRef.current) clearTimeout(timerRef.current);
-      // Flush immédiat si des changements sont en attente (évite la perte lors de la navigation)
-      const pending = pendingDataRef.current;
-      if (pending) {
-        pendingDataRef.current = null;
-        const db = getFirebaseFirestore();
-        updateDoc(doc(db, 'contentItems', itemId), {
-          editorData: { ...pending, savedAt: serverTimestamp() },
-        }).catch(() => {});
-      }
+      // NE PAS flush au démontage : reset() déclenche la subscription et met
+      // pendingDataRef = état vide, ce qui écraserait les données Firestore.
+      pendingDataRef.current = null;
     };
   }, [itemId]);
 
