@@ -58,10 +58,20 @@ function initWebGL(w: number, h: number): LutState | null {
 
 function compileShader(gl: WebGL2RenderingContext, type: number, src: string): WebGLShader | null { const s = gl.createShader(type)!; gl.shaderSource(s, src); gl.compileShader(s); return gl.getShaderParameter(s, gl.COMPILE_STATUS) ? s : null; }
 
-/** Upload la LUT comme texture 3D WebGL */
+/** Upload la LUT comme texture 3D WebGL — format RGBA8 (universellement filterable WebGL2, evite RGB32F qui echoue silencieusement sur iOS) */
 function uploadLut(st: LutState, lut: LutData, lutId: string) {
   if (st.currentLutId === lutId) return;
   const { gl, lutTex } = st;
+
+  // Convertir Float32[RGB] → Uint8[RGBA] — RGBA8 est un format de texture 3D filterable sur tous les appareils WebGL2
+  const rgba = new Uint8Array(lut.size * lut.size * lut.size * 4);
+  for (let i = 0, j = 0; i < lut.data.length; i += 3, j += 4) {
+    rgba[j]     = Math.round(Math.max(0, Math.min(1, lut.data[i]))     * 255);
+    rgba[j + 1] = Math.round(Math.max(0, Math.min(1, lut.data[i + 1])) * 255);
+    rgba[j + 2] = Math.round(Math.max(0, Math.min(1, lut.data[i + 2])) * 255);
+    rgba[j + 3] = 255;
+  }
+
   gl.activeTexture(gl.TEXTURE1);
   gl.bindTexture(gl.TEXTURE_3D, lutTex);
   gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
@@ -69,7 +79,7 @@ function uploadLut(st: LutState, lut: LutData, lutId: string) {
   gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
   gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
   gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_WRAP_R, gl.CLAMP_TO_EDGE);
-  gl.texImage3D(gl.TEXTURE_3D, 0, gl.RGB32F, lut.size, lut.size, lut.size, 0, gl.RGB, gl.FLOAT, lut.data);
+  gl.texImage3D(gl.TEXTURE_3D, 0, gl.RGBA8, lut.size, lut.size, lut.size, 0, gl.RGBA, gl.UNSIGNED_BYTE, rgba);
   st.currentLutId = lutId;
 }
 
@@ -100,7 +110,10 @@ export function applyLut(
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  // Canvas 2D a Y=0 en haut, WebGL UV a Y=0 en bas — flip pour eviter l'image retournee
+  gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, sourceCtx.canvas);
+  gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false); // reset pour ne pas affecter la LUT 3D
 
   // Upload la LUT
   uploadLut(state, lut, lutId);

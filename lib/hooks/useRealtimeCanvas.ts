@@ -74,7 +74,7 @@ export function useRealtimeCanvas(
     // 3. LUT color grading
     if (s.activeLutId) {
       const lutData = getLutData(s.activeLutId);
-      if (lutData) applyLut(ctx, lutData, s.activeLutId, w, h);
+      if (lutData) applyLut(ctx, lutData, s.activeLutId, w, h, s.lutIntensity ?? 1.0);
     }
 
     // 4. Scene graph (overlays animes + effets) ou legacy overlays

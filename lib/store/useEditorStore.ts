@@ -74,6 +74,7 @@ interface EditorState {
   captions: { instagram: string; facebook: string; youtube: string } | null;
   silenceRanges: { start: number; end: number }[];
   activeLutId: string | null;
+  lutIntensity: number;
   activeTemplateId: string | null;
   subtitleFamily: SubtitleFamily | null;
   subtitlePosition: SubtitlePosition;
@@ -115,6 +116,7 @@ interface EditorState {
   setAudioDucking: (on: boolean) => void;
   setSilenceRanges: (ranges: { start: number; end: number }[]) => void;
   setLut: (id: string | null) => void;
+  setLutIntensity: (v: number) => void;
   setTemplate: (id: string | null) => void;
   setSubtitleFamily: (f: SubtitleFamily | null) => void;
   setSubtitlePosition: (p: SubtitlePosition) => void;
@@ -155,7 +157,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   filter: 'normal', overlays: [], selectedOverlayId: null,
   subtitles: [], subtitleStyle: 'classic' as SubtitleStyle,
   audioUrl: null, audioName: null, audioVolume: 0.3, voiceVolume: 1,
-  audioFadeIn: 0, audioFadeOut: 0, audioDucking: false, thumbnailUrl: null, videoOrientation: 'portrait', editorSplitRatio: 0.50, selectedSubtitleId: null, coverFrameOffset: 0, coverDataUrl: null, coverCustomUrl: null, captions: null, silenceRanges: [], activeLutId: null, activeTemplateId: null, templateTitle: '', templatePoints: [], templateQuote: '', templateCta: '',
+  audioFadeIn: 0, audioFadeOut: 0, audioDucking: false, thumbnailUrl: null, videoOrientation: 'portrait', editorSplitRatio: 0.50, selectedSubtitleId: null, coverFrameOffset: 0, coverDataUrl: null, coverCustomUrl: null, captions: null, silenceRanges: [], activeLutId: null, lutIntensity: 1, activeTemplateId: null, templateTitle: '', templatePoints: [], templateQuote: '', templateCta: '',
   subtitleFamily: null, subtitlePosition: 'bottom-center' as SubtitlePosition, subtitleAnimation: 'fade' as const, subtitleAccentColor: '#E91E8C',
   subtitleFontFamily: 'Inter', subtitleOverrides: {}, subtitlePresetId: null,
 
@@ -227,6 +229,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   setAudioDucking: (on) => set({ audioDucking: on }),
   setSilenceRanges: (ranges) => set({ silenceRanges: ranges }),
   setLut: (id) => { set({ activeLutId: id }); markEditorTouched(); },
+  setLutIntensity: (v) => { set({ lutIntensity: v }); markEditorTouched(); },
   setTemplate: (id) => set({ activeTemplateId: id }),
   setSubtitleFamily: (f) => { set({ subtitleFamily: f }); markEditorTouched(); },
   setSubtitlePosition: (p) => { set({ subtitlePosition: p }); markEditorTouched(); },

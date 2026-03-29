@@ -21,6 +21,7 @@ function buildEditorData(state: ReturnType<typeof useEditorStore.getState>) {
     subtitlePresetId: state.subtitlePresetId,
     filter: state.filter,
     activeLutId: state.activeLutId,
+    lutIntensity: state.lutIntensity,
     activeThemeId: state.activeThemeId,
     audioUrl: state.audioUrl,
     audioName: state.audioName,
@@ -55,7 +56,6 @@ export function useEditorPersistence(itemId: string | null) {
     // (setActiveTheme, setSubtitles, etc.) déclenchent une sauvegarde intermédiaire
     // qui écraserait les bonnes données Firestore avant que le restore soit complet.
     const snap = buildEditorData(useEditorStore.getState());
-    console.log('[persist-ready] subtitles:', snap.subtitles.length, 'filter:', snap.filter);
     lastJsonRef.current = JSON.stringify(snap);
 
     const unsub = useEditorStore.subscribe((state) => {

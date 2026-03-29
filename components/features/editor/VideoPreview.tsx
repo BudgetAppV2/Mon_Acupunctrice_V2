@@ -41,6 +41,10 @@ export default function VideoPreview({ interactive = false, subtitleInteractive 
       if (canvasRef.current) {
         canvasRef.current.width = Math.round(cw * (window.devicePixelRatio > 2 ? 2 : window.devicePixelRatio || 1));
         canvasRef.current.height = Math.round(ch * (window.devicePixelRatio > 2 ? 2 : window.devicePixelRatio || 1));
+        // Forcer un redessin : changer les dimensions du canvas remet le contexte 2D a zero.
+        // La subscription Zustand dans useRealtimeCanvas redessine si en pause.
+        // setTimeout donne au navigateur le temps de finaliser le resize avant le draw.
+        setTimeout(() => { useEditorStore.setState({}); }, 0);
       }
     });
     obs.observe(el);

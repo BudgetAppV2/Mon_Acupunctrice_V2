@@ -97,6 +97,7 @@ export default function EditorLayout({ itemId }: Props) {
             if (ed.subtitlePresetId) s.setSubtitlePreset(ed.subtitlePresetId);
             if (ed.filter && ed.filter !== 'normal') s.setFilter(ed.filter);
             if (ed.activeLutId) s.setLut(ed.activeLutId);
+            if (ed.lutIntensity != null) s.setLutIntensity(ed.lutIntensity);
             if (ed.audioUrl) s.setAudioTrack(ed.audioUrl, ed.audioName || '');
             if (ed.voiceVolume != null) s.setVoiceVolume(ed.voiceVolume);
             if (ed.audioVolume != null) s.setAudioVolume(ed.audioVolume);
