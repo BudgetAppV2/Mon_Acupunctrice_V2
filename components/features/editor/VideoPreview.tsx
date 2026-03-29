@@ -94,7 +94,8 @@ export default function VideoPreview({ interactive = false, subtitleInteractive 
     return () => { v.removeEventListener('loadedmetadata', cb); v.removeEventListener('canplay', cb); v.removeEventListener('durationchange', cb); clearInterval(iv); clearTimeout(to); };
   }, [videoUrl, setDuration]);
 
-  const handleTap = () => { if (interactive || subtitleInteractive) return; setShowControls(true); togglePlayPause(); };
+  // subtitleInteractive n'est plus ici — le Stage Konva gère les taps et stopPropagation lui-même
+  const handleTap = () => { if (interactive) return; setShowControls(true); togglePlayPause(); };
 
   return (
     <div ref={containerRef} className="relative w-full h-full flex items-center justify-center bg-black" onClick={handleTap}>

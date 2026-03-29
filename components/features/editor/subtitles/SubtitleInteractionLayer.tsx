@@ -2,7 +2,7 @@
 // Konva ne supporte pas SSR — toujours importer via dynamic(() => ..., { ssr: false })
 
 import { useRef, useState, useEffect } from 'react';
-import { Stage, Layer, Circle, Transformer } from 'react-konva';
+import { Stage, Layer, Rect, Transformer } from 'react-konva';
 import type Konva from 'konva';
 import { useEditorStore } from '@/lib/store/useEditorStore';
 import { positionToCoords } from '@/lib/editor/subtitleEngine';
@@ -21,17 +21,17 @@ function coordsToPosition(x: number, y: number, w: number, h: number): SubtitleP
 export default function SubtitleInteractionLayer({ width, height }: Props) {
   const {
     subtitles, subtitlePosition, subtitleOverrides,
-    currentTime, setSubtitleOverride, setSubtitlePosition,
+    currentTime, setSubtitleOverride, togglePlayPause,
   } = useEditorStore();
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const transformerRef = useRef<Konva.Transformer>(null);
-  const nodeRefs = useRef<Record<string, Konva.Circle | null>>({});
+  const nodeRefs = useRef<Record<string, Konva.Rect | null>>({});
 
   const visibleSegs = subtitles.filter(
     s => currentTime >= s.startTime && currentTime <= s.endTime,
   );
 
-  // Attacher le Transformer au handle sélectionné
+  // Attacher le Transformer au Rect sélectionné
   useEffect(() => {
     const tr = transformerRef.current;
     if (!tr) return;
@@ -47,90 +47,103 @@ export default function SubtitleInteractionLayer({ width, height }: Props) {
     }
   }, [visibleSegs, selectedId]);
 
-  // Coordonnées du handle fantôme (position globale par défaut)
-  const ghostCoords = positionToCoords(subtitlePosition, width, height);
-
   return (
     <Stage
       width={width} height={height}
       style={{ position: 'absolute', top: 0, left: 0, zIndex: 10, pointerEvents: 'auto' }}
+      onClick={(e) => {
+        // Toujours stopper la propagation DOM — le Stage gère entièrement les events du preview
+        (e.evt as Event).stopPropagation();
+        // Tap sur le fond vide → toggle play/pause et désélectionner
+        if (e.target === e.target.getStage()) {
+          setSelectedId(null);
+          togglePlayPause();
+        }
+      }}
+      onTap={(e) => {
+        (e.evt as Event).stopPropagation();
+        if (e.target === e.target.getStage()) {
+          setSelectedId(null);
+          togglePlayPause();
+        }
+      }}
     >
       <Layer>
-        {visibleSegs.length > 0 ? (
-          // Handles pour les segments actifs au temps courant
-          visibleSegs.map(seg => {
-            const ov = subtitleOverrides[seg.id] ?? {};
-            const pos = ov.position ?? subtitlePosition;
-            const { x, y } = positionToCoords(pos, width, height);
-            const isSelected = seg.id === selectedId;
+        {/* Bounding box par segment visible — pas de ghost handle quand aucun segment */}
+        {visibleSegs.map(seg => {
+          const ov = subtitleOverrides[seg.id] ?? {};
+          const pos = ov.position ?? subtitlePosition;
+          const { x: cx, y: cy } = positionToCoords(pos, width, height);
+          const isSelected = seg.id === selectedId;
 
-            return (
-              <Circle
-                key={seg.id}
-                ref={(node) => { nodeRefs.current[seg.id] = node; }}
-                x={x} y={y} radius={22}
-                fill={isSelected ? '#5C7A5F' : 'rgba(92,122,95,0.8)'}
-                stroke={isSelected ? '#3d5240' : '#ffffff'}
-                strokeWidth={2.5}
-                draggable
-                onClick={() => setSelectedId(seg.id)}
-                onTap={() => setSelectedId(seg.id)}
-                onDragEnd={(e) => {
-                  const node = e.target as Konva.Circle;
-                  const newPos = coordsToPosition(node.x(), node.y(), width, height);
-                  setSubtitleOverride(seg.id, { position: newPos });
-                  // Snap visuel vers le centre de la zone
-                  const snapped = positionToCoords(newPos, width, height);
-                  node.position(snapped);
-                  node.getLayer()?.batchDraw();
-                }}
-              />
-            );
-          })
-        ) : (
-          // Handle fantôme — aucun segment actif, montre la position globale
-          // Glisser ce handle change subtitlePosition pour tous les segments
-          <Circle
-            x={ghostCoords.x}
-            y={ghostCoords.y}
-            radius={22}
-            fill="rgba(92,122,95,0.5)"
-            stroke="rgba(255,255,255,0.75)"
-            strokeWidth={2}
-            draggable
-            onDragEnd={(e) => {
-              const node = e.target as Konva.Circle;
-              const newPos = coordsToPosition(node.x(), node.y(), width, height);
-              setSubtitlePosition(newPos);
-              const snapped = positionToCoords(newPos, width, height);
-              node.position(snapped);
-              node.getLayer()?.batchDraw();
-            }}
-          />
-        )}
+          // Dimensions estimées du bloc de sous-titre en fonction de la taille de police
+          const fontSize = (ov.fontSize ?? 0.045) * height;
+          const rectW = width * 0.82;
+          const rectH = fontSize * 3;
+
+          return (
+            <Rect
+              key={seg.id}
+              ref={(node) => { nodeRefs.current[seg.id] = node; }}
+              x={cx - rectW / 2}
+              y={cy - rectH / 2}
+              width={rectW}
+              height={rectH}
+              stroke={isSelected ? '#7FA882' : 'rgba(255,255,255,0.35)'}
+              strokeWidth={isSelected ? 2 : 1}
+              dash={isSelected ? undefined : [5, 5]}
+              fill="transparent"
+              // Draggable uniquement si sélectionné — évite le drag accidentel
+              draggable={isSelected}
+              onClick={(e) => {
+                (e.evt as Event).stopPropagation();
+                setSelectedId(seg.id);
+              }}
+              onTap={(e) => {
+                (e.evt as Event).stopPropagation();
+                setSelectedId(seg.id);
+              }}
+              onDragEnd={(e) => {
+                const node = e.target as Konva.Rect;
+                // Calculer la position depuis le centre du Rect
+                const centerX = node.x() + rectW / 2;
+                const centerY = node.y() + rectH / 2;
+                const newPos = coordsToPosition(centerX, centerY, width, height);
+                setSubtitleOverride(seg.id, { position: newPos });
+                // Snap visuel vers le centre de la zone
+                const snapped = positionToCoords(newPos, width, height);
+                node.position({ x: snapped.x - rectW / 2, y: snapped.y - rectH / 2 });
+                node.getLayer()?.batchDraw();
+              }}
+            />
+          );
+        })}
+
+        {/* Transformer avec poignées aux coins pour resize → change fontSize */}
         <Transformer
           ref={transformerRef}
           rotateEnabled={false}
-          keepRatio={true}
+          keepRatio={false}
           enabledAnchors={['top-left', 'top-right', 'bottom-left', 'bottom-right']}
           boundBoxFunc={(_oldBox, newBox) => {
-            // Limiter taille min/max du handle
-            if (newBox.width < 20 || newBox.height < 20) return _oldBox;
-            if (newBox.width > 120 || newBox.height > 120) return _oldBox;
+            // Limiter taille min/max du bloc
+            if (newBox.width < width * 0.2 || newBox.width > width * 0.98) return _oldBox;
+            if (newBox.height < height * 0.03) return _oldBox;
             return newBox;
           }}
           onTransformEnd={() => {
             if (!selectedId) return;
             const node = nodeRefs.current[selectedId];
             if (!node) return;
+            // Dériver la nouvelle fontSize depuis le scale appliqué par le Transformer
             const scaleX = node.scaleX();
             const ov = subtitleOverrides[selectedId] ?? {};
             const base = ov.fontSize ?? 0.045;
-            const newSize = Math.max(0.025, Math.min(0.09, base * scaleX));
-            setSubtitleOverride(selectedId, { fontSize: newSize });
-            // Réinitialiser le scale (la taille est stockée dans l'override)
+            const newFontSize = Math.max(0.02, Math.min(0.12, base * scaleX));
+            // Réinitialiser le scale — la taille est portée par l'override fontSize
             node.scaleX(1);
             node.scaleY(1);
+            setSubtitleOverride(selectedId, { fontSize: newFontSize });
           }}
         />
       </Layer>
