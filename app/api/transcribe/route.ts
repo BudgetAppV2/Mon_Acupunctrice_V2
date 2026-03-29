@@ -19,6 +19,7 @@ export async function POST(request: NextRequest) {
 
   try {
     // Étape 1 : Upload binaire vers AssemblyAI
+    console.log('[transcribe] step1: uploading', audio.size, 'bytes');
     const uploadRes = await fetch(`${ASSEMBLYAI_BASE}/upload`, {
       method: 'POST',
       headers: {
@@ -28,13 +29,17 @@ export async function POST(request: NextRequest) {
       body: audio,
     });
 
+    console.log('[transcribe] step1 status:', uploadRes.status);
     if (!uploadRes.ok) {
-      return NextResponse.json({ error: 'Upload AssemblyAI échoué' }, { status: 500 });
+      const body = await uploadRes.text();
+      console.error('[transcribe] upload error:', body);
+      return NextResponse.json({ error: 'Upload AssemblyAI échoué', detail: body }, { status: 500 });
     }
 
     const { upload_url } = await uploadRes.json() as { upload_url: string };
 
     // Étape 2 : Lancer la transcription
+    console.log('[transcribe] step2: starting transcript');
     const transcriptRes = await fetch(`${ASSEMBLYAI_BASE}/transcript`, {
       method: 'POST',
       headers: {
@@ -44,13 +49,15 @@ export async function POST(request: NextRequest) {
       body: JSON.stringify({
         audio_url: upload_url,
         language_code: 'fr',
-        word_boost: ['acupuncture', 'meridien', 'qi', 'yin', 'yang', 'aiguille'],
         punctuate: true,
       }),
     });
 
+    console.log('[transcribe] step2 status:', transcriptRes.status);
     if (!transcriptRes.ok) {
-      return NextResponse.json({ error: 'Lancement transcription échoué' }, { status: 500 });
+      const body = await transcriptRes.text();
+      console.error('[transcribe] transcript error:', body);
+      return NextResponse.json({ error: 'Lancement transcription échoué', detail: body }, { status: 500 });
     }
 
     const { id } = await transcriptRes.json() as { id: string };
