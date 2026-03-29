@@ -8,7 +8,7 @@
 
 import type { SubtitleSegmentPro } from '@/lib/types/editor';
 import type { SubtitleRenderConfig } from '../subtitleEngine';
-import { positionToCoords } from '../subtitleEngine';
+import { resolveSegmentCoords } from '../subtitleEngine';
 
 export function renderBoldHighlight(
   ctx: CanvasRenderingContext2D,
@@ -22,7 +22,7 @@ export function renderBoldHighlight(
   const fontSize = Math.round((seg.fontSize ?? 0.06) * w);
   const font = seg.fontFamily ?? config.fontTitle;
   const weight = config.fontWeight ?? 900;
-  const { x, y } = positionToCoords(seg.position || 'center', w, _h);
+  const { x, y } = resolveSegmentCoords(seg, w, _h);
   const transform = config.textTransform === 'uppercase';
   const textColor = config.textColor ?? '#ffffff';
 

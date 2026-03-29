@@ -56,6 +56,9 @@ export interface HighlightedWord {
 export interface SubtitleSegmentPro extends SubtitleSegment {
   displayType: SubtitleDisplayType;
   position: SubtitlePosition;
+  /** Position libre en coordonnées relatives (0-1). Prend la priorité sur `position`. */
+  positionX?: number;
+  positionY?: number;
   highlightedWords?: HighlightedWord[];
   fontFamily?: string;
   fontSize?: number; // ratio de la largeur (ex: 0.045)

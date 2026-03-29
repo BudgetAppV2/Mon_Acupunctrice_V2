@@ -36,10 +36,10 @@ const V1_STYLES: { id: SubtitleStyle; label: string }[] = [
 export default function SubtitlePanel() {
   const {
     subtitles, subtitleStyle, subtitleFamily,
-    subtitlePosition, subtitleAnimation, subtitleFontFamily, subtitlePresetId,
+    subtitleAnimation, subtitleFontFamily, subtitlePresetId,
     subtitleOverrides, selectedSubtitleId,
     setSubtitles, setSubtitleStyle, updateSubtitle,
-    setSubtitleFamily, setSubtitlePosition, setSubtitleAnimation,
+    setSubtitleFamily, setSubtitleAnimation,
     setSubtitleFontFamily, setSubtitlePreset, setSubtitleOverride, selectSubtitle,
     videoFile,
   } = useEditorStore();
@@ -52,20 +52,40 @@ export default function SubtitlePanel() {
   };
 
   const handleFontChange = (f: string) => {
-    setSubtitleFontFamily(f);
-    loadFont(f).catch(() => {});
+    if (selectedSubtitleId) {
+      setSubtitleOverride(selectedSubtitleId, { fontFamily: f || undefined });
+      if (f) loadFont(f).catch(() => {});
+    } else {
+      setSubtitleFontFamily(f);
+      loadFont(f).catch(() => {});
+    }
   };
 
-  // Preset applique la font + les effets visuels d'un coup
   const handlePreset = (presetId: string | null) => {
-    setSubtitlePreset(presetId);
-    if (presetId) {
-      const preset = TEXT_STYLE_PRESETS.find(p => p.id === presetId);
-      if (preset) {
-        setSubtitleFontFamily(preset.fontFamily);
-        loadFont(preset.fontFamily).catch(() => {});
+    if (selectedSubtitleId) {
+      // Preset par segment : stocke la font en override
+      if (presetId) {
+        const preset = TEXT_STYLE_PRESETS.find(p => p.id === presetId);
+        if (preset) {
+          setSubtitleOverride(selectedSubtitleId, { fontFamily: preset.fontFamily });
+          loadFont(preset.fontFamily).catch(() => {});
+        }
+      }
+    } else {
+      setSubtitlePreset(presetId);
+      if (presetId) {
+        const preset = TEXT_STYLE_PRESETS.find(p => p.id === presetId);
+        if (preset) {
+          setSubtitleFontFamily(preset.fontFamily);
+          loadFont(preset.fontFamily).catch(() => {});
+        }
       }
     }
+  };
+
+  const handlePositionPreset = (x: number, y: number) => {
+    if (!selectedSubtitleId) return;
+    setSubtitleOverride(selectedSubtitleId, { positionX: x, positionY: y });
   };
 
   return (
@@ -83,7 +103,7 @@ export default function SubtitlePanel() {
 
       {subtitles.length > 0 && (
         <>
-          {/* Familles Pro */}
+          {/* Familles Pro — toujours visible */}
           <div>
             <p className="text-[10px] text-gray-500 mb-1 uppercase tracking-wide">Style Pro</p>
             <div className="flex gap-1.5">
@@ -96,35 +116,21 @@ export default function SubtitlePanel() {
             </div>
           </div>
 
-          {/* Options Pro */}
-          {subtitleFamily && (
-            <>
-              <div>
-                <p className="text-[10px] text-gray-500 mb-1 uppercase tracking-wide">Position</p>
-                <SubtitlePositionPicker value={subtitlePosition} onChange={setSubtitlePosition} />
+          {/* Animation par défaut — visible quand famille sélectionnée et aucun segment sélectionné */}
+          {subtitleFamily && !selectedSubtitleId && (
+            <div>
+              <p className="text-[10px] text-gray-500 mb-1 uppercase tracking-wide">Animation par défaut</p>
+              <div className="flex flex-wrap gap-1">
+                {ANIMATIONS.map(a => (
+                  <button key={a.id} onClick={() => setSubtitleAnimation(a.id)}
+                    className={`px-2.5 py-1 rounded-full text-xs font-medium border transition ${subtitleAnimation === a.id ? 'border-sage bg-sage/20 text-white' : 'border-gray-700 text-gray-400'}`}
+                  >{a.label}</button>
+                ))}
               </div>
-              <div>
-                <p className="text-[10px] text-gray-500 mb-1 uppercase tracking-wide">Animation</p>
-                <div className="flex flex-wrap gap-1">
-                  {ANIMATIONS.map(a => (
-                    <button key={a.id} onClick={() => setSubtitleAnimation(a.id)}
-                      className={`px-2.5 py-1 rounded-full text-xs font-medium border transition ${subtitleAnimation === a.id ? 'border-sage bg-sage/20 text-white' : 'border-gray-700 text-gray-400'}`}
-                    >{a.label}</button>
-                  ))}
-                </div>
-              </div>
-              <div>
-                <p className="text-[10px] text-gray-500 mb-1 uppercase tracking-wide">Police</p>
-                <FontPicker value={subtitleFontFamily} onChange={handleFontChange} />
-              </div>
-              <div>
-                <p className="text-[10px] text-gray-500 mb-1 uppercase tracking-wide">Presets</p>
-                <StylePresets value={subtitlePresetId} onChange={handlePreset} />
-              </div>
-            </>
+            </div>
           )}
 
-          {/* Styles V1 */}
+          {/* Styles V1 — quand pas de famille Pro */}
           {!subtitleFamily && (
             <div>
               <p className="text-[10px] text-gray-500 mb-1 uppercase tracking-wide">Style V1</p>
@@ -138,39 +144,49 @@ export default function SubtitlePanel() {
             </div>
           )}
 
-          {/* Segments éditables avec override font par segment */}
-          <div className="space-y-1 max-h-40 overflow-y-auto">
-            {subtitles.map(seg => (
-              <div key={seg.id}>
-                <div className="flex items-center gap-2">
-                  <span className="text-[10px] text-gray-500 w-12 shrink-0">{seg.startTime.toFixed(1)}s</span>
-                  <input
-                    value={seg.text}
-                    onChange={e => updateSubtitle(seg.id, e.target.value)}
-                    className="flex-1 bg-gray-800 text-white text-xs rounded px-2 py-1"
-                  />
-                  {subtitleFamily && (
-                    <button
-                      onClick={() => selectSubtitle(selectedSubtitleId === seg.id ? null : seg.id)}
-                      className={`text-[10px] px-1.5 py-1 rounded border transition shrink-0 ${selectedSubtitleId === seg.id ? 'border-sage text-sage' : 'border-gray-700 text-gray-500'}`}
-                      title="Changer la police de ce segment"
-                    >Aa</button>
-                  )}
-                </div>
-                {selectedSubtitleId === seg.id && subtitleFamily && (
-                  <div className="mt-1 pl-14 pr-8">
-                    <FontPicker
-                      compact
-                      value={subtitleOverrides[seg.id]?.fontFamily ?? ''}
-                      onChange={(f) => {
-                        setSubtitleOverride(seg.id, { fontFamily: f || undefined });
-                        if (f) loadFont(f).catch(() => {});
-                      }}
+          {/* Segments — tap pour sélectionner (mode Pro uniquement) */}
+          <div className="space-y-0.5 max-h-40 overflow-y-auto">
+            {subtitles.map(seg => {
+              const isSelected = selectedSubtitleId === seg.id && !!subtitleFamily;
+              return (
+                <div key={seg.id}>
+                  <div
+                    onClick={() => subtitleFamily && selectSubtitle(isSelected ? null : seg.id)}
+                    className={`flex items-center gap-2 rounded px-1 py-0.5 transition ${subtitleFamily ? 'cursor-pointer' : ''} ${isSelected ? 'bg-gray-700/60 ring-1 ring-sage/40' : subtitleFamily ? 'hover:bg-gray-800/50' : ''}`}
+                  >
+                    <span className="text-[10px] text-gray-500 w-12 shrink-0">{seg.startTime.toFixed(1)}s</span>
+                    <input
+                      value={seg.text}
+                      onChange={e => updateSubtitle(seg.id, e.target.value)}
+                      onClick={e => e.stopPropagation()}
+                      className="flex-1 bg-gray-800 text-white text-xs rounded px-2 py-1"
                     />
                   </div>
-                )}
-              </div>
-            ))}
+
+                  {/* Options par-segment — visibles seulement quand sélectionné */}
+                  {isSelected && (
+                    <div className="mt-1.5 ml-14 mr-1 space-y-2 pb-1">
+                      <div>
+                        <p className="text-[10px] text-gray-500 mb-0.5 uppercase tracking-wide">Position</p>
+                        <SubtitlePositionPicker onChange={handlePositionPreset} />
+                      </div>
+                      <div>
+                        <p className="text-[10px] text-gray-500 mb-0.5 uppercase tracking-wide">Police</p>
+                        <FontPicker
+                          compact
+                          value={subtitleOverrides[seg.id]?.fontFamily ?? subtitleFontFamily}
+                          onChange={handleFontChange}
+                        />
+                      </div>
+                      <div>
+                        <p className="text-[10px] text-gray-500 mb-0.5 uppercase tracking-wide">Presets</p>
+                        <StylePresets value={subtitlePresetId} onChange={handlePreset} />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </>
       )}

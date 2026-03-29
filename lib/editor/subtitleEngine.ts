@@ -74,6 +74,17 @@ export function renderSubtitlesPro(
   ctx.restore();
 }
 
+/**
+ * Résout les coordonnées canvas d'un segment.
+ * Priorité : positionX/positionY (libre, 0-1) → positionToCoords (enum).
+ */
+export function resolveSegmentCoords(seg: SubtitleSegmentPro, w: number, h: number): { x: number; y: number } {
+  if (seg.positionX !== undefined && seg.positionY !== undefined) {
+    return { x: seg.positionX * w, y: seg.positionY * h };
+  }
+  return positionToCoords(seg.position, w, h);
+}
+
 /** Convertit une SubtitlePosition en coordonnees ratio (x, y) */
 export function positionToCoords(pos: SubtitleSegmentPro['position'], w: number, h: number): { x: number; y: number } {
   const margin = 0.06;

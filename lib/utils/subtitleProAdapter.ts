@@ -13,7 +13,7 @@ export function toProSegments(
   position: SubtitlePosition,
   animation: ProAnimation,
   displayType: SubtitleDisplayType = 'narration',
-  overrides: Record<string, { position?: SubtitlePosition; fontSize?: number; fontFamily?: string }> = {},
+  overrides: Record<string, { position?: SubtitlePosition; positionX?: number; positionY?: number; fontSize?: number; fontFamily?: string }> = {},
 ): SubtitleSegmentPro[] {
   return segments.map(seg => {
     const ov = overrides[seg.id] ?? {};
@@ -21,6 +21,8 @@ export function toProSegments(
       ...seg,
       displayType,
       position: ov.position ?? position,
+      positionX: ov.positionX,
+      positionY: ov.positionY,
       animation,
       fontSize: ov.fontSize,
       fontFamily: ov.fontFamily,

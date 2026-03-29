@@ -8,7 +8,7 @@
 
 import type { SubtitleSegmentPro } from '@/lib/types/editor';
 import type { SubtitleRenderConfig } from '../subtitleEngine';
-import { positionToCoords } from '../subtitleEngine';
+import { resolveSegmentCoords } from '../subtitleEngine';
 
 export function renderMinimalWellness(
   ctx: CanvasRenderingContext2D,
@@ -22,7 +22,7 @@ export function renderMinimalWellness(
   const fontSize = Math.round((seg.fontSize ?? 0.038) * w);
   const font = seg.fontFamily ?? config.fontBody;
   const weight = config.fontWeight ?? 600;
-  const { x, y } = positionToCoords(seg.position || 'bottom-center', w, h);
+  const { x, y } = resolveSegmentCoords(seg, w, h);
   const transform = config.textTransform === 'uppercase';
   const textColor = config.textColor ?? 'rgba(255, 255, 255, 0.95)';
 

@@ -52,7 +52,7 @@ export async function exportWithWebCodecs(
   subtitlePosition?: SubtitlePosition,
   subtitleAnimation?: 'fade' | 'slide-left' | 'slide-up' | 'pop' | 'none',
   subtitleAccentColor?: string,
-  subtitleOverrides?: Record<string, { position?: SubtitlePosition; fontSize?: number }>,
+  subtitleOverrides?: Record<string, { position?: SubtitlePosition; positionX?: number; positionY?: number; fontSize?: number; fontFamily?: string }>,
   subtitleFontFamily?: string,
 ): Promise<Blob> {
   // --- Demuxer le source pour l'audio ---

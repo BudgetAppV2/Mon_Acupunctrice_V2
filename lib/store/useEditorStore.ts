@@ -80,7 +80,7 @@ interface EditorState {
   subtitleAnimation: 'fade' | 'slide-left' | 'slide-up' | 'pop' | 'none';
   subtitleAccentColor: string;
   subtitleFontFamily: string;
-  subtitleOverrides: Record<string, { position?: SubtitlePosition; fontSize?: number; fontFamily?: string }>;
+  subtitleOverrides: Record<string, { position?: SubtitlePosition; positionX?: number; positionY?: number; fontSize?: number; fontFamily?: string }>;
   subtitlePresetId: string | null;
   templateTitle: string;
   templatePoints: string[];
@@ -121,7 +121,7 @@ interface EditorState {
   setSubtitleAnimation: (a: 'fade' | 'slide-left' | 'slide-up' | 'pop' | 'none') => void;
   setSubtitleAccentColor: (c: string) => void;
   setSubtitleFontFamily: (f: string) => void;
-  setSubtitleOverride: (id: string, changes: { position?: SubtitlePosition; fontSize?: number; fontFamily?: string }) => void;
+  setSubtitleOverride: (id: string, changes: { position?: SubtitlePosition; positionX?: number; positionY?: number; fontSize?: number; fontFamily?: string }) => void;
   setSubtitlePreset: (id: string | null) => void;
   clearSubtitleOverrides: () => void;
   setTemplateTitle: (t: string) => void;

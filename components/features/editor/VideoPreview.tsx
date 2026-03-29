@@ -127,7 +127,7 @@ export default function VideoPreview({ interactive = false, subtitleInteractive 
       if (!s.subtitleFamily) return;
       const newDist = getDist(e.touches[0], e.touches[1]);
       const scale = newDist / pinchDist;
-      const newSize = Math.max(0.02, Math.min(0.12, pinchBaseSize * scale));
+      const newSize = Math.max(0.02, Math.min(0.25, pinchBaseSize * scale));
       for (const segId of pinchSegIds) {
         s.setSubtitleOverride(segId, { fontSize: newSize });
       }
@@ -164,7 +164,7 @@ export default function VideoPreview({ interactive = false, subtitleInteractive 
       for (const seg of visible) {
         const current = s.subtitleOverrides[seg.id]?.fontSize ?? 0.045;
         const delta = e.deltaY > 0 ? -0.003 : 0.003;
-        s.setSubtitleOverride(seg.id, { fontSize: Math.max(0.02, Math.min(0.12, current + delta)) });
+        s.setSubtitleOverride(seg.id, { fontSize: Math.max(0.02, Math.min(0.25, current + delta)) });
       }
     };
     container.addEventListener('wheel', onWheel, { passive: false });

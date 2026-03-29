@@ -8,7 +8,7 @@
 
 import type { SubtitleSegmentPro } from '@/lib/types/editor';
 import type { SubtitleRenderConfig } from '../subtitleEngine';
-import { positionToCoords } from '../subtitleEngine';
+import { resolveSegmentCoords } from '../subtitleEngine';
 
 export function renderNarratif(
   ctx: CanvasRenderingContext2D,
@@ -21,7 +21,7 @@ export function renderNarratif(
   const fontSize = Math.round((seg.fontSize ?? 0.048) * w);
   const font = seg.fontFamily ?? config.fontTitle;
   const weight = config.fontWeight ?? 700;
-  const { x, y } = positionToCoords(seg.position, w, h);
+  const { x, y } = resolveSegmentCoords(seg, w, h);
   const maxWidth = w * 0.8;
   const lineH = fontSize * 1.3;
   const transform = config.textTransform === 'uppercase';
