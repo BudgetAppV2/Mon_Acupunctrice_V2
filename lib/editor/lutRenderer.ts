@@ -34,14 +34,16 @@ void main() {
   fragColor = vec4(mix(color.rgb, graded, u_intensity), color.a);
 }`;
 
-interface LutState { gl: WebGL2RenderingContext; program: WebGLProgram; canvas: OffscreenCanvas | HTMLCanvasElement; imageTex: WebGLTexture; lutTex: WebGLTexture; currentLutId: string; }
+interface LutState { gl: WebGL2RenderingContext; program: WebGLProgram; canvas: HTMLCanvasElement; imageTex: WebGLTexture; lutTex: WebGLTexture; currentLutId: string; }
 let state: LutState | null = null;
 
 function initWebGL(w: number, h: number): LutState | null {
   try {
-    const canvas = typeof OffscreenCanvas !== 'undefined' ? new OffscreenCanvas(w, h) : document.createElement('canvas');
-    if (!(canvas instanceof OffscreenCanvas)) { canvas.width = w; canvas.height = h; }
-    const gl = (canvas as HTMLCanvasElement).getContext('webgl2', { premultipliedAlpha: false }) as WebGL2RenderingContext | null;
+    // HTMLCanvasElement uniquement — OffscreenCanvas ne supporte pas drawImage fiable cross-browser
+    const canvas = document.createElement('canvas');
+    canvas.width = w;
+    canvas.height = h;
+    const gl = canvas.getContext('webgl2', { premultipliedAlpha: false }) as WebGL2RenderingContext | null;
     if (!gl) return null;
     const vs = compileShader(gl, gl.VERTEX_SHADER, VERT_SHADER), fs = compileShader(gl, gl.FRAGMENT_SHADER, FRAG_SHADER);
     if (!vs || !fs) return null;
@@ -90,7 +92,6 @@ export function applyLut(
   if (!state) return false; // WebGL non disponible
 
   const { gl, program, canvas, imageTex } = state;
-  if (canvas instanceof HTMLCanvasElement) { canvas.width = w; canvas.height = h; }
   gl.viewport(0, 0, w, h);
 
   // Upload l'image source
@@ -111,9 +112,11 @@ export function applyLut(
   gl.uniform1f(gl.getUniformLocation(program, 'u_lutSize'), lut.size);
   gl.uniform1f(gl.getUniformLocation(program, 'u_intensity'), intensity);
   gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+  // Attendre que le GPU ait terminé avant de lire le canvas
+  gl.finish();
 
   // Copier le resultat sur le canvas 2D source
-  sourceCtx.drawImage(canvas as HTMLCanvasElement, 0, 0);
+  sourceCtx.drawImage(canvas, 0, 0);
   return true;
 }
 
