@@ -43,7 +43,7 @@ function buildEditorData(state: ReturnType<typeof useEditorStore.getState>) {
 export function useEditorPersistence(itemId: string | null) {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
-  const [saveError, setSaveError] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastJsonRef = useRef<string>('');
   const pendingDataRef = useRef<ReturnType<typeof buildEditorData> | null>(null);
@@ -71,7 +71,7 @@ export function useEditorPersistence(itemId: string | null) {
           });
           setSaved(true);
           setTimeout(() => setSaved(false), 2000);
-        } catch { setSaveError(true); setTimeout(() => setSaveError(false), 4000); }
+        } catch (e) { const msg = e instanceof Error ? e.message : String(e); setSaveError(msg); setTimeout(() => setSaveError(null), 8000); }
         finally { setSaving(false); }
       }, 500);
     });

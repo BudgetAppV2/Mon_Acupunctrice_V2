@@ -129,7 +129,7 @@ export default function EditorLayout({ itemId }: Props) {
           })()}
           {saving && <CloudArrowUpIcon className="w-3.5 h-3.5 text-gray-500 animate-pulse" />}
           {saved && !saving && <CheckCircleIcon className="w-3.5 h-3.5 text-green-500" />}
-          {saveError && <ExclamationTriangleIcon className="w-3.5 h-3.5 text-red-400" />}
+          {saveError && <span className="text-red-400 text-xs max-w-[140px] truncate">{saveError}</span>}
         </span>
         <ExportButton onExportDone={handlePublish} onSwitchTab={setActiveTab} />
       </header>
