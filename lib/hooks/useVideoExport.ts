@@ -55,7 +55,7 @@ export function useVideoExport() {
 
       const blob = await exportWithWebCodecs(
         s.videoFile, s.trimStart, s.trimEnd, setProgress,
-        filterCss, s.overlays, s.subtitles, s.subtitleStyle, scene, s.activeLutId,
+        filterCss, s.overlays, s.subtitles, s.subtitleStyle, scene, s.activeLutId, s.lutIntensity,
         s.subtitleFamily, s.subtitlePosition, s.subtitleAnimation, s.subtitleAccentColor,
         s.subtitleOverrides, s.subtitleFontFamily,
       );

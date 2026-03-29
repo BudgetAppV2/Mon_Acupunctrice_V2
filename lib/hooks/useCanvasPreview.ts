@@ -58,7 +58,7 @@ export function useCanvasPreview(
       // LUT color grading
       if (s.activeLutId) {
         const lutData = getLutData(s.activeLutId);
-        if (lutData) applyLut(ctx, lutData, s.activeLutId, w, h);
+        if (lutData) applyLut(ctx, lutData, s.activeLutId, w, h, s.lutIntensity ?? 1.0);
       }
 
       // Rendu scene graph (template/overlays animes) ou legacy

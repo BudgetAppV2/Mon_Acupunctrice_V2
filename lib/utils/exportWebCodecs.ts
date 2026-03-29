@@ -47,7 +47,7 @@ export async function exportWithWebCodecs(
   onProgress: (p: number) => void,
   filterCss?: string, overlays?: TextOverlayItem[],
   subtitles?: SubtitleSegment[], subtitleStyle?: string,
-  scene?: SceneGraph | null, lutId?: string | null,
+  scene?: SceneGraph | null, lutId?: string | null, lutIntensity?: number,
   subtitleFamily?: SubtitleFamily | null,
   subtitlePosition?: SubtitlePosition,
   subtitleAnimation?: 'fade' | 'slide-left' | 'slide-up' | 'pop' | 'none',
@@ -140,7 +140,7 @@ export async function exportWithWebCodecs(
     // LUT color grading (applique apres drawImage, avant overlays)
     if (lutId) {
       const lutData = getLutData(lutId);
-      if (lutData) applyLut(ctx, lutData, lutId, W, H);
+      if (lutData) applyLut(ctx, lutData, lutId, W, H, lutIntensity ?? 1.0);
     }
 
     // Rendu scene graph (templates/overlays animes) ou legacy overlays
