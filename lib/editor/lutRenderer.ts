@@ -43,7 +43,7 @@ function initWebGL(w: number, h: number): LutState | null {
     const canvas = document.createElement('canvas');
     canvas.width = w;
     canvas.height = h;
-    const gl = canvas.getContext('webgl2', { premultipliedAlpha: false }) as WebGL2RenderingContext | null;
+    const gl = canvas.getContext('webgl2', { premultipliedAlpha: false, preserveDrawingBuffer: true }) as WebGL2RenderingContext | null;
     if (!gl) return null;
     const vs = compileShader(gl, gl.VERTEX_SHADER, VERT_SHADER), fs = compileShader(gl, gl.FRAGMENT_SHADER, FRAG_SHADER);
     if (!vs || !fs) return null;
