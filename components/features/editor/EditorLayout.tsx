@@ -72,6 +72,9 @@ export default function EditorLayout({ itemId }: Props) {
             const ed = data.editorData;
             const s = useEditorStore.getState();
             // Restaurer les metadonnees du premier clip (trim via les clips serialises)
+            // Thème en premier — définit les valeurs par défaut (filter, subtitleStyle)
+            if (ed.activeThemeId) s.setActiveTheme(ed.activeThemeId);
+            // Puis les valeurs personnalisées écrasent les defaults du thème
             if (ed.clips?.[0]?.trimStart != null) s.setTrim(ed.clips[0].trimStart, ed.clips[0].trimEnd);
             else if (ed.trimStart != null && ed.trimEnd != null) s.setTrim(ed.trimStart, ed.trimEnd);
             if (ed.overlays?.length) s.setOverlays(ed.overlays);
@@ -95,7 +98,6 @@ export default function EditorLayout({ itemId }: Props) {
             if (ed.audioDucking) s.setAudioDucking(true);
             if (ed.coverFrameOffset) s.setCoverFrame(ed.coverFrameOffset, '');
             if (ed.coverCustomUrl) s.setCoverCustom(ed.coverCustomUrl);
-            if (ed.activeThemeId) s.setActiveTheme(ed.activeThemeId);
           }
         }
       } catch { /* ImportModal s'affichera */ }
