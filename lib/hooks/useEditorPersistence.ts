@@ -54,7 +54,9 @@ export function useEditorPersistence(itemId: string | null) {
     // Initialiser avec l'état courant pour éviter que les setters de restore
     // (setActiveTheme, setSubtitles, etc.) déclenchent une sauvegarde intermédiaire
     // qui écraserait les bonnes données Firestore avant que le restore soit complet.
-    lastJsonRef.current = JSON.stringify(buildEditorData(useEditorStore.getState()));
+    const snap = buildEditorData(useEditorStore.getState());
+    console.log('[persist-ready] subtitles:', snap.subtitles.length, 'filter:', snap.filter);
+    lastJsonRef.current = JSON.stringify(snap);
 
     const unsub = useEditorStore.subscribe((state) => {
       const editorData = buildEditorData(state);

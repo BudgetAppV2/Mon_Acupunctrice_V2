@@ -73,6 +73,7 @@ export default function EditorLayout({ itemId }: Props) {
             useEditorStore.getState().loadVideo(file, URL.createObjectURL(file));
           }
           // Restaurer les donnees editables sauvegardees
+          console.log('[restore] editorData:', data.editorData ? `subtitles:${data.editorData.subtitles?.length ?? 0} filter:${data.editorData.filter} theme:${data.editorData.activeThemeId}` : 'absent');
           if (data.editorData && !cancelled) {
             const ed = data.editorData;
             const s = useEditorStore.getState();
