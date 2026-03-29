@@ -31,7 +31,7 @@ const fmt = (s: number) => `${Math.floor(s / 60).toString().padStart(2, '0')}:${
 interface Props { itemId: string }
 
 export default function EditorLayout({ itemId }: Props) {
-  const { videoFile, videoUrl, currentTime, duration, editorSplitRatio, setItemId, reset } = useEditorStore();
+  const { videoFile, videoUrl, currentTime, duration, editorSplitRatio, isPlaying, togglePlayPause, setItemId, reset } = useEditorStore();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState('style');
   const [showPublish, setShowPublish] = useState(false);
@@ -149,7 +149,7 @@ export default function EditorLayout({ itemId }: Props) {
         </div>
         <ResizeDivider containerHeight={containerH} />
         <div className="flex flex-col overflow-hidden transition-[height] duration-200 ease-out" style={{ height: bottomH, paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
-          <EditorToolbar activeTab={activeTab} onTabChange={setActiveTab} />
+          <EditorToolbar activeTab={activeTab} onTabChange={setActiveTab} isPlaying={isPlaying} onTogglePlay={togglePlayPause} />
           <div className="flex-1 min-h-0 bg-gray-900 overflow-y-auto">
             {activeTab === 'style' && <ThemePanel />}
             {activeTab === 'trim' && <TrimPanel />}

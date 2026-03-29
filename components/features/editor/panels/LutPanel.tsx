@@ -5,7 +5,7 @@ import { LUT_PRESETS } from '@/lib/data/luts/presets';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 
 export default function LutPanel() {
-  const { activeLutId, setLut, thumbnailUrl } = useEditorStore();
+  const { activeLutId, lutIntensity, setLut, setLutIntensity, thumbnailUrl } = useEditorStore();
 
   return (
     <div className="px-3 py-2 space-y-2">
@@ -47,6 +47,20 @@ export default function LutPanel() {
           );
         })}
       </div>
+      {activeLutId && (
+        <div className="space-y-1">
+          <div className="flex items-center justify-between">
+            <span className="text-xs text-gray-400">Intensité</span>
+            <span className="text-xs text-gray-500">{Math.round((lutIntensity ?? 1) * 100)}%</span>
+          </div>
+          <input
+            type="range" min={0} max={1} step={0.05}
+            value={lutIntensity ?? 1}
+            onChange={e => setLutIntensity(parseFloat(e.target.value))}
+            className="w-full accent-sage"
+          />
+        </div>
+      )}
     </div>
   );
 }

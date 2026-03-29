@@ -65,7 +65,9 @@ export default function SubtitleTrack({ zoomLevel }: Props) {
             }`}
             style={{
               left: `${s.startTime * zoomLevel}px`,
-              width: `${Math.max((s.endTime - s.startTime) * zoomLevel, 3)}px`,
+              // 40px minimum : les TrimHandles font 24px chacun (+/-3px), ils se chevauchent
+              // si le bloc est < ~42px — en dessous de ça les handles deviennent inaccessibles
+              width: `${Math.max((s.endTime - s.startTime) * zoomLevel, 40)}px`,
             }}
           >
             {isSelected && !isDragging && (

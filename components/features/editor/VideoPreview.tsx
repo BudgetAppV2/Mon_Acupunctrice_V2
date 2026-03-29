@@ -3,7 +3,6 @@
 import { useRef, useEffect, useState, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 import { useEditorStore, registerVideoElement } from '@/lib/store/useEditorStore';
-import { PlayIcon, PauseIcon } from '@heroicons/react/24/solid';
 import { useRealtimeCanvas } from '@/lib/hooks/useRealtimeCanvas';
 import TextOverlayLayer from './text/TextOverlay';
 
@@ -22,11 +21,9 @@ export default function VideoPreview({ interactive = false, subtitleInteractive 
   const containerRef = useRef<HTMLDivElement>(null);
   const {
     videoUrl, isPlaying, currentTime, trimStart, trimEnd, filter, audioUrl, audioVolume,
-    setCurrentTime, setDuration, pause, togglePlayPause, seekTo,
+    setCurrentTime, setDuration, pause, seekTo,
     setThumbnail, setVideoOrientation, thumbnailUrl, subtitleFamily,
   } = useEditorStore();
-  const [showControls, setShowControls] = useState(true);
-  const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [size, setSize] = useState({ w: 0, h: 0 });
 
   useEffect(() => { registerVideoElement(videoRef.current); return () => registerVideoElement(null); }, []);
@@ -53,12 +50,6 @@ export default function VideoPreview({ interactive = false, subtitleInteractive 
 
   // Canvas temps reel — remplace le rendu DOM pour overlays/sous-titres/effets
   useRealtimeCanvas(videoRef.current, canvasRef.current);
-
-  useEffect(() => {
-    if (isPlaying) { hideTimer.current = setTimeout(() => setShowControls(false), 2000); }
-    else { setShowControls(true); }
-    return () => { if (hideTimer.current) clearTimeout(hideTimer.current); };
-  }, [isPlaying]);
 
   useEffect(() => {
     const a = bgAudioRef.current;
@@ -175,11 +166,8 @@ export default function VideoPreview({ interactive = false, subtitleInteractive 
     return () => container.removeEventListener('wheel', onWheel);
   }, []);
 
-  // subtitleInteractive n'est plus ici — le Stage Konva gère les taps et stopPropagation lui-même
-  const handleTap = () => { if (interactive) return; setShowControls(true); togglePlayPause(); };
-
   return (
-    <div ref={containerRef} className="relative w-full h-full flex items-center justify-center bg-black" onClick={handleTap}>
+    <div ref={containerRef} className="relative w-full h-full flex items-center justify-center bg-black">
       {/* Video cachee visuellement — reste dans le DOM pour audio + timing */}
       <video ref={videoRef} src={videoUrl ?? undefined}
         className="absolute inset-0 w-full h-full opacity-0 pointer-events-none"
@@ -194,13 +182,6 @@ export default function VideoPreview({ interactive = false, subtitleInteractive 
       {/* Couche Konva pour interaction sous-titres Pro (drag position) */}
       {(interactive || subtitleInteractive) && subtitleFamily && size.w > 0 && (
         <SubtitleInteractionLayer width={size.w} height={size.h} />
-      )}
-      {showControls && !interactive && (
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="w-14 h-14 rounded-full bg-black/50 flex items-center justify-center">
-            {isPlaying ? <PauseIcon className="w-7 h-7 text-white" /> : <PlayIcon className="w-7 h-7 text-white ml-0.5" />}
-          </div>
-        </div>
       )}
     </div>
   );

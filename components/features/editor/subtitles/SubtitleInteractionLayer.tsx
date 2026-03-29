@@ -13,7 +13,7 @@ export default function SubtitleInteractionLayer({ width, height }: Props) {
   const {
     subtitles, subtitlePosition, subtitleOverrides,
     currentTime, selectedSubtitleId,
-    setSubtitleOverride, selectSubtitle, togglePlayPause,
+    setSubtitleOverride, selectSubtitle,
   } = useEditorStore();
 
   // Refs Konva
@@ -52,18 +52,12 @@ export default function SubtitleInteractionLayer({ width, height }: Props) {
       onClick={(e) => {
         (e.evt as Event).stopPropagation();
         if (justGestured.current) return;
-        if (e.target === e.target.getStage()) {
-          selectSubtitle(null);
-          togglePlayPause();
-        }
+        if (e.target === e.target.getStage()) selectSubtitle(null);
       }}
       onTap={(e) => {
         (e.evt as Event).stopPropagation();
         if (justGestured.current) return;
-        if (e.target === e.target.getStage()) {
-          selectSubtitle(null);
-          togglePlayPause();
-        }
+        if (e.target === e.target.getStage()) selectSubtitle(null);
       }}
     >
       <Layer>

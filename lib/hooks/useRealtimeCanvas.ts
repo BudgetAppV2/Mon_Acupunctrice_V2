@@ -9,6 +9,7 @@ import { getTheme, getThemePalette } from '@/lib/data/videoThemes';
 import { buildExportScene } from '@/lib/editor/buildExportScene';
 import { renderScene } from '@/lib/editor/sceneRenderer';
 import { applyLut } from '@/lib/editor/lutRenderer';
+import { applyCanvasFilter } from '@/lib/editor/filterRenderer';
 import { getLutData } from '@/lib/data/luts/presets';
 import { renderSubtitlesPro } from '@/lib/editor/subtitleEngine';
 import { toProSegments } from '@/lib/utils/subtitleProAdapter';
@@ -57,11 +58,7 @@ export function useRealtimeCanvas(
     const ctx = canvasEl.getContext('2d', { alpha: false });
     if (!ctx) return;
 
-    // 1. Filtre CSS sur la video
-    const filterCss = FILTERS.find(f => f.id === s.filter)?.css ?? 'none';
-    if (filterCss !== 'none') ctx.filter = filterCss;
-
-    // 2. Dessiner la video (cover fit, coords arrondis pour perf)
+    // 1. Dessiner la video (cover fit, coords arrondis pour perf)
     const { videoWidth: vw, videoHeight: vh } = videoEl;
     if (vw === 0 || vh === 0) return;
     const videoAspect = vw / vh, canvasAspect = w / h;
@@ -69,7 +66,12 @@ export function useRealtimeCanvas(
     if (videoAspect > canvasAspect) { sw = vh * canvasAspect; sx = Math.round((vw - sw) / 2); }
     else { sh = vw / canvasAspect; sy = Math.round((vh - sh) / 2); }
     ctx.drawImage(videoEl, sx, sy, sw, sh, 0, 0, w, h);
-    ctx.filter = 'none';
+
+    // 2. Filtre CSS — via WebGL (ctx.filter non supporté Safari iOS < 18)
+    if (s.filter !== 'normal') {
+      const filterCss = FILTERS.find(f => f.id === s.filter)?.css ?? 'none';
+      if (filterCss !== 'none') applyCanvasFilter(ctx, filterCss, w, h);
+    }
 
     // 3. LUT color grading
     if (s.activeLutId) {
