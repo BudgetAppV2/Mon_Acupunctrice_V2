@@ -77,7 +77,17 @@ export default function EditorLayout({ itemId }: Props) {
             if (ed.overlays?.length) s.setOverlays(ed.overlays);
             if (ed.subtitles?.length) s.setSubtitles(ed.subtitles);
             if (ed.subtitleStyle) s.setSubtitleStyle(ed.subtitleStyle);
+            if (ed.subtitleFamily) s.setSubtitleFamily(ed.subtitleFamily);
+            if (ed.subtitlePosition) s.setSubtitlePosition(ed.subtitlePosition);
+            if (ed.subtitleAnimation) s.setSubtitleAnimation(ed.subtitleAnimation);
+            if (ed.subtitleAccentColor) s.setSubtitleAccentColor(ed.subtitleAccentColor);
+            if (ed.subtitleFontFamily) s.setSubtitleFontFamily(ed.subtitleFontFamily);
+            if (ed.subtitleOverrides && Object.keys(ed.subtitleOverrides).length) {
+              Object.entries(ed.subtitleOverrides).forEach(([id, ov]) => s.setSubtitleOverride(id, ov as Parameters<typeof s.setSubtitleOverride>[1]));
+            }
+            if (ed.subtitlePresetId) s.setSubtitlePreset(ed.subtitlePresetId);
             if (ed.filter && ed.filter !== 'normal') s.setFilter(ed.filter);
+            if (ed.activeLutId) s.setLut(ed.activeLutId);
             if (ed.audioUrl) s.setAudioTrack(ed.audioUrl, ed.audioName || '');
             if (ed.voiceVolume != null) s.setVoiceVolume(ed.voiceVolume);
             if (ed.audioVolume != null) s.setAudioVolume(ed.audioVolume);
