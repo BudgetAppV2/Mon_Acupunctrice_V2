@@ -12,6 +12,16 @@ export interface SubtitleRenderConfig {
   accentColor: string;  // couleur highlight (pills, mots-cles)
   fontTitle: string;     // font principale
   fontBody: string;      // font secondaire
+  // Overrides optionnels depuis un preset — si absent, le renderer utilise ses défauts
+  fontWeight?: number;
+  textTransform?: 'none' | 'uppercase';
+  textColor?: string;         // override couleur texte (défaut #FFFFFF)
+  strokeEnabled?: boolean;    // forcer activation/désactivation du stroke
+  strokeWidth?: number;       // largeur en px à référence canvas 400px
+  strokeColor?: string;
+  shadowBlur?: number;        // blur en px à référence canvas 400px
+  shadowColor?: string;
+  backgroundColor?: string;   // couleur de fond (pill derrière texte)
 }
 
 const DEFAULT_CONFIG: SubtitleRenderConfig = {

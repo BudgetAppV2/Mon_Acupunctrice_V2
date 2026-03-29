@@ -14,14 +14,17 @@ export function renderBoldHighlight(
   ctx: CanvasRenderingContext2D,
   seg: SubtitleSegmentPro,
   enterProgress: number,
-  time: number,
+  _time: number,
   w: number,
-  h: number,
+  _h: number,
   config: SubtitleRenderConfig,
 ) {
   const fontSize = Math.round((seg.fontSize ?? 0.06) * w);
   const font = seg.fontFamily ?? config.fontTitle;
-  const { x, y } = positionToCoords(seg.position || 'center', w, h);
+  const weight = config.fontWeight ?? 900;
+  const { x, y } = positionToCoords(seg.position || 'center', w, _h);
+  const transform = config.textTransform === 'uppercase';
+  const textColor = config.textColor ?? '#ffffff';
 
   // Scale-pop animation
   const popScale = enterProgress < 1
@@ -32,36 +35,49 @@ export function renderBoldHighlight(
   ctx.translate(-x, -y);
   ctx.globalAlpha *= enterProgress;
 
-  ctx.font = `900 ${fontSize}px "${font}", sans-serif`;
+  ctx.font = `${weight} ${fontSize}px "${font}", sans-serif`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.lineJoin = 'round';
 
   const highlighted = new Set((seg.highlightedWords ?? []).map(hw => hw.wordIndex));
   const highlightColors = new Map((seg.highlightedWords ?? []).map(hw => [hw.wordIndex, hw.color]));
-  const words = seg.text.split(' ');
+  const rawWords = seg.text.split(' ');
+  const words = transform ? rawWords.map(wd => wd.toUpperCase()) : rawWords;
 
   // Calculer la largeur totale
   const fullText = words.join(' ');
   const totalW = ctx.measureText(fullText).width;
   let curX = x - totalW / 2;
 
+  // Stroke activé par défaut pour boldHighlight, désactivable via config
+  const strokeOn = config.strokeEnabled !== undefined ? config.strokeEnabled : true;
+
   for (let i = 0; i < words.length; i++) {
     const word = words[i];
     const ww = ctx.measureText(word).width;
 
-    // Outline noir epaisse
-    ctx.strokeStyle = '#000000';
-    ctx.lineWidth = fontSize * 0.12;
-    ctx.strokeText(word, curX + ww / 2, y);
+    if (strokeOn) {
+      const lw = config.strokeWidth != null ? config.strokeWidth * (w / 400) : fontSize * 0.12;
+      ctx.strokeStyle = config.strokeColor ?? '#000000';
+      ctx.lineWidth = lw;
+      ctx.strokeText(word, curX + ww / 2, y);
+    }
 
-    // Fill : accent pour highlighted, blanc sinon
+    // Shadow optionnelle (sur le fill)
+    if (config.shadowBlur) {
+      ctx.shadowBlur = config.shadowBlur * (w / 400);
+      ctx.shadowColor = config.shadowColor ?? 'rgba(0,0,0,0.8)';
+    }
+
+    // Fill : accent pour highlighted, textColor sinon
     if (highlighted.has(i)) {
       ctx.fillStyle = highlightColors.get(i) ?? config.accentColor;
     } else {
-      ctx.fillStyle = '#ffffff';
+      ctx.fillStyle = textColor;
     }
     ctx.fillText(word, curX + ww / 2, y);
+    ctx.shadowBlur = 0;
 
     curX += ctx.measureText(word + ' ').width;
   }

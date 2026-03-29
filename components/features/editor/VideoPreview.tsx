@@ -94,13 +94,89 @@ export default function VideoPreview({ interactive = false, subtitleInteractive 
     return () => { v.removeEventListener('loadedmetadata', cb); v.removeEventListener('canplay', cb); v.removeEventListener('durationchange', cb); clearInterval(iv); clearTimeout(to); };
   }, [videoUrl, setDuration]);
 
+  // Pinch-to-zoom natif (2 doigts) → resize fontSize des sous-titres visibles
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    let pinchDist: number | null = null;
+    let pinchBaseSize: number | null = null;
+    let pinchSegIds: string[] = [];
+
+    const getDist = (t1: Touch, t2: Touch) => {
+      const dx = t1.clientX - t2.clientX;
+      const dy = t1.clientY - t2.clientY;
+      return Math.sqrt(dx * dx + dy * dy);
+    };
+
+    const onTouchStart = (e: TouchEvent) => {
+      if (e.touches.length !== 2) return;
+      const s = useEditorStore.getState();
+      if (!s.subtitleFamily) return;
+      pinchDist = getDist(e.touches[0], e.touches[1]);
+      const visible = s.subtitles.filter(seg => s.currentTime >= seg.startTime && s.currentTime <= seg.endTime);
+      pinchSegIds = visible.map(seg => seg.id);
+      const first = visible[0];
+      pinchBaseSize = first ? (s.subtitleOverrides[first.id]?.fontSize ?? 0.045) : 0.045;
+      e.preventDefault();
+    };
+
+    const onTouchMove = (e: TouchEvent) => {
+      if (e.touches.length !== 2 || pinchDist === null || pinchBaseSize === null) return;
+      const s = useEditorStore.getState();
+      if (!s.subtitleFamily) return;
+      const newDist = getDist(e.touches[0], e.touches[1]);
+      const scale = newDist / pinchDist;
+      const newSize = Math.max(0.02, Math.min(0.12, pinchBaseSize * scale));
+      for (const segId of pinchSegIds) {
+        s.setSubtitleOverride(segId, { fontSize: newSize });
+      }
+      e.preventDefault();
+    };
+
+    const onTouchEnd = (e: TouchEvent) => {
+      if (e.touches.length < 2) {
+        pinchDist = null;
+        pinchBaseSize = null;
+        pinchSegIds = [];
+      }
+    };
+
+    container.addEventListener('touchstart', onTouchStart, { passive: false });
+    container.addEventListener('touchmove', onTouchMove, { passive: false });
+    container.addEventListener('touchend', onTouchEnd);
+    return () => {
+      container.removeEventListener('touchstart', onTouchStart);
+      container.removeEventListener('touchmove', onTouchMove);
+      container.removeEventListener('touchend', onTouchEnd);
+    };
+  }, []);
+
+  // Scroll wheel (desktop) → resize fontSize des sous-titres visibles
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+    const onWheel = (e: WheelEvent) => {
+      const s = useEditorStore.getState();
+      if (!s.subtitleFamily) return;
+      e.preventDefault();
+      const visible = s.subtitles.filter(seg => s.currentTime >= seg.startTime && s.currentTime <= seg.endTime);
+      for (const seg of visible) {
+        const current = s.subtitleOverrides[seg.id]?.fontSize ?? 0.045;
+        const delta = e.deltaY > 0 ? -0.003 : 0.003;
+        s.setSubtitleOverride(seg.id, { fontSize: Math.max(0.02, Math.min(0.12, current + delta)) });
+      }
+    };
+    container.addEventListener('wheel', onWheel, { passive: false });
+    return () => container.removeEventListener('wheel', onWheel);
+  }, []);
+
   // subtitleInteractive n'est plus ici — le Stage Konva gère les taps et stopPropagation lui-même
   const handleTap = () => { if (interactive) return; setShowControls(true); togglePlayPause(); };
 
   return (
     <div ref={containerRef} className="relative w-full h-full flex items-center justify-center bg-black" onClick={handleTap}>
       {/* Video cachee visuellement — reste dans le DOM pour audio + timing */}
-      {/* Video invisible mais audible — le canvas dessine par-dessus */}
       <video ref={videoRef} src={videoUrl ?? undefined}
         className="absolute inset-0 w-full h-full opacity-0 pointer-events-none"
         playsInline preload="auto"
@@ -111,7 +187,7 @@ export default function VideoPreview({ interactive = false, subtitleInteractive 
       <canvas ref={canvasRef} className="w-full h-full object-contain" style={{ imageRendering: 'auto' }} />
       {/* TextOverlayLayer DOM seulement en mode interactif (drag-and-drop) */}
       {interactive && size.w > 0 && <TextOverlayLayer width={size.w} height={size.h} interactive />}
-      {/* Couche Konva pour interaction sous-titres Pro (drag position + resize fontSize) */}
+      {/* Couche Konva pour interaction sous-titres Pro (drag position) */}
       {(interactive || subtitleInteractive) && subtitleFamily && size.w > 0 && (
         <SubtitleInteractionLayer width={size.w} height={size.h} />
       )}

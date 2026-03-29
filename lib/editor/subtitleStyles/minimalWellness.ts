@@ -21,18 +21,22 @@ export function renderMinimalWellness(
 ) {
   const fontSize = Math.round((seg.fontSize ?? 0.038) * w);
   const font = seg.fontFamily ?? config.fontBody;
+  const weight = config.fontWeight ?? 600;
   const { x, y } = positionToCoords(seg.position || 'bottom-center', w, h);
+  const transform = config.textTransform === 'uppercase';
+  const textColor = config.textColor ?? 'rgba(255, 255, 255, 0.95)';
 
   // Fade douce
   ctx.globalAlpha *= enterProgress;
 
-  ctx.font = `600 ${fontSize}px "${font}", sans-serif`;
+  ctx.font = `${weight} ${fontSize}px "${font}", sans-serif`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
 
   const lineH = fontSize * 1.35;
   const maxWidth = w * 0.85;
-  const lines = wrapLines(ctx, seg.text, maxWidth);
+  const rawText = transform ? seg.text.toUpperCase() : seg.text;
+  const lines = wrapLines(ctx, rawText, maxWidth);
   const totalH = lines.length * lineH;
   const startY = y - totalH / 2;
 
@@ -40,10 +44,17 @@ export function renderMinimalWellness(
   if (seg.displayType !== 'karaoke') {
     const longestW = Math.max(...lines.map(l => ctx.measureText(l).width));
     const pad = fontSize * 0.4;
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.35)';
+    const bgColor = config.backgroundColor ?? 'rgba(0, 0, 0, 0.35)';
+    ctx.fillStyle = bgColor;
     ctx.beginPath();
     ctx.roundRect(x - longestW / 2 - pad, startY - pad * 0.5, longestW + pad * 2, totalH + pad, fontSize * 0.25);
     ctx.fill();
+  }
+
+  // Shadow optionnelle
+  if (config.shadowBlur) {
+    ctx.shadowBlur = config.shadowBlur * (w / 400);
+    ctx.shadowColor = config.shadowColor ?? 'rgba(0,0,0,0.8)';
   }
 
   // Rendu karaoke doux ou texte simple
@@ -55,12 +66,12 @@ export function renderMinimalWellness(
     ctx.textAlign = 'left';
     for (const ww of seg.words) {
       const isCurrent = time >= ww.start && time <= ww.end;
-      ctx.fillStyle = isCurrent ? config.accentColor : 'rgba(255, 255, 255, 0.9)';
+      ctx.fillStyle = isCurrent ? config.accentColor : textColor;
       ctx.fillText(ww.word, curX, y);
       curX += ctx.measureText(ww.word + ' ').width;
     }
   } else {
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+    ctx.fillStyle = textColor;
     for (let i = 0; i < lines.length; i++) {
       ctx.fillText(lines[i], x, startY + i * lineH + lineH / 2);
     }

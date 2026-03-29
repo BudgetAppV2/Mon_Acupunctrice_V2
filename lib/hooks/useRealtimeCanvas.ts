@@ -12,6 +12,7 @@ import { applyLut } from '@/lib/editor/lutRenderer';
 import { getLutData } from '@/lib/data/luts/presets';
 import { renderSubtitlesPro } from '@/lib/editor/subtitleEngine';
 import { toProSegments } from '@/lib/utils/subtitleProAdapter';
+import { TEXT_STYLE_PRESETS } from '@/lib/data/fontPack';
 import type { SceneGraph } from '@/lib/editor/sceneGraph';
 import type { SubtitleStyle } from '@/lib/types';
 
@@ -94,10 +95,22 @@ export function useRealtimeCanvas(
     // 5. Sous-titres Pro — rendu par-dessus la scene si famille selectionnee
     if (s.subtitleFamily && s.subtitles.length > 0) {
       const proSegs = toProSegments(s.subtitles, s.subtitlePosition, s.subtitleAnimation, 'narration', s.subtitleOverrides);
+      const preset = s.subtitlePresetId ? TEXT_STYLE_PRESETS.find(p => p.id === s.subtitlePresetId) : null;
       renderSubtitlesPro(ctx, proSegs, s.subtitleFamily, time, w, h, {
         accentColor: s.subtitleAccentColor,
         fontTitle: s.subtitleFontFamily,
         fontBody: s.subtitleFontFamily,
+        ...(preset ? {
+          fontWeight: preset.fontWeight,
+          textTransform: preset.textTransform,
+          textColor: preset.color,
+          strokeEnabled: !!preset.strokeWidth,
+          strokeWidth: preset.strokeWidth,
+          strokeColor: preset.strokeColor,
+          shadowBlur: preset.shadowBlur,
+          shadowColor: preset.shadowColor,
+          backgroundColor: preset.backgroundColor,
+        } : {}),
       });
     }
   }, [videoEl, canvasEl]);

@@ -80,7 +80,8 @@ interface EditorState {
   subtitleAnimation: 'fade' | 'slide-left' | 'slide-up' | 'pop' | 'none';
   subtitleAccentColor: string;
   subtitleFontFamily: string;
-  subtitleOverrides: Record<string, { position?: SubtitlePosition; fontSize?: number }>;
+  subtitleOverrides: Record<string, { position?: SubtitlePosition; fontSize?: number; fontFamily?: string }>;
+  subtitlePresetId: string | null;
   templateTitle: string;
   templatePoints: string[];
   templateQuote: string;
@@ -120,7 +121,8 @@ interface EditorState {
   setSubtitleAnimation: (a: 'fade' | 'slide-left' | 'slide-up' | 'pop' | 'none') => void;
   setSubtitleAccentColor: (c: string) => void;
   setSubtitleFontFamily: (f: string) => void;
-  setSubtitleOverride: (id: string, changes: { position?: SubtitlePosition; fontSize?: number }) => void;
+  setSubtitleOverride: (id: string, changes: { position?: SubtitlePosition; fontSize?: number; fontFamily?: string }) => void;
+  setSubtitlePreset: (id: string | null) => void;
   clearSubtitleOverrides: () => void;
   setTemplateTitle: (t: string) => void;
   setTemplatePoints: (pts: string[]) => void;
@@ -155,7 +157,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   audioUrl: null, audioName: null, audioVolume: 0.3, voiceVolume: 1,
   audioFadeIn: 0, audioFadeOut: 0, audioDucking: false, thumbnailUrl: null, videoOrientation: 'portrait', editorSplitRatio: 0.50, selectedSubtitleId: null, coverFrameOffset: 0, coverDataUrl: null, coverCustomUrl: null, captions: null, silenceRanges: [], activeLutId: null, activeTemplateId: null, templateTitle: '', templatePoints: [], templateQuote: '', templateCta: '',
   subtitleFamily: null, subtitlePosition: 'bottom-center' as SubtitlePosition, subtitleAnimation: 'fade' as const, subtitleAccentColor: '#E91E8C',
-  subtitleFontFamily: 'Inter', subtitleOverrides: {},
+  subtitleFontFamily: 'Inter', subtitleOverrides: {}, subtitlePresetId: null,
 
   setVideoFile: (file) => {
     get().clips.forEach(c => { if (c.blobUrl) URL.revokeObjectURL(c.blobUrl); });
@@ -237,6 +239,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
     markEditorTouched();
   },
   clearSubtitleOverrides: () => set({ subtitleOverrides: {} }),
+  setSubtitlePreset: (id) => { set({ subtitlePresetId: id }); markEditorTouched(); },
   setTemplateTitle: (t) => set({ templateTitle: t }),
   setTemplatePoints: (pts) => set({ templatePoints: pts }),
   setTemplateQuote: (q) => set({ templateQuote: q }),
@@ -288,7 +291,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
       audioUrl: null, audioName: null, audioVolume: 0.3, voiceVolume: 1,
       audioFadeIn: 0, audioFadeOut: 0, audioDucking: false, thumbnailUrl: null, videoOrientation: 'portrait', selectedSubtitleId: null, coverFrameOffset: 0, coverDataUrl: null, coverCustomUrl: null, captions: null,
       subtitleFamily: null, subtitlePosition: 'bottom-center' as SubtitlePosition, subtitleAnimation: 'fade' as const,
-      subtitleAccentColor: '#E91E8C', subtitleFontFamily: 'Inter', subtitleOverrides: {},
+      subtitleAccentColor: '#E91E8C', subtitleFontFamily: 'Inter', subtitleOverrides: {}, subtitlePresetId: null,
     });
   },
 }));

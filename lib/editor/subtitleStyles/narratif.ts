@@ -20,9 +20,12 @@ export function renderNarratif(
 ) {
   const fontSize = Math.round((seg.fontSize ?? 0.048) * w);
   const font = seg.fontFamily ?? config.fontTitle;
+  const weight = config.fontWeight ?? 700;
   const { x, y } = positionToCoords(seg.position, w, h);
   const maxWidth = w * 0.8;
   const lineH = fontSize * 1.3;
+  const transform = config.textTransform === 'uppercase';
+  const textColor = config.textColor ?? '#ffffff';
 
   // Animation d'entree
   const anim = seg.animation ?? 'fade';
@@ -32,16 +35,23 @@ export function renderNarratif(
   if (anim === 'pop') { const s = 0.8 + enterProgress * 0.2; ctx.translate(x, y); ctx.scale(s, s); ctx.translate(-x, -y); alpha = enterProgress; }
   ctx.globalAlpha *= alpha;
 
+  // Shadow optionnelle depuis preset
+  if (config.shadowBlur) {
+    ctx.shadowBlur = config.shadowBlur * (w / 400);
+    ctx.shadowColor = config.shadowColor ?? 'rgba(0,0,0,0.8)';
+  }
+
   if (seg.displayType === 'citation') {
-    renderCitation(ctx, seg, x + offsetX, y + offsetY, fontSize, font, maxWidth, lineH, w);
+    renderCitation(ctx, seg, x + offsetX, y + offsetY, fontSize, font, weight, maxWidth, lineH, w);
     return;
   }
 
-  ctx.font = `bold ${fontSize}px "${font}", sans-serif`;
+  ctx.font = `${weight} ${fontSize}px "${font}", sans-serif`;
   ctx.textAlign = 'left';
   ctx.textBaseline = 'top';
 
-  const words = seg.text.split(' ');
+  const rawWords = seg.text.split(' ');
+  const words = transform ? rawWords.map(wd => wd.toUpperCase()) : rawWords;
   const highlighted = new Set((seg.highlightedWords ?? []).map(hw => hw.wordIndex));
   const highlightColors = new Map((seg.highlightedWords ?? []).map(hw => [hw.wordIndex, hw.color]));
 
@@ -64,14 +74,19 @@ export function renderNarratif(
       // Pill coloree sur le mot
       const pw = ctx.measureText(word).width;
       const pad = fontSize * 0.2;
+      ctx.shadowBlur = 0; // pas de shadow sur la pill
       ctx.fillStyle = highlightColors.get(i) ?? config.accentColor;
       ctx.beginPath();
       ctx.roundRect(curX - pad, curY - pad * 0.3, pw + pad * 2, fontSize + pad * 0.6, fontSize * 0.15);
       ctx.fill();
+      if (config.shadowBlur) {
+        ctx.shadowBlur = config.shadowBlur * (w / 400);
+        ctx.shadowColor = config.shadowColor ?? 'rgba(0,0,0,0.8)';
+      }
       ctx.fillStyle = '#ffffff';
       ctx.fillText(word, curX, curY);
     } else {
-      ctx.fillStyle = '#ffffff';
+      ctx.fillStyle = textColor;
       ctx.fillText(word, curX, curY);
     }
     curX += wWidth;
@@ -80,10 +95,10 @@ export function renderNarratif(
 
 function renderCitation(
   ctx: CanvasRenderingContext2D, seg: SubtitleSegmentPro,
-  x: number, y: number, fontSize: number, font: string,
+  x: number, y: number, fontSize: number, font: string, weight: number,
   maxWidth: number, lineH: number, w: number,
 ) {
-  ctx.font = `italic ${fontSize}px "${font}", serif`;
+  ctx.font = `italic ${weight} ${fontSize}px "${font}", serif`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'top';
 
@@ -95,6 +110,7 @@ function renderCitation(
   const bubbleH = textH + pad * 2;
 
   // Bulle blanche
+  ctx.shadowBlur = 0;
   ctx.fillStyle = 'rgba(255, 255, 255, 0.92)';
   ctx.beginPath();
   ctx.roundRect(x - bubbleW / 2, y - pad, bubbleW, bubbleH, fontSize * 0.3);
