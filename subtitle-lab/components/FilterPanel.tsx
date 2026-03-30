@@ -6,7 +6,7 @@ import { LUT_PRESETS } from '../lib/luts/presets';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 
 export default function FilterPanel() {
-  const { filterId, setFilter, activeLutId, setLut, lutIntensity, setLutIntensity } = useSubtitleStore();
+  const { filterId, setFilter, activeLutId, setLut, lutIntensity, setLutIntensity, thumbnailUrl } = useSubtitleStore();
 
   return (
     <div className="px-3 py-2 space-y-3">
@@ -20,11 +20,14 @@ export default function FilterPanel() {
               <button key={f.id} onClick={() => setFilter(f.id)}
                 className={`flex flex-col items-center gap-1 shrink-0 transition ${isActive ? 'opacity-100' : 'opacity-60 active:opacity-90'}`}>
                 <div className={`w-12 h-16 rounded-lg overflow-hidden ${isActive ? 'ring-2 ring-emerald-400' : ''}`}>
-                  <div className="w-full h-full"
-                    style={{
-                      background: 'linear-gradient(135deg, #1a1a2e 0%, #e8a87c 50%, #16213e 100%)',
-                      filter: f.css !== 'none' ? f.css : undefined,
-                    }} />
+                  {thumbnailUrl ? (
+                    <img src={thumbnailUrl} alt={f.label} className="w-full h-full object-cover"
+                      style={f.css !== 'none' ? { filter: f.css } : undefined} />
+                  ) : (
+                    <div className="w-full h-full"
+                      style={{ background: 'linear-gradient(135deg, #1a1a2e 0%, #e8a87c 50%, #16213e 100%)',
+                        filter: f.css !== 'none' ? f.css : undefined }} />
+                  )}
                 </div>
                 <span className={`text-[9px] font-medium w-12 text-center truncate ${isActive ? 'text-emerald-400' : 'text-white/40'}`}>
                   {f.label}

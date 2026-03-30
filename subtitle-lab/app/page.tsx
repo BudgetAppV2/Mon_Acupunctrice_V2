@@ -2,8 +2,9 @@
 
 import { useState } from 'react';
 import dynamic from 'next/dynamic';
+import { useRef } from 'react';
 import { PlayIcon, PauseIcon, BackwardIcon } from '@heroicons/react/24/solid';
-import { AdjustmentsHorizontalIcon } from '@heroicons/react/24/outline';
+import { AdjustmentsHorizontalIcon, FilmIcon } from '@heroicons/react/24/outline';
 import { useSubtitleStore } from '../lib/store';
 
 const SubtitleCanvas = dynamic(() => import('../components/SubtitleCanvas'), { ssr: false });
@@ -25,10 +26,14 @@ function SubtitleIcon({ className }: { className?: string }) {
 }
 
 function Toolbar({ activeSheet, onToggleSheet }: { activeSheet: SheetId; onToggleSheet: (id: SheetId) => void }) {
-  const { isPlaying, setIsPlaying, setCurrentTime } = useSubtitleStore();
+  const { isPlaying, setIsPlaying, setCurrentTime, setVideo, videoUrl } = useSubtitleStore();
+  const fileRef = useRef<HTMLInputElement>(null);
+  const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0];
+    if (f) setVideo(f);
+  };
   return (
     <div className="flex items-center justify-between px-3 py-2 shrink-0">
-      {/* Transport */}
       <div className="flex items-center gap-1">
         <button onClick={() => setCurrentTime(0)} className="p-2 rounded-full active:bg-white/10">
           <BackwardIcon className="w-5 h-5 text-white/50" />
@@ -37,14 +42,15 @@ function Toolbar({ activeSheet, onToggleSheet }: { activeSheet: SheetId; onToggl
           {isPlaying ? <PauseIcon className="w-5 h-5 text-white" /> : <PlayIcon className="w-5 h-5 text-white" />}
         </button>
       </div>
-
-      {/* Tool icons — mobile only */}
       <div className="flex items-center gap-0.5 lg:hidden">
+        <ToolButton icon={<FilmIcon className="w-5 h-5" />} label={videoUrl ? 'Video' : 'Import'}
+          active={false} onClick={() => fileRef.current?.click()} />
         <ToolButton icon={<AdjustmentsHorizontalIcon className="w-5 h-5" />} label="Filtres"
           active={activeSheet === 'filter'} onClick={() => onToggleSheet('filter')} />
         <ToolButton icon={<SubtitleIcon className="w-5 h-5" />} label="Sous-titres"
           active={activeSheet === 'sub'} onClick={() => onToggleSheet('sub')} />
       </div>
+      <input ref={fileRef} type="file" accept="video/*" onChange={handleFile} className="hidden" />
     </div>
   );
 }

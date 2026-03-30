@@ -16,6 +16,8 @@ interface RendererOptions {
   nowMs: number; // wall-clock time for oscillation effects
   canvasWidth: number;
   canvasHeight: number;
+  /** Skip background gradient (video frame already drawn) */
+  skipBackground?: boolean;
 }
 
 // Load font into canvas context
@@ -247,21 +249,19 @@ function renderBlock(
  * Main render entry — clears canvas, draws gradient bg, then all visible blocks.
  */
 export function renderFrame(opts: RendererOptions): void {
-  const { canvas, blocks, globalPreset, currentMs, nowMs, canvasWidth, canvasHeight } = opts;
+  const { canvas, blocks, globalPreset, currentMs, nowMs, canvasWidth, canvasHeight, skipBackground } = opts;
   const ctx = canvas.getContext('2d');
   if (!ctx) return;
 
-  // Background gradient
-  const grad = ctx.createLinearGradient(0, 0, 0, canvasHeight);
-  grad.addColorStop(0, '#1a1a2e');
-  grad.addColorStop(1, '#16213e');
-  ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-
-  // Subtle overlay pattern suggestion
-  ctx.fillStyle = 'rgba(255,255,255,0.02)';
-  for (let y = 0; y < canvasHeight; y += 4) {
-    ctx.fillRect(0, y, canvasWidth, 1);
+  if (!skipBackground) {
+    // Background gradient (no video)
+    const grad = ctx.createLinearGradient(0, 0, 0, canvasHeight);
+    grad.addColorStop(0, '#1a1a2e');
+    grad.addColorStop(1, '#16213e');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+    ctx.fillStyle = 'rgba(255,255,255,0.02)';
+    for (let y = 0; y < canvasHeight; y += 4) ctx.fillRect(0, y, canvasWidth, 1);
   }
 
   blocks.forEach((block) => {
