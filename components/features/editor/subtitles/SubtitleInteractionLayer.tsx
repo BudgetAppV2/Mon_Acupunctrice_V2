@@ -93,6 +93,11 @@ export default function SubtitleInteractionLayer({ width, height }: Props) {
                 e.cancelBubble = true;
                 if (!justGestured.current) selectSubtitle(seg.id);
               }}
+              onTransformStart={(e) => {
+                // Cacher le bord pendant le resize — le Transformer dessine le sien
+                (e.target as Konva.Rect).stroke('transparent');
+                e.target.getLayer()?.batchDraw();
+              }}
               onDragStart={(e) => {
                 // Cacher le bord pendant le drag — seul le texte canvas doit bouger
                 (e.target as Konva.Rect).stroke('transparent');
@@ -119,8 +124,8 @@ export default function SubtitleInteractionLayer({ width, height }: Props) {
                 const node = e.target as Konva.Rect;
                 const centerX = node.x() + rectW / 2;
                 const centerY = node.y() + rectH / 2;
-                // Rétablir le bord après drag
-                node.stroke(isSelected ? 'rgba(255,255,255,0.7)' : 'rgba(255,255,255,0.2)');
+                // Rétablir le bord seulement si sélectionné
+                node.stroke(isSelected ? 'rgba(255,255,255,0.7)' : 'transparent');
                 // Commit final avec markEditorTouched (déclenche la persistance)
                 setSubtitleOverride(seg.id, {
                   positionX: Math.max(0, Math.min(1, centerX / width)),
@@ -135,6 +140,8 @@ export default function SubtitleInteractionLayer({ width, height }: Props) {
                 const newFontSize = Math.max(0.02, Math.min(0.25, currentFontSize * scaleX));
                 node.scaleX(1);
                 node.scaleY(1);
+                // Rétablir le bord après resize
+                node.stroke(isSelected ? 'rgba(255,255,255,0.7)' : 'transparent');
                 const centerX = node.x() + rectW / 2;
                 const centerY = node.y() + rectH / 2;
                 setSubtitleOverride(seg.id, {
@@ -156,8 +163,7 @@ export default function SubtitleInteractionLayer({ width, height }: Props) {
           anchorCornerRadius={4}
           anchorFill="white"
           anchorStroke="rgba(0,0,0,0.3)"
-          borderStroke="rgba(255,255,255,0.5)"
-          borderDash={[4, 4]}
+          borderEnabled={false}
           keepRatio
           boundBoxFunc={(oldBox, newBox) => {
             if (newBox.width < 60) return oldBox;

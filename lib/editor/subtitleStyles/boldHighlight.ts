@@ -45,40 +45,59 @@ export function renderBoldHighlight(
   const rawWords = seg.text.split(' ');
   const words = transform ? rawWords.map(wd => wd.toUpperCase()) : rawWords;
 
-  // Calculer la largeur totale
-  const fullText = words.join(' ');
-  const totalW = ctx.measureText(fullText).width;
-  let curX = x - totalW / 2;
-
   // Stroke activé par défaut pour boldHighlight, désactivable via config
   const strokeOn = config.strokeEnabled !== undefined ? config.strokeEnabled : true;
 
+  // Grouper les mots en lignes (word wrap)
+  const maxWidth = w * 0.8;
+  const lineH = fontSize * 1.3;
+  const lines: { wordIdx: number; word: string }[][] = [];
+  let curLine: { wordIdx: number; word: string }[] = [];
+  let curLineW = 0;
   for (let i = 0; i < words.length; i++) {
-    const word = words[i];
-    const ww = ctx.measureText(word).width;
-
-    if (strokeOn) {
-      const lw = config.strokeWidth != null ? config.strokeWidth * (w / 400) : fontSize * 0.12;
-      ctx.strokeStyle = config.strokeColor ?? '#000000';
-      ctx.lineWidth = lw;
-      ctx.strokeText(word, curX + ww / 2, y);
-    }
-
-    // Shadow optionnelle (sur le fill)
-    if (config.shadowBlur) {
-      ctx.shadowBlur = config.shadowBlur * (w / 400);
-      ctx.shadowColor = config.shadowColor ?? 'rgba(0,0,0,0.8)';
-    }
-
-    // Fill : accent pour highlighted, textColor sinon
-    if (highlighted.has(i)) {
-      ctx.fillStyle = highlightColors.get(i) ?? config.accentColor;
+    const wordW = ctx.measureText(words[i] + ' ').width;
+    if (curLine.length > 0 && curLineW + wordW > maxWidth) {
+      lines.push(curLine);
+      curLine = [{ wordIdx: i, word: words[i] }];
+      curLineW = wordW;
     } else {
-      ctx.fillStyle = textColor;
+      curLine.push({ wordIdx: i, word: words[i] });
+      curLineW += wordW;
     }
-    ctx.fillText(word, curX + ww / 2, y);
-    ctx.shadowBlur = 0;
+  }
+  if (curLine.length > 0) lines.push(curLine);
 
-    curX += ctx.measureText(word + ' ').width;
+  const totalH = lines.length * lineH;
+  const baseY = y - totalH / 2 + lineH / 2; // centre vertical de la première ligne
+
+  for (let li = 0; li < lines.length; li++) {
+    const lineWords = lines[li];
+    const lineText = lineWords.map(lw => lw.word).join(' ');
+    const lineW2 = ctx.measureText(lineText).width;
+    let drawX = x - lineW2 / 2;
+    const lineY = baseY + li * lineH;
+
+    for (const { wordIdx, word } of lineWords) {
+      const ww = ctx.measureText(word).width;
+      const cx = drawX + ww / 2; // centre du mot pour textAlign:'center'
+
+      if (strokeOn) {
+        const lw = config.strokeWidth != null ? config.strokeWidth * (w / 400) : fontSize * 0.12;
+        ctx.strokeStyle = config.strokeColor ?? '#000000';
+        ctx.lineWidth = lw;
+        ctx.strokeText(word, cx, lineY);
+      }
+
+      if (config.shadowBlur) {
+        ctx.shadowBlur = config.shadowBlur * (w / 400);
+        ctx.shadowColor = config.shadowColor ?? 'rgba(0,0,0,0.8)';
+      }
+
+      ctx.fillStyle = highlighted.has(wordIdx) ? (highlightColors.get(wordIdx) ?? config.accentColor) : textColor;
+      ctx.fillText(word, cx, lineY);
+      ctx.shadowBlur = 0;
+
+      drawX += ctx.measureText(word + ' ').width;
+    }
   }
 }

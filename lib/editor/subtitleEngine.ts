@@ -22,6 +22,8 @@ export interface SubtitleRenderConfig {
   shadowBlur?: number;        // blur en px à référence canvas 400px
   shadowColor?: string;
   backgroundColor?: string;   // couleur de fond (pill derrière texte)
+  // Contrôle animation — false quand video pausée pour toujours afficher les effets
+  isPlaying?: boolean;
 }
 
 const DEFAULT_CONFIG: SubtitleRenderConfig = {
@@ -49,12 +51,13 @@ export function renderSubtitlesPro(
   const seg = segments.find(s => time >= s.startTime && time <= s.endTime);
   if (!seg) return;
 
-  // Calculer le progress d'animation d'entree (0-1)
+  // Quand pausé, toujours afficher à pleine opacité (pas d'animation entry/exit)
+  const isPlaying = cfg.isPlaying !== false;
   const animDur = 0.25;
   const elapsed = time - seg.startTime;
   const remaining = seg.endTime - time;
-  const enterProgress = Math.min(1, elapsed / animDur);
-  const exitProgress = remaining < 0.15 ? remaining / 0.15 : 1;
+  const enterProgress = isPlaying ? Math.min(1, elapsed / animDur) : 1;
+  const exitProgress = (isPlaying && remaining < 0.15) ? remaining / 0.15 : 1;
 
   ctx.save();
   ctx.globalAlpha = exitProgress;

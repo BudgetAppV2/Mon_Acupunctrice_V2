@@ -58,6 +58,13 @@ export function useRealtimeCanvas(
     const ctx = canvasEl.getContext('2d', { alpha: false });
     if (!ctx) return;
 
+    // 0. Hors-trim — canvas noir, rien d'autre (ne sera pas exporté)
+    if (s.trimEnd > 0 && (s.currentTime < s.trimStart || s.currentTime > s.trimEnd)) {
+      ctx.fillStyle = '#000';
+      ctx.fillRect(0, 0, w, h);
+      return;
+    }
+
     // 1. Dessiner la video (cover fit, coords arrondis pour perf)
     const { videoWidth: vw, videoHeight: vh } = videoEl;
     if (vw === 0 || vh === 0) return;
@@ -94,13 +101,7 @@ export function useRealtimeCanvas(
       }
     }
 
-    // 5. Zone hors-trim — overlay sombre si le curseur est en dehors des handles
-    if (s.trimEnd > 0 && (s.currentTime < s.trimStart || s.currentTime > s.trimEnd)) {
-      ctx.fillStyle = 'rgba(0,0,0,0.65)';
-      ctx.fillRect(0, 0, w, h);
-    }
-
-    // 6. Sous-titres Pro — rendu par-dessus la scene si famille selectionnee
+    // 5. Sous-titres Pro — rendu par-dessus la scene si famille selectionnee
     if (s.subtitleFamily && s.subtitles.length > 0) {
       const proSegs = toProSegments(s.subtitles, s.subtitlePosition, s.subtitleAnimation, 'narration', s.subtitleOverrides);
       const preset = s.subtitlePresetId ? TEXT_STYLE_PRESETS.find(p => p.id === s.subtitlePresetId) : null;
@@ -108,6 +109,7 @@ export function useRealtimeCanvas(
         accentColor: s.subtitleAccentColor,
         fontTitle: s.subtitleFontFamily,
         fontBody: s.subtitleFontFamily,
+        isPlaying: s.isPlaying,
         ...(preset ? {
           fontWeight: preset.fontWeight,
           textTransform: preset.textTransform,
