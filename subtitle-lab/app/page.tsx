@@ -6,6 +6,7 @@ const SubtitleCanvas = dynamic(() => import('../components/SubtitleCanvas'), { s
 const ControlPanel = dynamic(() => import('../components/ControlPanel'), { ssr: false });
 const Timeline = dynamic(() => import('../components/Timeline'), { ssr: false });
 const PresetGallery = dynamic(() => import('../components/PresetGallery'), { ssr: false });
+const BottomSheet = dynamic(() => import('../components/BottomSheet'), { ssr: false });
 
 export default function Page() {
   return (
@@ -17,25 +18,28 @@ export default function Page() {
         <span className="text-[10px] text-white/30 ml-1">prototype</span>
       </header>
 
-      {/* MOBILE: vertical stack — preview sticky, controls scroll */}
-      {/* DESKTOP: side-by-side */}
       <div className="flex flex-col lg:flex-row flex-1 min-h-0">
 
-        {/* Left column: Canvas + Timeline (sticky on mobile) */}
-        <div className="shrink-0 lg:flex-1 lg:flex lg:flex-col">
-          {/* Canvas wrapper — compact on mobile */}
-          <div className="flex items-center justify-center p-3 lg:flex-1 lg:p-4">
+        {/* Canvas + Timeline — takes full space on mobile */}
+        <div className="flex-1 flex flex-col min-h-0 lg:flex-1">
+          <div className="flex-1 flex items-center justify-center p-3 lg:p-4">
             <SubtitleCanvas />
           </div>
           <Timeline />
         </div>
 
-        {/* Right column: Controls (scrollable) */}
-        <div className="flex-1 lg:w-80 lg:flex-none border-t lg:border-t-0 lg:border-l border-white/10 overflow-y-auto min-h-0">
+        {/* DESKTOP: sidebar (hidden on mobile) */}
+        <div className="hidden lg:block lg:w-80 border-l border-white/10 overflow-y-auto">
           <PresetGallery />
           <ControlPanel />
         </div>
       </div>
+
+      {/* MOBILE: bottom sheet (hidden on desktop) */}
+      <BottomSheet>
+        <PresetGallery />
+        <ControlPanel />
+      </BottomSheet>
     </main>
   );
 }
