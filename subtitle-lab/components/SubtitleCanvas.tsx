@@ -10,68 +10,69 @@ const CANVAS_H = 960; // 9:16
 export default function SubtitleCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const rafRef = useRef<number>(0);
-  const lastTickRef = useRef<number>(0);
 
   const { blocks, globalPreset, currentTime, isPlaying, duration, setCurrentTime, setIsPlaying } =
     useSubtitleStore();
+
+  // Use refs to avoid stale closures in the RAF loop
+  const timeRef = useRef(currentTime);
+  const playingRef = useRef(isPlaying);
+  const durationRef = useRef(duration);
+  const blocksRef = useRef(blocks);
+  const presetRef = useRef(globalPreset);
+
+  // Keep refs in sync
+  useEffect(() => { timeRef.current = currentTime; }, [currentTime]);
+  useEffect(() => { playingRef.current = isPlaying; }, [isPlaying]);
+  useEffect(() => { durationRef.current = duration; }, [duration]);
+  useEffect(() => { blocksRef.current = blocks; }, [blocks]);
+  useEffect(() => { presetRef.current = globalPreset; }, [globalPreset]);
 
   // Drag-to-reposition state
   const [isDragging, setIsDragging] = useState(false);
   const dragStartRef = useRef<{ x: number; y: number } | null>(null);
   const posStartRef = useRef<{ x: number; y: number } | null>(null);
 
-  const drawFrame = useCallback(
-    (ms: number, nowMs: number) => {
-      const canvas = canvasRef.current;
-      if (!canvas) return;
-      renderFrame({
-        canvas,
-        blocks,
-        globalPreset,
-        currentMs: ms,
-        nowMs,
-        canvasWidth: CANVAS_W,
-        canvasHeight: CANVAS_H,
-      });
-    },
-    [blocks, globalPreset],
-  );
-
-  // Animation loop
+  // Single stable RAF loop — reads from refs, never stale
   useEffect(() => {
-    let prevTime: number | null = null;
+    let prevWall: number | null = null;
 
     const loop = (wallMs: number) => {
-      if (isPlaying) {
-        if (prevTime !== null) {
-          const delta = wallMs - prevTime;
-          const next = currentTime + delta;
-          if (next >= duration) {
-            setCurrentTime(0);
-            setIsPlaying(false);
+      if (playingRef.current) {
+        if (prevWall !== null) {
+          const delta = wallMs - prevWall;
+          const next = timeRef.current + delta;
+          if (next >= durationRef.current) {
+            useSubtitleStore.getState().setCurrentTime(0);
+            useSubtitleStore.getState().setIsPlaying(false);
           } else {
-            setCurrentTime(next);
+            useSubtitleStore.getState().setCurrentTime(next);
           }
         }
-        prevTime = wallMs;
+        prevWall = wallMs;
       } else {
-        prevTime = null;
+        prevWall = null;
       }
 
-      drawFrame(currentTime, wallMs);
-      lastTickRef.current = wallMs;
+      const canvas = canvasRef.current;
+      if (canvas) {
+        renderFrame({
+          canvas,
+          blocks: blocksRef.current,
+          globalPreset: presetRef.current,
+          currentMs: timeRef.current,
+          nowMs: wallMs,
+          canvasWidth: CANVAS_W,
+          canvasHeight: CANVAS_H,
+        });
+      }
+
       rafRef.current = requestAnimationFrame(loop);
     };
 
     rafRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(rafRef.current);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isPlaying, duration, drawFrame]);
-
-  // Re-render when time or style changes (non-playing)
-  useEffect(() => {
-    drawFrame(currentTime, lastTickRef.current);
-  }, [currentTime, drawFrame]);
+  }, []); // Empty deps — loop is stable, reads from refs
 
   // Drag to move subtitle position
   const getRelativePos = (e: React.MouseEvent | React.TouchEvent, canvas: HTMLCanvasElement) => {
@@ -115,19 +116,13 @@ export default function SubtitleCanvas() {
 
   return (
     <div className="relative select-none">
-      {/* Position hint */}
-      <div className="absolute top-2 right-2 text-[10px] text-white/30 pointer-events-none">
-        glisser pour repositionner
-      </div>
-
       <canvas
         ref={canvasRef}
         width={CANVAS_W}
         height={CANVAS_H}
-        className="rounded-xl shadow-2xl"
+        className="rounded-xl shadow-2xl w-full h-auto"
         style={{
-          width: 'min(100%, 270px)',
-          height: 'auto',
+          maxWidth: '100%',
           cursor: isDragging ? 'grabbing' : 'grab',
           touchAction: 'none',
         }}
@@ -143,7 +138,7 @@ export default function SubtitleCanvas() {
       {/* Play / Pause overlay */}
       <button
         onClick={() => setIsPlaying(!isPlaying)}
-        className="absolute bottom-3 left-1/2 -translate-x-1/2 bg-black/60 hover:bg-black/80 text-white rounded-full px-5 py-1.5 text-sm font-medium transition-colors backdrop-blur-sm"
+        className="absolute bottom-3 left-1/2 -translate-x-1/2 bg-black/60 hover:bg-black/80 active:bg-black/90 text-white rounded-full px-5 py-2 text-sm font-medium transition-colors backdrop-blur-sm"
       >
         {isPlaying ? '⏸ Pause' : '▶ Play'}
       </button>

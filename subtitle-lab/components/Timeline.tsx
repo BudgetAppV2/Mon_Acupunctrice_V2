@@ -27,6 +27,20 @@ export default function Timeline() {
     seekTo(e.clientX);
   };
 
+  // Touch support for mobile scrubbing
+  const handleTouchMove = (e: React.TouchEvent) => {
+    e.preventDefault();
+    if (e.touches.length > 0) {
+      seekTo(e.touches[0].clientX);
+    }
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (e.touches.length > 0) {
+      seekTo(e.touches[0].clientX);
+    }
+  };
+
   const msToPercent = (ms: number) => `${(ms / duration) * 100}%`;
 
   const formatMs = (ms: number) => {
@@ -36,19 +50,19 @@ export default function Timeline() {
   };
 
   return (
-    <div className="border-t border-white/10 bg-[#111] px-4 py-3 select-none">
+    <div className="border-t border-white/10 bg-[#111] px-3 py-2 select-none shrink-0">
       {/* Transport controls */}
-      <div className="flex items-center gap-3 mb-3">
+      <div className="flex items-center gap-3 mb-2">
         <button
           onClick={() => setCurrentTime(0)}
-          className="text-white/40 hover:text-white/80 text-lg leading-none"
+          className="text-white/40 hover:text-white/80 active:text-white text-lg leading-none"
           title="Retour début"
         >
           ⏮
         </button>
         <button
           onClick={() => setIsPlaying(!isPlaying)}
-          className="w-8 h-8 rounded-full bg-emerald-500 hover:bg-emerald-400 text-white flex items-center justify-center text-sm transition-colors"
+          className="w-8 h-8 rounded-full bg-emerald-500 hover:bg-emerald-400 active:bg-emerald-600 text-white flex items-center justify-center text-sm transition-colors"
         >
           {isPlaying ? '⏸' : '▶'}
         </button>
@@ -57,27 +71,30 @@ export default function Timeline() {
         </span>
       </div>
 
-      {/* Scrubber track */}
+      {/* Scrubber track — with touch support */}
       <div
         ref={trackRef}
-        className="relative h-2 bg-white/10 rounded-full cursor-pointer mb-3"
+        className="relative h-3 bg-white/10 rounded-full cursor-pointer mb-2"
+        style={{ touchAction: 'none' }}
         onClick={handleTrackClick}
         onMouseMove={handleScrubberDrag}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
       >
         {/* Progress bar */}
         <div
           className="absolute left-0 top-0 h-full bg-emerald-500/60 rounded-full pointer-events-none"
           style={{ width: msToPercent(currentTime) }}
         />
-        {/* Scrubber handle */}
+        {/* Scrubber handle — bigger for touch */}
         <div
-          className="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-emerald-400 rounded-full shadow-lg pointer-events-none"
+          className="absolute top-1/2 -translate-y-1/2 w-4 h-4 bg-emerald-400 rounded-full shadow-lg pointer-events-none"
           style={{ left: msToPercent(currentTime), transform: 'translateX(-50%) translateY(-50%)' }}
         />
       </div>
 
       {/* Block track */}
-      <div className="relative h-10 bg-white/5 rounded-lg overflow-hidden">
+      <div className="relative h-8 bg-white/5 rounded-lg overflow-hidden">
         {blocks.map((block) => {
           const left = (block.startMs / duration) * 100;
           const width = ((block.endMs - block.startMs) / duration) * 100;
@@ -89,7 +106,7 @@ export default function Timeline() {
               key={block.id}
               onClick={() => selectBlock(isSelected ? null : block.id)}
               className={`
-                absolute top-1 h-8 rounded text-[9px] font-medium px-1 truncate text-left transition-all
+                absolute top-0.5 h-7 rounded text-[9px] font-medium px-1 truncate text-left transition-all
                 ${isSelected
                   ? 'bg-emerald-500 text-white ring-1 ring-emerald-300'
                   : isActive
@@ -111,13 +128,6 @@ export default function Timeline() {
           style={{ left: msToPercent(currentTime) }}
         />
       </div>
-
-      {/* Hint */}
-      {selectedBlockId && (
-        <p className="text-[10px] text-white/30 mt-2">
-          Bloc sélectionné — les contrôles de droite n&apos;affectent que ce bloc
-        </p>
-      )}
     </div>
   );
 }
