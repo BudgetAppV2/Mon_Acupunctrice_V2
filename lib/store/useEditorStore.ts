@@ -126,6 +126,7 @@ interface EditorState {
   setSubtitleOverride: (id: string, changes: { position?: SubtitlePosition; positionX?: number; positionY?: number; fontSize?: number; fontFamily?: string }) => void;
   setSubtitlePreset: (id: string | null) => void;
   clearSubtitleOverrides: () => void;
+  resetSubtitleStyle: () => void;
   setTemplateTitle: (t: string) => void;
   setTemplatePoints: (pts: string[]) => void;
   setTemplateQuote: (q: string) => void;
@@ -246,6 +247,18 @@ export const useEditorStore = create<EditorState>((set, get) => ({
     markEditorTouched();
   },
   clearSubtitleOverrides: () => set({ subtitleOverrides: {} }),
+  resetSubtitleStyle: () => {
+    set({
+      subtitleOverrides: {},
+      subtitleFamily: null,
+      subtitlePosition: 'bottom-center',
+      subtitleAnimation: 'fade',
+      subtitleAccentColor: '#E91E8C',
+      subtitleFontFamily: 'Inter',
+      subtitlePresetId: null,
+    });
+    markEditorTouched();
+  },
   setSubtitlePreset: (id) => { set({ subtitlePresetId: id }); markEditorTouched(); },
   setTemplateTitle: (t) => set({ templateTitle: t }),
   setTemplatePoints: (pts) => set({ templatePoints: pts }),

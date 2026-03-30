@@ -1,9 +1,10 @@
 'use client';
 
+import { useState } from 'react';
 import { useEditorStore } from '@/lib/store/useEditorStore';
 import { useTranscription } from '@/lib/hooks/useTranscription';
 import type { SubtitleStyle, SubtitleFamily } from '@/lib/types';
-import { SparklesIcon } from '@heroicons/react/24/outline';
+import { SparklesIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
 import SubtitlePositionPicker from './SubtitlePositionPicker';
 import FontPicker from './FontPicker';
 import StylePresets from './StylePresets';
@@ -41,9 +42,11 @@ export default function SubtitlePanel() {
     setSubtitles, setSubtitleStyle, updateSubtitle,
     setSubtitleFamily, setSubtitleAnimation,
     setSubtitleFontFamily, setSubtitlePreset, setSubtitleOverride, selectSubtitle,
+    resetSubtitleStyle,
     videoFile,
   } = useEditorStore();
   const { transcribe, loading, stage, error } = useTranscription();
+  const [confirmReset, setConfirmReset] = useState(false);
 
   const handleGenerate = async () => {
     if (!videoFile) return;
@@ -103,6 +106,29 @@ export default function SubtitlePanel() {
 
       {subtitles.length > 0 && (
         <>
+          {/* Reset sous-titres */}
+          {!confirmReset ? (
+            <button
+              onClick={() => setConfirmReset(true)}
+              className="w-full flex items-center justify-center gap-2 py-1.5 border border-gray-700 text-gray-400 rounded-lg text-xs"
+            >
+              <ArrowPathIcon className="w-3.5 h-3.5" />
+              Réinitialiser les styles
+            </button>
+          ) : (
+            <div className="flex items-center gap-2 p-2 bg-gray-800/60 rounded-lg border border-red-500/30">
+              <p className="flex-1 text-xs text-gray-300">Effacer tous les styles et positions ?</p>
+              <button
+                onClick={() => setConfirmReset(false)}
+                className="px-2.5 py-1 rounded text-xs text-gray-400 border border-gray-600"
+              >Annuler</button>
+              <button
+                onClick={() => { resetSubtitleStyle(); setConfirmReset(false); }}
+                className="px-2.5 py-1 rounded text-xs text-white bg-red-600"
+              >Effacer</button>
+            </div>
+          )}
+
           {/* Familles Pro — toujours visible */}
           <div>
             <p className="text-[10px] text-gray-500 mb-1 uppercase tracking-wide">Style Pro</p>
