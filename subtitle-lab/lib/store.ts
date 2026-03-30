@@ -7,9 +7,9 @@ interface SubtitleStore {
   globalPreset: StylePreset;
   blocks: SubtitleBlock[];
   selectedBlockId: string | null;
-  currentTime: number; // ms
+  currentTime: number;
   isPlaying: boolean;
-  duration: number; // ms
+  duration: number;
 
   setGlobalPreset: (preset: StylePreset) => void;
   applyGlobalToAll: () => void;
@@ -22,14 +22,18 @@ interface SubtitleStore {
 }
 
 export const useSubtitleStore = create<SubtitleStore>((set, get) => ({
-  globalPreset: DEFAULT_PRESET,
+  globalPreset: { ...DEFAULT_PRESET, position: { x: 0.5, y: 0.25 } },
   blocks: TEST_BLOCKS,
   selectedBlockId: null,
   currentTime: 0,
   isPlaying: false,
   duration: TOTAL_DURATION_MS,
 
-  setGlobalPreset: (preset) => set({ globalPreset: preset }),
+  // Preserve current position when switching presets
+  setGlobalPreset: (preset) =>
+    set((state) => ({
+      globalPreset: { ...preset, position: state.globalPreset.position },
+    })),
 
   updateGlobalField: (key, value) =>
     set((state) => ({
@@ -56,8 +60,6 @@ export const useSubtitleStore = create<SubtitleStore>((set, get) => ({
     })),
 
   selectBlock: (id) => set({ selectedBlockId: id }),
-
   setCurrentTime: (ms) => set({ currentTime: Math.max(0, Math.min(ms, get().duration)) }),
-
   setIsPlaying: (playing) => set({ isPlaying: playing }),
 }));
