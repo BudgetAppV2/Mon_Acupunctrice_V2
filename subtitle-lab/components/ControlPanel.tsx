@@ -3,9 +3,10 @@
 import { useSubtitleStore } from '../lib/store';
 import type { StylePreset } from '../lib/types';
 import { ANIMATION_TYPES, FONT_FAMILIES } from '../lib/controlOptions';
+import { XMarkIcon } from '@heroicons/react/24/outline';
 
 export default function ControlPanel() {
-  const { globalPreset, updateGlobalField, applyGlobalToAll, blocks, selectedBlockId, updateBlock, resetBlockOverrides } = useSubtitleStore();
+  const { globalPreset, updateGlobalField, applyGlobalToAll, blocks, selectedBlockId, updateBlock, resetBlockOverrides, selectBlock } = useSubtitleStore();
 
   const selectedBlock = blocks.find((b) => b.id === selectedBlockId) ?? null;
   const effectiveStyle: StylePreset = selectedBlock
@@ -23,18 +24,26 @@ export default function ControlPanel() {
 
   return (
     <div className="px-3 py-2 space-y-3">
-      {/* Context header */}
-      <div className="flex items-center justify-between">
-        <p className="text-[10px] font-semibold text-white/30 uppercase tracking-wider">
-          {isBlockSelected ? 'Bloc sélectionné' : 'Style global'}
-        </p>
-        {isBlockSelected && (
-          <button onClick={() => resetBlockOverrides(selectedBlockId!)}
-            className="text-[10px] text-white/40 active:text-white/80 underline underline-offset-2">Reset</button>
-        )}
-      </div>
+      {/* Context indicator */}
+      {isBlockSelected && selectedBlock ? (
+        <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-lg px-3 py-2">
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-[10px] font-semibold text-emerald-400 uppercase tracking-wider">Bloc sélectionné</span>
+            <div className="flex items-center gap-2">
+              <button onClick={() => resetBlockOverrides(selectedBlockId!)}
+                className="text-[10px] text-emerald-400/60 active:text-emerald-300 underline underline-offset-2">Reset</button>
+              <button onClick={() => selectBlock(null)} className="p-0.5 rounded-full active:bg-white/10">
+                <XMarkIcon className="w-3.5 h-3.5 text-emerald-400/60" />
+              </button>
+            </div>
+          </div>
+          <p className="text-[11px] text-white/50 leading-snug line-clamp-1">{selectedBlock.text}</p>
+        </div>
+      ) : (
+        <p className="text-[10px] font-semibold text-white/30 uppercase tracking-wider">Style global</p>
+      )}
 
-      {/* Font + Animation — two selects side by side */}
+      {/* Font + Animation */}
       <div className="grid grid-cols-2 gap-2">
         <Row label="Police">
           <select value={effectiveStyle.fontFamily} onChange={(e) => setField('fontFamily', e.target.value)}
@@ -51,13 +60,12 @@ export default function ControlPanel() {
         </Row>
       </div>
 
-      {/* Size */}
       <Row label={`Taille ${effectiveStyle.fontSize}px`}>
         <input type="range" min={16} max={60} value={effectiveStyle.fontSize}
           onChange={(e) => setField('fontSize', Number(e.target.value))} className="w-full accent-emerald-400 h-1.5" />
       </Row>
 
-      {/* Colors row — text, bg, outline, shadow in one line */}
+      {/* Colors */}
       <div className="flex items-center gap-3">
         <ColorSwatch label="Texte" value={effectiveStyle.color} onChange={(v) => setField('color', v)} />
         <ColorSwatch label="Fond" value={effectiveStyle.bgColor ?? '#000000'} onChange={(v) => setField('bgColor', v)}
@@ -66,7 +74,6 @@ export default function ControlPanel() {
         <ColorSwatch label="Ombre" value={toHex(effectiveStyle.shadowColor ?? '#000000')} onChange={(v) => setField('shadowColor', v)} />
       </div>
 
-      {/* Outline width + Shadow blur side by side */}
       <div className="grid grid-cols-2 gap-2">
         <Row label={`Contour ${effectiveStyle.outlineWidth ?? 0}px`}>
           <input type="range" min={0} max={8} value={effectiveStyle.outlineWidth ?? 0}
@@ -78,7 +85,6 @@ export default function ControlPanel() {
         </Row>
       </div>
 
-      {/* Letter spacing + casse */}
       <div className="grid grid-cols-2 gap-2">
         <Row label={`Espacement ${effectiveStyle.letterSpacing ?? 0}`}>
           <input type="range" min={-2} max={12} step={0.5} value={effectiveStyle.letterSpacing ?? 0}
