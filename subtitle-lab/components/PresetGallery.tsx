@@ -1,7 +1,7 @@
 'use client';
 
-import { useSubtitleStore } from '@/lib/store';
-import { PRESETS } from '@/lib/presets';
+import { useSubtitleStore } from '../lib/store';
+import { PRESETS } from '../lib/presets';
 
 export default function PresetGallery() {
   const { globalPreset, setGlobalPreset } = useSubtitleStore();

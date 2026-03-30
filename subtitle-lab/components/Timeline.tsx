@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useCallback } from 'react';
-import { useSubtitleStore } from '@/lib/store';
+import { useSubtitleStore } from '../lib/store';
 
 export default function Timeline() {
   const { blocks, selectedBlockId, currentTime, duration, isPlaying, selectBlock, setCurrentTime, setIsPlaying } =
