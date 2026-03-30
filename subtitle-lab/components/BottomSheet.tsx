@@ -26,7 +26,7 @@ export default function BottomSheet({ isOpen, onClose, children }: BottomSheetPr
           transition-transform duration-300 ease-out
           ${isOpen ? 'translate-y-0' : 'translate-y-full'}
         `}
-        style={{ height: '35dvh' }}
+        style={{ height: '40dvh' }}
       >
         <div className="h-full bg-[#1a1a1a]/95 backdrop-blur-sm rounded-t-2xl flex flex-col
                         shadow-[0_-2px_20px_rgba(0,0,0,0.4)] border-t border-white/5">

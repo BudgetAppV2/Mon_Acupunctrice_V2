@@ -13,33 +13,17 @@ const BottomSheet = dynamic(() => import('../components/BottomSheet'), { ssr: fa
 
 function Toolbar({ onOpenSettings }: { onOpenSettings: () => void }) {
   const { isPlaying, setIsPlaying, setCurrentTime } = useSubtitleStore();
-
   return (
     <div className="flex items-center justify-between px-3 py-2 shrink-0">
-      {/* Left: transport */}
       <div className="flex items-center gap-1">
-        <button
-          onClick={() => setCurrentTime(0)}
-          className="p-2 rounded-full active:bg-white/10"
-        >
+        <button onClick={() => setCurrentTime(0)} className="p-2 rounded-full active:bg-white/10">
           <BackwardIcon className="w-5 h-5 text-white/50" />
         </button>
-        <button
-          onClick={() => setIsPlaying(!isPlaying)}
-          className="p-2 rounded-full bg-emerald-500 active:bg-emerald-600"
-        >
-          {isPlaying
-            ? <PauseIcon className="w-5 h-5 text-white" />
-            : <PlayIcon className="w-5 h-5 text-white" />
-          }
+        <button onClick={() => setIsPlaying(!isPlaying)} className="p-2 rounded-full bg-emerald-500 active:bg-emerald-600">
+          {isPlaying ? <PauseIcon className="w-5 h-5 text-white" /> : <PlayIcon className="w-5 h-5 text-white" />}
         </button>
       </div>
-
-      {/* Right: settings (mobile only) */}
-      <button
-        onClick={onOpenSettings}
-        className="p-2 rounded-full active:bg-white/10 lg:hidden"
-      >
+      <button onClick={onOpenSettings} className="p-2 rounded-full active:bg-white/10 lg:hidden">
         <Cog6ToothIcon className="w-5 h-5 text-white/50" />
       </button>
     </div>
@@ -59,13 +43,16 @@ export default function Page() {
       </header>
 
       <div className="flex flex-col lg:flex-row flex-1 min-h-0">
-        {/* Left: toolbar + canvas + timeline */}
+        {/* Left: toolbar + canvas (mobile: no timeline here) */}
         <div className="flex-1 flex flex-col min-h-0 lg:flex-1">
           <Toolbar onOpenSettings={() => setSettingsOpen(true)} />
           <div className="flex-1 flex items-center justify-center px-3 lg:px-4">
             <SubtitleCanvas />
           </div>
-          <Timeline />
+          {/* Desktop only: timeline stays below canvas */}
+          <div className="hidden lg:block">
+            <Timeline />
+          </div>
         </div>
 
         {/* Desktop sidebar */}
@@ -75,8 +62,11 @@ export default function Page() {
         </div>
       </div>
 
-      {/* Mobile bottom sheet */}
+      {/* Mobile bottom sheet: timeline (sticky) + presets + controls */}
       <BottomSheet isOpen={settingsOpen} onClose={() => setSettingsOpen(false)}>
+        <div className="sticky top-0 z-10 bg-[#1a1a1a]">
+          <Timeline />
+        </div>
         <PresetGallery />
         <ControlPanel />
       </BottomSheet>
