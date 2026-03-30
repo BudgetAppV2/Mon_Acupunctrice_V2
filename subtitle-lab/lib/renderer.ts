@@ -22,6 +22,11 @@ interface RendererOptions {
 function applyFont(ctx: CanvasRenderingContext2D, style: StylePreset): void {
   const transform = style.textTransform === 'uppercase' ? 'uppercase' : '';
   ctx.font = `${style.fontWeight} ${style.fontSize}px "${style.fontFamily}", sans-serif`;
+  if (style.letterSpacing) {
+    (ctx as any).letterSpacing = `${style.letterSpacing}px`;
+  } else {
+    (ctx as any).letterSpacing = "0px";
+  }
   // textTransform is CSS-only; we handle it manually below when drawing
   void transform;
 }
