@@ -3,10 +3,10 @@
 import dynamic from 'next/dynamic';
 
 // Dynamic imports to avoid SSR issues with canvas/requestAnimationFrame
-const SubtitleCanvas = dynamic(() => import('@/components/SubtitleCanvas'), { ssr: false });
-const ControlPanel = dynamic(() => import('@/components/ControlPanel'), { ssr: false });
-const Timeline = dynamic(() => import('@/components/Timeline'), { ssr: false });
-const PresetGallery = dynamic(() => import('@/components/PresetGallery'), { ssr: false });
+const SubtitleCanvas = dynamic(() => import('../components/SubtitleCanvas'), { ssr: false });
+const ControlPanel = dynamic(() => import('../components/ControlPanel'), { ssr: false });
+const Timeline = dynamic(() => import('../components/Timeline'), { ssr: false });
+const PresetGallery = dynamic(() => import('../components/PresetGallery'), { ssr: false });
 
 export default function Page() {
   return (

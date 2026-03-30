@@ -1,8 +1,8 @@
 'use client';
 
-import { useSubtitleStore } from '@/lib/store';
-import type { StylePreset } from '@/lib/types';
-import { ANIMATION_TYPES, FONT_FAMILIES } from '@/lib/controlOptions';
+import { useSubtitleStore } from '../lib/store';
+import type { StylePreset } from '../lib/types';
+import { ANIMATION_TYPES, FONT_FAMILIES } from '../lib/controlOptions';
 
 export default function ControlPanel() {
   const {

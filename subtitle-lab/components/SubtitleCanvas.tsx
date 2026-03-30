@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useRef, useCallback, useState } from 'react';
-import { useSubtitleStore } from '@/lib/store';
-import { renderFrame } from '@/lib/renderer';
+import { useSubtitleStore } from '../lib/store';
+import { renderFrame } from '../lib/renderer';
 
 const CANVAS_W = 540;
 const CANVAS_H = 960; // 9:16
