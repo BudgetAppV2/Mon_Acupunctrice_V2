@@ -3,7 +3,7 @@
 import { useSubtitleStore } from '../lib/store';
 import type { StylePreset } from '../lib/types';
 import { ANIMATION_TYPES, FONT_FAMILIES } from '../lib/controlOptions';
-import { XMarkIcon } from '@heroicons/react/24/outline';
+import { XMarkIcon, ArrowUturnLeftIcon } from '@heroicons/react/24/outline';
 
 export default function ControlPanel() {
   const { globalPreset, updateGlobalField, applyGlobalToAll, blocks, selectedBlockId, updateBlock, resetBlockOverrides, selectBlock } = useSubtitleStore();
@@ -13,6 +13,7 @@ export default function ControlPanel() {
     ? { ...globalPreset, ...(selectedBlock.overrides ?? {}) }
     : globalPreset;
   const isBlockSelected = selectedBlock !== null;
+  const hasOverrides = selectedBlock?.overrides && Object.keys(selectedBlock.overrides).length > 0;
 
   const setField = <K extends keyof StylePreset>(key: K, value: StylePreset[K]) => {
     if (isBlockSelected && selectedBlockId) {
@@ -24,20 +25,22 @@ export default function ControlPanel() {
 
   return (
     <div className="px-3 py-2 space-y-3">
-      {/* Context indicator */}
+      {/* Context: selected block or global */}
       {isBlockSelected && selectedBlock ? (
-        <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-lg px-3 py-2">
-          <div className="flex items-center justify-between mb-1">
-            <span className="text-[10px] font-semibold text-emerald-400 uppercase tracking-wider">Bloc sélectionné</span>
-            <div className="flex items-center gap-2">
-              <button onClick={() => resetBlockOverrides(selectedBlockId!)}
-                className="text-[10px] text-emerald-400/60 active:text-emerald-300 underline underline-offset-2">Reset</button>
-              <button onClick={() => selectBlock(null)} className="p-0.5 rounded-full active:bg-white/10">
-                <XMarkIcon className="w-3.5 h-3.5 text-emerald-400/60" />
-              </button>
-            </div>
-          </div>
-          <p className="text-[11px] text-white/50 leading-snug line-clamp-1">{selectedBlock.text}</p>
+        <div className="flex items-center gap-2">
+          <p className="text-[11px] text-emerald-400 flex-1 truncate">
+            <span className="font-semibold">Bloc:</span> {selectedBlock.text}
+          </p>
+          {hasOverrides && (
+            <button onClick={() => resetBlockOverrides(selectedBlockId!)}
+              className="p-1.5 rounded-full bg-white/5 active:bg-white/15" title="Reset au style global">
+              <ArrowUturnLeftIcon className="w-3.5 h-3.5 text-emerald-400/70" />
+            </button>
+          )}
+          <button onClick={() => selectBlock(null)}
+            className="p-1.5 rounded-full bg-white/5 active:bg-white/15" title="Désélectionner">
+            <XMarkIcon className="w-3.5 h-3.5 text-white/40" />
+          </button>
         </div>
       ) : (
         <p className="text-[10px] font-semibold text-white/30 uppercase tracking-wider">Style global</p>
