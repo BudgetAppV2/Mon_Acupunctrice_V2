@@ -4,7 +4,17 @@ import { useSubtitleStore } from '../lib/store';
 import { PRESETS } from '../lib/presets';
 
 export default function PresetGallery() {
-  const { globalPreset, setGlobalPreset } = useSubtitleStore();
+  const { globalPreset, selectedBlockId, setGlobalPreset, updateBlock } = useSubtitleStore();
+
+  const handlePresetClick = (preset: typeof PRESETS[number]) => {
+    if (selectedBlockId) {
+      // Apply preset as overrides on selected block only (keep position out)
+      const { id, name, position, ...styleOverrides } = preset;
+      updateBlock(selectedBlockId, styleOverrides);
+    } else {
+      setGlobalPreset(preset);
+    }
+  };
 
   return (
     <div className="px-3 py-2 border-b border-white/10">
@@ -15,7 +25,7 @@ export default function PresetGallery() {
           return (
             <button
               key={preset.id}
-              onClick={() => setGlobalPreset(preset)}
+              onClick={() => handlePresetClick(preset)}
               className={`
                 shrink-0 px-3 py-1.5 rounded-full text-[11px] font-medium border transition-all whitespace-nowrap
                 ${isActive
