@@ -23,12 +23,12 @@ export default function MiniScrubber() {
   };
 
   const onPointerDown = (e: React.PointerEvent) => {
-    e.preventDefault();
+    e.preventDefault(); e.stopPropagation();
     dragging.current = true;
-    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+    barRef.current?.setPointerCapture(e.pointerId);
     scrub(e.clientX);
   };
-  const onPointerMove = (e: React.PointerEvent) => { if (!dragging.current) return; e.preventDefault(); scrub(e.clientX); };
+  const onPointerMove = (e: React.PointerEvent) => { if (!dragging.current) return; e.preventDefault(); e.stopPropagation(); scrub(e.clientX); };
   const onPointerUp = () => { dragging.current = false; };
 
   // Mini-blocs de couleur sur la barre
@@ -39,9 +39,9 @@ export default function MiniScrubber() {
 
   return (
     <div className="px-3 py-1 shrink-0">
-      <div ref={barRef} className="relative h-6 bg-white/5 rounded-full cursor-pointer select-none"
+      <div ref={barRef} className="relative h-8 bg-white/5 rounded-full cursor-pointer select-none"
         style={{ touchAction: 'none' }}
-        onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerLeave={onPointerUp}>
+        onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp}>
         {/* Progress fill */}
         <div className="absolute inset-y-0 left-0 bg-emerald-500/20 rounded-full" style={{ width: `${progress * 100}%` }} />
         {/* Video clip minimap */}

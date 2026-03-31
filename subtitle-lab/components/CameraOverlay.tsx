@@ -65,21 +65,23 @@ export default function CameraOverlay({ onClose }: Props) {
         <div className="w-10" />
       </div>
 
-      {/* Viewfinder — mirrored for selfie */}
-      <div className="flex-1 relative overflow-hidden">
-        <video ref={viewfinderRef} autoPlay playsInline muted
-          className="absolute inset-0 w-full h-full object-cover"
-          style={{ transform: 'scaleX(-1)' }} />
+      {/* Viewfinder — 9:16 containment like the hub */}
+      <div className="flex-1 relative overflow-hidden flex items-center justify-center">
+        <div className="relative overflow-hidden mx-auto"
+          style={{ aspectRatio: '9/16', height: '100%', maxHeight: '100dvh', maxWidth: 'calc(100dvh * 9 / 16)' }}>
+          <video ref={viewfinderRef} autoPlay playsInline muted
+            className="w-full h-full object-cover"
+            style={{ transform: 'scaleX(-1)' }} />
 
-        {/* Countdown overlay */}
-        {countdown > 0 && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-            <span className="text-8xl font-bold text-white animate-countdown"
-              style={{ animation: 'countdownPulse 1s ease-out' }}>
-              {countdown}
-            </span>
-          </div>
-        )}
+          {/* Countdown overlay */}
+          {countdown > 0 && (
+            <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+              <span className="text-8xl font-bold text-white" style={{ animation: 'countdownPulse 1s ease-out' }}>
+                {countdown}
+              </span>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Record button */}

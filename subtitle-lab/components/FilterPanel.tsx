@@ -27,7 +27,7 @@ export default function FilterPanel() {
           return (
             <button key={f.id} onClick={() => handleFilterSelect(f.id)}
               className={`flex flex-col items-center gap-1 shrink-0 transition ${isActive ? 'opacity-100' : 'opacity-60 active:opacity-90'}`}>
-              <div className={`w-12 h-16 rounded-lg overflow-hidden ${isActive ? 'ring-2 ring-emerald-400' : ''}`}>
+              <div className={`w-14 h-20 rounded-lg overflow-hidden transition-transform ${isActive ? 'ring-2 ring-emerald-400 scale-105' : ''}`}>
                 {thumbnailUrl ? (
                   <img src={thumbnailUrl} alt={f.label} className="w-full h-full object-cover"
                     style={f.css !== 'none' ? { filter: f.css } : undefined} />
@@ -37,7 +37,7 @@ export default function FilterPanel() {
                       filter: f.css !== 'none' ? f.css : undefined }} />
                 )}
               </div>
-              <span className={`text-[9px] font-medium w-12 text-center truncate ${isActive ? 'text-emerald-400' : 'text-white/40'}`}>
+              <span className={`text-[9px] font-medium w-14 text-center truncate ${isActive ? 'text-emerald-400' : 'text-white/40'}`}>
                 {f.label}
               </span>
             </button>
@@ -48,7 +48,7 @@ export default function FilterPanel() {
         <div className="mt-2">
           <label className="text-[10px] text-white/40">Intensite : {Math.round(filterIntensity * 100)}%</label>
           <input type="range" min={0} max={1} step={0.05} value={filterIntensity}
-            onChange={e => setFilterIntensity(+e.target.value)} className="w-full accent-emerald-400" />
+            onInput={e => setFilterIntensity(+(e.target as HTMLInputElement).value)} onChange={() => {}} className="w-full accent-emerald-400" />
         </div>
       )}
     </div>

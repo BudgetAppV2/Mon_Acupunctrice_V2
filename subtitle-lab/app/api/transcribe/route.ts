@@ -44,6 +44,7 @@ export async function POST(request: NextRequest) {
       body: JSON.stringify({
         audio_url: upload_url,
         language_code: 'fr',
+        speech_model: 'best',
         word_boost: ['acupuncture', 'meridien', 'qi', 'yin', 'yang', 'aiguille'],
         punctuate: true,
       }),
