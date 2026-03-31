@@ -77,17 +77,13 @@ export default function SubtitleCanvas() {
         const store = useEditorV2Store.getState();
         store.setDuration(dMs);
         if (firstClipId) store.initClipDuration(firstClipId, dMs);
-        // Generate thumbnail then show first frame
-        if (!store.thumbnailUrl) {
-          vid.currentTime = Math.min(2, vid.duration);
-          vid.onseeked = () => {
-            try { const c = document.createElement('canvas'); c.width = 90; c.height = 160; c.getContext('2d')!.drawImage(vid, 0, 0, 90, 160); const u = c.toDataURL('image/jpeg', 0.7); if (u.length > 100) store.setThumbnail(u); } catch {}
-            vid.currentTime = 0.01; // Show first frame
-            vid.onseeked = null;
-          };
-        } else {
-          vid.currentTime = 0.01; // Show first frame immediately
-        }
+        // Bug 4 fix: always regenerate thumbnail from actual video frame
+        vid.currentTime = Math.min(2, vid.duration);
+        vid.onseeked = () => {
+          try { const c = document.createElement('canvas'); c.width = 90; c.height = 160; c.getContext('2d')!.drawImage(vid, 0, 0, 90, 160); const u = c.toDataURL('image/jpeg', 0.7); if (u.length > 100) store.setThumbnail(u); } catch {}
+          vid.currentTime = 0.01; // Show first frame
+          vid.onseeked = null;
+        };
       }
     };
     vid.addEventListener('loadedmetadata', onMeta);
@@ -97,16 +93,16 @@ export default function SubtitleCanvas() {
   useEffect(() => { if (audioRef.current) { if (isPlaying) audioRef.current.play().catch(() => {}); else audioRef.current.pause(); } }, [isPlaying]);
   useEffect(() => { if (audioRef.current && !isPlaying) audioRef.current.currentTime = currentTime / 1000; }, [currentTime, isPlaying]);
   useEffect(() => { const v = videoRef.current; if (!v) return; if (isPlaying) { v.muted = false; v.volume = voiceVolume; v.play().catch(() => {}); } else { v.pause(); } }, [isPlaying, voiceVolume]);
-  // Scrub video to correct clip
+  // Bug 3 fix: scrub video to correct clip — use tracks directly (not ref) for reactivity
   useEffect(() => {
     const vid = videoRef.current; if (!vid || isPlaying) return;
-    const r = findActiveClip(tracksRef.current, currentTime);
+    const r = findActiveClip(tracks, currentTime);
     if (r) {
       if (r.clip.id !== activeClipIdRef.current && r.clip.blobUrl) { vid.src = r.clip.blobUrl; activeClipIdRef.current = r.clip.id; }
       vid.currentTime = r.localTimeMs / 1000;
     } else {
       // Fallback: seek first clip proportionally when findActiveClip misses
-      const allClips = tracksRef.current.filter(t => t.type === 'video').flatMap(t => t.clips ?? []);
+      const allClips = tracks.filter(t => t.type === 'video').flatMap(t => t.clips ?? []);
       if (allClips.length > 0 && duration > 0) {
         const first = allClips[0];
         if (first.blobUrl && first.duration > 0) {
@@ -115,7 +111,7 @@ export default function SubtitleCanvas() {
         }
       }
     }
-  }, [currentTime, isPlaying, duration]);
+  }, [currentTime, isPlaying, duration, tracks]);
 
   // RAF loop
   useEffect(() => {

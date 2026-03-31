@@ -8,6 +8,9 @@ import { AdjustmentsHorizontalIcon, FilmIcon, QueueListIcon, MusicalNoteIcon,
   FolderOpenIcon, VideoCameraIcon, ChatBubbleBottomCenterTextIcon, PhotoIcon,
   CloudArrowUpIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
 import { useEditorV2Store } from '@/lib/store/useEditorV2Store';
+import { useEditorV2Persistence } from '@/lib/hooks/useEditorV2Persistence';
+import { getDoc, doc } from 'firebase/firestore';
+import { getFirebaseFirestore } from '@/lib/firebase';
 
 const SubtitleCanvas = dynamic(() => import('./SubtitleCanvas'), { ssr: false });
 const ControlPanel = dynamic(() => import('./ControlPanel'), { ssr: false });
@@ -101,19 +104,59 @@ interface Props { itemId: string }
 export default function EditorV2Layout({ itemId }: Props) {
   const [activeSheet, setActiveSheet] = useState<SheetId>(null);
   const [showCamera, setShowCamera] = useState(false);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
-  const { currentTime, duration } = useEditorV2Store();
+  const { currentTime, duration, videoFile } = useEditorV2Store();
+  const { saving, saved } = useEditorV2Persistence(videoFile ? itemId : null);
   const toggleSheet = (id: SheetId) => setActiveSheet(prev => prev === id ? null : id);
 
   useEffect(() => {
+    let cancelled = false;
     useEditorV2Store.getState().setItemId(itemId);
-    return () => { useEditorV2Store.getState().reset(); };
+    setLoading(true);
+
+    const loadExisting = async () => {
+      // Skip if a video is already loaded (user navigated back and forth)
+      if (useEditorV2Store.getState().videoFile) { if (!cancelled) setLoading(false); return; }
+      try {
+        const db = getFirebaseFirestore();
+        const snap = await getDoc(doc(db, 'contentItems', itemId));
+        if (cancelled) return;
+        if (snap.exists()) {
+          const data = snap.data();
+          // Restore V2 editor state
+          if (data.editorDataV2 && !cancelled) {
+            useEditorV2Store.getState().loadFromFirestore(data.editorDataV2);
+          }
+          // Re-download the source video
+          const loadUrl = data.sourceVideoUrl || data.videoUrl;
+          if (loadUrl && !useEditorV2Store.getState().videoFile) {
+            const res = await fetch(`/api/proxy-video?url=${encodeURIComponent(loadUrl)}`);
+            if (cancelled) return;
+            const blob = await res.blob();
+            const file = new File([blob], 'existing.mp4', { type: 'video/mp4' });
+            useEditorV2Store.getState().setVideo(file);
+          }
+        }
+      } catch { /* show import UI */ }
+      if (!cancelled) setLoading(false);
+    };
+    loadExisting();
+    return () => { cancelled = true; useEditorV2Store.getState().reset(); };
   }, [itemId]);
 
   const handleBack = () => {
     useEditorV2Store.getState().reset();
     router.push('/calendrier');
   };
+
+  if (loading) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center bg-[#0f0f0f]">
+        <div className="w-8 h-8 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <main className="h-[100dvh] bg-[#0f0f0f] flex flex-col overflow-hidden">
@@ -125,8 +168,8 @@ export default function EditorV2Layout({ itemId }: Props) {
         </button>
         <span className="text-xs text-gray-300 font-mono flex items-center gap-1.5">
           {fmt(currentTime)} / {fmt(duration)}
-          {/* Sauvegarde placeholder — wire en M3 */}
-          <CloudArrowUpIcon className="w-3.5 h-3.5 text-gray-600" />
+          {saving && <CloudArrowUpIcon className="w-3.5 h-3.5 text-gray-500 animate-pulse" />}
+          {saved && !saving && <CheckCircleIcon className="w-3.5 h-3.5 text-green-500" />}
         </span>
         <div className="w-8" />
       </header>

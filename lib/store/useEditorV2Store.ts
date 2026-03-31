@@ -142,8 +142,48 @@ export const useEditorV2Store = create<EditorV2Store>((set, get) => ({
     });
   },
 
-  // Stub — will be implemented in M3
-  loadFromFirestore: (_data) => {},
+  loadFromFirestore: (data) => {
+    const ed = data as Record<string, unknown>;
+    const patch: Record<string, unknown> = {};
+    if (ed.globalPreset) patch.globalPreset = ed.globalPreset;
+    if (Array.isArray(ed.blocks)) patch.blocks = ed.blocks;
+    if (Array.isArray(ed.textOverlays)) patch.textOverlays = ed.textOverlays;
+    if (typeof ed.filterId === 'string') patch.filterId = ed.filterId;
+    if (typeof ed.filterIntensity === 'number') patch.filterIntensity = ed.filterIntensity;
+    if (typeof ed.voiceVolume === 'number') patch.voiceVolume = ed.voiceVolume;
+    if (typeof ed.audioVolume === 'number') patch.audioVolume = ed.audioVolume;
+    if (typeof ed.audioDucking === 'boolean') patch.audioDucking = ed.audioDucking;
+    if (typeof ed.coverFrameMs === 'number') patch.coverFrameMs = ed.coverFrameMs;
+    if (typeof ed.coverDataUrl === 'string') patch.coverDataUrl = ed.coverDataUrl;
+    // Restore tracks with clips stripped of file/blobUrl
+    if (Array.isArray(ed.tracks)) {
+      const tracks = (ed.tracks as Track[]).map(t => {
+        if (t.type === 'video' && t.clips) {
+          return { ...t, clips: t.clips.map(c => ({ ...c, file: null, blobUrl: null })) };
+        }
+        if (t.type === 'audio' && t.audioClips) {
+          return { ...t, audioClips: t.audioClips.map(a => ({ ...a, file: null, blobUrl: null })) };
+        }
+        return t;
+      });
+      patch.tracks = tracks;
+      // Sync flat fields from restored tracks
+      const vt = tracks.find((t: Track) => t.type === 'video');
+      const first = vt?.clips?.[0];
+      if (first) {
+        patch.duration = tracks
+          .filter((t: Track) => t.type === 'video')
+          .flatMap((t: Track) => t.clips ?? [])
+          .reduce((acc: number, c: VideoClip) => acc + c.duration, 0);
+      }
+      // Sync blocks from subtitle track
+      const st = tracks.find((t: Track) => t.type === 'subtitle');
+      if (st?.subtitles?.blocks && !ed.blocks) {
+        patch.blocks = st.subtitles.blocks;
+      }
+    }
+    set(patch as Partial<EditorV2Store>);
+  },
 
   // --- Original Lab store actions ---
   setGlobalPreset: (preset) => set((s) => {
