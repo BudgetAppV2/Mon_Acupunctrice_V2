@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { PlayIcon, PauseIcon, BackwardIcon } from '@heroicons/react/24/solid';
 import { AdjustmentsHorizontalIcon, FilmIcon, QueueListIcon, MusicalNoteIcon,
@@ -34,6 +34,7 @@ function Toolbar({ activeSheet, onToggleSheet, onOpenCamera }: {
   const { isPlaying, setIsPlaying, setCurrentTime, setVideo, videoUrl } = useSubtitleStore();
   const fileRef = useRef<HTMLInputElement>(null);
   const [showImportMenu, setShowImportMenu] = useState(false);
+  useEffect(() => { setShowImportMenu(false); }, [activeSheet]);
 
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0]; if (f) setVideo(f);
@@ -106,8 +107,7 @@ export default function Page() {
           <div className="relative z-[45]">
             <Toolbar activeSheet={activeSheet} onToggleSheet={toggleSheet} onOpenCamera={() => setShowCamera(true)} />
           </div>
-          {/* Fix 5: Canvas plein ecran sans marges mobile */}
-          <div className="flex-1 flex items-center justify-center px-0 lg:px-4 min-h-0" style={{ paddingBottom: 28 }}>
+          <div className="flex-1 flex items-center justify-center min-h-0 overflow-hidden px-0 lg:px-4">
             <SubtitleCanvas />
           </div>
           <div className="hidden lg:block"><MiniScrubber /></div>

@@ -4,7 +4,7 @@ import { useSubtitleStore, getActiveVideoClip } from '../lib/store';
 import { FILTERS } from '../lib/filters';
 
 export default function FilterPanel() {
-  const { filterId, setFilter, setClipFilter, thumbnailUrl, tracks, currentTime, selectedItemId } = useSubtitleStore();
+  const { filterId, setFilter, setClipFilter, thumbnailUrl, tracks, currentTime, selectedItemId, filterIntensity, setFilterIntensity } = useSubtitleStore();
 
   const handleFilterSelect = (id: string) => {
     // A8: If a clip is selected, apply filter to that clip
@@ -44,6 +44,13 @@ export default function FilterPanel() {
           );
         })}
       </div>
+      {activeFilterId !== 'normal' && (
+        <div className="mt-2">
+          <label className="text-[10px] text-white/40">Intensite : {Math.round(filterIntensity * 100)}%</label>
+          <input type="range" min={0} max={1} step={0.05} value={filterIntensity}
+            onChange={e => setFilterIntensity(+e.target.value)} className="w-full accent-emerald-400" />
+        </div>
+      )}
     </div>
   );
 }

@@ -96,6 +96,8 @@ interface SubtitleStore {
   setCurrentTime: (ms: number) => void;
   setIsPlaying: (playing: boolean) => void;
   setFilter: (id: string) => void;
+  filterIntensity: number;
+  setFilterIntensity: (v: number) => void;
   setLut: (id: string | null) => void;
   setLutIntensity: (v: number) => void;
   setVideo: (file: File) => void;
@@ -134,6 +136,7 @@ export const useSubtitleStore = create<SubtitleStore>((set, get) => ({
   isPlaying: false,
   duration: 0,
   filterId: 'normal',
+  filterIntensity: 1.0,
   activeLutId: null,
   lutIntensity: 0.7,
   videoFile: null,
@@ -175,6 +178,7 @@ export const useSubtitleStore = create<SubtitleStore>((set, get) => ({
   setCurrentTime: (ms) => set({ currentTime: Math.max(0, Math.min(ms, get().duration)) }),
   setIsPlaying: (playing) => set({ isPlaying: playing }),
   setFilter: (id) => set({ filterId: id }),
+  setFilterIntensity: (v) => set({ filterIntensity: v }),
   setLut: (id) => set({ activeLutId: id }),
   setLutIntensity: (v) => set({ lutIntensity: v }),
   setThumbnail: (url) => set({ thumbnailUrl: url }),

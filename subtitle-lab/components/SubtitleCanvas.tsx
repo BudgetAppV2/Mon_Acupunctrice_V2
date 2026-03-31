@@ -76,7 +76,7 @@ export default function SubtitleCanvas() {
   // Play/pause audio + video
   useEffect(() => { if (audioRef.current) { if (isPlaying) audioRef.current.play().catch(() => {}); else audioRef.current.pause(); } }, [isPlaying]);
   useEffect(() => { if (audioRef.current && !isPlaying) audioRef.current.currentTime = currentTime / 1000; }, [currentTime, isPlaying]);
-  useEffect(() => { if (videoRef.current) { if (isPlaying) videoRef.current.play().catch(() => {}); else videoRef.current.pause(); } }, [isPlaying]);
+  useEffect(() => { const v = videoRef.current; if (!v) return; if (isPlaying) { v.muted = false; v.volume = voiceVolume; v.play().catch(() => {}); } else { v.pause(); } }, [isPlaying, voiceVolume]);
   // Scrub video to correct clip
   useEffect(() => {
     const vid = videoRef.current; if (!vid || isPlaying) return;
@@ -134,16 +134,17 @@ export default function SubtitleCanvas() {
     return () => cancelAnimationFrame(rafRef.current);
   }, []);
 
+  const { filterIntensity } = useSubtitleStore();
   const clipFId = findActiveVideoClip(tracksRef.current, currentTime)?.filterId ?? filterId;
-  const cssFilter = (() => { const f = FILTERS.find(x => x.id === clipFId); return f?.css !== 'none' ? f?.css : undefined; })();
+  const cssFilter = (() => { if (filterIntensity <= 0) return undefined; const f = FILTERS.find(x => x.id === clipFId); return f?.css !== 'none' ? f?.css : undefined; })();
 
   const handleDown = (e: React.MouseEvent | React.TouchEvent) => { const c = canvasRef.current; if (c) onDown(e, c); };
   const handleMove = (e: React.MouseEvent | React.TouchEvent) => { const c = canvasRef.current; if (c) onMove(e, c); };
 
   return (
     <canvas ref={canvasRef} width={CANVAS_W} height={CANVAS_H}
-      className="w-full h-auto"
-      style={{ maxWidth: '100%', cursor: isDragging ? 'grabbing' : 'grab', touchAction: 'none', filter: cssFilter }}
+      className="w-full h-auto max-h-full"
+      style={{ objectFit: 'contain', cursor: isDragging ? 'grabbing' : 'grab', touchAction: 'none', filter: cssFilter }}
       onMouseDown={handleDown} onMouseMove={handleMove} onMouseUp={onUp} onMouseLeave={onUp}
       onTouchStart={handleDown} onTouchMove={handleMove} onTouchEnd={onUp} />
   );

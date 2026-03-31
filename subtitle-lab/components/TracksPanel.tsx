@@ -19,7 +19,11 @@ export default function TracksPanel() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
 
-  const playheadPos = duration > 0 ? (currentTime / duration) * 100 : 0;
+  // Fix 6: Reference duration = max source duration across all clips (prevents zoom on trim)
+  const allClips = tracks.filter(t => t.type === 'video').flatMap(t => t.clips ?? []);
+  const maxSourceDur = allClips.length > 0 ? Math.max(...allClips.map(c => c.duration)) : 0;
+  const refDuration = Math.max(duration, maxSourceDur);
+  const playheadPos = refDuration > 0 ? (currentTime / refDuration) * 100 : 0;
 
   // A7: Check if selected clip is a video clip and playhead is inside it
   const selectedVideoClip = getVideoTracks(tracks)
@@ -79,12 +83,17 @@ export default function TracksPanel() {
             <span className="text-[8px] truncate">{t.label}</span>
           </div>
           <div className="flex-1 relative bg-white/5 rounded">
-            {t.clips?.map(c => (
-              <TrackBlock key={c.id} id={c.id} trackId={t.id} label={c.file?.name?.slice(0, 12) ?? 'Clip'}
-                startMs={c.timelineStart} endMs={c.timelineStart + (c.trimEnd - c.trimStart)}
-                duration={duration} color="bg-emerald-500/25" selected={selectedItemId === c.id}
-                onTrimChange={(s, e) => updateClipTrim(c.id, s, e)} />
-            ))}
+            {t.clips?.map(c => {
+              const clipDur = c.trimEnd - c.trimStart;
+              // Show full source extent as grey zone behind the active clip
+              const sourceLeft = refDuration > 0 ? (c.timelineStart / refDuration) * 100 : 0;
+              const sourceWidth = refDuration > 0 ? (c.duration / refDuration) * 100 : 0;
+              return (<div key={c.id}>
+                {c.duration > clipDur && <div className="absolute top-1 bottom-1 rounded bg-white/5" style={{ left: `${sourceLeft}%`, width: `${sourceWidth}%` }} />}
+                <TrackBlock id={c.id} trackId={t.id} label={c.file?.name?.slice(0, 12) ?? 'Clip'} startMs={c.timelineStart} endMs={c.timelineStart + clipDur}
+                  duration={refDuration} color="bg-emerald-500/25" selected={selectedItemId === c.id} onTrimChange={(s, e) => updateClipTrim(c.id, s, e)} />
+              </div>);
+            })}
           </div>
         </div>
       ))}
@@ -101,7 +110,7 @@ export default function TracksPanel() {
             <div className="flex-1 relative bg-white/5 rounded">
               {st.subtitles.blocks.map(b => (
                 <TrackBlock key={b.id} id={b.id} trackId={st.id} label={b.text.slice(0, 15)}
-                  startMs={b.startMs} endMs={b.endMs} duration={duration} color="bg-blue-400/25"
+                  startMs={b.startMs} endMs={b.endMs} duration={refDuration} color="bg-blue-400/25"
                   selected={selectedItemId === b.id} />
               ))}
             </div>

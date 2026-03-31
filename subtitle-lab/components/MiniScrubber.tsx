@@ -23,11 +23,12 @@ export default function MiniScrubber() {
   };
 
   const onPointerDown = (e: React.PointerEvent) => {
+    e.preventDefault();
     dragging.current = true;
     (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
     scrub(e.clientX);
   };
-  const onPointerMove = (e: React.PointerEvent) => { if (dragging.current) scrub(e.clientX); };
+  const onPointerMove = (e: React.PointerEvent) => { if (!dragging.current) return; e.preventDefault(); scrub(e.clientX); };
   const onPointerUp = () => { dragging.current = false; };
 
   // Mini-blocs de couleur sur la barre
