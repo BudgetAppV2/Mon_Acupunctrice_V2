@@ -105,6 +105,8 @@ interface SubtitleStore {
   setThumbnail: (url: string) => void;
   setDuration: (ms: number) => void;
   setSubtitleBlocks: (blocks: SubtitleBlock[]) => void;
+  moveSubtitleBlock: (id: string, deltaMs: number) => void;
+  moveTextOverlay: (id: string, deltaMs: number) => void;
   // Multi-track actions
   addVideoClip: (file: File) => void;
   removeVideoClip: (id: string) => void;
@@ -203,6 +205,25 @@ export const useSubtitleStore = create<SubtitleStore>((set, get) => ({
     const tracks = s.tracks.map(t => t.type === 'subtitle' && t.subtitles ? { ...t, subtitles: { ...t.subtitles, blocks } } : t);
     return { blocks, tracks };
   }),
+
+  moveSubtitleBlock: (id, deltaMs) => set((s) => {
+    const newBlocks = s.blocks.map(b => {
+      if (b.id !== id) return b;
+      const dur = b.endMs - b.startMs;
+      const ns = Math.max(0, b.startMs + deltaMs);
+      return { ...b, startMs: ns, endMs: ns + dur, words: b.words.map(w => ({ ...w, startMs: w.startMs + deltaMs, endMs: w.endMs + deltaMs })) };
+    });
+    const tracks = s.tracks.map(t => t.type === 'subtitle' && t.subtitles ? { ...t, subtitles: { ...t.subtitles, blocks: newBlocks } } : t);
+    return { blocks: newBlocks, tracks };
+  }),
+  moveTextOverlay: (id, deltaMs) => set((s) => ({
+    textOverlays: s.textOverlays.map(o => {
+      if (o.id !== id) return o;
+      const dur = o.endMs - o.startMs;
+      const ns = Math.max(0, o.startMs + deltaMs);
+      return { ...o, startMs: ns, endMs: ns + dur };
+    }),
+  })),
 
   // setVideo -> addVideoClip with flat sync
   setVideo: (file) => {

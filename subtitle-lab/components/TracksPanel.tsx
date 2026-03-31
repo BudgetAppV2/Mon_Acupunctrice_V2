@@ -15,7 +15,8 @@ const TRACK_ICONS: Record<string, React.ReactNode> = {
 
 export default function TracksPanel() {
   const { tracks, currentTime, duration, setCurrentTime, selectedItemId,
-    updateClipTrim, splitClip, deleteClip, addVideoClip } = useSubtitleStore();
+    updateClipTrim, splitClip, deleteClip, addVideoClip, textOverlays,
+    moveSubtitleBlock, moveTextOverlay } = useSubtitleStore();
   const containerRef = useRef<HTMLDivElement>(null);
   const addFileRef = useRef<HTMLInputElement>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -121,12 +122,28 @@ export default function TracksPanel() {
               {st.subtitles.blocks.map(b => (
                 <TrackBlock key={b.id} id={b.id} trackId={st.id} label={b.text.slice(0, 15)}
                   startMs={b.startMs} endMs={b.endMs} duration={refDuration} color="bg-blue-400/25"
-                  selected={selectedItemId === b.id} />
+                  selected={selectedItemId === b.id} onDrag={(d) => moveSubtitleBlock(b.id, d)} />
               ))}
             </div>
           </div>
         );
       })()}
+      {/* Text overlay track */}
+      {textOverlays.length > 0 && (
+        <div className="flex items-stretch h-12">
+          <div className="w-[50px] shrink-0 flex items-center gap-1 px-1 text-white/30">
+            <ChatBubbleBottomCenterTextIcon className="w-3.5 h-3.5" />
+            <span className="text-[8px] truncate">Texte</span>
+          </div>
+          <div className="flex-1 relative bg-white/5 rounded">
+            {textOverlays.map(o => (
+              <TrackBlock key={o.id} id={o.id} trackId="text" label={o.text.slice(0, 15)}
+                startMs={o.startMs} endMs={o.endMs} duration={refDuration} color="bg-purple-400/30"
+                selected={selectedItemId === o.id} onDrag={(d) => moveTextOverlay(o.id, d)} />
+            ))}
+          </div>
+        </div>
+      )}
       {/* Audio track with waveform (A4) */}
       {(() => {
         const at = getAudioTrack(tracks);

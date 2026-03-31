@@ -13,9 +13,10 @@ interface Props {
   color: string;
   selected: boolean;
   onTrimChange?: (newStart: number, newEnd: number) => void;
+  onDrag?: (deltaMs: number) => void;
 }
 
-export default function TrackBlock({ id, trackId, label, startMs, endMs, duration, color, selected, onTrimChange }: Props) {
+export default function TrackBlock({ id, trackId, label, startMs, endMs, duration, color, selected, onTrimChange, onDrag }: Props) {
   const { selectItem, reorderClips, tracks } = useSubtitleStore();
   const [draggingSide, setDraggingSide] = useState<'left' | 'right' | null>(null);
   const [isDragReorder, setIsDragReorder] = useState(false);
@@ -91,9 +92,16 @@ export default function TrackBlock({ id, trackId, label, startMs, endMs, duratio
       }
       setIsDragReorder(false);
     } else if (Date.now() - pointerDownTime.current < 300) {
-      // Short tap -> select
       e.stopPropagation();
       selectItem(trackId, id);
+    } else if (onDrag && !isDragReorder) {
+      // Horizontal drag for non-video blocks (subtitle/text overlay repositioning)
+      const parent = (e.currentTarget as HTMLElement).parentElement;
+      if (parent) {
+        const pxPerMs = parent.clientWidth / duration;
+        const deltaMs = (e.clientX - dragRef.current.startX) / pxPerMs;
+        if (Math.abs(deltaMs) > 50) onDrag(deltaMs);
+      }
     }
     setIsDragReorder(false);
   };

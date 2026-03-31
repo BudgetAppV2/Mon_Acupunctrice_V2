@@ -77,15 +77,16 @@ export default function SubtitleCanvas() {
         const store = useSubtitleStore.getState();
         store.setDuration(dMs);
         if (firstClipId) store.initClipDuration(firstClipId, dMs);
-        // Generate thumbnail at ~2s for filter previews
+        // Generate thumbnail then show first frame
         if (!store.thumbnailUrl) {
-          const prevTime = vid.currentTime;
           vid.currentTime = Math.min(2, vid.duration);
           vid.onseeked = () => {
             try { const c = document.createElement('canvas'); c.width = 90; c.height = 160; c.getContext('2d')!.drawImage(vid, 0, 0, 90, 160); const u = c.toDataURL('image/jpeg', 0.7); if (u.length > 100) store.setThumbnail(u); } catch {}
-            vid.currentTime = prevTime;
+            vid.currentTime = 0.01; // Show first frame
             vid.onseeked = null;
           };
+        } else {
+          vid.currentTime = 0.01; // Show first frame immediately
         }
       }
     };
@@ -138,19 +139,16 @@ export default function SubtitleCanvas() {
       if (canvas) {
         const ctx = canvas.getContext('2d');
         if (ctx) {
-          if (!ar) { ctx.fillStyle = '#000'; ctx.fillRect(0, 0, CANVAS_W, CANVAS_H); }
+          const hasAnyClips = tracksRef.current.some(t => t.type === 'video' && t.clips && t.clips.length > 0);
+          if (!ar && hasAnyClips) { ctx.fillStyle = '#000'; ctx.fillRect(0, 0, CANVAS_W, CANVAS_H); }
+          else if (!ar) { /* no clips — gradient drawn by renderFrame below */ }
           else if (vid && vid.readyState >= 2 && vid.videoWidth > 0) {
-            // Apply filter via ctx.filter (not CSS) so subtitles are NOT filtered
-            const cFid = (ar.clip.filterId && ar.clip.filterId !== 'normal') ? ar.clip.filterId : filterIdRef.current;
-            const ff = FILTERS.find(x => x.id === cFid);
-            if (ff?.css !== 'none' && filterIntensityRef.current > 0) ctx.filter = ff!.css;
             const c = coverCrop(vid.videoWidth, vid.videoHeight, CANVAS_W, CANVAS_H);
             ctx.drawImage(vid, c.sx, c.sy, c.sw, c.sh, 0, 0, CANVAS_W, CANVAS_H);
-            ctx.filter = 'none'; // Reset so subtitles are not filtered
           }
           renderFrame({ canvas, blocks: blocksRef.current, globalPreset: presetRef.current,
             currentMs: timeRef.current, nowMs: wallMs, canvasWidth: CANVAS_W, canvasHeight: CANVAS_H,
-            skipBackground: !!ar, textOverlays: textOverlaysRef.current });
+            skipBackground: !!ar || hasAnyClips, textOverlays: textOverlaysRef.current });
         }
       }
       rafRef.current = requestAnimationFrame(loop);
@@ -159,13 +157,19 @@ export default function SubtitleCanvas() {
     return () => cancelAnimationFrame(rafRef.current);
   }, []);
 
+  // CSS filter for Safari (ctx.filter not supported on WebKit)
+  const ac = findActiveClip(tracksRef.current, currentTime);
+  const cFid = (ac?.clip.filterId && ac.clip.filterId !== 'normal') ? ac.clip.filterId : filterId;
+  const af = FILTERS.find(f => f.id === cFid);
+  const cssFilter = (af?.css !== 'none' && fIntensity > 0) ? af?.css : undefined;
+
   const handleDown = (e: React.MouseEvent | React.TouchEvent) => { const c = canvasRef.current; if (c) onDown(e, c); };
   const handleMove = (e: React.MouseEvent | React.TouchEvent) => { const c = canvasRef.current; if (c) onMove(e, c); };
 
   return (
     <canvas ref={canvasRef} width={CANVAS_W} height={CANVAS_H}
       className="w-full h-auto max-h-full"
-      style={{ objectFit: 'contain', cursor: isDragging ? 'grabbing' : 'grab', touchAction: 'none' }}
+      style={{ objectFit: 'contain', cursor: isDragging ? 'grabbing' : 'grab', touchAction: 'none', filter: cssFilter }}
       onMouseDown={handleDown} onMouseMove={handleMove} onMouseUp={onUp} onMouseLeave={onUp}
       onTouchStart={handleDown} onTouchMove={handleMove} onTouchEnd={onUp} />
   );
