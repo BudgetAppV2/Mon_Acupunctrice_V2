@@ -1,236 +1,141 @@
-# EDITOR V2 — Spécifications Techniques
+# EDITOR V2 — Brief pour Claude Code
 
 ## Vision
-Construire un NOUVEL éditeur vidéo mobile-first dans le Hub Mon Acupunctrice,
-qui combine le meilleur du Lab (UI, presets, canvas renderer) et du Hub V1
-(patterns éprouvés : TrimHandle, persistence, export pipeline).
+L'éditeur V2 est le Subtitle Lab (subtitle-lab/) reconstruit comme page
+du Hub Mon Acupunctrice V2. Le UI/UX du Lab est la cible — tout ce qui
+est visible et interactif dans le Lab doit fonctionner pareil ou mieux
+dans le V2. La différence c'est que le V2 est branché sur Firestore,
+Firebase Auth, Firebase Storage, et le pipeline de publication du Hub.
 
-Ce n'est PAS une migration copier-coller. C'est une reconstruction informée.
-
----
-
-## Sous-systèmes et décisions techniques
-
-### 1. TIMELINE & DRAG — Le bug #1 du Lab
-
-**Problème Lab :** Le drag des blocs "bounce back" parce que :
-- `recalcTimelineStarts()` est appelé par plusieurs actions du store et
-  remet toutes les positions à 0 séquentiellement
-- Le TrackBlock utilise des deltas relatifs entre pointerDown et pointerUp,
-  mais les props changent entre les deux à cause des re-renders React
-- Le `initClipDuration` appelait `recalcTimelineStarts` après le drag
-
-**Solution V2 : Adopter le pattern TrimHandle du Hub V1**
-
-Le Hub V1 a un TrimHandle qui fonctionne parfaitement :
-- `components/features/editor/timeline/TrimHandle.tsx`
-- Pattern: `onDragStart()` capture l'état initial dans un ref,
-  `onDrag(deltaPx)` est appelé CONTINUELLEMENT pendant le move (via RAF),
-  `onDragEnd()` finalise
-- Le delta est calculé depuis `startX` capturé au pointerDown
-- setPointerCapture pour ne pas perdre le drag
-- Pas de double-fire possible
-
-
-**Architecture timeline V2 :**
-```
-Track.tsx (hub V1 pattern)
-├── Positionnement en PIXELS (pas en %) via zoomLevel (px/sec)
-├── Zone grise source complete (0 → duration)
-├── Zone active colorée (trimStart → trimEnd) positionnée EN DEDANS
-├── TrimHandle left/right (hub V1, drag continu via RAF)
-└── Drag du bloc entier = déplacer timelineStart (nouveau)
-    ├── onDragStart: capturer timelineStart dans ref
-    ├── onDrag(deltaPx): mettre à jour le store DIRECTEMENT
-    │   (pas de translateX, pas de delta cumulé)
-    └── onDragEnd: noop (store déjà à jour)
-```
-
-**Règle critique :** `recalcTimelineStarts()` est INTERDIT sauf dans :
-- `splitClip` (recrée 2 clips, positions recalculées)
-- `reorderClips` (change l'ordre explicitement)
-- `deleteClip` (supprime, repositionne les restants)
-- `addVideoClip` (premier positionnement séquentiel)
-
-`updateClipTrim`, `initClipDuration`, `moveVideoClip` ne DOIVENT JAMAIS
-appeler `recalcTimelineStarts`.
+## Règle d'or
+Le Lab est le prototype. Le V2 est le produit. Si quelque chose marche
+dans le Lab, le garder. Si quelque chose est cassé dans le Lab, le fixer.
+Ne pas juste copier-coller — construire un éditeur qui fonctionne.
 
 ---
 
-### 2. FILTRES — ctx.filter vs style.filter
+## Ce qui fonctionne dans le Lab (GARDER le UI/UX)
+- Canvas 540×960 avec RAF loop pour le preview vidéo
+- 8 presets de sous-titres avec 7 animations (renderer.ts + animations.ts)
+- Import vidéo avec affichage immédiat de la première frame
+- Transcription AssemblyAI (Universal-3 Pro, français québécois)
+- 16 filtres CSS avec slider d'intensité
+- Text overlays draggables sur le canvas (8 presets réutilisant le subtitle engine)
+- Sous-titres draggables sur le canvas
+- CoverPanel avec slider de frame pour la vignette
+- AudioSheet avec import, volume, fade, ducking
+- CameraOverlay avec countdown 3-2-1
+- Toolbar mobile avec 7 onglets (Import, Tracks, Audio, Filtres, Subs, Texte, Cover)
+- Bottom sheet system
+- MiniScrubber persistant
+- Viewport mobile-first (meta viewport no-zoom)
 
-**Problème Lab :** `ctx.filter` ne fonctionne PAS sur Safari iOS
-(WebKit bug #198416, toujours ouvert en mars 2026).
+## Ce qui est cassé dans le Lab (FIXER dans le V2)
 
-**Solution V2 :**
-- Preview : `style.filter` CSS sur l'element canvas
-  - Compromis accepté : les sous-titres sont aussi filtrés dans le preview
-  - C'est le même compromis que CapCut/InShot font
+### Bug 1 — Timeline drag bounce-back
+Les blocs dans la timeline (tracks panel) ne restent pas à leur position
+après un drag. Le clip revient à sa position originale. Ça affecte les
+clips vidéo, les blocs sous-titres et les text overlays.
+Le Hub V1 a un pattern de drag qui fonctionne dans
+`components/features/editor/timeline/TrimHandle.tsx` — à considérer.
 
-- Export : 2 stratégies selon le browser :
-  1. Chrome/Firefox : `ctx.filter` fonctionne → draw video filtré, puis
-     draw sous-titres sans filtre (meilleure qualité)
-  2. Safari : draw video sans filtre sur un canvas temporaire,
-     appliquer CSS filter via `getImageData/putImageData` pixel manipulation,
-     ou accepter le compromis style.filter
+### Bug 2 — Filtres ne s'affichent pas sur Safari
+ctx.filter ne fonctionne PAS sur Safari iOS (WebKit bug #198416).
+Le Lab utilise déjà style.filter CSS comme workaround — s'assurer que
+ça fonctionne correctement dans le V2 aussi bien en preview qu'à l'export.
 
-- Thumbnails filtres : capturer une frame de la vidéo à t=2s via
-  canvas.toDataURL, afficher avec CSS filter dans les boutons
+### Bug 3 — Scrubber pas toujours synchronisé
+Le scrubber ne seek pas toujours la vidéo correctement. Les frames
+ne s'affichent pas en temps réel pendant le scrub. Le scrubber doit
+montrer la frame exacte correspondant à la position du playhead.
 
----
+### Bug 4 — Thumbnails des filtres
+Les vignettes des filtres n'utilisent pas toujours l'image de la vidéo.
+Elles devraient montrer un frame de la vidéo avec le filtre appliqué.
 
-### 3. SCRUBBER — Synchronisation vidéo
-
-**Problème Lab :** Le scrubber ne seek pas la vidéo avant d'avoir
-ajouté du contenu. Le scrubber n'affiche pas les frames exactes.
-
-**Solution V2 :**
-- `duration` du store = durée SOURCE du clip (pas trimmée)
-- Le scrubber va de 0 à `duration` (toute l'étendue source)
-- `findActiveClip` utilise les positions ABSOLUES :
-  clip actif si `currentTime` est entre `timelineStart + trimStart`
-  et `timelineStart + trimEnd`
-- Le `useEffect` qui seek la vidéo dépend de `[currentTime, tracks]`
-  (pas juste `[currentTime, isPlaying]`)
-- Après `initClipDuration`, forcer un seek à t=0.01s pour afficher
-  la première frame immédiatement
-
----
-
-### 4. STORE — Architecture Zustand + Firestore
-
-**Pattern :** Store Zustand in-memory + auto-save Firestore en background.
-Comme `useEditorPersistence.ts` du Hub V1 (subscribe + debounce 2s + JSON diff).
-
-**Différences avec le Lab :**
-- `File` et `blobUrl` sont des champs RUNTIME (pas persistés)
-- `sourceVideoUrl` (Firebase Storage URL) est persisté pour le reload
-- `loadFromFirestore(data)` hydrate le store depuis Firestore
-- Au mount : fetch Firestore → si sourceVideoUrl, télécharger via fetch,
-  créer blob URL, hydrater le store
-- Les actions du store sont IDENTIQUES au Lab (même API), mais
-  chaque mutation trigger un debounced save via subscribe
-
-**Champ Firestore :** `editorDataV2` sur la collection `contentItems`
-(coexiste avec `editorData` du V1 sans conflit)
+### Bug 5 — Gradient visible après import
+Parfois le gradient de démo reste visible après l'import d'une vidéo.
+La vidéo devrait s'afficher immédiatement sans avoir à appuyer play.
 
 ---
 
-### 5. MEDIA STORAGE — Vidéos et audio
+## Ce qu'il faut AJOUTER (pas dans le Lab)
 
-**Upload :** Fire-and-forget via `uploadBytesResumable` après l'import
-- Videos : `videos/{userId}/{itemId}/source_{clipId}.mp4`
-- Audio : `audio/{userId}/{itemId}/{clipId}.mp3`
-- Cover : généré à l'export, pas stocké séparément
+### Persistance Firestore
+- L'état de l'éditeur doit survivre au refresh
+- Auto-save vers Firestore (debounce, comme le V1)
+- Pattern de référence : `lib/hooks/useEditorPersistence.ts`
+- Champ `editorDataV2` sur la collection `contentItems` (pas toucher au V1)
+- Les vidéos/audios importés doivent être uploadés vers Firebase Storage
+  pour pouvoir être rechargés après un refresh
 
-**Download au reload :** fetch le blob depuis Firebase Storage URL,
-créer un blob URL local pour le playback
+### Auth
+- La route doit être protégée par l'auth Firebase du Hub
+- Pattern : `lib/hooks/useAuth.ts`
 
----
+### Export
+- Exporter un MP4 avec les sous-titres gravés, les filtres appliqués,
+  et les text overlays rendus
+- Upload vers Firebase Storage
+- Update du contentItem (videoUrl, workflowState)
+- Pattern de référence : `lib/hooks/useVideoExport.ts`
 
-### 6. EXPORT — Pipeline de rendu
+### Route cachée
+- Créer une route type `/editeur-v2/[id]` dans le hub
+- Cachée de la navigation (pas de lien dans la nav)
+- La nav existante se cache déjà quand pathname commence par `/editeur`
+- Pattern : `app/(app)/editeur/[id]/page.tsx`
 
-**Pattern de référence :** `lib/hooks/useVideoExport.ts` du Hub V1
-
-**Approche V2 :**
-1. Canvas offscreen 1080×1920 (ou résolution source)
-2. Seek frame-by-frame via `requestVideoFrameCallback` (Chrome)
-   ou `seek + seeked event` (Safari fallback)
-3. Pour chaque frame :
-   - Draw video sur le canvas offscreen
-   - Appliquer filtre via ctx.filter (Chrome) ou pixel manipulation (Safari)
-   - Appeler renderFrame() du Lab pour les sous-titres + text overlays
-4. Feed frames à Mediabunny CanvasSource + AudioBufferSource
-5. Encode MP4
-6. Upload vers Firebase Storage
-7. Update contentItem : videoUrl, exportedAt, workflowState: 'ready'
-
----
-
-### 7. COMPOSANTS — Quoi garder, quoi refaire
-
-**Garder du Lab (copier avec adaptations d'imports) :**
-- `renderer.ts` + `animations.ts` — moteur de rendu canvas ✅
-- `playback.ts` — findActiveClip, coverCrop, createVideoElement ✅
-- `filters.ts` — 16 définitions de filtres CSS ✅
-- `presets.ts` — 8 presets de sous-titres ✅
-- `types.ts` — Track, VideoClip, AudioClip, TextOverlay ✅
-- `frenchPostProcess.ts` + `subtitleGrouper.ts` ✅
-- `useSubtitleDrag.ts` — drag sous-titres/overlays sur canvas ✅
-- `useMediaRecorder.ts` — capture caméra ✅
-- `SubtitleCanvas.tsx` — RAF loop, video, canvas ✅
-- `FilterPanel.tsx` — grille de filtres ✅
-- `TextPanel.tsx` — éditeur text overlays ✅
-- `CoverPanel.tsx` — slider de frame ✅
-- `AudioSheet.tsx` — import audio ✅
-- `CameraOverlay.tsx` — viewfinder ✅
-- `MiniScrubber.tsx` — scrubber persistant ✅
-- `PresetGallery.tsx` — sélection de presets ✅
-- `BottomSheet.tsx` — système de sheets ✅
-
-**Refaire avec le pattern Hub V1 :**
-- `TrackBlock.tsx` → Nouveau `TrackBlockV2.tsx` basé sur TrimHandle pattern
-- `TracksPanel.tsx` → Nouveau `TracksPanelV2.tsx` avec zoomLevel en px
-- `store.ts` → Nouveau `useEditorV2Store.ts` avec persistence Firestore
-
-**Créer nouveau :**
-- `EditorV2Layout.tsx` — layout maître avec auth, persistence, header
-- `ExportButtonV2.tsx` — export + upload
-- `useEditorV2Persistence.ts` — auto-save Firestore
-- `useVideoExportV2.ts` — export avec Lab renderer
-- `ImportModalV2.tsx` — import fichier + caméra
+### Feature flag
+- NEXT_PUBLIC_EDITOR_V2=true pour router vers le V2
+- Quand le flag est activé, les boutons "Éditer" du calendrier et des
+  idées pointent vers /editeur-v2/[id] au lieu de /editeur/[id]
 
 ---
 
-## MILESTONES — Ordre d'exécution
+## Structure du Hub (pour contexte)
 
-Chaque milestone est un oneshot prompt pour Claude Code.
-Claude Code DOIT lire les fichiers de référence indiqués AVANT de coder.
+### Fichiers de référence Hub V1 (à lire pour comprendre les patterns)
+- `lib/hooks/useEditorPersistence.ts` — auto-save Firestore
+- `lib/hooks/useVideoExport.ts` — export pipeline
+- `lib/hooks/useAuth.ts` — auth pattern
+- `lib/store/useEditorStore.ts` — store Zustand du V1
+- `lib/firebase.ts` — Firebase init
+- `components/features/editor/timeline/TrimHandle.tsx` — drag pattern
+- `components/features/editor/timeline/Track.tsx` — timeline pattern
+- `app/(app)/editeur/[id]/page.tsx` — route éditeur V1
+- `app/(app)/layout.tsx` — nav hiding logic
 
-### M1 — Fondation (lib + store + route)
-Créer lib/editor-v2/, lib/store/useEditorV2Store.ts, route /editeur-v2/[id]
-Refs: lib/editor-v2/types.ts from Lab, useEditorStore.ts from V1
-
-### M2 — Canvas + Playback
-Copier SubtitleCanvas, playback, renderer, animations. Brancher sur V2 store.
-Le canvas doit afficher la vidéo immédiatement après import.
-Ref: SubtitleCanvas.tsx du Lab
-
-### M3 — Timeline (CRITIQUE — refaire, pas copier)
-Nouveau TracksPanelV2 + TrackBlockV2 basé sur TrimHandle pattern du Hub V1.
-Drag continu, trim continu, positionnement en pixels, pas de bounce-back.
-Refs: TrimHandle.tsx, Track.tsx du Hub V1
-
-### M4 — Sheets UI
-Copier les panels (Filter, Text, Audio, Cover, Camera, Presets, Subs).
-Adapter imports. Tester chaque panel individuellement.
-Ref: page.tsx du Lab pour le système de sheets
-
-### M5 — Persistence Firestore
-useEditorV2Persistence (debounce 2s, JSON diff, subscribe pattern).
-Upload source media vers Firebase Storage.
-Ref: useEditorPersistence.ts du Hub V1
-
-### M6 — Transcription
-Brancher useTranscription sur /api/transcribe existant du Hub.
-Ref: useTranscription.ts du Lab, api/transcribe/route.ts du Hub
-
-### M7 — Export Pipeline
-useVideoExportV2 avec Lab renderer + Mediabunny + upload.
-Ref: useVideoExport.ts du Hub V1
-
-### M8 — Polish + Feature Flag
-Mobile 375px, edge cases, feature flag NEXT_PUBLIC_EDITOR_V2.
-Flow complet end-to-end.
+### Le Lab (source du UI/UX)
+- `subtitle-lab/` — tout le dossier est le prototype
+- `subtitle-lab/lib/store.ts` — le store à adapter
+- `subtitle-lab/components/SubtitleCanvas.tsx` — le coeur du renderer
+- `subtitle-lab/lib/renderer.ts` — le moteur de rendu canvas
+- `subtitle-lab/app/page.tsx` — le layout mobile
 
 ---
 
-## Fichiers de référence clés (Claude Code DOIT les lire)
-- `components/features/editor/timeline/TrimHandle.tsx` — pattern drag
-- `components/features/editor/timeline/Track.tsx` — pattern timeline
-- `lib/hooks/useEditorPersistence.ts` — pattern persistence
-- `lib/hooks/useVideoExport.ts` — pattern export
-- `lib/store/useEditorStore.ts` — pattern store Hub V1
-- `subtitle-lab/lib/store.ts` — store Lab (base pour V2)
-- `subtitle-lab/components/SubtitleCanvas.tsx` — RAF loop
-- `subtitle-lab/lib/renderer.ts` — moteur de rendu
+## Instructions pour Claude Code
+
+### Étape 1 : PLAN
+Analyse la codebase du Lab ET du Hub. Propose un plan de migration
+en milestones. Chaque milestone doit être un oneshot prompt autonome
+que tu pourras exécuter ensuite.
+
+### Étape 2 : ÉCRIRE LES PROMPTS
+Pour chaque milestone, écris un fichier prompt dans
+`subtitle-lab/prompts/V2_M{N}_PROMPT.md` avec :
+- Les fichiers à lire avant de coder
+- Ce que le milestone doit accomplir
+- Les bugs à résoudre dans ce milestone (si applicable)
+- La Definition of Done
+- NE PAS prescrire les solutions — juste les problèmes et les résultats attendus
+
+### Ce qu'on attend
+- Le V2 doit avoir EXACTEMENT le même look & feel que le Lab
+- Les bugs listés doivent être résolus
+- La persistance Firestore doit fonctionner
+- L'export doit fonctionner
+- L'auth doit fonctionner
+- Le V1 ne doit PAS être cassé
+- `npm run build` doit passer à chaque milestone
