@@ -1,7 +1,6 @@
 import { create } from 'zustand';
 import type { StylePreset, SubtitleBlock, Track, VideoClip, AudioClip } from './types';
 import { DEFAULT_PRESET } from './presets';
-import { TEST_BLOCKS, TOTAL_DURATION_MS } from './testData';
 
 // --- Multi-track helpers ---
 
@@ -40,7 +39,7 @@ export function getActiveVideoClip(tracks: Track[], currentTimeMs: number): Vide
 
 function totalClipsDuration(tracks: Track[]): number {
   const vt = getVideoTrack(tracks);
-  if (!vt?.clips?.length) return TOTAL_DURATION_MS;
+  if (!vt?.clips?.length) return 0;
   return vt.clips.reduce((acc, c) => acc + (c.trimEnd - c.trimStart), 0);
 }
 
@@ -58,7 +57,7 @@ function syncFlatFromTracks(tracks: Track[]) {
 
 const DEFAULT_TRACKS: Track[] = [
   { id: 'v1', type: 'video', label: 'Video 1', muted: false, clips: [] },
-  { id: 'sub', type: 'subtitle', label: 'Sous-titres', muted: false, subtitles: { blocks: TEST_BLOCKS, globalPreset: { ...DEFAULT_PRESET, position: { x: 0.5, y: 0.25 } } } },
+  { id: 'sub', type: 'subtitle', label: 'Sous-titres', muted: false, subtitles: { blocks: [], globalPreset: { ...DEFAULT_PRESET, position: { x: 0.5, y: 0.25 } } } },
   { id: 'a1', type: 'audio', label: 'Audio', muted: false, audioClips: [] },
 ];
 
@@ -116,6 +115,7 @@ interface SubtitleStore {
   setAudioVolume: (v: number) => void;
   setAudioDucking: (on: boolean) => void;
   setAudioFade: (clipId: string, fadeIn: number, fadeOut: number) => void;
+  initClipDuration: (clipId: string, durationMs: number) => void;
   // A7: Clip interactions
   splitClip: (clipId: string, globalSplitTimeMs: number) => void;
   reorderClips: (fromIndex: number, toIndex: number) => void;
@@ -128,11 +128,11 @@ interface SubtitleStore {
 export const useSubtitleStore = create<SubtitleStore>((set, get) => ({
   tracks: DEFAULT_TRACKS,
   globalPreset: { ...DEFAULT_PRESET, position: { x: 0.5, y: 0.25 } },
-  blocks: TEST_BLOCKS,
+  blocks: [],
   selectedBlockId: null,
   currentTime: 0,
   isPlaying: false,
-  duration: TOTAL_DURATION_MS,
+  duration: 0,
   filterId: 'normal',
   activeLutId: null,
   lutIntensity: 0.7,
@@ -271,6 +271,16 @@ export const useSubtitleStore = create<SubtitleStore>((set, get) => ({
       return { ...t, audioClips: t.audioClips.map(c => c.id === clipId ? { ...c, fadeIn, fadeOut } : c) };
     }),
   })),
+
+  // FIX-1: Initialize clip duration after video loads metadata
+  initClipDuration: (clipId, durationMs) => set((s) => {
+    const tracks = s.tracks.map(t => {
+      if (t.type !== 'video' || !t.clips) return t;
+      const clips = t.clips.map(c => c.id === clipId && c.duration === 0 ? { ...c, duration: durationMs, trimEnd: durationMs } : c);
+      return { ...t, clips: recalcTimelineStarts(clips) };
+    });
+    return { tracks, ...syncFlatFromTracks(tracks), duration: totalClipsDuration(tracks) };
+  }),
 
   // --- A7: Clip interactions ---
   splitClip: (clipId, globalSplitTimeMs) => set((s) => {

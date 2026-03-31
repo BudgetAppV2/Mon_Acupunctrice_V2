@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { useSubtitleStore } from '../lib/store';
+import { useSubtitleStore, getVideoTrack } from '../lib/store';
 import { renderFrame } from '../lib/renderer';
 import { FILTERS } from '../lib/filters';
 import { CANVAS_W, CANVAS_H, findActiveClip, findActiveVideoClip,
@@ -55,13 +55,23 @@ export default function SubtitleCanvas() {
   // Sync volumes (A4)
   useEffect(() => { if (videoRef.current) videoRef.current.volume = voiceVolume; if (preloadRef.current) preloadRef.current.volume = voiceVolume; }, [voiceVolume]);
   useEffect(() => { if (audioRef.current) audioRef.current.volume = audioVolume; }, [audioVolume]);
-  // Duration from single-video import
+  // FIX-1: Load video source immediately on import + init clip duration
   useEffect(() => {
-    if (!videoUrl || !videoRef.current) return;
     const vid = videoRef.current;
-    const h = () => { if (vid.duration && isFinite(vid.duration)) useSubtitleStore.getState().setDuration(vid.duration * 1000); };
-    vid.addEventListener('loadedmetadata', h);
-    return () => vid.removeEventListener('loadedmetadata', h);
+    if (!vid || !videoUrl) return;
+    vid.src = videoUrl;
+    const firstClipId = getVideoTrack(tracksRef.current)?.clips?.[0]?.id ?? null;
+    activeClipIdRef.current = firstClipId;
+    const onMeta = () => {
+      if (vid.duration && isFinite(vid.duration)) {
+        const dMs = vid.duration * 1000;
+        const store = useSubtitleStore.getState();
+        store.setDuration(dMs);
+        if (firstClipId) store.initClipDuration(firstClipId, dMs);
+      }
+    };
+    vid.addEventListener('loadedmetadata', onMeta);
+    return () => vid.removeEventListener('loadedmetadata', onMeta);
   }, [videoUrl]);
   // Play/pause audio + video
   useEffect(() => { if (audioRef.current) { if (isPlaying) audioRef.current.play().catch(() => {}); else audioRef.current.pause(); } }, [isPlaying]);
@@ -95,7 +105,15 @@ export default function SubtitleCanvas() {
       } else { prevWall = null; }
       if (vid && ar && ar.clip.id !== activeClipIdRef.current) {
         activeClipIdRef.current = ar.clip.id;
-        if (ar.clip.blobUrl) { vid.src = ar.clip.blobUrl; vid.currentTime = ar.localTimeMs / 1000; if (playingRef.current) vid.play().catch(() => {}); }
+        if (ar.clip.blobUrl) {
+          vid.src = ar.clip.blobUrl; vid.currentTime = ar.localTimeMs / 1000;
+          if (ar.clip.duration === 0) {
+            const clipId = ar.clip.id;
+            const onM = () => { if (vid.duration && isFinite(vid.duration)) { useSubtitleStore.getState().initClipDuration(clipId, vid.duration * 1000); } vid.removeEventListener('loadedmetadata', onM); };
+            vid.addEventListener('loadedmetadata', onM);
+          }
+          if (playingRef.current) vid.play().catch(() => {});
+        }
       }
       const canvas = canvasRef.current;
       if (canvas) {
@@ -124,7 +142,7 @@ export default function SubtitleCanvas() {
 
   return (
     <canvas ref={canvasRef} width={CANVAS_W} height={CANVAS_H}
-      className="rounded-xl shadow-2xl w-full h-auto"
+      className="w-full h-auto"
       style={{ maxWidth: '100%', cursor: isDragging ? 'grabbing' : 'grab', touchAction: 'none', filter: cssFilter }}
       onMouseDown={handleDown} onMouseMove={handleMove} onMouseUp={onUp} onMouseLeave={onUp}
       onTouchStart={handleDown} onTouchMove={handleMove} onTouchEnd={onUp} />

@@ -102,11 +102,15 @@ export default function Page() {
 
       <div className="flex flex-col lg:flex-row flex-1 min-h-0">
         <div className="flex-1 flex flex-col min-h-0 lg:flex-1">
-          <Toolbar activeSheet={activeSheet} onToggleSheet={toggleSheet} onOpenCamera={() => setShowCamera(true)} />
-          <div className="flex-1 flex items-center justify-center px-3 lg:px-4">
+          {/* Fix 3: Toolbar above backdrop */}
+          <div className="relative z-[45]">
+            <Toolbar activeSheet={activeSheet} onToggleSheet={toggleSheet} onOpenCamera={() => setShowCamera(true)} />
+          </div>
+          {/* Fix 5: Canvas plein ecran sans marges mobile */}
+          <div className="flex-1 flex items-center justify-center px-0 lg:px-4 min-h-0" style={{ paddingBottom: 28 }}>
             <SubtitleCanvas />
           </div>
-          <MiniScrubber />
+          <div className="hidden lg:block"><MiniScrubber /></div>
           <div className="hidden lg:block"><TracksPanel /></div>
         </div>
         <div className="hidden lg:block lg:w-80 border-l border-white/10 overflow-y-auto">
@@ -116,6 +120,12 @@ export default function Page() {
           <FilterPanel />
           <AudioSheet />
         </div>
+      </div>
+
+      {/* Fix 2: MiniScrubber fixed above sheets on mobile */}
+      <div className="fixed left-0 right-0 z-[55] transition-all duration-300 lg:hidden"
+        style={{ bottom: activeSheet ? '40dvh' : 0 }}>
+        <MiniScrubber />
       </div>
 
       <BottomSheet isOpen={activeSheet === 'tracks'} onClose={() => setActiveSheet(null)}>
