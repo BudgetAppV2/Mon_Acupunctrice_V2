@@ -77,6 +77,7 @@ export interface AudioClip {
   volume: number;
   fadeIn: number;
   fadeOut: number;
+  audioUrl: string | null;
 }
 
 export interface SubtitleTrackData {

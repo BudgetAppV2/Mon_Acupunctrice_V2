@@ -41,7 +41,7 @@ export function useEditorV2Persistence(itemId: string | null) {
             return {
               ...t, audioClips: t.audioClips.map(a => ({
                 id: a.id, name: a.name, duration: a.duration, startMs: a.startMs,
-                volume: a.volume, fadeIn: a.fadeIn, fadeOut: a.fadeOut,
+                volume: a.volume, fadeIn: a.fadeIn, fadeOut: a.fadeOut, audioUrl: a.audioUrl,
               })),
             };
           }

@@ -118,6 +118,8 @@ interface EditorV2Store {
   setCoverFrame: (ms: number, dataUrl: string) => void;
   selectItem: (trackId: string | null, itemId: string | null) => void;
   clearSelection: () => void;
+  setClipSourceUrl: (clipId: string, url: string) => void;
+  setAudioClipUrl: (clipId: string, url: string) => void;
 }
 
 export const useEditorV2Store = create<EditorV2Store>((set, get) => ({
@@ -324,7 +326,7 @@ export const useEditorV2Store = create<EditorV2Store>((set, get) => ({
 
   addAudioClip: (file, name) => {
     const blobUrl = URL.createObjectURL(file);
-    const clip: AudioClip = { id: crypto.randomUUID(), file, blobUrl, name, duration: 0, startMs: 0, volume: 1, fadeIn: 0, fadeOut: 0 };
+    const clip: AudioClip = { id: crypto.randomUUID(), file, blobUrl, name, duration: 0, startMs: 0, volume: 1, fadeIn: 0, fadeOut: 0, audioUrl: null };
     set((s) => ({
       tracks: s.tracks.map(t => t.id === 'a1' ? { ...t, audioClips: [clip] } : t),
     }));
@@ -419,4 +421,18 @@ export const useEditorV2Store = create<EditorV2Store>((set, get) => ({
   setCoverFrame: (ms, dataUrl) => set({ coverFrameMs: ms, coverDataUrl: dataUrl }),
   selectItem: (trackId, itemId) => set({ selectedTrackId: trackId, selectedItemId: itemId, selectedBlockId: itemId }),
   clearSelection: () => set({ selectedTrackId: null, selectedItemId: null, selectedBlockId: null }),
+
+  setClipSourceUrl: (clipId, url) => set((s) => ({
+    tracks: s.tracks.map(t => {
+      if (t.type !== 'video' || !t.clips) return t;
+      return { ...t, clips: t.clips.map(c => c.id === clipId ? { ...c, sourceVideoUrl: url } : c) };
+    }),
+  })),
+
+  setAudioClipUrl: (clipId, url) => set((s) => ({
+    tracks: s.tracks.map(t => {
+      if (t.type !== 'audio' || !t.audioClips) return t;
+      return { ...t, audioClips: t.audioClips.map(a => a.id === clipId ? { ...a, audioUrl: url } : a) };
+    }),
+  })),
 }));

@@ -9,6 +9,7 @@ import { AdjustmentsHorizontalIcon, FilmIcon, QueueListIcon, MusicalNoteIcon,
   CloudArrowUpIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
 import { useEditorV2Store } from '@/lib/store/useEditorV2Store';
 import { useEditorV2Persistence } from '@/lib/hooks/useEditorV2Persistence';
+import { useEditorV2Upload } from '@/lib/hooks/useEditorV2Upload';
 import { getDoc, doc } from 'firebase/firestore';
 import { getFirebaseFirestore } from '@/lib/firebase';
 
@@ -108,6 +109,7 @@ export default function EditorV2Layout({ itemId }: Props) {
   const router = useRouter();
   const { currentTime, duration, videoFile } = useEditorV2Store();
   const { saving, saved } = useEditorV2Persistence(videoFile ? itemId : null);
+  useEditorV2Upload(videoFile ? itemId : null);
   const toggleSheet = (id: SheetId) => setActiveSheet(prev => prev === id ? null : id);
 
   useEffect(() => {
@@ -128,14 +130,63 @@ export default function EditorV2Layout({ itemId }: Props) {
           if (data.editorDataV2 && !cancelled) {
             useEditorV2Store.getState().loadFromFirestore(data.editorDataV2);
           }
-          // Re-download the source video
-          const loadUrl = data.sourceVideoUrl || data.videoUrl;
-          if (loadUrl && !useEditorV2Store.getState().videoFile) {
-            const res = await fetch(`/api/proxy-video?url=${encodeURIComponent(loadUrl)}`);
+          // Re-download video clips from sourceVideoUrl
+          const store = useEditorV2Store.getState();
+          const videoClips = store.tracks
+            .filter(t => t.type === 'video')
+            .flatMap(t => t.clips ?? [])
+            .filter(c => c.sourceVideoUrl && !c.file);
+          // If no clips have sourceVideoUrl, try top-level fallback
+          if (videoClips.length === 0) {
+            const loadUrl = data.sourceVideoUrl || data.videoUrl;
+            if (loadUrl && !store.videoFile) {
+              const res = await fetch(`/api/proxy-video?url=${encodeURIComponent(loadUrl)}`);
+              if (cancelled) return;
+              const blob = await res.blob();
+              const file = new File([blob], 'existing.mp4', { type: 'video/mp4' });
+              useEditorV2Store.getState().setVideo(file);
+            }
+          } else {
+            // Re-download each clip's source video
+            for (const c of videoClips) {
+              if (cancelled) return;
+              try {
+                const res = await fetch(`/api/proxy-video?url=${encodeURIComponent(c.sourceVideoUrl!)}`);
+                if (cancelled) return;
+                const blob = await res.blob();
+                const file = new File([blob], `clip_${c.id}.mp4`, { type: 'video/mp4' });
+                const blobUrl = URL.createObjectURL(file);
+                // Hydrate the clip with file + blobUrl in place (don't use setVideo — clip already exists)
+                useEditorV2Store.setState((s) => ({
+                  tracks: s.tracks.map(t => {
+                    if (t.type !== 'video' || !t.clips) return t;
+                    return { ...t, clips: t.clips.map(cl => cl.id === c.id ? { ...cl, file, blobUrl } : cl) };
+                  }),
+                  videoFile: file, videoUrl: blobUrl,
+                }));
+              } catch { /* skip failed clip download */ }
+            }
+          }
+          // Re-download audio clips from audioUrl
+          const audioClips = useEditorV2Store.getState().tracks
+            .filter(t => t.type === 'audio')
+            .flatMap(t => t.audioClips ?? [])
+            .filter(a => a.audioUrl && !a.file);
+          for (const a of audioClips) {
             if (cancelled) return;
-            const blob = await res.blob();
-            const file = new File([blob], 'existing.mp4', { type: 'video/mp4' });
-            useEditorV2Store.getState().setVideo(file);
+            try {
+              const res = await fetch(`/api/proxy-video?url=${encodeURIComponent(a.audioUrl!)}`);
+              if (cancelled) return;
+              const blob = await res.blob();
+              const file = new File([blob], a.name || 'audio.mp3', { type: 'audio/mpeg' });
+              const blobUrl = URL.createObjectURL(file);
+              useEditorV2Store.setState((s) => ({
+                tracks: s.tracks.map(t => {
+                  if (t.type !== 'audio' || !t.audioClips) return t;
+                  return { ...t, audioClips: t.audioClips.map(ac => ac.id === a.id ? { ...ac, file, blobUrl } : ac) };
+                }),
+              }));
+            } catch { /* skip failed audio download */ }
           }
         }
       } catch { /* show import UI */ }
