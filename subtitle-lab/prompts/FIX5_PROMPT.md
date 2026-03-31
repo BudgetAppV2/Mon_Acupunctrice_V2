@@ -1,25 +1,57 @@
-# FIX-5 — Sheets Texte et Cover (fonctionnels)
+# FIX-5 — Sheets Texte et Cover (version riche)
 
 ## Contexte
-Les sheets Texte et Cover sont des placeholders. On les rend fonctionnels
-avec une version simplifiee adaptee au Lab (pas de Firebase, pas de fonts
-custom, pas d'animations complexes).
+Le Lab a un moteur de rendu de sous-titres ultra-complet : 8 presets visuels,
+7 types d'animations (fade, pop, slide-up, typewriter, karaoke, bounce,
+neon-pulse), bgColor, outlineWidth, shadowBlur, letterSpacing, textTransform,
+positionnement x/y. Le texte overlay doit etre AUSSI riche que les sous-titres
+en reutilisant le meme moteur de rendu.
 
 ## Stack
 Next.js 16, React 19, Zustand 5, TypeScript, Tailwind 3, @heroicons/react.
 
 ## Fichiers a lire AVANT de commencer
-- `subtitle-lab/app/page.tsx` → sheets 'text' et 'cover' (placeholders)
-- `subtitle-lab/lib/store.ts` → tracks[], types, actions existantes
-- `subtitle-lab/lib/types.ts` → types existants (SubtitleBlock, etc.)
-- `subtitle-lab/components/SubtitleCanvas.tsx` → RAF loop, renderFrame
-- `subtitle-lab/lib/renderer.ts` → renderFrame, renderBlock
+- `subtitle-lab/lib/presets.ts` → 8 presets de style (capcut-bold, karaoke-glow,
+  typewriter, bounce-pop, slide-up, minimal-shadow, neon-outline, handwritten)
+- `subtitle-lab/lib/types.ts` → StylePreset, AnimationType, SubtitleBlock, WordToken
+- `subtitle-lab/lib/renderer.ts` → renderFrame, renderBlock — LE moteur de rendu
+  qui dessine les sous-titres avec tous les effets
+- `subtitle-lab/lib/animations.ts` → computeWordStates, getWordAlpha, etc.
+- `subtitle-lab/components/PresetGallery.tsx` → galerie horizontale de presets
+- `subtitle-lab/components/ControlPanel.tsx` → controles de style (couleur, taille, etc.)
+- `subtitle-lab/lib/store.ts` → tracks[], blocks, globalPreset
+- `subtitle-lab/app/page.tsx` → sheets, bottom sheets
+- `components/features/editor/panels/CoverPanel.tsx` (hub) → reference cover
 
-**Reference hub (lire pour comprendre, pas copier tel quel) :**
-- `components/features/editor/panels/TextPanel.tsx` → liste overlays + ajout
-- `components/features/editor/panels/TextEditView.tsx` → edition overlay
-- `components/features/editor/panels/CoverPanel.tsx` → slider frame + upload
-- `lib/types/editor.ts` → TextOverlayItem interface
+---
+
+## Concept cle : Les text overlays SONT des SubtitleBlock
+
+Le moteur de rendu (renderer.ts) sait deja dessiner des blocs de texte
+avec tous les effets. Un text overlay est simplement un SubtitleBlock
+avec un seul mot qui couvre tout le texte. On reutilise le MEME moteur
+de rendu — pas besoin d'ecrire un nouveau renderer.
+
+Un TextOverlay dans le store est converti en SubtitleBlock avant le rendu :
+```typescript
+function textOverlayToBlock(overlay: TextOverlay): SubtitleBlock {
+  return {
+    id: overlay.id,
+    text: overlay.text,
+    startMs: overlay.startMs,
+    endMs: overlay.endMs,
+    words: [{
+      text: overlay.text,
+      startMs: overlay.startMs,
+      endMs: overlay.endMs,
+    }],
+  };
+}
+```
+
+Chaque TextOverlay a son propre StylePreset (copie d'un preset existant
+avec ses personnalisations). Le renderer dessine les text overlays APRES
+les sous-titres, avec le meme code.
 
 ---
 
@@ -31,12 +63,9 @@ Next.js 16, React 19, Zustand 5, TypeScript, Tailwind 3, @heroicons/react.
 export interface TextOverlay {
   id: string;
   text: string;
-  x: number;           // 0-1, position relative (centre)
-  y: number;           // 0-1, position relative (centre)
-  fontSize: number;    // px (sur le canvas 540x960)
-  color: string;       // hex
-  startMs: number;     // quand afficher
-  endMs: number;       // quand masquer
+  startMs: number;
+  endMs: number;
+  style: StylePreset; // meme type que les sous-titres — tous les effets disponibles
 }
 ```
 
@@ -45,81 +74,118 @@ export interface TextOverlay {
 Ajouter au store :
 ```typescript
 textOverlays: TextOverlay[];
+selectedOverlayId: string | null;
 addTextOverlay: () => void;
 updateTextOverlay: (id: string, changes: Partial<TextOverlay>) => void;
 removeTextOverlay: (id: string) => void;
-selectedOverlayId: string | null;
 selectOverlay: (id: string | null) => void;
+duplicateTextOverlay: (id: string) => void;
 ```
 
-`addTextOverlay` cree un overlay avec des valeurs par defaut :
+`addTextOverlay` cree un overlay avec le preset 'capcut-bold' par defaut,
+positionne au centre (x: 0.5, y: 0.5), visible de currentTime a +3s :
 ```typescript
-{ id: crypto.randomUUID(), text: 'Texte', x: 0.5, y: 0.5,
-  fontSize: 36, color: '#ffffff',
-  startMs: currentTime, endMs: Math.min(currentTime + 3000, duration) }
+addTextOverlay: () => set((s) => {
+  const preset = PRESETS.find(p => p.id === 'capcut-bold')!;
+  const overlay: TextOverlay = {
+    id: crypto.randomUUID(),
+    text: 'Texte',
+    startMs: s.currentTime,
+    endMs: Math.min(s.currentTime + 3000, s.duration || 10000),
+    style: { ...preset, position: { x: 0.5, y: 0.5 } },
+  };
+  return { textOverlays: [...s.textOverlays, overlay], selectedOverlayId: overlay.id };
+}),
 ```
 
 ---
 
-## Livrable 2 — TextPanel.tsx (sheet Texte)
+## Livrable 2 — TextPanel.tsx (sheet Texte riche)
 
 **Nouveau fichier :** `subtitle-lab/components/TextPanel.tsx`
 
-Deux vues :
-
 **Vue liste** (quand aucun overlay selectionne) :
-- Bouton "+ Ajouter texte" en haut
-- Liste des overlays existants, tries par startMs
-- Chaque item montre le texte tronque + le timing
+- Bouton "+ Ajouter texte" en haut (PlusIcon)
+- Liste des overlays existants tries par startMs
+- Chaque item : texte tronque + timing + petit preview du style
 - Tap → selectionne l'overlay
 
 **Vue edition** (quand un overlay est selectionne) :
-- Bouton retour (ArrowLeftIcon)
-- Input texte (le texte de l'overlay)
-- Slider taille (12-72px)
-- Couleur : grille de 8 pastilles (blanc, noir, rouge, bleu, vert,
-  jaune, orange, rose)
-- Sliders debut/fin (0 a duration, step 100ms)
-- Bouton supprimer (TrashIcon)
+- Bouton retour (ArrowLeftIcon) + Dupliquer + Supprimer
+- Input texte
+- **Galerie de presets** : les MEMES 8 presets que les sous-titres !
+  Scroll horizontal avec les pills animees. Tap un preset → remplace
+  le style de l'overlay selectionne (sauf position et text)
+- **Controles de style** : reprendre les memes controles que ControlPanel :
+  - Couleur texte (pastilles + custom)
+  - Couleur fond (pastilles + transparent)
+  - Taille (slider)
+  - Position (picker x/y ou drag sur le canvas)
+  - Animation (selector parmi les 7 types)
+- **Timing** : sliders debut/fin
+- Le rendu live sur le canvas montre l'overlay avec le preset choisi
+
+L'idee c'est que c'est la MEME experience que les sous-titres :
+l'utilisateur choisit un preset, personnalise, positionne, et voit
+le resultat en temps reel sur le canvas.
 
 ---
 
-## Livrable 3 — Rendu des overlays texte dans le canvas
+## Livrable 3 — Rendu des text overlays via le moteur existant
 
 **Fichier :** `subtitle-lab/components/SubtitleCanvas.tsx`
 
-Dans le RAF loop, APRES renderFrame (sous-titres) et APRES ctx.filter = 'none',
-dessiner les text overlays :
+Dans le RAF loop, APRES le rendu des sous-titres, dessiner les text overlays
+en utilisant le MEME `renderBlock` de renderer.ts :
+
 ```typescript
-// Dessiner les text overlays
+// Text overlays — reutilise le moteur de rendu des sous-titres
 const overlays = textOverlaysRef.current;
 for (const o of overlays) {
-  if (timeRef.current < o.startMs || timeRef.current > o.endMs) continue;
-  ctx.save();
-  ctx.font = `bold ${o.fontSize}px sans-serif`;
-  ctx.fillStyle = o.color;
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  // Ombre pour lisibilite
-  ctx.shadowColor = 'rgba(0,0,0,0.5)';
-  ctx.shadowBlur = 4;
-  ctx.shadowOffsetX = 1;
-  ctx.shadowOffsetY = 1;
-  ctx.fillText(o.text, o.x * CANVAS_W, o.y * CANVAS_H);
-  ctx.restore();
+  if (timeRef.current < o.startMs || timeRef.current > o.endMs + 200) continue;
+  // Convertir en SubtitleBlock pour le renderer
+  const block: SubtitleBlock = {
+    id: o.id,
+    text: o.text,
+    startMs: o.startMs,
+    endMs: o.endMs,
+    words: [{ text: o.text, startMs: o.startMs, endMs: o.endMs }],
+  };
+  renderBlock(ctx, block, o.style, timeRef.current, wallMs, CANVAS_W, CANVAS_H);
 }
 ```
 
-Ajouter les refs necessaires :
+Note : `renderBlock` est actuellement une fonction interne de renderer.ts
+(pas exportee). Il faudra soit l'exporter, soit deplacer le rendu des
+overlays dans renderFrame en passant les overlays en parametre.
+
+**Approche recommandee :** Ajouter `textOverlays` aux options de renderFrame :
 ```typescript
+interface RendererOptions {
+  // ... existant ...
+  textOverlays?: TextOverlay[]; // AJOUTER
+}
+```
+Et dans renderFrame, apres le rendu des blocs sous-titres, rendre les overlays :
+```typescript
+if (opts.textOverlays) {
+  for (const o of opts.textOverlays) {
+    if (currentMs < o.startMs || currentMs > o.endMs + 200) continue;
+    const block: SubtitleBlock = { id: o.id, text: o.text, startMs: o.startMs, endMs: o.endMs,
+      words: [{ text: o.text, startMs: o.startMs, endMs: o.endMs }] };
+    renderBlock(ctx, block, o.style, currentMs, nowMs, canvasWidth, canvasHeight);
+  }
+}
+```
+
+Ajouter les refs necessaires dans SubtitleCanvas.tsx :
+```typescript
+const { textOverlays } = useSubtitleStore();
 const textOverlaysRef = useRef(textOverlays);
 useEffect(() => { textOverlaysRef.current = textOverlays; }, [textOverlays]);
 ```
 
-Les text overlays apparaissent aussi dans le sheet Tracks comme des blocs
-sur une piste "Texte" (ou sur la piste sous-titres si on ne veut pas
-ajouter une 4e piste). Pour V1 : les afficher sur la piste sous-titres
-en couleur differente (violet/rose au lieu de bleu).
+Et passer textOverlays au renderFrame dans le RAF loop.
 
 ---
 
@@ -127,99 +193,55 @@ en couleur differente (violet/rose au lieu de bleu).
 
 **Nouveau fichier :** `subtitle-lab/components/CoverPanel.tsx`
 
-Le cover est la vignette qui represente la video (sur Instagram par exemple).
+Le cover est la vignette qui represente la video (sur Instagram).
 C'est une frame de la video a un moment choisi.
 
 **UI :**
 - Vignette preview (64px de large, ratio 9:16)
 - Slider de frame : 0 a duration (ms), step 100ms
-- Quand le slider change : seek la video a cette position,
-  capturer la frame dans un canvas 270x480 en JPEG
+- Quand le slider change : seek une video cachee, capturer la frame
+  dans un canvas 270x480 en JPEG
 - Stocker le dataURL dans le store
 
-**Pas de Firebase dans le Lab** — le cover est en memoire seulement.
-En Phase B, on ajoutera l'upload vers Firebase Storage.
+**Le CoverPanel cree un element video CACHE** pour la capture (comme le hub).
+Ne touche PAS le videoRef du canvas principal.
 
 **Fichier :** `subtitle-lab/lib/store.ts`
 
 Ajouter :
 ```typescript
-coverFrameMs: number;        // position de la frame choisie
-coverDataUrl: string | null; // dataURL de la vignette
+coverFrameMs: number;
+coverDataUrl: string | null;
 setCoverFrame: (ms: number, dataUrl: string) => void;
-```
-
-**Le CoverPanel cree un element video CACHE** pour la capture de frame
-(comme le hub). Il ne touche PAS le videoRef du canvas principal.
-
-```typescript
-const coverVidRef = useRef<HTMLVideoElement>(null);
-useEffect(() => {
-  const vid = coverVidRef.current;
-  if (vid && videoUrl) vid.src = videoUrl;
-}, [videoUrl]);
-
-const captureFrame = () => {
-  const vid = coverVidRef.current;
-  if (!vid || vid.readyState < 2) return;
-  const c = document.createElement('canvas');
-  c.width = 270; c.height = 480;
-  const ctx = c.getContext('2d')!;
-  // Cover crop (meme logique que coverCrop dans playback.ts)
-  const { sx, sy, sw, sh } = coverCrop(vid.videoWidth, vid.videoHeight, 270, 480);
-  ctx.drawImage(vid, sx, sy, sw, sh, 0, 0, 270, 480);
-  const url = c.toDataURL('image/jpeg', 0.8);
-  if (url.length > 100) setCoverFrame(Math.round(vid.currentTime * 1000), url);
-};
-
-// Quand le slider change, seek la video cachee et capturer
-const handleSlider = (ms: number) => {
-  const vid = coverVidRef.current;
-  if (!vid) return;
-  vid.currentTime = ms / 1000;
-  vid.addEventListener('seeked', () => setTimeout(captureFrame, 100), { once: true });
-};
 ```
 
 ---
 
-## Livrable 5 — Remplacer les placeholders dans page.tsx
+## Livrable 5 — Integrer dans page.tsx
 
-**Fichier :** `subtitle-lab/app/page.tsx`
-
-Remplacer les bottom sheets placeholder par les vrais composants :
-```tsx
-// AVANT :
-<BottomSheet isOpen={activeSheet === 'text'} ...>
-  <div>...bientot disponible...</div>
-</BottomSheet>
-
-// APRES :
-<BottomSheet isOpen={activeSheet === 'text'} ...>
-  <TextPanel />
-</BottomSheet>
-```
-
-Meme chose pour Cover.
+Remplacer les placeholders par TextPanel et CoverPanel.
 
 ---
 
 ## Contraintes
-- NE PAS modifier le renderer.ts (les text overlays sont dessines
-  dans SubtitleCanvas, pas dans renderer)
-- NE PAS ajouter de fonts custom (juste sans-serif pour V1)
-- NE PAS implementer Firebase pour le cover (dataURL local seulement)
-- Le cover video element est CACHE et SEPARE du preview principal
+- Les text overlays reutilisent le MEME moteur de rendu que les sous-titres
+  (renderer.ts renderBlock) — PAS un nouveau renderer
+- Les 8 presets visuels sont disponibles pour les text overlays
+- Les 7 animations sont disponibles pour les text overlays
+- Le cover n'utilise PAS Firebase (dataURL local seulement)
+- NE PAS modifier les presets existants
+- NE PAS modifier les animations existantes
 - 0 console.log en production
 - Composants < 150 lignes
 - `npm run build` dans `subtitle-lab/` = succes
 
 ## Definition of Done
-- [ ] Ajouter un texte overlay fonctionne (input + bouton +)
-- [ ] Le texte apparait sur le canvas au bon moment (startMs/endMs)
-- [ ] Slider taille, couleur (8 pastilles), timing fonctionnent
-- [ ] Supprimer un overlay fonctionne
+- [ ] Ajouter un text overlay fonctionne (texte + preset par defaut)
+- [ ] Les 8 presets sont selectionnables pour les text overlays
+- [ ] Le text overlay s'affiche sur le canvas avec le preset choisi
+- [ ] Les animations fonctionnent sur les text overlays (pop, fade, etc.)
+- [ ] Couleur texte, couleur fond, taille, position sont editables
+- [ ] Timing start/end est editable avec sliders
 - [ ] Le slider de frame cover capture une vignette
 - [ ] La vignette cover est visible dans le sheet Cover
-- [ ] Les composants TextPanel et CoverPanel remplacent les placeholders
 - [ ] `npm run build` passe
