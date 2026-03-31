@@ -29,12 +29,15 @@ export async function POST(request: NextRequest) {
     });
 
     if (!uploadRes.ok) {
-      return NextResponse.json({ error: 'Upload AssemblyAI echoue' }, { status: 500 });
+      const errText = await uploadRes.text().catch(() => '');
+      return NextResponse.json({ error: `Upload AssemblyAI echoue: ${uploadRes.status} ${errText}` }, { status: 500 });
     }
 
     const { upload_url } = await uploadRes.json() as { upload_url: string };
 
     // Step 2: Start transcription
+    // Use speech_model "best" (Universal-2 for fr) — do NOT use word_boost
+    // with Universal-3 Pro as it may be incompatible. Keep it simple.
     const transcriptRes = await fetch(`${ASSEMBLYAI_BASE}/transcript`, {
       method: 'POST',
       headers: {
@@ -45,13 +48,16 @@ export async function POST(request: NextRequest) {
         audio_url: upload_url,
         language_code: 'fr',
         speech_model: 'best',
-        word_boost: ['acupuncture', 'meridien', 'qi', 'yin', 'yang', 'aiguille'],
         punctuate: true,
       }),
     });
 
     if (!transcriptRes.ok) {
-      return NextResponse.json({ error: 'Lancement transcription echoue' }, { status: 500 });
+      const errBody = await transcriptRes.text().catch(() => '');
+      return NextResponse.json(
+        { error: `Lancement transcription echoue: ${transcriptRes.status} ${errBody}` },
+        { status: 500 }
+      );
     }
 
     const { id } = await transcriptRes.json() as { id: string };
@@ -81,7 +87,6 @@ export async function POST(request: NextRequest) {
       }
 
       if (result.status === 'completed') {
-        // Normalize word timestamps: AssemblyAI returns ms -> convert to seconds
         const subtitles = (result.words ?? []).map(w => ({
           text: w.text,
           startTime: w.start / 1000,
@@ -93,7 +98,8 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json({ error: 'Timeout transcription' }, { status: 504 });
-  } catch {
-    return NextResponse.json({ error: 'Erreur transcription' }, { status: 500 });
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : 'Erreur inconnue';
+    return NextResponse.json({ error: `Erreur transcription: ${msg}` }, { status: 500 });
   }
 }
