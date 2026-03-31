@@ -244,4 +244,53 @@ Remplacer les placeholders par TextPanel et CoverPanel.
 - [ ] Timing start/end est editable avec sliders
 - [ ] Le slider de frame cover capture une vignette
 - [ ] La vignette cover est visible dans le sheet Cover
+- [ ] Ajouter une 2e video via le bouton + → le clip s'affiche (pas fond noir)
+- [ ] La 2e video a sa duree initialisee (pas duration=0)
 - [ ] `npm run build` passe
+
+
+---
+
+## Livrable 6 — Fix addVideoClip duration=0 (2e video ne s'affiche pas)
+
+**Probleme :** Quand on ajoute une 2e video via le bouton + dans le
+sheet Tracks, `addVideoClip()` cree un clip avec `duration: 0` et
+`trimEnd: 0`. Le clip n'est jamais trouve par `findActiveClip()` car
+sa duree effective est 0ms. C'est le meme bug que le FIX-1 mais pour
+les clips ajoutes apres le premier.
+
+**Cause :** Le useEffect qui ecoute `loadedmetadata` (ligne ~65 de
+SubtitleCanvas) reagit a `videoUrl` — le champ flat synchronise au
+premier clip de V1. Quand on ajoute un clip sur V2, `videoUrl` ne
+change pas, donc le useEffect ne se declenche pas.
+
+**Fix :** Quand `addVideoClip` cree un clip, il faut immediatement
+detecter la duree du fichier et appeler `initClipDuration`.
+
+**Fichier :** `subtitle-lab/lib/store.ts`
+
+Dans `addVideoClip`, extraire la duree du fichier immediatement :
+```typescript
+addVideoClip: (file) => {
+  const blobUrl = URL.createObjectURL(file);
+  const clip: VideoClip = { id: crypto.randomUUID(), file, blobUrl,
+    duration: 0, trimStart: 0, trimEnd: 0, timelineStart: 0,
+    filterId: 'normal', thumbnailUrl: null };
+  // ... ajouter le clip au store comme avant ...
+
+  // Extraire la duree immediatement
+  const vid = document.createElement('video');
+  vid.preload = 'metadata';
+  vid.src = blobUrl;
+  vid.addEventListener('loadedmetadata', () => {
+    if (vid.duration && isFinite(vid.duration)) {
+      get().initClipDuration(clip.id, vid.duration * 1000);
+    }
+    vid.removeAttribute('src');
+    vid.load();
+  });
+},
+```
+
+Ca casse le cercle vicieux : le clip aura sa duree des que les
+metadonnees sont chargees, et `findActiveClip` pourra le trouver.
