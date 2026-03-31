@@ -16,7 +16,7 @@ const TRACK_ICONS: Record<string, React.ReactNode> = {
 export default function TracksPanel() {
   const { tracks, currentTime, duration, setCurrentTime, selectedItemId,
     updateClipTrim, splitClip, deleteClip, addVideoClip, textOverlays,
-    moveSubtitleBlock, moveTextOverlay } = useSubtitleStore();
+    moveSubtitleBlock, moveTextOverlay, moveVideoClip } = useSubtitleStore();
   const containerRef = useRef<HTMLDivElement>(null);
   const addFileRef = useRef<HTMLInputElement>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -84,16 +84,16 @@ export default function TracksPanel() {
             {TRACK_ICONS.video}
             <span className="text-[8px] truncate">{t.label}</span>
           </div>
-          <div className="flex-1 relative bg-white/5 rounded">
+          <div className="flex-1 relative bg-white/5 rounded" data-track-row>
             {t.clips?.map(c => {
               const clipDur = c.trimEnd - c.trimStart;
-              // Show full source extent as grey zone behind the active clip
-              const sourceLeft = refDuration > 0 ? (c.timelineStart / refDuration) * 100 : 0;
-              const sourceWidth = refDuration > 0 ? (c.duration / refDuration) * 100 : 0;
+              const srcL = refDuration > 0 ? (c.timelineStart / refDuration) * 100 : 0;
+              const srcW = refDuration > 0 ? (c.duration / refDuration) * 100 : 0;
               return (<div key={c.id}>
-                {c.duration > clipDur && <div className="absolute top-1 bottom-1 rounded bg-white/5" style={{ left: `${sourceLeft}%`, width: `${sourceWidth}%` }} />}
+                {c.duration > clipDur && <div className="absolute top-1 bottom-1 rounded bg-white/5" style={{ left: `${srcL}%`, width: `${srcW}%` }} />}
                 <TrackBlock id={c.id} trackId={t.id} label={c.file?.name?.slice(0, 12) ?? 'Clip'} startMs={c.timelineStart} endMs={c.timelineStart + clipDur}
-                  duration={refDuration} color="bg-emerald-500/25" selected={selectedItemId === c.id} onTrimChange={(s, e) => updateClipTrim(c.id, s, e)} />
+                  duration={refDuration} color="bg-emerald-500/25" selected={selectedItemId === c.id}
+                  onTrimChange={(s, e) => updateClipTrim(c.id, s, e)} onDrag={d => moveVideoClip(c.id, d)} />
               </div>);
             })}
           </div>
@@ -118,7 +118,7 @@ export default function TracksPanel() {
               {TRACK_ICONS.subtitle}
               <span className="text-[8px] truncate">Sub</span>
             </div>
-            <div className="flex-1 relative bg-white/5 rounded">
+            <div className="flex-1 relative bg-white/5 rounded" data-track-row>
               {st.subtitles.blocks.map(b => (
                 <TrackBlock key={b.id} id={b.id} trackId={st.id} label={b.text.slice(0, 15)}
                   startMs={b.startMs} endMs={b.endMs} duration={refDuration} color="bg-blue-400/25"
@@ -135,7 +135,7 @@ export default function TracksPanel() {
             <ChatBubbleBottomCenterTextIcon className="w-3.5 h-3.5" />
             <span className="text-[8px] truncate">Texte</span>
           </div>
-          <div className="flex-1 relative bg-white/5 rounded">
+          <div className="flex-1 relative bg-white/5 rounded" data-track-row>
             {textOverlays.map(o => (
               <TrackBlock key={o.id} id={o.id} trackId="text" label={o.text.slice(0, 15)}
                 startMs={o.startMs} endMs={o.endMs} duration={refDuration} color="bg-purple-400/30"
@@ -154,7 +154,7 @@ export default function TracksPanel() {
               {TRACK_ICONS.audio}
               <span className="text-[8px] truncate">Audio</span>
             </div>
-            <div className="flex-1 relative bg-white/5 rounded">
+            <div className="flex-1 relative bg-white/5 rounded" data-track-row>
               {at.audioClips?.map(a => (
                 <div key={a.id} className="absolute top-1 bottom-1 left-0 right-0 rounded bg-amber-400/25">
                   {a.blobUrl && <AudioWaveform blobUrl={a.blobUrl} width={300} height={40} />}

@@ -101,10 +101,21 @@ export default function SubtitleCanvas() {
   useEffect(() => {
     const vid = videoRef.current; if (!vid || isPlaying) return;
     const r = findActiveClip(tracksRef.current, currentTime);
-    if (!r) return;
-    if (r.clip.id !== activeClipIdRef.current && r.clip.blobUrl) { vid.src = r.clip.blobUrl; activeClipIdRef.current = r.clip.id; }
-    vid.currentTime = r.localTimeMs / 1000;
-  }, [currentTime, isPlaying]);
+    if (r) {
+      if (r.clip.id !== activeClipIdRef.current && r.clip.blobUrl) { vid.src = r.clip.blobUrl; activeClipIdRef.current = r.clip.id; }
+      vid.currentTime = r.localTimeMs / 1000;
+    } else {
+      // Fallback: seek first clip proportionally when findActiveClip misses
+      const allClips = tracksRef.current.filter(t => t.type === 'video').flatMap(t => t.clips ?? []);
+      if (allClips.length > 0 && duration > 0) {
+        const first = allClips[0];
+        if (first.blobUrl && first.duration > 0) {
+          if (activeClipIdRef.current !== first.id) { vid.src = first.blobUrl; activeClipIdRef.current = first.id; }
+          vid.currentTime = Math.min((currentTime / duration) * (first.duration / 1000), first.duration / 1000);
+        }
+      }
+    }
+  }, [currentTime, isPlaying, duration]);
 
   // RAF loop
   useEffect(() => {

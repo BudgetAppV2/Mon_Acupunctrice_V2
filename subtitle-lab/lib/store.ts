@@ -107,6 +107,7 @@ interface SubtitleStore {
   setSubtitleBlocks: (blocks: SubtitleBlock[]) => void;
   moveSubtitleBlock: (id: string, deltaMs: number) => void;
   moveTextOverlay: (id: string, deltaMs: number) => void;
+  moveVideoClip: (clipId: string, deltaMs: number) => void;
   // Multi-track actions
   addVideoClip: (file: File) => void;
   removeVideoClip: (id: string) => void;
@@ -224,6 +225,24 @@ export const useSubtitleStore = create<SubtitleStore>((set, get) => ({
       return { ...o, startMs: ns, endMs: ns + dur };
     }),
   })),
+
+  moveVideoClip: (clipId, deltaMs) => set((s) => {
+    // For video clips, reorder based on new target position
+    const tracks = s.tracks.map(t => {
+      if (t.type !== 'video' || !t.clips) return t;
+      const idx = t.clips.findIndex(c => c.id === clipId);
+      if (idx === -1) return t;
+      const clip = t.clips[idx];
+      const targetMs = clip.timelineStart + deltaMs;
+      const clips = [...t.clips];
+      clips.splice(idx, 1);
+      let insertIdx = clips.findIndex(c => c.timelineStart > targetMs);
+      if (insertIdx === -1) insertIdx = clips.length;
+      clips.splice(insertIdx, 0, clip);
+      return { ...t, clips: recalcTimelineStarts(clips) };
+    });
+    return { tracks, ...syncFlatFromTracks(tracks) };
+  }),
 
   // setVideo -> addVideoClip with flat sync
   setVideo: (file) => {
