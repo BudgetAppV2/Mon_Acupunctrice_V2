@@ -126,7 +126,8 @@ export default function TracksPanel() {
               {st.subtitles.blocks.map(b => (
                 <TrackBlock key={b.id} id={b.id} trackId={st.id} label={b.text.slice(0, 15)}
                   startMs={b.startMs} endMs={b.endMs} duration={refDuration} color="bg-blue-400/25"
-                  selected={selectedItemId === b.id} onDrag={(d) => moveSubtitleBlock(b.id, d)} />
+                  selected={selectedItemId === b.id}
+                  onDrag={newStartMs => moveSubtitleBlock(b.id, newStartMs - b.startMs)} />
               ))}
             </div>
           </div>
@@ -143,7 +144,8 @@ export default function TracksPanel() {
             {textOverlays.map(o => (
               <TrackBlock key={o.id} id={o.id} trackId="text" label={o.text.slice(0, 15)}
                 startMs={o.startMs} endMs={o.endMs} duration={refDuration} color="bg-purple-400/30"
-                selected={selectedItemId === o.id} onDrag={(d) => moveTextOverlay(o.id, d)} />
+                selected={selectedItemId === o.id}
+                onDrag={newStartMs => moveTextOverlay(o.id, newStartMs - o.startMs)} />
             ))}
           </div>
         </div>
