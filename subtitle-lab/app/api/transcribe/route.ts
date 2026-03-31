@@ -36,8 +36,8 @@ export async function POST(request: NextRequest) {
     const { upload_url } = await uploadRes.json() as { upload_url: string };
 
     // Step 2: Start transcription
-    // Use speech_model "best" (Universal-2 for fr) — do NOT use word_boost
-    // with Universal-3 Pro as it may be incompatible. Keep it simple.
+    // speech_model is DEPRECATED — use speech_models (plural, array)
+    // Universal-3 Pro supports French (incl. Quebecois)
     const transcriptRes = await fetch(`${ASSEMBLYAI_BASE}/transcript`, {
       method: 'POST',
       headers: {
@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
       body: JSON.stringify({
         audio_url: upload_url,
         language_code: 'fr',
-        speech_model: 'best',
+        speech_models: ['universal-3-pro'],
         punctuate: true,
       }),
     });
