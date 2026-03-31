@@ -3,8 +3,12 @@ import type { StylePreset, SubtitleBlock, Track, VideoClip, AudioClip, TextOverl
 import { DEFAULT_PRESET, PRESETS } from '@/lib/editor-v2/presets';
 import {
   recalcTimelineStarts, getVideoTrack, getVideoTracks,
+  getSubtitleTrack, getAudioTrack, getClipAtTime, getActiveVideoClip,
   totalClipsDuration, syncFlatFromTracks,
 } from '@/lib/editor-v2/store';
+
+// Re-export helpers so components can import them from the store module
+export { getVideoTrack, getVideoTracks, getSubtitleTrack, getAudioTrack, getClipAtTime, getActiveVideoClip } from '@/lib/editor-v2/store';
 
 const DEFAULT_TRACKS: Track[] = [
   { id: 'v1', type: 'video', label: 'Video 1', muted: false, clips: [] },
