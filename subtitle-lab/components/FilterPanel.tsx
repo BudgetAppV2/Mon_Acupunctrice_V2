@@ -7,10 +7,9 @@ export default function FilterPanel() {
   const { filterId, setFilter, setClipFilter, thumbnailUrl, tracks, currentTime, selectedItemId, filterIntensity, setFilterIntensity } = useSubtitleStore();
 
   const handleFilterSelect = (id: string) => {
-    // A8: If a clip is selected, apply filter to that clip
-    if (selectedItemId) {
-      setClipFilter(selectedItemId, id);
-    }
+    // Always apply to the active clip (the one visible in preview)
+    const activeClip = getActiveVideoClip(tracks, currentTime);
+    if (activeClip) setClipFilter(activeClip.id, id);
     setFilter(id);
   };
 

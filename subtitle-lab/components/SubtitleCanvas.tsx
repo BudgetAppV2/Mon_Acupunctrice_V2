@@ -17,8 +17,11 @@ export default function SubtitleCanvas() {
   const activeClipIdRef = useRef<string | null>(null);
 
   const { blocks, globalPreset, currentTime, isPlaying, duration,
-    filterId, videoUrl, voiceVolume, audioVolume, tracks, filterIntensity: fIntensity, textOverlays } = useSubtitleStore();
-  const { isDragging, onDown, onMove, onUp } = useSubtitleDrag(globalPreset.position);
+    filterId, videoUrl, voiceVolume, audioVolume, tracks, filterIntensity: fIntensity,
+    textOverlays, selectedOverlayId } = useSubtitleStore();
+  const selOverlay = textOverlays.find(o => o.id === selectedOverlayId);
+  const dragPos = selOverlay ? selOverlay.style.position : globalPreset.position;
+  const { isDragging, onDown, onMove, onUp } = useSubtitleDrag(dragPos, selectedOverlayId);
 
   // Refs for RAF loop (avoids stale closures)
   const timeRef = useRef(currentTime);
@@ -138,7 +141,7 @@ export default function SubtitleCanvas() {
           if (!ar) { ctx.fillStyle = '#000'; ctx.fillRect(0, 0, CANVAS_W, CANVAS_H); }
           else if (vid && vid.readyState >= 2 && vid.videoWidth > 0) {
             // Apply filter via ctx.filter (not CSS) so subtitles are NOT filtered
-            const cFid = ar.clip.filterId ?? filterIdRef.current;
+            const cFid = (ar.clip.filterId && ar.clip.filterId !== 'normal') ? ar.clip.filterId : filterIdRef.current;
             const ff = FILTERS.find(x => x.id === cFid);
             if (ff?.css !== 'none' && filterIntensityRef.current > 0) ctx.filter = ff!.css;
             const c = coverCrop(vid.videoWidth, vid.videoHeight, CANVAS_W, CANVAS_H);

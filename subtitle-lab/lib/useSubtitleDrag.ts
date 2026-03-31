@@ -5,8 +5,8 @@ import { useSubtitleStore } from './store';
 import { CANVAS_W, CANVAS_H } from './playback';
 import type { StylePreset } from './types';
 
-/** Manages subtitle position drag on the canvas */
-export function useSubtitleDrag(position: StylePreset['position']) {
+/** Manages position drag on the canvas — subtitles or text overlay */
+export function useSubtitleDrag(position: StylePreset['position'], overlayId?: string | null) {
   const [isDragging, setIsDragging] = useState(false);
   const dragStartRef = useRef<{ x: number; y: number } | null>(null);
   const posStartRef = useRef<{ x: number; y: number } | null>(null);
@@ -27,11 +27,17 @@ export function useSubtitleDrag(position: StylePreset['position']) {
   const onMove = useCallback((e: React.MouseEvent | React.TouchEvent, canvas: HTMLCanvasElement) => {
     if (!isDragging || !dragStartRef.current || !posStartRef.current) return;
     const cur = getRelPos(e, canvas);
-    useSubtitleStore.getState().updateGlobalField('position', {
+    const newPos = {
       x: Math.max(0.05, Math.min(0.95, posStartRef.current.x + (cur.x - dragStartRef.current.x))),
       y: Math.max(0.05, Math.min(0.98, posStartRef.current.y + (cur.y - dragStartRef.current.y))),
-    });
-  }, [isDragging]);
+    };
+    if (overlayId) {
+      const o = useSubtitleStore.getState().textOverlays.find(t => t.id === overlayId);
+      if (o) useSubtitleStore.getState().updateTextOverlay(overlayId, { style: { ...o.style, position: newPos } });
+    } else {
+      useSubtitleStore.getState().updateGlobalField('position', newPos);
+    }
+  }, [isDragging, overlayId]);
 
   const onUp = useCallback(() => {
     setIsDragging(false);
