@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import type { StylePreset, SubtitleBlock, Track, VideoClip, AudioClip } from './types';
-import { DEFAULT_PRESET } from './presets';
+import type { StylePreset, SubtitleBlock, Track, VideoClip, AudioClip, TextOverlay } from './types';
+import { DEFAULT_PRESET, PRESETS } from './presets';
 
 // --- Multi-track helpers ---
 
@@ -122,6 +122,18 @@ interface SubtitleStore {
   splitClip: (clipId: string, globalSplitTimeMs: number) => void;
   reorderClips: (fromIndex: number, toIndex: number) => void;
   deleteClip: (clipId: string) => void;
+  // Text overlays
+  textOverlays: TextOverlay[];
+  selectedOverlayId: string | null;
+  addTextOverlay: () => void;
+  updateTextOverlay: (id: string, changes: Partial<TextOverlay>) => void;
+  removeTextOverlay: (id: string) => void;
+  selectOverlay: (id: string | null) => void;
+  duplicateTextOverlay: (id: string) => void;
+  // Cover
+  coverFrameMs: number;
+  coverDataUrl: string | null;
+  setCoverFrame: (ms: number, dataUrl: string) => void;
   // Selection
   selectItem: (trackId: string | null, itemId: string | null) => void;
   clearSelection: () => void;
@@ -144,6 +156,10 @@ export const useSubtitleStore = create<SubtitleStore>((set, get) => ({
   thumbnailUrl: null,
   selectedTrackId: null,
   selectedItemId: null,
+  textOverlays: [],
+  selectedOverlayId: null,
+  coverFrameMs: 0,
+  coverDataUrl: null,
   voiceVolume: 1.0,
   audioVolume: 0.3,
   audioDucking: false,
@@ -211,18 +227,25 @@ export const useSubtitleStore = create<SubtitleStore>((set, get) => ({
   // --- Multi-track actions ---
   addVideoClip: (file) => {
     const blobUrl = URL.createObjectURL(file);
-    const clip: VideoClip = { id: crypto.randomUUID(), file, blobUrl, duration: 0, trimStart: 0, trimEnd: 0, timelineStart: 0, filterId: 'normal', thumbnailUrl: null };
+    const clipId = crypto.randomUUID();
+    const clip: VideoClip = { id: clipId, file, blobUrl, duration: 0, trimStart: 0, trimEnd: 0, timelineStart: 0, filterId: 'normal', thumbnailUrl: null };
     set((s) => {
       const vt = getVideoTrack(s.tracks);
       let tracks: Track[];
       if (vt && (vt.clips?.length ?? 0) > 0) {
-        // V1 has clips -> create V2
         const v2: Track = { id: `v${Date.now()}`, type: 'video', label: `Video ${getVideoTracks(s.tracks).length + 1}`, muted: false, clips: [clip] };
         tracks = [...s.tracks, v2];
       } else {
         tracks = s.tracks.map(t => t.id === 'v1' ? { ...t, clips: [...(t.clips ?? []), clip] } : t);
       }
       return { tracks, ...syncFlatFromTracks(tracks), duration: Math.max(s.duration, totalClipsDuration(tracks)) };
+    });
+    // Extract duration immediately to break the duration=0 deadlock
+    const vid = document.createElement('video');
+    vid.preload = 'metadata'; vid.src = blobUrl;
+    vid.addEventListener('loadedmetadata', () => {
+      if (vid.duration && isFinite(vid.duration)) get().initClipDuration(clipId, vid.duration * 1000);
+      vid.removeAttribute('src'); vid.load();
     });
   },
   removeVideoClip: (id) => set((s) => {
@@ -335,6 +358,23 @@ export const useSubtitleStore = create<SubtitleStore>((set, get) => ({
       selectedTrackId: s.selectedItemId === clipId ? null : s.selectedTrackId,
     };
   }),
+
+  // --- Text overlays ---
+  addTextOverlay: () => set((s) => {
+    const preset = PRESETS.find(p => p.id === 'capcut-bold') ?? PRESETS[0];
+    const o: TextOverlay = { id: crypto.randomUUID(), text: 'Texte', startMs: s.currentTime, endMs: Math.min(s.currentTime + 3000, s.duration || 10000), style: { ...preset, position: { x: 0.5, y: 0.5 } } };
+    return { textOverlays: [...s.textOverlays, o], selectedOverlayId: o.id };
+  }),
+  updateTextOverlay: (id, changes) => set((s) => ({ textOverlays: s.textOverlays.map(o => o.id === id ? { ...o, ...changes } : o) })),
+  removeTextOverlay: (id) => set((s) => ({ textOverlays: s.textOverlays.filter(o => o.id !== id), selectedOverlayId: s.selectedOverlayId === id ? null : s.selectedOverlayId })),
+  selectOverlay: (id) => set({ selectedOverlayId: id }),
+  duplicateTextOverlay: (id) => set((s) => {
+    const src = s.textOverlays.find(o => o.id === id); if (!src) return s;
+    const dup: TextOverlay = { ...src, id: crypto.randomUUID(), startMs: src.endMs + 100, endMs: src.endMs + 3100 };
+    return { textOverlays: [...s.textOverlays, dup], selectedOverlayId: dup.id };
+  }),
+  // --- Cover ---
+  setCoverFrame: (ms, dataUrl) => set({ coverFrameMs: ms, coverDataUrl: dataUrl }),
 
   // --- Selection partagee ---
   selectItem: (trackId, itemId) => set({ selectedTrackId: trackId, selectedItemId: itemId, selectedBlockId: itemId }),

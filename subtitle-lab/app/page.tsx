@@ -17,6 +17,8 @@ const BottomSheet = dynamic(() => import('../components/BottomSheet'), { ssr: fa
 const AudioSheet = dynamic(() => import('../components/AudioSheet'), { ssr: false });
 const TranscribeButton = dynamic(() => import('../components/TranscribeButton'), { ssr: false });
 const CameraOverlay = dynamic(() => import('../components/CameraOverlay'), { ssr: false });
+const TextPanel = dynamic(() => import('../components/TextPanel'), { ssr: false });
+const CoverPanel = dynamic(() => import('../components/CoverPanel'), { ssr: false });
 
 type SheetId = 'sub' | 'filter' | 'tracks' | 'audio' | 'text' | 'cover' | null;
 
@@ -138,10 +140,10 @@ export default function Page() {
         <AudioSheet />
       </BottomSheet>
       <BottomSheet isOpen={activeSheet === 'text'} onClose={() => setActiveSheet(null)}>
-        <div className="flex items-center justify-center h-32 text-white/30 text-sm">Overlays texte — bientot disponible</div>
+        <TextPanel />
       </BottomSheet>
       <BottomSheet isOpen={activeSheet === 'cover'} onClose={() => setActiveSheet(null)}>
-        <div className="flex items-center justify-center h-32 text-white/30 text-sm">Image de couverture — bientot disponible</div>
+        <CoverPanel />
       </BottomSheet>
 
       {/* A5: Camera overlay */}

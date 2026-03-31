@@ -1,4 +1,4 @@
-import type { SubtitleBlock, StylePreset, RenderWord } from './types';
+import type { SubtitleBlock, StylePreset, RenderWord, TextOverlay } from './types';
 import {
   computeWordStates,
   getWordAlpha,
@@ -18,6 +18,8 @@ interface RendererOptions {
   canvasHeight: number;
   /** Skip background gradient (video frame already drawn) */
   skipBackground?: boolean;
+  /** Text overlays rendered after subtitle blocks */
+  textOverlays?: TextOverlay[];
 }
 
 // Load font into canvas context
@@ -269,4 +271,13 @@ export function renderFrame(opts: RendererOptions): void {
     const style: StylePreset = { ...globalPreset, ...(block.overrides ?? {}) };
     renderBlock(ctx, block, style, currentMs, nowMs, canvasWidth, canvasHeight);
   });
+
+  // Text overlays — reuse the same renderBlock engine
+  if (opts.textOverlays) {
+    for (const o of opts.textOverlays) {
+      if (currentMs < o.startMs || currentMs > o.endMs + 200) continue;
+      const block: SubtitleBlock = { id: o.id, text: o.text, startMs: o.startMs, endMs: o.endMs, words: [{ text: o.text, startMs: o.startMs, endMs: o.endMs }] };
+      renderBlock(ctx, block, o.style, currentMs, nowMs, canvasWidth, canvasHeight);
+    }
+  }
 }

@@ -17,7 +17,7 @@ export default function SubtitleCanvas() {
   const activeClipIdRef = useRef<string | null>(null);
 
   const { blocks, globalPreset, currentTime, isPlaying, duration,
-    filterId, videoUrl, voiceVolume, audioVolume, tracks, filterIntensity: fIntensity } = useSubtitleStore();
+    filterId, videoUrl, voiceVolume, audioVolume, tracks, filterIntensity: fIntensity, textOverlays } = useSubtitleStore();
   const { isDragging, onDown, onMove, onUp } = useSubtitleDrag(globalPreset.position);
 
   // Refs for RAF loop (avoids stale closures)
@@ -29,6 +29,7 @@ export default function SubtitleCanvas() {
   const tracksRef = useRef(tracks);
   const filterIdRef = useRef(filterId);
   const filterIntensityRef = useRef(fIntensity);
+  const textOverlaysRef = useRef(textOverlays);
 
   useEffect(() => { timeRef.current = currentTime; }, [currentTime]);
   useEffect(() => { playingRef.current = isPlaying; }, [isPlaying]);
@@ -38,6 +39,7 @@ export default function SubtitleCanvas() {
   useEffect(() => { tracksRef.current = tracks; }, [tracks]);
   useEffect(() => { filterIdRef.current = filterId; }, [filterId]);
   useEffect(() => { filterIntensityRef.current = fIntensity; }, [fIntensity]);
+  useEffect(() => { textOverlaysRef.current = textOverlays; }, [textOverlays]);
 
   // Two video elements for double-buffered playback (A3)
   useEffect(() => {
@@ -144,7 +146,8 @@ export default function SubtitleCanvas() {
             ctx.filter = 'none'; // Reset so subtitles are not filtered
           }
           renderFrame({ canvas, blocks: blocksRef.current, globalPreset: presetRef.current,
-            currentMs: timeRef.current, nowMs: wallMs, canvasWidth: CANVAS_W, canvasHeight: CANVAS_H, skipBackground: !!ar });
+            currentMs: timeRef.current, nowMs: wallMs, canvasWidth: CANVAS_W, canvasHeight: CANVAS_H,
+            skipBackground: !!ar, textOverlays: textOverlaysRef.current });
         }
       }
       rafRef.current = requestAnimationFrame(loop);

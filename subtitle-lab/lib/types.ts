@@ -93,6 +93,16 @@ export interface Track {
   audioClips?: AudioClip[];
 }
 
+// --- Text Overlays ---
+
+export interface TextOverlay {
+  id: string;
+  text: string;
+  startMs: number;
+  endMs: number;
+  style: StylePreset;
+}
+
 // --- Render types ---
 
 export interface RenderWord {
