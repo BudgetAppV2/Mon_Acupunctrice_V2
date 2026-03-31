@@ -90,10 +90,14 @@ export default function TracksPanel() {
               const srcL = refDuration > 0 ? (c.timelineStart / refDuration) * 100 : 0;
               const srcW = refDuration > 0 ? (c.duration / refDuration) * 100 : 0;
               return (<div key={c.id}>
-                {c.duration > clipDur && <div className="absolute top-1 bottom-1 rounded bg-white/5" style={{ left: `${srcL}%`, width: `${srcW}%` }} />}
-                <TrackBlock id={c.id} trackId={t.id} label={c.file?.name?.slice(0, 12) ?? 'Clip'} startMs={c.timelineStart} endMs={c.timelineStart + clipDur}
+                {/* Grey zone: always show full source extent */}
+                <div className="absolute top-1 bottom-1 rounded bg-white/5" style={{ left: `${srcL}%`, width: `${srcW}%` }} />
+                {/* Green active zone: offset by trimStart within source */}
+                <TrackBlock id={c.id} trackId={t.id} label={c.file?.name?.slice(0, 12) ?? 'Clip'}
+                  startMs={c.timelineStart + c.trimStart} endMs={c.timelineStart + c.trimEnd}
                   duration={refDuration} color="bg-emerald-500/25" selected={selectedItemId === c.id}
-                  onTrimChange={(s, e) => updateClipTrim(c.id, s, e)} onDrag={d => moveVideoClip(c.id, d)} />
+                  onTrimChange={(s, e) => updateClipTrim(c.id, s - c.timelineStart, e - c.timelineStart)}
+                  onDrag={newStartMs => moveVideoClip(c.id, newStartMs - c.trimStart)} />
               </div>);
             })}
           </div>

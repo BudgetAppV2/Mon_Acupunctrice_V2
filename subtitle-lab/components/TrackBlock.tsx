@@ -13,7 +13,7 @@ interface Props {
   color: string;
   selected: boolean;
   onTrimChange?: (newStart: number, newEnd: number) => void;
-  onDrag?: (deltaMs: number) => void;
+  onDrag?: (newStartMs: number) => void;
 }
 
 export default function TrackBlock({ id, trackId, label, startMs, endMs, duration, color, selected, onTrimChange, onDrag }: Props) {
@@ -22,6 +22,7 @@ export default function TrackBlock({ id, trackId, label, startMs, endMs, duratio
   const [dragPx, setDragPx] = useState(0);
   const mode = useRef<'idle' | 'drag' | 'trim'>('idle');
   const start = useRef({ x: 0, origStart: 0, origEnd: 0, time: 0 });
+  const dragApplied = useRef(false);
 
   if (duration <= 0) return null;
   const left = (startMs / duration) * 100;
@@ -53,19 +54,25 @@ export default function TrackBlock({ id, trackId, label, startMs, endMs, duratio
   const onBlockDown = (e: React.PointerEvent) => {
     (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
     start.current = { x: e.clientX, origStart: startMs, origEnd: endMs, time: Date.now() };
-    mode.current = 'idle'; setDragPx(0);
+    mode.current = 'idle'; setDragPx(0); dragApplied.current = false;
   };
   const onBlockMove = (e: React.PointerEvent) => {
-    if (mode.current === 'trim') return;
+    if (mode.current === 'trim' || dragApplied.current) return;
     const dx = e.clientX - start.current.x;
     if (mode.current === 'idle' && Math.abs(dx) > 5) mode.current = 'drag';
     if (mode.current === 'drag') { e.stopPropagation(); setDragPx(dx); }
   };
   const onBlockUp = (e: React.PointerEvent) => {
+    if (dragApplied.current) { mode.current = 'idle'; return; }
     if (mode.current === 'drag' && onDrag) {
       const ppm = getPxPerMs(e.currentTarget as HTMLElement);
-      const delta = (e.clientX - start.current.x) / ppm;
-      if (Math.abs(delta) > 30) onDrag(delta);
+      const deltaPx = e.clientX - start.current.x;
+      const deltaMs = deltaPx / ppm;
+      if (Math.abs(deltaMs) > 30) {
+        dragApplied.current = true;
+        // Pass absolute new position (origStart + delta), not relative delta
+        onDrag(start.current.origStart + deltaMs);
+      }
     } else if (mode.current === 'idle' && Date.now() - start.current.time < 300) {
       e.stopPropagation(); selectItem(trackId, id);
     }

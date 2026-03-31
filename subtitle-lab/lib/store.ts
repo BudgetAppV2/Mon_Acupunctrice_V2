@@ -20,9 +20,12 @@ export function getClipAtTime(
   globalTimeMs: number,
 ): { clip: VideoClip; localTimeMs: number } | null {
   for (const c of clips) {
-    const clipDur = c.trimEnd - c.trimStart;
-    if (globalTimeMs >= c.timelineStart && globalTimeMs < c.timelineStart + clipDur) {
-      return { clip: c, localTimeMs: c.trimStart + (globalTimeMs - c.timelineStart) };
+    // Clip occupies timelineStart to timelineStart+duration on the timeline
+    // Active zone is trimStart to trimEnd within that range
+    const absStart = c.timelineStart + c.trimStart;
+    const absEnd = c.timelineStart + c.trimEnd;
+    if (globalTimeMs >= absStart && globalTimeMs < absEnd) {
+      return { clip: c, localTimeMs: c.trimStart + (globalTimeMs - absStart) };
     }
   }
   return null;
@@ -40,7 +43,8 @@ export function getActiveVideoClip(tracks: Track[], currentTimeMs: number): Vide
 function totalClipsDuration(tracks: Track[]): number {
   const vt = getVideoTrack(tracks);
   if (!vt?.clips?.length) return 0;
-  return vt.clips.reduce((acc, c) => acc + (c.trimEnd - c.trimStart), 0);
+  // Use SOURCE duration (not trimmed) so scrubber shows full extent
+  return vt.clips.reduce((acc, c) => acc + c.duration, 0);
 }
 
 function syncFlatFromTracks(tracks: Track[]) {
@@ -107,7 +111,7 @@ interface SubtitleStore {
   setSubtitleBlocks: (blocks: SubtitleBlock[]) => void;
   moveSubtitleBlock: (id: string, deltaMs: number) => void;
   moveTextOverlay: (id: string, deltaMs: number) => void;
-  moveVideoClip: (clipId: string, deltaMs: number) => void;
+  moveVideoClip: (clipId: string, newTimelineStart: number) => void;
   // Multi-track actions
   addVideoClip: (file: File) => void;
   removeVideoClip: (id: string) => void;
@@ -226,20 +230,15 @@ export const useSubtitleStore = create<SubtitleStore>((set, get) => ({
     }),
   })),
 
-  moveVideoClip: (clipId, deltaMs) => set((s) => {
-    // For video clips, reorder based on new target position
+  moveVideoClip: (clipId, newTimelineStart) => set((s) => {
+    // Move clip to absolute position (no delta, no bounce)
     const tracks = s.tracks.map(t => {
       if (t.type !== 'video' || !t.clips) return t;
-      const idx = t.clips.findIndex(c => c.id === clipId);
-      if (idx === -1) return t;
-      const clip = t.clips[idx];
-      const targetMs = clip.timelineStart + deltaMs;
-      const clips = [...t.clips];
-      clips.splice(idx, 1);
-      let insertIdx = clips.findIndex(c => c.timelineStart > targetMs);
-      if (insertIdx === -1) insertIdx = clips.length;
-      clips.splice(insertIdx, 0, clip);
-      return { ...t, clips: recalcTimelineStarts(clips) };
+      const clips = t.clips.map(c => {
+        if (c.id !== clipId) return c;
+        return { ...c, timelineStart: Math.max(0, newTimelineStart) };
+      });
+      return { ...t, clips };
     });
     return { tracks, ...syncFlatFromTracks(tracks) };
   }),
@@ -301,7 +300,8 @@ export const useSubtitleStore = create<SubtitleStore>((set, get) => ({
   updateClipTrim: (clipId, trimStart, trimEnd) => set((s) => {
     const tracks = s.tracks.map(t => {
       if (t.type !== 'video' || !t.clips) return t;
-      const clips = recalcTimelineStarts(t.clips.map(c => c.id === clipId ? { ...c, trimStart, trimEnd } : c));
+      // Do NOT recalcTimelineStarts — the clip stays in position, only the active zone changes
+      const clips = t.clips.map(c => c.id === clipId ? { ...c, trimStart, trimEnd } : c);
       return { ...t, clips };
     });
     return { tracks, duration: totalClipsDuration(tracks) };
@@ -343,8 +343,9 @@ export const useSubtitleStore = create<SubtitleStore>((set, get) => ({
   initClipDuration: (clipId, durationMs) => set((s) => {
     const tracks = s.tracks.map(t => {
       if (t.type !== 'video' || !t.clips) return t;
+      // Only update duration and trimEnd, do NOT recalcTimelineStarts (preserves position)
       const clips = t.clips.map(c => c.id === clipId && c.duration === 0 ? { ...c, duration: durationMs, trimEnd: durationMs } : c);
-      return { ...t, clips: recalcTimelineStarts(clips) };
+      return { ...t, clips };
     });
     return { tracks, ...syncFlatFromTracks(tracks), duration: totalClipsDuration(tracks) };
   }),
