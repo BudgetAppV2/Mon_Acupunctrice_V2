@@ -50,7 +50,7 @@ export default function TrackBlock({ id, trackId, label, startMs, endMs, duratio
   };
   const onTrimUp = () => { mode.current = 'idle'; setTrimSide(null); };
 
-  // --- Block drag (continuous) ---
+  // --- Block drag — Bug 1 fix: commit before resetting visual offset ---
   const onBlockDown = (e: React.PointerEvent) => {
     (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
     start.current = { x: e.clientX, origStart: startMs, origEnd: endMs, time: Date.now() };
@@ -70,13 +70,19 @@ export default function TrackBlock({ id, trackId, label, startMs, endMs, duratio
       const deltaMs = deltaPx / ppm;
       if (Math.abs(deltaMs) > 30) {
         dragApplied.current = true;
-        // Pass the DELTA in ms (not absolute position)
         onDrag(deltaMs);
+        // Don't reset dragPx here — let the store update trigger a re-render
+        // which will recompute left/width from the new startMs/endMs
       }
-    } else if (mode.current === 'idle' && Date.now() - start.current.time < 300) {
-      e.stopPropagation(); selectItem(trackId, id);
+      mode.current = 'idle';
+      // Reset dragPx after a microtask so the store re-render lands first
+      requestAnimationFrame(() => setDragPx(0));
+    } else {
+      if (mode.current === 'idle' && Date.now() - start.current.time < 300) {
+        e.stopPropagation(); selectItem(trackId, id);
+      }
+      mode.current = 'idle'; setDragPx(0);
     }
-    mode.current = 'idle'; setDragPx(0);
   };
 
   return (

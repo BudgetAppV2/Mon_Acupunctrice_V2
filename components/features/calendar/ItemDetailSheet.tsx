@@ -49,7 +49,8 @@ export default function ItemDetailSheet({ isOpen, onClose, item, onUnscheduled }
     onUnscheduled();
   };
 
-  const handleEdit = () => { router.push(`/editeur/${item.id}`); onClose(); };
+  const editorBase = process.env.NEXT_PUBLIC_EDITOR_V2 === 'true' ? '/editeur-v2' : '/editeur';
+  const handleEdit = () => { router.push(`${editorBase}/${item.id}`); onClose(); };
 
   const openDateEdit = () => {
     setEditDate(true);
