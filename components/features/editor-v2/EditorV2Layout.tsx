@@ -12,6 +12,9 @@ import { useEditorV2Persistence } from '@/lib/hooks/useEditorV2Persistence';
 import { useEditorV2Upload } from '@/lib/hooks/useEditorV2Upload';
 import { getDoc, doc } from 'firebase/firestore';
 import { getFirebaseFirestore } from '@/lib/firebase';
+import type { ContentItem } from '@/lib/types';
+import ExportButtonV2 from './ExportButtonV2';
+import PublishSheet from '../publish/PublishSheet';
 
 const SubtitleCanvas = dynamic(() => import('./SubtitleCanvas'), { ssr: false });
 const ControlPanel = dynamic(() => import('./ControlPanel'), { ssr: false });
@@ -106,6 +109,8 @@ export default function EditorV2Layout({ itemId }: Props) {
   const [activeSheet, setActiveSheet] = useState<SheetId>(null);
   const [showCamera, setShowCamera] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [showPublish, setShowPublish] = useState(false);
+  const [publishItem, setPublishItem] = useState<ContentItem | null>(null);
   const router = useRouter();
   const { currentTime, duration, videoFile } = useEditorV2Store();
   const { saving, saved } = useEditorV2Persistence(videoFile ? itemId : null);
@@ -201,6 +206,15 @@ export default function EditorV2Layout({ itemId }: Props) {
     router.push('/calendrier');
   };
 
+  const handleExportDone = async () => {
+    const db = getFirebaseFirestore();
+    const snap = await getDoc(doc(db, 'contentItems', itemId));
+    if (snap.exists()) {
+      setPublishItem({ id: snap.id, ...snap.data() } as ContentItem);
+      setShowPublish(true);
+    }
+  };
+
   if (loading) {
     return (
       <div className="fixed inset-0 flex items-center justify-center bg-[#0f0f0f]">
@@ -222,7 +236,7 @@ export default function EditorV2Layout({ itemId }: Props) {
           {saving && <CloudArrowUpIcon className="w-3.5 h-3.5 text-gray-500 animate-pulse" />}
           {saved && !saving && <CheckCircleIcon className="w-3.5 h-3.5 text-green-500" />}
         </span>
-        <div className="w-8" />
+        <ExportButtonV2 onExportDone={handleExportDone} />
       </header>
 
       <div className="flex flex-col lg:flex-row flex-1 min-h-0">
@@ -273,6 +287,10 @@ export default function EditorV2Layout({ itemId }: Props) {
       </BottomSheet>
 
       {showCamera && <CameraOverlay onClose={() => setShowCamera(false)} />}
+
+      {showPublish && publishItem && (
+        <PublishSheet isOpen={showPublish} onClose={() => setShowPublish(false)} item={publishItem} />
+      )}
     </main>
   );
 }
