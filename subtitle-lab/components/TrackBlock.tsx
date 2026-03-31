@@ -13,7 +13,7 @@ interface Props {
   color: string;
   selected: boolean;
   onTrimChange?: (newStart: number, newEnd: number) => void;
-  onDrag?: (newStartMs: number) => void;
+  onDrag?: (deltaMs: number) => void;
 }
 
 export default function TrackBlock({ id, trackId, label, startMs, endMs, duration, color, selected, onTrimChange, onDrag }: Props) {
@@ -70,8 +70,8 @@ export default function TrackBlock({ id, trackId, label, startMs, endMs, duratio
       const deltaMs = deltaPx / ppm;
       if (Math.abs(deltaMs) > 30) {
         dragApplied.current = true;
-        // Pass absolute new position (origStart + delta), not relative delta
-        onDrag(start.current.origStart + deltaMs);
+        // Pass the DELTA in ms (not absolute position)
+        onDrag(deltaMs);
       }
     } else if (mode.current === 'idle' && Date.now() - start.current.time < 300) {
       e.stopPropagation(); selectItem(trackId, id);

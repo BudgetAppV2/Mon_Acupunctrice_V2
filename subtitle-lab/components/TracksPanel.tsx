@@ -97,7 +97,7 @@ export default function TracksPanel() {
                   startMs={c.timelineStart + c.trimStart} endMs={c.timelineStart + c.trimEnd}
                   duration={refDuration} color="bg-emerald-500/25" selected={selectedItemId === c.id}
                   onTrimChange={(s, e) => updateClipTrim(c.id, s - c.timelineStart, e - c.timelineStart)}
-                  onDrag={newStartMs => moveVideoClip(c.id, newStartMs - c.trimStart)} />
+                  onDrag={deltaMs => moveVideoClip(c.id, Math.max(0, c.timelineStart + deltaMs))} />
               </div>);
             })}
           </div>
@@ -127,7 +127,7 @@ export default function TracksPanel() {
                 <TrackBlock key={b.id} id={b.id} trackId={st.id} label={b.text.slice(0, 15)}
                   startMs={b.startMs} endMs={b.endMs} duration={refDuration} color="bg-blue-400/25"
                   selected={selectedItemId === b.id}
-                  onDrag={newStartMs => moveSubtitleBlock(b.id, newStartMs - b.startMs)} />
+                  onDrag={deltaMs => moveSubtitleBlock(b.id, deltaMs)} />
               ))}
             </div>
           </div>
@@ -145,7 +145,7 @@ export default function TracksPanel() {
               <TrackBlock key={o.id} id={o.id} trackId="text" label={o.text.slice(0, 15)}
                 startMs={o.startMs} endMs={o.endMs} duration={refDuration} color="bg-purple-400/30"
                 selected={selectedItemId === o.id}
-                onDrag={newStartMs => moveTextOverlay(o.id, newStartMs - o.startMs)} />
+                onDrag={deltaMs => moveTextOverlay(o.id, deltaMs)} />
             ))}
           </div>
         </div>
