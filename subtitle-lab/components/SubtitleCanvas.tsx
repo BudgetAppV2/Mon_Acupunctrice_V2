@@ -1,112 +1,113 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { useSubtitleStore } from '../lib/store';
 import { renderFrame } from '../lib/renderer';
 import { FILTERS } from '../lib/filters';
-import { applyLut } from '../lib/luts/lutRenderer';
-import { getLutData } from '../lib/luts/presets';
-
-const CANVAS_W = 540;
-const CANVAS_H = 960;
+import { CANVAS_W, CANVAS_H, findActiveClip, findActiveVideoClip,
+  createVideoElement, getFirstAudioUrl, coverCrop } from '../lib/playback';
+import { useSubtitleDrag } from '../lib/useSubtitleDrag';
 
 export default function SubtitleCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const preloadRef = useRef<HTMLVideoElement | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   const rafRef = useRef<number>(0);
+  const activeClipIdRef = useRef<string | null>(null);
 
-  const { blocks, globalPreset, currentTime, isPlaying, duration, setCurrentTime, setIsPlaying,
-    filterId, activeLutId, lutIntensity, videoUrl, setDuration, setThumbnail } = useSubtitleStore();
+  const { blocks, globalPreset, currentTime, isPlaying, duration,
+    filterId, videoUrl, voiceVolume, audioVolume, tracks } = useSubtitleStore();
+  const { isDragging, onDown, onMove, onUp } = useSubtitleDrag(globalPreset.position);
 
+  // Refs for RAF loop (avoids stale closures)
   const timeRef = useRef(currentTime);
   const playingRef = useRef(isPlaying);
   const durationRef = useRef(duration);
   const blocksRef = useRef(blocks);
   const presetRef = useRef(globalPreset);
-  const lutIdRef = useRef(activeLutId);
-  const lutIntensityRef = useRef(lutIntensity);
-  const videoUrlRef = useRef(videoUrl);
+  const tracksRef = useRef(tracks);
 
-  useEffect(() => { timeRef.current = currentTime; }, [currentTime]); useEffect(() => { playingRef.current = isPlaying; }, [isPlaying]);
-  useEffect(() => { durationRef.current = duration; }, [duration]); useEffect(() => { blocksRef.current = blocks; }, [blocks]);
-  useEffect(() => { presetRef.current = globalPreset; }, [globalPreset]); useEffect(() => { lutIdRef.current = activeLutId; }, [activeLutId]);
-  useEffect(() => { lutIntensityRef.current = lutIntensity; }, [lutIntensity]); useEffect(() => { videoUrlRef.current = videoUrl; }, [videoUrl]);
+  useEffect(() => { timeRef.current = currentTime; }, [currentTime]);
+  useEffect(() => { playingRef.current = isPlaying; }, [isPlaying]);
+  useEffect(() => { durationRef.current = duration; }, [duration]);
+  useEffect(() => { blocksRef.current = blocks; }, [blocks]);
+  useEffect(() => { presetRef.current = globalPreset; }, [globalPreset]);
+  useEffect(() => { tracksRef.current = tracks; }, [tracks]);
 
+  // Two video elements for double-buffered playback (A3)
   useEffect(() => {
-    if (!videoUrl) { videoRef.current = null; return; }
-    const vid = document.createElement('video');
-    vid.src = videoUrl; vid.playsInline = true; vid.muted = true; vid.preload = 'auto';
-    vid.onloadedmetadata = () => { if (vid.duration && isFinite(vid.duration)) useSubtitleStore.getState().setDuration(vid.duration * 1000); };
-    vid.oncanplay = () => { vid.currentTime = Math.min(2, vid.duration || 2); vid.onseeked = () => {
-      try { const c = document.createElement('canvas'); c.width = 48; c.height = 64; c.getContext('2d')!.drawImage(vid, 0, 0, 48, 64); const u = c.toDataURL('image/jpeg', 0.7); if (u.length > 100) useSubtitleStore.getState().setThumbnail(u); } catch {}
-      vid.onseeked = null;
-    }; };
-    videoRef.current = vid;
-    return () => { vid.pause(); vid.removeAttribute('src'); vid.load(); videoRef.current = null; };
+    videoRef.current = createVideoElement();
+    preloadRef.current = createVideoElement();
+    return () => {
+      [videoRef, preloadRef].forEach(r => { r.current?.pause(); r.current?.removeAttribute('src'); r.current?.load(); });
+      videoRef.current = null; preloadRef.current = null;
+    };
+  }, []);
+
+  // Audio element for music (A4)
+  useEffect(() => {
+    const url = getFirstAudioUrl(tracks);
+    if (url) { if (!audioRef.current) audioRef.current = new Audio(); audioRef.current.src = url; audioRef.current.loop = true; }
+    else if (audioRef.current) { audioRef.current.pause(); audioRef.current.removeAttribute('src'); audioRef.current = null; }
+  }, [tracks]);
+
+  // Sync volumes (A4)
+  useEffect(() => { if (videoRef.current) videoRef.current.volume = voiceVolume; if (preloadRef.current) preloadRef.current.volume = voiceVolume; }, [voiceVolume]);
+  useEffect(() => { if (audioRef.current) audioRef.current.volume = audioVolume; }, [audioVolume]);
+  // Duration from single-video import
+  useEffect(() => {
+    if (!videoUrl || !videoRef.current) return;
+    const vid = videoRef.current;
+    const h = () => { if (vid.duration && isFinite(vid.duration)) useSubtitleStore.getState().setDuration(vid.duration * 1000); };
+    vid.addEventListener('loadedmetadata', h);
+    return () => vid.removeEventListener('loadedmetadata', h);
   }, [videoUrl]);
-
-  useEffect(() => { const vid = videoRef.current; if (!vid || !videoUrl) return; if (isPlaying) vid.play().catch(() => {}); else vid.pause(); }, [isPlaying, videoUrl]);
-  useEffect(() => { const vid = videoRef.current; if (!vid || !videoUrl || isPlaying) return; vid.currentTime = currentTime / 1000; }, [currentTime, videoUrl, isPlaying]);
-
-  const [isDragging, setIsDragging] = useState(false);
-  const dragStartRef = useRef<{ x: number; y: number } | null>(null);
-  const posStartRef = useRef<{ x: number; y: number } | null>(null);
+  // Play/pause audio + video
+  useEffect(() => { if (audioRef.current) { if (isPlaying) audioRef.current.play().catch(() => {}); else audioRef.current.pause(); } }, [isPlaying]);
+  useEffect(() => { if (audioRef.current && !isPlaying) audioRef.current.currentTime = currentTime / 1000; }, [currentTime, isPlaying]);
+  useEffect(() => { if (videoRef.current) { if (isPlaying) videoRef.current.play().catch(() => {}); else videoRef.current.pause(); } }, [isPlaying]);
+  // Scrub video to correct clip
+  useEffect(() => {
+    const vid = videoRef.current; if (!vid || isPlaying) return;
+    const r = findActiveClip(tracksRef.current, currentTime);
+    if (!r) return;
+    if (r.clip.id !== activeClipIdRef.current && r.clip.blobUrl) { vid.src = r.clip.blobUrl; activeClipIdRef.current = r.clip.id; }
+    vid.currentTime = r.localTimeMs / 1000;
+  }, [currentTime, isPlaying]);
 
   // RAF loop
   useEffect(() => {
     let prevWall: number | null = null;
     const loop = (wallMs: number) => {
       const vid = videoRef.current;
-
-      // Time update from video or wall-clock delta
+      const ar = findActiveClip(tracksRef.current, timeRef.current);
       if (playingRef.current) {
-        if (vid && vid.readyState >= 2 && videoUrlRef.current) {
-          // Use video's time as source of truth during playback
-          const videoMs = vid.currentTime * 1000;
-          if (Math.abs(videoMs - timeRef.current) > 50) {
-            useSubtitleStore.getState().setCurrentTime(videoMs);
-          }
+        if (vid && vid.readyState >= 2 && ar) {
+          const gMs = ar.clip.timelineStart + (vid.currentTime * 1000 - ar.clip.trimStart);
+          if (Math.abs(gMs - timeRef.current) > 50) useSubtitleStore.getState().setCurrentTime(gMs);
         } else if (prevWall !== null) {
-          const delta = wallMs - prevWall;
-          const next = timeRef.current + delta;
-          if (next >= durationRef.current) {
-            useSubtitleStore.getState().setCurrentTime(0);
-            useSubtitleStore.getState().setIsPlaying(false);
-          } else {
-            useSubtitleStore.getState().setCurrentTime(next);
-          }
+          const n = timeRef.current + (wallMs - prevWall);
+          if (n >= durationRef.current) { useSubtitleStore.getState().setCurrentTime(0); useSubtitleStore.getState().setIsPlaying(false); }
+          else useSubtitleStore.getState().setCurrentTime(n);
         }
         prevWall = wallMs;
-      } else {
-        prevWall = null;
+      } else { prevWall = null; }
+      if (vid && ar && ar.clip.id !== activeClipIdRef.current) {
+        activeClipIdRef.current = ar.clip.id;
+        if (ar.clip.blobUrl) { vid.src = ar.clip.blobUrl; vid.currentTime = ar.localTimeMs / 1000; if (playingRef.current) vid.play().catch(() => {}); }
       }
-
       const canvas = canvasRef.current;
       if (canvas) {
         const ctx = canvas.getContext('2d');
         if (ctx) {
-          // M2: Draw video frame as background if available
-          if (vid && vid.readyState >= 2 && videoUrlRef.current) {
-            const { videoWidth: vw, videoHeight: vh } = vid;
-            if (vw > 0 && vh > 0) {
-              const vAspect = vw / vh, cAspect = CANVAS_W / CANVAS_H;
-              let sx = 0, sy = 0, sw = vw, sh = vh;
-              if (vAspect > cAspect) { sw = vh * cAspect; sx = Math.round((vw - sw) / 2); }
-              else { sh = vw / cAspect; sy = Math.round((vh - sh) / 2); }
-              ctx.drawImage(vid, sx, sy, sw, sh, 0, 0, CANVAS_W, CANVAS_H);
-            }
+          if (!ar) { ctx.fillStyle = '#000'; ctx.fillRect(0, 0, CANVAS_W, CANVAS_H); }
+          else if (vid && vid.readyState >= 2 && vid.videoWidth > 0) {
+            const c = coverCrop(vid.videoWidth, vid.videoHeight, CANVAS_W, CANVAS_H);
+            ctx.drawImage(vid, c.sx, c.sy, c.sw, c.sh, 0, 0, CANVAS_W, CANVAS_H);
           }
-          // Render subtitles on top (renderFrame draws gradient bg only if no video drawn)
-          renderFrame({
-            canvas, blocks: blocksRef.current, globalPreset: presetRef.current,
-            currentMs: timeRef.current, nowMs: wallMs, canvasWidth: CANVAS_W, canvasHeight: CANVAS_H,
-            skipBackground: !!videoUrlRef.current,
-          });
-          // Apply LUT
-          if (lutIdRef.current) {
-            const lutData = getLutData(lutIdRef.current);
-            if (lutData) applyLut(ctx, lutData, lutIdRef.current, CANVAS_W, CANVAS_H, lutIntensityRef.current);
-          }
+          renderFrame({ canvas, blocks: blocksRef.current, globalPreset: presetRef.current,
+            currentMs: timeRef.current, nowMs: wallMs, canvasWidth: CANVAS_W, canvasHeight: CANVAS_H, skipBackground: !!ar });
         }
       }
       rafRef.current = requestAnimationFrame(loop);
@@ -115,37 +116,17 @@ export default function SubtitleCanvas() {
     return () => cancelAnimationFrame(rafRef.current);
   }, []);
 
-  const activeFilter = FILTERS.find(f => f.id === filterId);
-  const cssFilter = activeFilter?.css !== 'none' ? activeFilter?.css : undefined;
+  const clipFId = findActiveVideoClip(tracksRef.current, currentTime)?.filterId ?? filterId;
+  const cssFilter = (() => { const f = FILTERS.find(x => x.id === clipFId); return f?.css !== 'none' ? f?.css : undefined; })();
 
-  const getRelativePos = (e: React.MouseEvent | React.TouchEvent, canvas: HTMLCanvasElement) => {
-    const rect = canvas.getBoundingClientRect();
-    const scaleX = CANVAS_W / rect.width; const scaleY = CANVAS_H / rect.height;
-    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
-    const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
-    return { x: ((clientX - rect.left) * scaleX) / CANVAS_W, y: ((clientY - rect.top) * scaleY) / CANVAS_H };
-  };
-  const handlePointerDown = (e: React.MouseEvent | React.TouchEvent) => {
-    const canvas = canvasRef.current; if (!canvas) return;
-    setIsDragging(true); dragStartRef.current = getRelativePos(e, canvas); posStartRef.current = { ...globalPreset.position };
-  };
-  const handlePointerMove = (e: React.MouseEvent | React.TouchEvent) => {
-    if (!isDragging || !dragStartRef.current || !posStartRef.current) return;
-    const canvas = canvasRef.current; if (!canvas) return;
-    const cur = getRelativePos(e, canvas);
-    useSubtitleStore.getState().updateGlobalField('position', {
-      x: Math.max(0.05, Math.min(0.95, posStartRef.current.x + (cur.x - dragStartRef.current.x))),
-      y: Math.max(0.05, Math.min(0.98, posStartRef.current.y + (cur.y - dragStartRef.current.y))),
-    });
-  };
-  const handlePointerUp = () => { setIsDragging(false); dragStartRef.current = null; posStartRef.current = null; };
+  const handleDown = (e: React.MouseEvent | React.TouchEvent) => { const c = canvasRef.current; if (c) onDown(e, c); };
+  const handleMove = (e: React.MouseEvent | React.TouchEvent) => { const c = canvasRef.current; if (c) onMove(e, c); };
 
   return (
     <canvas ref={canvasRef} width={CANVAS_W} height={CANVAS_H}
       className="rounded-xl shadow-2xl w-full h-auto"
       style={{ maxWidth: '100%', cursor: isDragging ? 'grabbing' : 'grab', touchAction: 'none', filter: cssFilter }}
-      onMouseDown={handlePointerDown} onMouseMove={handlePointerMove} onMouseUp={handlePointerUp} onMouseLeave={handlePointerUp}
-      onTouchStart={handlePointerDown} onTouchMove={handlePointerMove} onTouchEnd={handlePointerUp}
-    />
+      onMouseDown={handleDown} onMouseMove={handleMove} onMouseUp={onUp} onMouseLeave={onUp}
+      onTouchStart={handleDown} onTouchMove={handleMove} onTouchEnd={onUp} />
   );
 }

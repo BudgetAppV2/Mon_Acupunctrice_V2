@@ -15,4 +15,11 @@ export const FILTERS: FilterPreset[] = [
   { id: 'pastel', label: 'Pastel', css: 'brightness(1.15) contrast(0.85) saturate(0.7)' },
   { id: 'bw', label: 'N&B', css: 'grayscale(1) contrast(1.2) brightness(1.05)' },
   { id: 'bw_warm', label: 'N&B chaud', css: 'grayscale(1) sepia(0.15) contrast(1.15)' },
+  // A8: LUT approximations CSS (WebGL LUT kept for export in Phase B)
+  { id: 'lut-warm-cinema', label: 'Cinema chaud', css: 'brightness(1.08) saturate(1.15) sepia(0.08)' },
+  { id: 'lut-soft-wellness', label: 'Doux bien-etre', css: 'brightness(1.02) saturate(0.8) contrast(0.95)' },
+  { id: 'lut-cold-teal', label: 'Teal froid', css: 'brightness(0.98) saturate(0.9) hue-rotate(15deg)' },
+  { id: 'lut-vintage-film', label: 'Film vintage', css: 'sepia(0.2) contrast(1.05) brightness(0.95)' },
+  { id: 'lut-bright-clean', label: 'Vif propre', css: 'brightness(1.08) saturate(1.2) contrast(1.05)' },
+  { id: 'lut-golden-hour', label: 'Heure doree', css: 'brightness(1.1) saturate(1.1) sepia(0.12)' },
 ];

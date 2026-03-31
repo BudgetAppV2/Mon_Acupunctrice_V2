@@ -50,6 +50,51 @@ export interface SubtitleBlock {
   overrides?: Partial<StylePreset>;
 }
 
+// --- Multi-track types ---
+
+export type TrackType = 'video' | 'subtitle' | 'audio';
+
+export interface VideoClip {
+  id: string;
+  file: File | null;
+  blobUrl: string | null;
+  duration: number;
+  trimStart: number;
+  trimEnd: number;
+  timelineStart: number;
+  filterId: string;
+  thumbnailUrl: string | null;
+}
+
+export interface AudioClip {
+  id: string;
+  file: File | null;
+  blobUrl: string | null;
+  name: string;
+  duration: number;
+  startMs: number;
+  volume: number;
+  fadeIn: number;
+  fadeOut: number;
+}
+
+export interface SubtitleTrackData {
+  blocks: SubtitleBlock[];
+  globalPreset: StylePreset;
+}
+
+export interface Track {
+  id: string;
+  type: TrackType;
+  label: string;
+  muted: boolean;
+  clips?: VideoClip[];
+  subtitles?: SubtitleTrackData;
+  audioClips?: AudioClip[];
+}
+
+// --- Render types ---
+
 export interface RenderWord {
   text: string;
   /** 0..1 progress of word's own animation */
