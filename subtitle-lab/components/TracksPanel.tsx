@@ -4,7 +4,7 @@ import { useRef, useState } from 'react';
 import { useSubtitleStore, getVideoTracks, getSubtitleTrack, getAudioTrack, getClipAtTime } from '../lib/store';
 import TrackBlock from './TrackBlock';
 import AudioWaveform from './AudioWaveform';
-import { FilmIcon, ChatBubbleBottomCenterTextIcon, MusicalNoteIcon } from '@heroicons/react/24/outline';
+import { FilmIcon, ChatBubbleBottomCenterTextIcon, MusicalNoteIcon, PlusIcon } from '@heroicons/react/24/outline';
 import { ScissorsIcon, TrashIcon } from '@heroicons/react/24/solid';
 
 const TRACK_ICONS: Record<string, React.ReactNode> = {
@@ -15,8 +15,9 @@ const TRACK_ICONS: Record<string, React.ReactNode> = {
 
 export default function TracksPanel() {
   const { tracks, currentTime, duration, setCurrentTime, selectedItemId,
-    updateClipTrim, splitClip, deleteClip } = useSubtitleStore();
+    updateClipTrim, splitClip, deleteClip, addVideoClip } = useSubtitleStore();
   const containerRef = useRef<HTMLDivElement>(null);
+  const addFileRef = useRef<HTMLInputElement>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
 
   // Fix 6: Reference duration = max source duration across all clips (prevents zoom on trim)
@@ -97,6 +98,15 @@ export default function TracksPanel() {
           </div>
         </div>
       ))}
+      {/* Add video button */}
+      <div className="px-1">
+        <button onClick={() => addFileRef.current?.click()}
+          className="flex items-center gap-1 px-2 py-1 text-[10px] text-white/40 border border-dashed border-white/20 rounded-md active:bg-white/10">
+          <PlusIcon className="w-3 h-3" /> Ajouter video
+        </button>
+        <input ref={addFileRef} type="file" accept="video/*" className="hidden"
+          onChange={e => { const f = e.target.files?.[0]; if (f) addVideoClip(f); }} />
+      </div>
       {/* Subtitle track */}
       {(() => {
         const st = getSubtitleTrack(tracks);

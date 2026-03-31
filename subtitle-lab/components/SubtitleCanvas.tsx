@@ -68,6 +68,16 @@ export default function SubtitleCanvas() {
         const store = useSubtitleStore.getState();
         store.setDuration(dMs);
         if (firstClipId) store.initClipDuration(firstClipId, dMs);
+        // Generate thumbnail at ~2s for filter previews
+        if (!store.thumbnailUrl) {
+          const prevTime = vid.currentTime;
+          vid.currentTime = Math.min(2, vid.duration);
+          vid.onseeked = () => {
+            try { const c = document.createElement('canvas'); c.width = 90; c.height = 160; c.getContext('2d')!.drawImage(vid, 0, 0, 90, 160); const u = c.toDataURL('image/jpeg', 0.7); if (u.length > 100) store.setThumbnail(u); } catch {}
+            vid.currentTime = prevTime;
+            vid.onseeked = null;
+          };
+        }
       }
     };
     vid.addEventListener('loadedmetadata', onMeta);
