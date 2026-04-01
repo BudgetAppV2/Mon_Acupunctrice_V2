@@ -246,17 +246,18 @@ export default function SubtitleCanvas() {
         if (n >= store.duration) { store.setCurrentTime(0); store.setIsPlaying(false); return; }
         store.setCurrentTime(n);
         // Apply fade-in/fade-out to audio volume
+        // Use timeline duration (video), not audio duration, for fade timing
         if (audioRef.current) {
           const audioClip = store.tracks.find(t => t.type === 'audio')?.audioClips?.[0];
-          if (audioClip && audioClip.duration > 0) {
+          if (audioClip) {
             const clipTimeSec = n / 1000;
-            const clipDurSec = audioClip.duration / 1000;
+            const timelineDurSec = store.duration / 1000; // video/timeline duration
             let fadeMul = 1;
             if (audioClip.fadeIn > 0 && clipTimeSec < audioClip.fadeIn) {
               fadeMul = clipTimeSec / audioClip.fadeIn;
             }
-            if (audioClip.fadeOut > 0 && clipTimeSec > clipDurSec - audioClip.fadeOut) {
-              fadeMul = Math.min(fadeMul, (clipDurSec - clipTimeSec) / audioClip.fadeOut);
+            if (audioClip.fadeOut > 0 && clipTimeSec > timelineDurSec - audioClip.fadeOut) {
+              fadeMul = Math.min(fadeMul, (timelineDurSec - clipTimeSec) / audioClip.fadeOut);
             }
             const finalVol = store.audioVolume * Math.max(0, Math.min(1, fadeMul));
             audioRef.current.volume = finalVol;
