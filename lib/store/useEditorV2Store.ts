@@ -90,6 +90,7 @@ interface EditorV2Store {
   setDuration: (ms: number) => void;
   setSubtitleBlocks: (blocks: SubtitleBlock[]) => void;
   moveSubtitleBlock: (id: string, newStartMs: number) => void;
+  trimSubtitleBlock: (id: string, newStartMs: number, newEndMs: number) => void;
   moveTextOverlay: (id: string, newStartMs: number) => void;
   moveVideoClip: (clipId: string, newTimelineStart: number) => void;
   addVideoClip: (file: File) => void;
@@ -238,6 +239,17 @@ export const useEditorV2Store = create<EditorV2Store>((set, get) => ({
     const tracks = s.tracks.map(t => t.type === 'subtitle' && t.subtitles ? { ...t, subtitles: { ...t.subtitles, blocks: newBlocks } } : t);
     return { blocks: newBlocks, tracks };
   }),
+  trimSubtitleBlock: (id, newStartMs, newEndMs) => set((s) => {
+    const tracks = s.tracks.map(t => {
+      if (t.type !== 'subtitle' || !t.subtitles) return t;
+      return { ...t, subtitles: { ...t.subtitles, blocks: t.subtitles.blocks.map(b => {
+        if (b.id !== id) return b;
+        return { ...b, startMs: newStartMs, endMs: newEndMs };
+      })}};
+    });
+    return { tracks };
+  }),
+
   moveTextOverlay: (id, newStartMs) => set((s) => ({
     textOverlays: s.textOverlays.map(o => {
       if (o.id !== id) return o;

@@ -16,7 +16,8 @@ const TRACK_ICONS: Record<string, React.ReactNode> = {
 export default function TracksPanel() {
   const { tracks, currentTime, duration, setCurrentTime, selectedItemId,
     updateClipTrim, splitClip, deleteClip, addVideoClip, textOverlays,
-    moveSubtitleBlock, moveTextOverlay, moveVideoClip, setAudioFade } = useEditorV2Store();
+    moveSubtitleBlock, moveTextOverlay, moveVideoClip, setAudioFade,
+    updateTextOverlay, trimSubtitleBlock } = useEditorV2Store();
   const containerRef = useRef<HTMLDivElement>(null);
   const addFileRef = useRef<HTMLInputElement>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -124,7 +125,8 @@ export default function TracksPanel() {
                 <TrackBlock key={b.id} id={b.id} trackId={st.id} label={b.text.slice(0, 15)}
                   startMs={b.startMs} endMs={b.endMs} duration={refDuration} color="bg-blue-400/25"
                   selected={selectedItemId === b.id}
-                  onDrag={newStartMs => moveSubtitleBlock(b.id, newStartMs)} />
+                  onDrag={newStartMs => moveSubtitleBlock(b.id, newStartMs)}
+                  onTrimChange={(newStart, newEnd) => trimSubtitleBlock(b.id, newStart, newEnd)} />
               ))}
             </div>
           </div>
@@ -142,7 +144,8 @@ export default function TracksPanel() {
               <TrackBlock key={o.id} id={o.id} trackId="text" label={o.text.slice(0, 15)}
                 startMs={o.startMs} endMs={o.endMs} duration={refDuration} color="bg-purple-400/30"
                 selected={selectedItemId === o.id}
-                onDrag={newStartMs => moveTextOverlay(o.id, newStartMs)} />
+                onDrag={newStartMs => moveTextOverlay(o.id, newStartMs)}
+                onTrimChange={(newStart, newEnd) => updateTextOverlay(o.id, { startMs: newStart, endMs: newEnd })} />
             ))}
           </div>
         </div>
