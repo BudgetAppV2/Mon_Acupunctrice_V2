@@ -101,13 +101,29 @@ export default function SubtitleCanvas() {
       if (r.clip.id !== activeClipIdRef.current && r.clip.blobUrl) { vid.src = r.clip.blobUrl; activeClipIdRef.current = r.clip.id; }
       vid.currentTime = r.localTimeMs / 1000;
     } else {
-      // Fallback: seek first clip proportionally when findActiveClip misses
+      // Outside clip range: seek to nearest clip edge so we always show a video frame
       const allClips = tracks.filter(t => t.type === 'video').flatMap(t => t.clips ?? []);
-      if (allClips.length > 0 && duration > 0) {
-        const first = allClips[0];
-        if (first.blobUrl && first.duration > 0) {
-          if (activeClipIdRef.current !== first.id) { vid.src = first.blobUrl; activeClipIdRef.current = first.id; }
-          vid.currentTime = Math.min((currentTime / duration) * (first.duration / 1000), first.duration / 1000);
+      if (allClips.length > 0) {
+        // Find the nearest clip to the current scrub position
+        let bestClip = allClips[0];
+        let bestDist = Infinity;
+        for (const c of allClips) {
+          const absStart = c.timelineStart + c.trimStart;
+          const absEnd = c.timelineStart + c.trimEnd;
+          const dist = currentTime < absStart ? absStart - currentTime
+            : currentTime > absEnd ? currentTime - absEnd : 0;
+          if (dist < bestDist) { bestDist = dist; bestClip = c; }
+        }
+        if (bestClip.blobUrl) {
+          if (activeClipIdRef.current !== bestClip.id) { vid.src = bestClip.blobUrl; activeClipIdRef.current = bestClip.id; }
+          // Seek to the nearest edge of the clip
+          const absStart = bestClip.timelineStart + bestClip.trimStart;
+          const absEnd = bestClip.timelineStart + bestClip.trimEnd;
+          if (currentTime <= absStart) {
+            vid.currentTime = bestClip.trimStart / 1000;
+          } else {
+            vid.currentTime = bestClip.trimEnd / 1000;
+          }
         }
       }
     }
@@ -119,18 +135,11 @@ export default function SubtitleCanvas() {
     const loop = (wallMs: number) => {
       const vid = videoRef.current;
       const ar = findActiveClip(tracksRef.current, timeRef.current);
-      if (playingRef.current) {
-        if (vid && vid.readyState >= 2 && ar) {
-          const gMs = ar.clip.timelineStart + (vid.currentTime * 1000 - ar.clip.trimStart);
-          if (Math.abs(gMs - timeRef.current) > 50) useEditorV2Store.getState().setCurrentTime(gMs);
-        } else if (prevWall !== null) {
-          const n = timeRef.current + (wallMs - prevWall);
-          if (n >= durationRef.current) { useEditorV2Store.getState().setCurrentTime(0); useEditorV2Store.getState().setIsPlaying(false); }
-          else useEditorV2Store.getState().setCurrentTime(n);
-        }
-        prevWall = wallMs;
-      } else { prevWall = null; }
+
+      // Detect clip switch FIRST — before gMs sync to avoid stale vid.currentTime
+      let justSwitchedClip = false;
       if (vid && ar && ar.clip.id !== activeClipIdRef.current) {
+        justSwitchedClip = true;
         activeClipIdRef.current = ar.clip.id;
         if (ar.clip.blobUrl) {
           vid.src = ar.clip.blobUrl; vid.currentTime = ar.localTimeMs / 1000;
@@ -142,20 +151,40 @@ export default function SubtitleCanvas() {
           if (playingRef.current) vid.play().catch(() => {});
         }
       }
+
+      if (playingRef.current) {
+        if (prevWall !== null) {
+          // Always advance time linearly using wall clock — this is the single source of truth
+          const n = timeRef.current + (wallMs - prevWall);
+          if (n >= durationRef.current) {
+            useEditorV2Store.getState().setCurrentTime(0);
+            useEditorV2Store.getState().setIsPlaying(false);
+          } else {
+            useEditorV2Store.getState().setCurrentTime(n);
+          }
+          // Seek the video element to match the current timeline position
+          if (vid && ar && !justSwitchedClip && vid.readyState >= 2) {
+            const expectedVidTime = ar.localTimeMs / 1000;
+            if (Math.abs(vid.currentTime - expectedVidTime) > 0.1) {
+              vid.currentTime = expectedVidTime;
+            }
+          }
+        }
+        prevWall = wallMs;
+      } else { prevWall = null; }
       const canvas = canvasRef.current;
       if (canvas) {
         const ctx = canvas.getContext('2d');
         if (ctx) {
           const hasAnyClips = tracksRef.current.some(t => t.type === 'video' && t.clips && t.clips.length > 0);
-          if (!ar && hasAnyClips) { ctx.fillStyle = '#000'; ctx.fillRect(0, 0, CANVAS_W, CANVAS_H); }
-          else if (!ar) { /* no clips — gradient drawn by renderFrame below */ }
-          else if (vid && vid.readyState >= 2 && vid.videoWidth > 0) {
+          if (!hasAnyClips && !ar) {
+            // No clips at all — gradient drawn by renderFrame below
+          } else if (vid && vid.readyState >= 2 && vid.videoWidth > 0) {
+            // Video ready — draw current frame (works for both inside and outside clip range)
             const c = coverCrop(vid.videoWidth, vid.videoHeight, CANVAS_W, CANVAS_H);
             ctx.drawImage(vid, c.sx, c.sy, c.sw, c.sh, 0, 0, CANVAS_W, CANVAS_H);
-          } else if (ar) {
-            // Bug 5 fix: clip exists but video not ready — show black instead of stale gradient
-            ctx.fillStyle = '#000'; ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
           }
+          // else: video not ready yet — keep the last drawn frame (don't clear to black)
           renderFrame({ canvas, blocks: blocksRef.current, globalPreset: presetRef.current,
             currentMs: timeRef.current, nowMs: wallMs, canvasWidth: CANVAS_W, canvasHeight: CANVAS_H,
             skipBackground: !!ar || hasAnyClips, textOverlays: textOverlaysRef.current });
