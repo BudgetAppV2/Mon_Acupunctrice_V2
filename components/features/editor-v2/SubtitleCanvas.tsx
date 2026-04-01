@@ -108,29 +108,41 @@ export default function SubtitleCanvas() {
   // Sync audio scrub position
   useEffect(() => { if (audioRef.current && !isPlaying) audioRef.current.currentTime = currentTime / 1000; }, [currentTime, isPlaying]);
 
-  // Playback: advance currentTime via timeupdate from native video
+  // Playback: advance currentTime linearly via wall clock (not timeupdate)
+  // The wall clock is the single source of truth — the video element follows
   useEffect(() => {
-    const vid = videoRef.current; if (!vid) return;
-    const onTimeUpdate = () => {
-      if (!useEditorV2Store.getState().isPlaying) return;
-      const trks = useEditorV2Store.getState().tracks;
-      const ar = findActiveClip(trks, timeRef.current);
-      if (ar) {
-        const gMs = ar.clip.timelineStart + (vid.currentTime * 1000 - ar.clip.trimStart);
-        if (gMs >= 0) useEditorV2Store.getState().setCurrentTime(gMs);
+    if (!isPlaying) return;
+    let prevWall: number | null = null;
+    let rafId: number;
+    const tick = (wallMs: number) => {
+      if (prevWall !== null) {
+        const store = useEditorV2Store.getState();
+        if (!store.isPlaying) return;
+        const n = store.currentTime + (wallMs - prevWall);
+        if (n >= store.duration) {
+          store.setCurrentTime(0);
+          store.setIsPlaying(false);
+          return;
+        }
+        store.setCurrentTime(n);
+        // Seek video to match if inside a clip
+        const vid = videoRef.current;
+        if (vid) {
+          const ar = findActiveClip(store.tracks, n);
+          if (ar) {
+            const expectedVidTime = ar.localTimeMs / 1000;
+            if (Math.abs(vid.currentTime - expectedVidTime) > 0.15) {
+              vid.currentTime = expectedVidTime;
+            }
+          }
+        }
       }
+      prevWall = wallMs;
+      rafId = requestAnimationFrame(tick);
     };
-    vid.addEventListener('timeupdate', onTimeUpdate);
-    return () => vid.removeEventListener('timeupdate', onTimeUpdate);
-  }, []);
-
-  // End of playback detection
-  useEffect(() => {
-    if (isPlaying && duration > 0 && currentTime >= duration) {
-      useEditorV2Store.getState().setCurrentTime(0);
-      useEditorV2Store.getState().setIsPlaying(false);
-    }
-  }, [currentTime, isPlaying, duration]);
+    rafId = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(rafId);
+  }, [isPlaying]);
 
   // RAF loop — ONLY draws overlays on the transparent canvas
   useEffect(() => {
