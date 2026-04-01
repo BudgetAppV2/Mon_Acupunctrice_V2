@@ -16,7 +16,7 @@ const TRACK_ICONS: Record<string, React.ReactNode> = {
 export default function TracksPanel() {
   const { tracks, currentTime, duration, setCurrentTime, selectedItemId,
     updateClipTrim, splitClip, deleteClip, addVideoClip, textOverlays,
-    moveSubtitleBlock, moveTextOverlay, moveVideoClip } = useEditorV2Store();
+    moveSubtitleBlock, moveTextOverlay, moveVideoClip, setAudioFade } = useEditorV2Store();
   const containerRef = useRef<HTMLDivElement>(null);
   const addFileRef = useRef<HTMLInputElement>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -160,7 +160,9 @@ export default function TracksPanel() {
             <div className="flex-1 relative bg-white/5 rounded" data-track-row>
               {at.audioClips?.map(a => (
                 <div key={a.id} className="absolute top-1 bottom-1 left-0 right-0 rounded bg-amber-400/25">
-                  {a.blobUrl && <AudioWaveform blobUrl={a.blobUrl} width={300} height={40} />}
+                  {a.blobUrl && <AudioWaveform blobUrl={a.blobUrl} width={300} height={40}
+                    fadeIn={a.fadeIn} fadeOut={a.fadeOut} duration={a.duration > 0 ? a.duration / 1000 : 0}
+                    onFadeChange={(fi, fo) => setAudioFade(a.id, fi, fo)} />}
                   <span className="relative text-[8px] text-white/70 truncate px-1 pointer-events-none z-10">
                     {a.name.slice(0, 15)}
                   </span>

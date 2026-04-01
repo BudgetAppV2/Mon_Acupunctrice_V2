@@ -6,13 +6,17 @@ interface Props {
   blobUrl: string;
   width: number;
   height: number;
+  fadeIn?: number;
+  fadeOut?: number;
+  duration?: number;
+  onFadeChange?: (fadeIn: number, fadeOut: number) => void;
 }
 
-/** Generates and caches a simplified waveform from audio data */
-export default function AudioWaveform({ blobUrl, width, height }: Props) {
+export default function AudioWaveform({ blobUrl, width, height, fadeIn = 0, fadeOut = 0, duration = 0, onFadeChange }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [amplitudes, setAmplitudes] = useState<number[] | null>(null);
   const cacheKeyRef = useRef<string>('');
+  const dragRef = useRef<{ side: 'in' | 'out'; startX: number; origIn: number; origOut: number } | null>(null);
 
   // Decode audio and compute amplitudes (cached per blobUrl)
   useEffect(() => {
@@ -41,12 +45,9 @@ export default function AudioWaveform({ blobUrl, width, height }: Props) {
           }
           amps.push(sum / samplesPerBar);
         }
-        // Normalize
         const max = Math.max(...amps, 0.001);
         setAmplitudes(amps.map(a => a / max));
-      } catch {
-        // Silently fail — no waveform displayed
-      }
+      } catch { /* no waveform */ }
     })();
     return () => { cancelled = true; };
   }, [blobUrl, amplitudes]);
@@ -66,5 +67,71 @@ export default function AudioWaveform({ blobUrl, width, height }: Props) {
     });
   }, [amplitudes, width, height]);
 
-  return <canvas ref={canvasRef} width={width} height={height} className="absolute inset-0" />;
+  const pxPerSec = duration > 0 ? width / duration : 0;
+  const fadeInPx = fadeIn * pxPerSec;
+  const fadeOutPx = fadeOut * pxPerSec;
+  const maxFade = duration / 2;
+
+  const onHandleDown = (side: 'in' | 'out', e: React.PointerEvent) => {
+    e.stopPropagation(); e.preventDefault();
+    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+    dragRef.current = { side, startX: e.clientX, origIn: fadeIn, origOut: fadeOut };
+  };
+
+  const onHandleMove = (e: React.PointerEvent) => {
+    if (!dragRef.current || !onFadeChange || duration <= 0) return;
+    e.stopPropagation();
+    const dx = e.clientX - dragRef.current.startX;
+    const deltaSec = dx / pxPerSec;
+    if (dragRef.current.side === 'in') {
+      const newIn = Math.max(0, Math.min(maxFade, dragRef.current.origIn + deltaSec));
+      onFadeChange(Math.round(newIn * 2) / 2, fadeOut); // snap to 0.5s
+    } else {
+      const newOut = Math.max(0, Math.min(maxFade, dragRef.current.origOut - deltaSec));
+      onFadeChange(fadeIn, Math.round(newOut * 2) / 2);
+    }
+  };
+
+  const onHandleUp = () => { dragRef.current = null; };
+
+  return (
+    <div className="absolute inset-0" style={{ touchAction: 'none' }}>
+      {/* Waveform canvas */}
+      <canvas ref={canvasRef} width={width} height={height} className="absolute inset-0" />
+
+      {/* Fade-in gradient overlay */}
+      {fadeInPx > 0 && (
+        <div className="absolute top-0 bottom-0 left-0 pointer-events-none"
+          style={{ width: fadeInPx, background: 'linear-gradient(to right, rgba(0,0,0,0.6), transparent)' }} />
+      )}
+
+      {/* Fade-out gradient overlay */}
+      {fadeOutPx > 0 && (
+        <div className="absolute top-0 bottom-0 right-0 pointer-events-none"
+          style={{ width: fadeOutPx, background: 'linear-gradient(to left, rgba(0,0,0,0.6), transparent)' }} />
+      )}
+
+      {/* Fade-in handle */}
+      {duration > 0 && onFadeChange && (
+        <div className="absolute top-0 bottom-0 z-10 cursor-col-resize flex items-center"
+          style={{ left: fadeInPx - 4, width: 8 }}
+          onPointerDown={e => onHandleDown('in', e)}
+          onPointerMove={onHandleMove}
+          onPointerUp={onHandleUp}>
+          <div className="w-[3px] h-full bg-amber-400 rounded-full" />
+        </div>
+      )}
+
+      {/* Fade-out handle */}
+      {duration > 0 && onFadeChange && (
+        <div className="absolute top-0 bottom-0 z-10 cursor-col-resize flex items-center"
+          style={{ right: fadeOutPx - 4, width: 8 }}
+          onPointerDown={e => onHandleDown('out', e)}
+          onPointerMove={onHandleMove}
+          onPointerUp={onHandleUp}>
+          <div className="w-[3px] h-full bg-amber-400 rounded-full" />
+        </div>
+      )}
+    </div>
+  );
 }
