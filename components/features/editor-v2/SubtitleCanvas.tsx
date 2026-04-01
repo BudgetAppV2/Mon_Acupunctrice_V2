@@ -44,10 +44,8 @@ export default function SubtitleCanvas() {
 
   const { blocks, globalPreset, currentTime, isPlaying, duration,
     filterId, videoUrl, voiceVolume, audioVolume, tracks, filterIntensity: fIntensity,
-    textOverlays, selectedOverlayId } = useEditorV2Store();
-  const selOverlay = textOverlays.find(o => o.id === selectedOverlayId);
-  const dragPos = selOverlay ? selOverlay.style.position : globalPreset.position;
-  const { isDragging, onDown, onMove, onUp } = useSubtitleDrag(dragPos, selectedOverlayId);
+    textOverlays } = useEditorV2Store();
+  const { isDragging, onDown, onMove, onUp } = useSubtitleDrag();
 
   const hasVideo = !!videoUrl;
 

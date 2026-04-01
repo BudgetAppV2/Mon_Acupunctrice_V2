@@ -11,10 +11,11 @@ interface BottomSheetProps {
 export default function BottomSheet({ isOpen, onClose, children }: BottomSheetProps) {
   return (
     <>
-      {/* Backdrop — very subtle to keep preview visible */}
+      {/* Backdrop — only covers the bottom 40dvh to keep canvas interactive */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/20 z-40 lg:hidden"
+          className="fixed left-0 right-0 bottom-0 bg-black/10 z-40 lg:hidden"
+          style={{ height: '40dvh' }}
           onClick={onClose}
         />
       )}
