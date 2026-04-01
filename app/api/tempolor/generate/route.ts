@@ -23,6 +23,7 @@ export async function POST(request: NextRequest) {
       body: JSON.stringify({
         prompt: body.prompt,
         model: body.model || 'TemPolor i3.5',
+        callback_url: 'https://mon-acupunctrice-v2.vercel.app/api/tempolor/callback',
       }),
     });
 
