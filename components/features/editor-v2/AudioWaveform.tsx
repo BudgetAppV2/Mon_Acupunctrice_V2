@@ -79,7 +79,10 @@ export default function AudioWaveform({ blobUrl, width, height, fadeIn = 0, fade
   };
 
   const onHandleMove = (e: React.PointerEvent) => {
-    if (!dragRef.current || !onFadeChange || duration <= 0) return;
+    if (!dragRef.current || !onFadeChange || duration <= 0) {
+      console.log('[FADE_HANDLE] blocked:', { hasDrag: !!dragRef.current, hasCallback: !!onFadeChange, duration });
+      return;
+    }
     e.stopPropagation();
     const dx = e.clientX - dragRef.current.startX;
     const deltaSec = dx / pxPerSec;
@@ -95,9 +98,12 @@ export default function AudioWaveform({ blobUrl, width, height, fadeIn = 0, fade
   const onHandleUp = () => { dragRef.current = null; };
 
   return (
-    <div className="absolute inset-0" style={{ touchAction: 'none' }}>
+    <div className="absolute inset-0"
+      style={{ touchAction: 'none' }}
+      onPointerMove={onHandleMove}
+      onPointerUp={onHandleUp}>
       {/* Waveform canvas */}
-      <canvas ref={canvasRef} width={width} height={height} className="absolute inset-0" />
+      <canvas ref={canvasRef} width={width} height={height} className="absolute inset-0 pointer-events-none" />
 
       {/* Fade-in gradient overlay */}
       {fadeInPx > 0 && (
