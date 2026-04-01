@@ -97,16 +97,7 @@ export default function TracksPanel() {
                   startMs={c.timelineStart + c.trimStart} endMs={c.timelineStart + c.trimEnd}
                   duration={refDuration} color="bg-emerald-500/25" selected={selectedItemId === c.id}
                   onTrimChange={(s, e) => updateClipTrim(c.id, s - c.timelineStart, e - c.timelineStart)}
-                  onDrag={deltaMs => {
-                    console.log('[TP_ONDRAG]', JSON.stringify({ clipId: c.id?.slice(0,8), deltaMs, cTLS: c.timelineStart }));
-                    moveVideoClip(c.id, deltaMs);
-                    // Verify store after call
-                    setTimeout(() => {
-                      const st = useEditorV2Store.getState();
-                      const clip = st.tracks.filter(t => t.type === 'video').flatMap(t => t.clips || []).find(x => x.id === c.id);
-                      console.log('[TP_AFTER_MOVE]', JSON.stringify({ tls: clip?.timelineStart }));
-                    }, 50);
-                  }} />
+                  onDrag={newStartMs => moveVideoClip(c.id, newStartMs - c.trimStart)} />
               </div>);
             })}
           </div>
@@ -136,7 +127,7 @@ export default function TracksPanel() {
                 <TrackBlock key={b.id} id={b.id} trackId={st.id} label={b.text.slice(0, 15)}
                   startMs={b.startMs} endMs={b.endMs} duration={refDuration} color="bg-blue-400/25"
                   selected={selectedItemId === b.id}
-                  onDrag={deltaMs => moveSubtitleBlock(b.id, deltaMs)} />
+                  onDrag={newStartMs => moveSubtitleBlock(b.id, newStartMs)} />
               ))}
             </div>
           </div>
@@ -154,7 +145,7 @@ export default function TracksPanel() {
               <TrackBlock key={o.id} id={o.id} trackId="text" label={o.text.slice(0, 15)}
                 startMs={o.startMs} endMs={o.endMs} duration={refDuration} color="bg-purple-400/30"
                 selected={selectedItemId === o.id}
-                onDrag={deltaMs => moveTextOverlay(o.id, deltaMs)} />
+                onDrag={newStartMs => moveTextOverlay(o.id, newStartMs)} />
             ))}
           </div>
         </div>

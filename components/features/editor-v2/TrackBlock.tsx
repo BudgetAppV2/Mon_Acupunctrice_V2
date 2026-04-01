@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import { useEditorV2Store } from '@/lib/store/useEditorV2Store';
 
 interface Props {
@@ -13,16 +13,14 @@ interface Props {
   color: string;
   selected: boolean;
   onTrimChange?: (newStart: number, newEnd: number) => void;
-  onDrag?: (deltaMs: number) => void;
+  onDrag?: (newStartMs: number) => void;
 }
 
 export default function TrackBlock({ id, trackId, label, startMs, endMs, duration, color, selected, onTrimChange, onDrag }: Props) {
   const { selectItem } = useEditorV2Store();
-  const [trimSide, setTrimSide] = useState<'left' | 'right' | null>(null);
-  const [dragPx, setDragPx] = useState(0);
   const mode = useRef<'idle' | 'drag' | 'trim'>('idle');
+  const trimSideRef = useRef<'left' | 'right' | null>(null);
   const start = useRef({ x: 0, origStart: 0, origEnd: 0, time: 0 });
-  const dragApplied = useRef(false);
 
   if (duration <= 0) return null;
   const left = (startMs / duration) * 100;
@@ -36,60 +34,49 @@ export default function TrackBlock({ id, trackId, label, startMs, endMs, duratio
   // --- Trim handles ---
   const onTrimDown = (side: 'left' | 'right', e: React.PointerEvent) => {
     e.stopPropagation(); e.preventDefault();
-    mode.current = 'trim'; setTrimSide(side);
+    mode.current = 'trim'; trimSideRef.current = side;
     (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
     start.current = { x: e.clientX, origStart: startMs, origEnd: endMs, time: Date.now() };
   };
   const onTrimMove = (e: React.PointerEvent) => {
-    if (mode.current !== 'trim' || !trimSide || !onTrimChange) return;
+    if (mode.current !== 'trim' || !trimSideRef.current || !onTrimChange) return;
     e.stopPropagation();
     const ppm = getPxPerMs(e.currentTarget as HTMLElement);
     const delta = (e.clientX - start.current.x) / ppm;
-    if (trimSide === 'left') onTrimChange(Math.max(0, Math.min(start.current.origEnd - 200, start.current.origStart + delta)), start.current.origEnd);
+    if (trimSideRef.current === 'left') onTrimChange(Math.max(0, Math.min(start.current.origEnd - 200, start.current.origStart + delta)), start.current.origEnd);
     else onTrimChange(start.current.origStart, Math.max(start.current.origStart + 200, start.current.origEnd + delta));
   };
-  const onTrimUp = () => { mode.current = 'idle'; setTrimSide(null); };
+  const onTrimUp = () => { mode.current = 'idle'; trimSideRef.current = null; };
 
-  // --- Block drag — Bug 1 fix: commit before resetting visual offset ---
+  // --- Block drag: absolute position, store updated every move ---
   const onBlockDown = (e: React.PointerEvent) => {
     (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
     start.current = { x: e.clientX, origStart: startMs, origEnd: endMs, time: Date.now() };
-    mode.current = 'idle'; setDragPx(0); dragApplied.current = false;
+    mode.current = 'idle';
   };
   const onBlockMove = (e: React.PointerEvent) => {
-    if (mode.current === 'trim' || dragApplied.current) return;
+    if (mode.current === 'trim') return;
     const dx = e.clientX - start.current.x;
     if (mode.current === 'idle' && Math.abs(dx) > 5) mode.current = 'drag';
-    if (mode.current === 'drag') { e.stopPropagation(); setDragPx(dx); }
+    if (mode.current === 'drag' && onDrag) {
+      e.stopPropagation();
+      const ppm = getPxPerMs(e.currentTarget as HTMLElement);
+      const deltaMs = dx / ppm;
+      const newStartMs = Math.max(0, start.current.origStart + deltaMs);
+      onDrag(newStartMs);
+    }
   };
   const onBlockUp = (e: React.PointerEvent) => {
-    if (dragApplied.current) { mode.current = 'idle'; return; }
-    if (mode.current === 'drag' && onDrag) {
-      const ppm = getPxPerMs(e.currentTarget as HTMLElement);
-      const deltaPx = e.clientX - start.current.x;
-      const deltaMs = deltaPx / ppm;
-      console.log('[TB_DRAG]', JSON.stringify({ ppm, deltaPx, deltaMs, origStart: start.current.origStart, startMs, duration }));
-      if (Math.abs(deltaMs) > 30) {
-        dragApplied.current = true;
-        onDrag(deltaMs);
-        // Don't reset dragPx here — let the store update trigger a re-render
-        // which will recompute left/width from the new startMs/endMs
-      }
-      mode.current = 'idle';
-      // Reset dragPx after a microtask so the store re-render lands first
-      requestAnimationFrame(() => setDragPx(0));
-    } else {
-      if (mode.current === 'idle' && Date.now() - start.current.time < 300) {
-        e.stopPropagation(); selectItem(trackId, id);
-      }
-      mode.current = 'idle'; setDragPx(0);
+    if (mode.current === 'idle' && Date.now() - start.current.time < 300) {
+      e.stopPropagation(); selectItem(trackId, id);
     }
+    mode.current = 'idle';
   };
 
   return (
     <div
       className={`absolute top-1 bottom-1 rounded ${color} flex items-center overflow-hidden ${selected ? 'ring-2 ring-emerald-400' : ''}`}
-      style={{ left: `${left}%`, width: `${width}%`, minWidth: 4, transform: dragPx ? `translateX(${dragPx}px)` : undefined, transition: dragPx ? 'none' : 'transform 150ms', zIndex: dragPx ? 10 : undefined, touchAction: 'none' }}
+      style={{ left: `${left}%`, width: `${width}%`, minWidth: 4, touchAction: 'none' }}
       onPointerDown={onBlockDown} onPointerMove={onBlockMove} onPointerUp={onBlockUp}>
       <span className="text-[8px] text-white/70 truncate px-1 pointer-events-none">{label}</span>
       {selected && onTrimChange && (<>

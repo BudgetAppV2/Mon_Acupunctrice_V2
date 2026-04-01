@@ -89,9 +89,9 @@ interface EditorV2Store {
   setThumbnail: (url: string) => void;
   setDuration: (ms: number) => void;
   setSubtitleBlocks: (blocks: SubtitleBlock[]) => void;
-  moveSubtitleBlock: (id: string, deltaMs: number) => void;
-  moveTextOverlay: (id: string, deltaMs: number) => void;
-  moveVideoClip: (clipId: string, deltaMs: number) => void;
+  moveSubtitleBlock: (id: string, newStartMs: number) => void;
+  moveTextOverlay: (id: string, newStartMs: number) => void;
+  moveVideoClip: (clipId: string, newTimelineStart: number) => void;
   addVideoClip: (file: File) => void;
   removeVideoClip: (id: string) => void;
   updateClipTrim: (clipId: string, trimStart: number, trimEnd: number) => void;
@@ -227,34 +227,32 @@ export const useEditorV2Store = create<EditorV2Store>((set, get) => ({
     return { blocks, tracks };
   }),
 
-  moveSubtitleBlock: (id, deltaMs) => set((s) => {
+  moveSubtitleBlock: (id, newStartMs) => set((s) => {
     const newBlocks = s.blocks.map(b => {
       if (b.id !== id) return b;
       const dur = b.endMs - b.startMs;
-      const ns = Math.max(0, b.startMs + deltaMs);
-      return { ...b, startMs: ns, endMs: ns + dur, words: b.words.map(w => ({ ...w, startMs: w.startMs + deltaMs, endMs: w.endMs + deltaMs })) };
+      const ns = Math.max(0, newStartMs);
+      const delta = ns - b.startMs;
+      return { ...b, startMs: ns, endMs: ns + dur, words: b.words.map(w => ({ ...w, startMs: w.startMs + delta, endMs: w.endMs + delta })) };
     });
     const tracks = s.tracks.map(t => t.type === 'subtitle' && t.subtitles ? { ...t, subtitles: { ...t.subtitles, blocks: newBlocks } } : t);
     return { blocks: newBlocks, tracks };
   }),
-  moveTextOverlay: (id, deltaMs) => set((s) => ({
+  moveTextOverlay: (id, newStartMs) => set((s) => ({
     textOverlays: s.textOverlays.map(o => {
       if (o.id !== id) return o;
       const dur = o.endMs - o.startMs;
-      const ns = Math.max(0, o.startMs + deltaMs);
+      const ns = Math.max(0, newStartMs);
       return { ...o, startMs: ns, endMs: ns + dur };
     }),
   })),
 
-  moveVideoClip: (clipId, deltaMs) => set((s) => {
+  moveVideoClip: (clipId, newTimelineStart) => set((s) => {
     const tracks = s.tracks.map(t => {
       if (t.type !== 'video' || !t.clips) return t;
-      const clips = t.clips.map(c => {
-        if (c.id !== clipId) return c;
-        const newTLS = Math.max(0, c.timelineStart + deltaMs);
-        return { ...c, timelineStart: newTLS };
-      });
-      return { ...t, clips };
+      return { ...t, clips: t.clips.map(c =>
+        c.id === clipId ? { ...c, timelineStart: Math.max(0, newTimelineStart) } : c
+      )};
     });
     return { tracks, ...syncFlatFromTracks(tracks) };
   }),
@@ -437,24 +435,3 @@ export const useEditorV2Store = create<EditorV2Store>((set, get) => ({
     }),
   })),
 }));
-
-
-// DEBUG: Expose store for testing
-if (typeof window !== 'undefined') {
-  (window as unknown as Record<string, unknown>).__editorV2Store = useEditorV2Store;
-}
-
-// DEBUG: Monitor timelineStart changes
-if (typeof window !== 'undefined') {
-  useEditorV2Store.subscribe((state, prev) => {
-    const newClips = state.tracks.filter(t => t.type === 'video').flatMap(t => t.clips ?? []);
-    const oldClips = prev.tracks.filter(t => t.type === 'video').flatMap(t => t.clips ?? []);
-    for (const nc of newClips) {
-      const oc = oldClips.find(c => c.id === nc.id);
-      if (oc && oc.timelineStart !== nc.timelineStart) {
-        console.log('[STORE_TLS_CHANGE]', JSON.stringify({ clipId: nc.id.slice(0,8), old: oc.timelineStart, new: nc.timelineStart }));
-        console.trace('[STORE_TLS_CHANGE] stack trace');
-      }
-    }
-  });
-}
