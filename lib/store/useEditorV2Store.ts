@@ -329,6 +329,20 @@ export const useEditorV2Store = create<EditorV2Store>((set, get) => ({
     set((s) => ({
       tracks: s.tracks.map(t => t.id === 'a1' ? { ...t, audioClips: [clip] } : t),
     }));
+    // Decode audio to get duration
+    const audio = new Audio();
+    audio.src = blobUrl;
+    audio.addEventListener('loadedmetadata', () => {
+      if (audio.duration && isFinite(audio.duration)) {
+        const dMs = audio.duration * 1000;
+        set((s) => ({
+          tracks: s.tracks.map(t => {
+            if (t.id !== 'a1' || !t.audioClips) return t;
+            return { ...t, audioClips: t.audioClips.map(c => c.id === clip.id ? { ...c, duration: dMs } : c) };
+          }),
+        }));
+      }
+    });
   },
   removeAudioClip: (id) => set((s) => ({
     tracks: s.tracks.map(t => {
