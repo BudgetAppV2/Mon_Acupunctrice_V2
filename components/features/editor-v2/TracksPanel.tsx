@@ -158,16 +158,24 @@ export default function TracksPanel() {
               <span className="text-[8px] truncate">Audio</span>
             </div>
             <div className="flex-1 relative bg-white/5 rounded" data-track-row>
-              {at.audioClips?.map(a => (
-                <div key={a.id} className="absolute top-1 bottom-1 left-0 right-0 rounded bg-amber-400/25">
-                  {a.blobUrl && <AudioWaveform blobUrl={a.blobUrl} width={300} height={40}
-                    fadeIn={a.fadeIn} fadeOut={a.fadeOut} duration={a.duration > 0 ? a.duration / 1000 : 0}
-                    onFadeChange={(fi, fo) => setAudioFade(a.id, fi, fo)} />}
-                  <span className="relative text-[8px] text-white/70 truncate px-1 pointer-events-none z-10">
-                    {a.name.slice(0, 15)}
-                  </span>
-                </div>
-              ))}
+              {at.audioClips?.map(a => {
+                const audioDurMs = a.duration > 0 ? a.duration : refDuration;
+                const audioLeft = refDuration > 0 ? (a.startMs / refDuration) * 100 : 0;
+                const audioWidth = refDuration > 0 ? Math.min(100 - audioLeft, (audioDurMs / refDuration) * 100) : 100;
+                const visibleDurSec = refDuration > 0 ? Math.min(audioDurMs, refDuration) / 1000 : 0;
+                return (
+                  <div key={a.id} className="absolute top-1 bottom-1 rounded bg-amber-400/25 overflow-hidden"
+                    style={{ left: `${audioLeft}%`, width: `${audioWidth}%` }}>
+                    {a.blobUrl && <AudioWaveform blobUrl={a.blobUrl} height={40}
+                      fadeIn={a.fadeIn} fadeOut={a.fadeOut} duration={visibleDurSec}
+                      audioDurationSec={a.duration > 0 ? a.duration / 1000 : 0}
+                      onFadeChange={(fi, fo) => setAudioFade(a.id, fi, fo)} />}
+                    <span className="relative text-[8px] text-white/70 truncate px-1 pointer-events-none z-10">
+                      {a.name.slice(0, 15)}
+                    </span>
+                  </div>
+                );
+              })}
             </div>
           </div>
         );

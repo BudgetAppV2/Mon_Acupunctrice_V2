@@ -248,7 +248,6 @@ export default function SubtitleCanvas() {
         if (n >= store.duration) { store.setCurrentTime(0); store.setIsPlaying(false); return; }
         store.setCurrentTime(n);
         // Apply fade-in/fade-out to audio volume
-        if (Math.round(n) % 1000 < 20) console.log('[TICK_AUDIO]', JSON.stringify({ hasAudioRef: !!audioRef.current, n: Math.round(n), audioVol: store.audioVolume }));
         if (audioRef.current) {
           const audioClip = store.tracks.find(t => t.type === 'audio')?.audioClips?.[0];
           if (audioClip && audioClip.duration > 0) {
@@ -263,7 +262,6 @@ export default function SubtitleCanvas() {
             }
             const finalVol = store.audioVolume * Math.max(0, Math.min(1, fadeMul));
             audioRef.current.volume = finalVol;
-            if (Math.round(clipTimeSec * 10) % 50 === 0) console.log('[FADE_DATA]', JSON.stringify({ t: clipTimeSec.toFixed(1), fi: audioClip.fadeIn, fo: audioClip.fadeOut, mul: fadeMul.toFixed(2), vol: finalVol.toFixed(3), dur: clipDurSec.toFixed(1) }));
           }
         }
         // Ensure active clips are playing, pause inactive ones
