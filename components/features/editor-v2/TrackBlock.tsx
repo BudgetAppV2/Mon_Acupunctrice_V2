@@ -50,16 +50,17 @@ export default function TrackBlock({ id, trackId, label, startMs, endMs, duratio
 
   // --- Block drag: absolute position, store updated every move ---
   const onBlockDown = (e: React.PointerEvent) => {
+    e.stopPropagation();
     (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
     start.current = { x: e.clientX, origStart: startMs, origEnd: endMs, time: Date.now() };
     mode.current = 'idle';
   };
   const onBlockMove = (e: React.PointerEvent) => {
+    e.stopPropagation(); // Always stop propagation to prevent parent playhead drag
     if (mode.current === 'trim') return;
     const dx = e.clientX - start.current.x;
     if (mode.current === 'idle' && Math.abs(dx) > 5) mode.current = 'drag';
     if (mode.current === 'drag' && onDrag) {
-      e.stopPropagation();
       const ppm = getPxPerMs(e.currentTarget as HTMLElement);
       const deltaMs = dx / ppm;
       const newStartMs = Math.max(0, start.current.origStart + deltaMs);

@@ -251,7 +251,7 @@ export const useEditorV2Store = create<EditorV2Store>((set, get) => ({
     const tracks = s.tracks.map(t => {
       if (t.type !== 'video' || !t.clips) return t;
       return { ...t, clips: t.clips.map(c =>
-        c.id === clipId ? { ...c, timelineStart: Math.max(0, newTimelineStart) } : c
+        c.id === clipId ? { ...c, timelineStart: newTimelineStart } : c
       )};
     });
     return { tracks, ...syncFlatFromTracks(tracks) };
