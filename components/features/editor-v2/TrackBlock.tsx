@@ -68,6 +68,7 @@ export default function TrackBlock({ id, trackId, label, startMs, endMs, duratio
       const ppm = getPxPerMs(e.currentTarget as HTMLElement);
       const deltaPx = e.clientX - start.current.x;
       const deltaMs = deltaPx / ppm;
+      console.log('[TB_DRAG]', JSON.stringify({ ppm, deltaPx, deltaMs, origStart: start.current.origStart, startMs, duration }));
       if (Math.abs(deltaMs) > 30) {
         dragApplied.current = true;
         onDrag(deltaMs);

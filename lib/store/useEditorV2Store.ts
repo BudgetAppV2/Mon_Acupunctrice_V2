@@ -91,7 +91,7 @@ interface EditorV2Store {
   setSubtitleBlocks: (blocks: SubtitleBlock[]) => void;
   moveSubtitleBlock: (id: string, deltaMs: number) => void;
   moveTextOverlay: (id: string, deltaMs: number) => void;
-  moveVideoClip: (clipId: string, newTimelineStart: number) => void;
+  moveVideoClip: (clipId: string, deltaMs: number) => void;
   addVideoClip: (file: File) => void;
   removeVideoClip: (id: string) => void;
   updateClipTrim: (clipId: string, trimStart: number, trimEnd: number) => void;
@@ -246,12 +246,13 @@ export const useEditorV2Store = create<EditorV2Store>((set, get) => ({
     }),
   })),
 
-  moveVideoClip: (clipId, newTimelineStart) => set((s) => {
+  moveVideoClip: (clipId, deltaMs) => set((s) => {
     const tracks = s.tracks.map(t => {
       if (t.type !== 'video' || !t.clips) return t;
       const clips = t.clips.map(c => {
         if (c.id !== clipId) return c;
-        return { ...c, timelineStart: Math.max(0, newTimelineStart) };
+        const newTLS = Math.max(0, c.timelineStart + deltaMs);
+        return { ...c, timelineStart: newTLS };
       });
       return { ...t, clips };
     });
@@ -436,3 +437,24 @@ export const useEditorV2Store = create<EditorV2Store>((set, get) => ({
     }),
   })),
 }));
+
+
+// DEBUG: Expose store for testing
+if (typeof window !== 'undefined') {
+  (window as unknown as Record<string, unknown>).__editorV2Store = useEditorV2Store;
+}
+
+// DEBUG: Monitor timelineStart changes
+if (typeof window !== 'undefined') {
+  useEditorV2Store.subscribe((state, prev) => {
+    const newClips = state.tracks.filter(t => t.type === 'video').flatMap(t => t.clips ?? []);
+    const oldClips = prev.tracks.filter(t => t.type === 'video').flatMap(t => t.clips ?? []);
+    for (const nc of newClips) {
+      const oc = oldClips.find(c => c.id === nc.id);
+      if (oc && oc.timelineStart !== nc.timelineStart) {
+        console.log('[STORE_TLS_CHANGE]', JSON.stringify({ clipId: nc.id.slice(0,8), old: oc.timelineStart, new: nc.timelineStart }));
+        console.trace('[STORE_TLS_CHANGE] stack trace');
+      }
+    }
+  });
+}

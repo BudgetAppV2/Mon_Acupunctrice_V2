@@ -97,7 +97,16 @@ export default function TracksPanel() {
                   startMs={c.timelineStart + c.trimStart} endMs={c.timelineStart + c.trimEnd}
                   duration={refDuration} color="bg-emerald-500/25" selected={selectedItemId === c.id}
                   onTrimChange={(s, e) => updateClipTrim(c.id, s - c.timelineStart, e - c.timelineStart)}
-                  onDrag={deltaMs => moveVideoClip(c.id, Math.max(0, c.timelineStart + deltaMs))} />
+                  onDrag={deltaMs => {
+                    console.log('[TP_ONDRAG]', JSON.stringify({ clipId: c.id?.slice(0,8), deltaMs, cTLS: c.timelineStart }));
+                    moveVideoClip(c.id, deltaMs);
+                    // Verify store after call
+                    setTimeout(() => {
+                      const st = useEditorV2Store.getState();
+                      const clip = st.tracks.filter(t => t.type === 'video').flatMap(t => t.clips || []).find(x => x.id === c.id);
+                      console.log('[TP_AFTER_MOVE]', JSON.stringify({ tls: clip?.timelineStart }));
+                    }, 50);
+                  }} />
               </div>);
             })}
           </div>
