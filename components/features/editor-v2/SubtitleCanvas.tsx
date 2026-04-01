@@ -247,6 +247,22 @@ export default function SubtitleCanvas() {
         const n = store.currentTime + (wallMs - prevWall);
         if (n >= store.duration) { store.setCurrentTime(0); store.setIsPlaying(false); return; }
         store.setCurrentTime(n);
+        // Apply fade-in/fade-out to audio volume
+        if (audioRef.current) {
+          const audioClip = store.tracks.find(t => t.type === 'audio')?.audioClips?.[0];
+          if (audioClip && audioClip.duration > 0) {
+            const clipTimeSec = n / 1000;
+            const clipDurSec = audioClip.duration / 1000;
+            let fadeMul = 1;
+            if (audioClip.fadeIn > 0 && clipTimeSec < audioClip.fadeIn) {
+              fadeMul = clipTimeSec / audioClip.fadeIn;
+            }
+            if (audioClip.fadeOut > 0 && clipTimeSec > clipDurSec - audioClip.fadeOut) {
+              fadeMul = Math.min(fadeMul, (clipDurSec - clipTimeSec) / audioClip.fadeOut);
+            }
+            audioRef.current.volume = store.audioVolume * Math.max(0, Math.min(1, fadeMul));
+          }
+        }
         // Ensure active clips are playing, pause inactive ones
         const actives = findActiveClipsAllTracks(store.tracks, n);
         const activeIds = new Set(actives.map(a => a.clip.id));
