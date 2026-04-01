@@ -3,7 +3,7 @@
 import { useEffect, useRef } from 'react';
 import { useEditorV2Store, getVideoTrack } from '@/lib/store/useEditorV2Store';
 import { renderFrame } from '@/lib/editor-v2/renderer';
-import { FILTERS } from '@/lib/editor-v2/filters';
+import { FILTERS, interpolateFilter } from '@/lib/editor-v2/filters';
 import { CANVAS_W, CANVAS_H, findActiveClip,
   createVideoElement, getFirstAudioUrl, coverCrop } from '@/lib/editor-v2/playback';
 import { useSubtitleDrag } from '@/lib/editor-v2/useSubtitleDrag';
@@ -168,10 +168,13 @@ export default function SubtitleCanvas() {
   }, []);
 
   // CSS filter for Safari (ctx.filter not supported on WebKit)
-  const ac = findActiveClip(tracksRef.current, currentTime);
+  // Use tracks directly (not tracksRef) to avoid stale ref timing issues
+  const ac = findActiveClip(tracks, currentTime);
   const cFid = (ac?.clip.filterId && ac.clip.filterId !== 'normal') ? ac.clip.filterId : filterId;
   const af = FILTERS.find(f => f.id === cFid);
-  const cssFilter = (af?.css !== 'none' && fIntensity > 0) ? af?.css : undefined;
+  const cssFilter = (af?.css && af.css !== 'none' && fIntensity > 0)
+    ? interpolateFilter(af.css, fIntensity)
+    : undefined;
 
   const handleDown = (e: React.MouseEvent | React.TouchEvent) => { const c = canvasRef.current; if (c) onDown(e, c); };
   const handleMove = (e: React.MouseEvent | React.TouchEvent) => { const c = canvasRef.current; if (c) onMove(e, c); };

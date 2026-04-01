@@ -44,13 +44,14 @@ export async function POST(request: NextRequest) {
       body: JSON.stringify({
         audio_url: upload_url,
         language_code: 'fr',
-        word_boost: ['acupuncture', 'meridien', 'qi', 'yin', 'yang', 'aiguille'],
+        speech_models: ['universal-3-pro'],
         punctuate: true,
       }),
     });
 
     if (!transcriptRes.ok) {
-      return NextResponse.json({ error: 'Lancement transcription échoué' }, { status: 500 });
+      const errBody = await transcriptRes.text().catch(() => '');
+      return NextResponse.json({ error: `Lancement transcription échoué: ${transcriptRes.status} ${errBody}` }, { status: 500 });
     }
 
     const { id } = await transcriptRes.json() as { id: string };
