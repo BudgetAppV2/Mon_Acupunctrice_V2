@@ -1,18 +1,46 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
-import { useEditorV2Store, getVideoTrack } from '@/lib/store/useEditorV2Store';
+import { useEffect, useRef, useCallback } from 'react';
+import { useEditorV2Store, getVideoTrack, getVideoTracks } from '@/lib/store/useEditorV2Store';
 import { renderFrame } from '@/lib/editor-v2/renderer';
 import { FILTERS, interpolateFilter } from '@/lib/editor-v2/filters';
-import { CANVAS_W, CANVAS_H, findActiveClip, getFirstAudioUrl } from '@/lib/editor-v2/playback';
+import { CANVAS_W, CANVAS_H, findActiveClipsAllTracks, getFirstAudioUrl, coverCrop } from '@/lib/editor-v2/playback';
 import { useSubtitleDrag } from '@/lib/editor-v2/useSubtitleDrag';
+
+/**
+ * Multi-track video pool: one <video> element per unique clip blobUrl.
+ * Managed imperatively via refs (not React state) for performance.
+ */
+function useVideoPool() {
+  const poolRef = useRef<Map<string, HTMLVideoElement>>(new Map());
+
+  const getOrCreate = useCallback((clipId: string, blobUrl: string): HTMLVideoElement => {
+    const pool = poolRef.current;
+    let vid = pool.get(clipId);
+    if (vid && vid.src === blobUrl) return vid;
+    // Create new element
+    vid = document.createElement('video');
+    vid.playsInline = true; vid.muted = true; vid.preload = 'auto';
+    vid.src = blobUrl;
+    pool.set(clipId, vid);
+    return vid;
+  }, []);
+
+  const cleanup = useCallback(() => {
+    for (const vid of poolRef.current.values()) {
+      vid.pause(); vid.removeAttribute('src'); vid.load();
+    }
+    poolRef.current.clear();
+  }, []);
+
+  return { getOrCreate, poolRef, cleanup };
+}
 
 export default function SubtitleCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const rafRef = useRef<number>(0);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const { getOrCreate, poolRef, cleanup: cleanupPool } = useVideoPool();
 
   const { blocks, globalPreset, currentTime, isPlaying, duration,
     filterId, videoUrl, voiceVolume, audioVolume, tracks, filterIntensity: fIntensity,
@@ -28,25 +56,91 @@ export default function SubtitleCanvas() {
   const presetRef = useRef(globalPreset);
   const textOverlaysRef = useRef(textOverlays);
   const timeRef = useRef(currentTime);
+  const tracksRef = useRef(tracks);
+  const filterIdRef = useRef(filterId);
+  const fIntensityRef = useRef(fIntensity);
 
   useEffect(() => { blocksRef.current = blocks; }, [blocks]);
   useEffect(() => { presetRef.current = globalPreset; }, [globalPreset]);
   useEffect(() => { textOverlaysRef.current = textOverlays; }, [textOverlays]);
   useEffect(() => { timeRef.current = currentTime; }, [currentTime]);
+  useEffect(() => { tracksRef.current = tracks; }, [tracks]);
+  useEffect(() => { filterIdRef.current = filterId; }, [filterId]);
+  useEffect(() => { fIntensityRef.current = fIntensity; }, [fIntensity]);
 
-  // Init video metadata + thumbnail + clip duration
+  // Cleanup pool on unmount
+  useEffect(() => cleanupPool, [cleanupPool]);
+
+  // Draw one frame: composites all active tracks (highest priority first)
+  const drawFrame = useCallback(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const t = timeRef.current;
+    const allTracks = tracksRef.current;
+    const hasClips = allTracks.some(tr => tr.type === 'video' && tr.clips && tr.clips.length > 0);
+
+    if (!hasClips) {
+      // No clips — gradient drawn by renderFrame below
+      renderFrame({
+        canvas, blocks: blocksRef.current, globalPreset: presetRef.current,
+        currentMs: t, nowMs: performance.now(), canvasWidth: CANVAS_W, canvasHeight: CANVAS_H,
+        skipBackground: false, textOverlays: textOverlaysRef.current,
+      });
+      return;
+    }
+
+    // Find active clips across all tracks
+    const activeClips = findActiveClipsAllTracks(allTracks, t);
+
+    if (activeClips.length === 0) {
+      // Between clips — black
+      ctx.fillStyle = '#000';
+      ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
+    } else {
+      // Draw from lowest track to highest (painter's algorithm — highest covers lowest)
+      for (let i = activeClips.length - 1; i >= 0; i--) {
+        const { clip } = activeClips[i];
+        if (!clip.blobUrl) continue;
+        const vid = getOrCreate(clip.id, clip.blobUrl);
+        if (vid.readyState < 2 || vid.videoWidth === 0) continue;
+
+        // Resolve per-clip filter
+        const cFid = (clip.filterId && clip.filterId !== 'normal') ? clip.filterId : filterIdRef.current;
+        const af = FILTERS.find(f => f.id === cFid);
+        const intensity = fIntensityRef.current;
+        const filterCss = (af?.css && af.css !== 'none' && intensity > 0)
+          ? (intensity >= 1 ? af.css : interpolateFilter(af.css, intensity))
+          : 'none';
+
+        if (filterCss !== 'none') ctx.filter = filterCss;
+        const c = coverCrop(vid.videoWidth, vid.videoHeight, CANVAS_W, CANVAS_H);
+        ctx.drawImage(vid, c.sx, c.sy, c.sw, c.sh, 0, 0, CANVAS_W, CANVAS_H);
+        ctx.filter = 'none';
+      }
+    }
+
+    renderFrame({
+      canvas, blocks: blocksRef.current, globalPreset: presetRef.current,
+      currentMs: t, nowMs: performance.now(), canvasWidth: CANVAS_W, canvasHeight: CANVAS_H,
+      skipBackground: true, textOverlays: textOverlaysRef.current,
+    });
+  }, [getOrCreate]);
+
+  // Init first clip metadata + thumbnail
   useEffect(() => {
-    const vid = videoRef.current;
-    if (!vid || !videoUrl) return;
-    vid.src = videoUrl;
+    if (!videoUrl) return;
     const firstClipId = getVideoTrack(useEditorV2Store.getState().tracks)?.clips?.[0]?.id ?? null;
+    if (!firstClipId) return;
+    const vid = getOrCreate(firstClipId, videoUrl);
     const onMeta = () => {
       if (vid.duration && isFinite(vid.duration)) {
         const dMs = vid.duration * 1000;
         const store = useEditorV2Store.getState();
         store.setDuration(dMs);
-        if (firstClipId) store.initClipDuration(firstClipId, dMs);
-        // Generate thumbnail
+        store.initClipDuration(firstClipId, dMs);
         vid.currentTime = Math.min(2, vid.duration);
         vid.onseeked = () => {
           try {
@@ -57,140 +151,156 @@ export default function SubtitleCanvas() {
           } catch {}
           vid.currentTime = 0.01;
           vid.onseeked = null;
+          drawFrame();
         };
       }
     };
     vid.addEventListener('loadedmetadata', onMeta);
     return () => vid.removeEventListener('loadedmetadata', onMeta);
-  }, [videoUrl]);
+  }, [videoUrl, drawFrame, getOrCreate]);
 
-  // Audio element for music
+  // Pre-load video elements for all clips with blobUrls
+  useEffect(() => {
+    const videoTracks = getVideoTracks(tracks);
+    for (const t of videoTracks) {
+      for (const c of t.clips ?? []) {
+        if (c.blobUrl) {
+          const vid = getOrCreate(c.id, c.blobUrl);
+          // Init duration if needed
+          if (c.duration === 0 && vid.readyState >= 1 && vid.duration && isFinite(vid.duration)) {
+            useEditorV2Store.getState().initClipDuration(c.id, vid.duration * 1000);
+          }
+        }
+      }
+    }
+  }, [tracks, getOrCreate]);
+
+  // Audio element
   useEffect(() => {
     const url = getFirstAudioUrl(tracks);
     if (url) { if (!audioRef.current) audioRef.current = new Audio(); audioRef.current.src = url; audioRef.current.loop = true; }
     else if (audioRef.current) { audioRef.current.pause(); audioRef.current.removeAttribute('src'); audioRef.current = null; }
   }, [tracks]);
 
-  // Sync volumes
-  useEffect(() => { if (videoRef.current) videoRef.current.volume = voiceVolume; }, [voiceVolume]);
+  // Sync volumes on all pool videos
+  useEffect(() => {
+    for (const vid of poolRef.current.values()) vid.volume = voiceVolume;
+  }, [voiceVolume, poolRef]);
   useEffect(() => { if (audioRef.current) audioRef.current.volume = audioVolume; }, [audioVolume]);
 
-  // Play/pause
+  // Play/pause: seek each active clip to correct position then play natively
+  const prevPlayingRef = useRef(false);
   useEffect(() => {
-    const v = videoRef.current; if (!v) return;
-    if (isPlaying) { v.muted = false; v.volume = voiceVolume; v.play().catch(() => {}); }
-    else { v.pause(); }
-  }, [isPlaying, voiceVolume]);
+    if (isPlaying && !prevPlayingRef.current) {
+      // Starting playback — seek all active clips to their correct position then play
+      const t = useEditorV2Store.getState().currentTime;
+      const actives = findActiveClipsAllTracks(tracksRef.current, t);
+      for (const { clip, localTimeMs } of actives) {
+        if (!clip.blobUrl) continue;
+        const vid = getOrCreate(clip.id, clip.blobUrl);
+        vid.currentTime = localTimeMs / 1000;
+        vid.muted = false; vid.volume = voiceVolume;
+        vid.play().catch(() => {});
+      }
+    } else if (!isPlaying) {
+      for (const vid of poolRef.current.values()) vid.pause();
+    }
+    prevPlayingRef.current = isPlaying;
+  }, [isPlaying, voiceVolume, poolRef, getOrCreate]);
   useEffect(() => { if (audioRef.current) { if (isPlaying) audioRef.current.play().catch(() => {}); else audioRef.current.pause(); } }, [isPlaying]);
 
-  // Scrub: seek video directly — the browser shows the frame natively (instant)
+  // Scrub: seek all relevant clips + redraw
   useEffect(() => {
-    const vid = videoRef.current; if (!vid || isPlaying || !videoUrl) return;
-    const r = findActiveClip(tracks, currentTime);
-    if (r) {
-      vid.currentTime = r.localTimeMs / 1000;
-    } else {
-      // Outside clip range: seek to nearest edge
-      const allClips = tracks.filter(t => t.type === 'video').flatMap(t => t.clips ?? []);
-      if (allClips.length > 0) {
-        let best = allClips[0], bestDist = Infinity;
-        for (const c of allClips) {
-          const absS = c.timelineStart + c.trimStart, absE = c.timelineStart + c.trimEnd;
-          const d = currentTime < absS ? absS - currentTime : currentTime > absE ? currentTime - absE : 0;
-          if (d < bestDist) { bestDist = d; best = c; }
-        }
-        const absS = best.timelineStart + best.trimStart;
-        vid.currentTime = (currentTime <= absS ? best.trimStart : best.trimEnd) / 1000;
-      }
-    }
-  }, [currentTime, isPlaying, tracks, videoUrl]);
+    if (isPlaying) return;
+    const allTracks = tracksRef.current;
+    const activeClips = findActiveClipsAllTracks(allTracks, currentTime);
+    let pendingSeeked = activeClips.length;
 
-  // Sync audio scrub position
+    for (const { clip, localTimeMs } of activeClips) {
+      if (!clip.blobUrl) { pendingSeeked--; continue; }
+      const vid = getOrCreate(clip.id, clip.blobUrl);
+      vid.currentTime = localTimeMs / 1000;
+      const onSeeked = () => {
+        vid.removeEventListener('seeked', onSeeked);
+        pendingSeeked--;
+        if (pendingSeeked <= 0) drawFrame();
+      };
+      vid.addEventListener('seeked', onSeeked);
+    }
+    if (activeClips.length === 0) drawFrame();
+  }, [currentTime, isPlaying, drawFrame, getOrCreate]);
+
+  // Sync audio scrub
   useEffect(() => { if (audioRef.current && !isPlaying) audioRef.current.currentTime = currentTime / 1000; }, [currentTime, isPlaying]);
 
-  // Playback: advance currentTime linearly via wall clock (not timeupdate)
-  // The wall clock is the single source of truth — the video element follows
+  // Playback: wall clock advances currentTime, videos play natively
+  // Only correct drift > 0.3s (heavy seeks kill framerate)
   useEffect(() => {
     if (!isPlaying) return;
     let prevWall: number | null = null;
-    let rafId: number;
+    let id: number;
+    const playingClips = new Set<string>(); // track which clips are currently playing
     const tick = (wallMs: number) => {
       if (prevWall !== null) {
         const store = useEditorV2Store.getState();
         if (!store.isPlaying) return;
         const n = store.currentTime + (wallMs - prevWall);
-        if (n >= store.duration) {
-          store.setCurrentTime(0);
-          store.setIsPlaying(false);
-          return;
-        }
+        if (n >= store.duration) { store.setCurrentTime(0); store.setIsPlaying(false); return; }
         store.setCurrentTime(n);
-        // Seek video to match if inside a clip
-        const vid = videoRef.current;
-        if (vid) {
-          const ar = findActiveClip(store.tracks, n);
-          if (ar) {
-            const expectedVidTime = ar.localTimeMs / 1000;
-            if (Math.abs(vid.currentTime - expectedVidTime) > 0.15) {
-              vid.currentTime = expectedVidTime;
-            }
+        // Ensure active clips are playing, pause inactive ones
+        const actives = findActiveClipsAllTracks(store.tracks, n);
+        const activeIds = new Set(actives.map(a => a.clip.id));
+        // Start clips that just became active
+        for (const { clip, localTimeMs } of actives) {
+          if (!clip.blobUrl) continue;
+          const vid = poolRef.current.get(clip.id);
+          if (!vid) continue;
+          if (!playingClips.has(clip.id)) {
+            vid.currentTime = localTimeMs / 1000;
+            vid.muted = false; vid.volume = voiceVolume;
+            vid.play().catch(() => {});
+            playingClips.add(clip.id);
+          } else {
+            // Already playing — only correct big drift
+            const expected = localTimeMs / 1000;
+            if (Math.abs(vid.currentTime - expected) > 0.3) vid.currentTime = expected;
+          }
+        }
+        // Pause clips that are no longer active
+        for (const clipId of playingClips) {
+          if (!activeIds.has(clipId)) {
+            poolRef.current.get(clipId)?.pause();
+            playingClips.delete(clipId);
           }
         }
       }
       prevWall = wallMs;
-      rafId = requestAnimationFrame(tick);
+      id = requestAnimationFrame(tick);
     };
-    rafId = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(rafId);
-  }, [isPlaying]);
+    id = requestAnimationFrame(tick);
+    return () => { cancelAnimationFrame(id); playingClips.clear(); };
+  }, [isPlaying, poolRef, voiceVolume]);
 
-  // RAF loop — ONLY draws overlays on the transparent canvas
+  // Render loop
   useEffect(() => {
-    const loop = (wallMs: number) => {
-      const canvas = canvasRef.current;
-      if (canvas) {
-        const ctx = canvas.getContext('2d');
-        if (ctx) {
-          ctx.clearRect(0, 0, CANVAS_W, CANVAS_H);
-          // Demo gradient when no video
-          const skipBg = hasVideo;
-          renderFrame({
-            canvas, blocks: blocksRef.current, globalPreset: presetRef.current,
-            currentMs: timeRef.current, nowMs: wallMs, canvasWidth: CANVAS_W, canvasHeight: CANVAS_H,
-            skipBackground: skipBg, textOverlays: textOverlaysRef.current,
-          });
-        }
-      }
+    let active = true;
+    const loop = () => {
+      if (!active) return;
+      drawFrame();
       rafRef.current = requestAnimationFrame(loop);
     };
     rafRef.current = requestAnimationFrame(loop);
-    return () => cancelAnimationFrame(rafRef.current);
-  }, [hasVideo]);
-
-  // CSS filter
-  const ac = findActiveClip(tracks, currentTime);
-  const cFid = (ac?.clip.filterId && ac.clip.filterId !== 'normal') ? ac.clip.filterId : filterId;
-  const af = FILTERS.find(f => f.id === cFid);
-  const cssFilter = (af?.css && af.css !== 'none' && fIntensity > 0)
-    ? interpolateFilter(af.css, fIntensity)
-    : undefined;
+    return () => { active = false; cancelAnimationFrame(rafRef.current); };
+  }, [drawFrame]);
 
   const handleDown = (e: React.MouseEvent | React.TouchEvent) => { const c = canvasRef.current; if (c) onDown(e, c); };
   const handleMove = (e: React.MouseEvent | React.TouchEvent) => { const c = canvasRef.current; if (c) onMove(e, c); };
 
   return (
-    <div ref={containerRef} className="relative w-full h-auto max-h-full" style={{ aspectRatio: '9/16' }}>
-      {/* Native <video> — browser decodes and displays frames instantly */}
-      {hasVideo && (
-        <video ref={videoRef} playsInline muted preload="auto"
-          className="absolute inset-0 w-full h-full object-cover rounded"
-          style={{ filter: cssFilter }} />
-      )}
-
-      {/* Transparent canvas overlay — subtitles + text overlays only */}
+    <div className="relative w-full h-auto max-h-full" style={{ aspectRatio: '9/16' }}>
       <canvas ref={canvasRef} width={CANVAS_W} height={CANVAS_H}
-        className={`w-full h-full ${hasVideo ? 'absolute inset-0' : ''}`}
-        style={{ background: 'transparent', cursor: isDragging ? 'grabbing' : 'grab', touchAction: 'none' }}
+        className="w-full h-full"
+        style={{ cursor: isDragging ? 'grabbing' : 'grab', touchAction: 'none' }}
         onMouseDown={handleDown} onMouseMove={handleMove} onMouseUp={onUp} onMouseLeave={onUp}
         onTouchStart={handleDown} onTouchMove={handleMove} onTouchEnd={onUp} />
     </div>

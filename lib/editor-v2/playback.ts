@@ -28,6 +28,22 @@ export function findActiveVideoClip(tracks: Track[], timeMs: number): VideoClip 
   return r?.clip ?? null;
 }
 
+/** Find the active clip on each video track (for multi-track compositing) */
+export function findActiveClipsAllTracks(
+  tracks: Track[],
+  timeMs: number,
+): { clip: VideoClip; localTimeMs: number; trackIndex: number }[] {
+  const results: { clip: VideoClip; localTimeMs: number; trackIndex: number }[] = [];
+  const videoTracks = getVideoTracks(tracks);
+  for (let i = 0; i < videoTracks.length; i++) {
+    const t = videoTracks[i];
+    if (!t.clips?.length) continue;
+    const r = getClipAtTime(t.clips, timeMs);
+    if (r) results.push({ ...r, trackIndex: i });
+  }
+  return results;
+}
+
 /** Create a hidden <video> element for playback */
 export function createVideoElement(): HTMLVideoElement {
   const v = document.createElement('video');
