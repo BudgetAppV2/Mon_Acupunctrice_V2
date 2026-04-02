@@ -1,96 +1,111 @@
-# FIX — Saccades au playback sur Safari iOS via requestVideoFrameCallback
+# FIX — Playback saccadé sur Safari iOS
 
 ## Problème
-Le playback vidéo saccade sur Safari iOS. Le RAF loop fait `texImage2D`
-60 fois par seconde mais la vidéo ne produit que 24-30 frames/seconde.
-On dessine la même frame 2-3 fois puis saute à la suivante → judder.
-Ref: https://loke.dev/blog/request-video-frame-callback-video-canvas-sync
+Le playback vidéo est saccadé sur Safari iOS dans le Hub V2.
+Le Lab (subtitle-lab) avec le MÊME code WebGL est fluide.
 
-## Solution : requestVideoFrameCallback (rVFC)
-Au lieu de redessiner la vidéo à chaque `requestAnimationFrame`, utiliser
-`video.requestVideoFrameCallback()` qui ne se déclenche que quand le
-décodeur vidéo a une NOUVELLE frame prête. Supporté sur Safari iOS.
+## Cause identifiée
+Le Hub V2 utilise un "video pool" multi-track complexe (347 lignes)
+qui crée beaucoup d'overhead :
+- Multiples vidéos dans un pool Map
+- requestVideoFrameCallback par clip
+- RAF loop séparé pour les overlays
+- Tick de playback séparé avec wall clock
+- Gestion play/pause par clip avec drift correction
 
-## Implémentation
+Le Lab utilise un pattern simple (224 lignes) :
+- Un seul `<video>` element caché
+- Un seul RAF loop qui fait tout
+- Pas de video pool
 
-### Pattern actuel (saccadé) :
+## Solution
+Réécrire le SubtitleCanvas du Hub V2 en s'inspirant du Lab.
+Pour l'instant on n'a besoin que d'un seul clip vidéo à la fois
+(pas de multi-track compositing).
+
+## RÉFÉRENCE : Le Lab qui fonctionne
+Lire `subtitle-lab/components/SubtitleCanvas.tsx` — c'est le code
+qui est fluide sur Safari iOS. L'adapter pour le Hub V2.
+
+## Adaptations nécessaires par rapport au Lab
+1. Import paths : `@/lib/editor-v2/...` au lieu de `../lib/...`
+2. Store : `useEditorV2Store` au lieu de `useSubtitleStore`
+3. Hit-test drag : utiliser `useSubtitleDrag()` sans params
+   (le hook fait le hit-testing automatiquement)
+4. Fade audio : garder le calcul de fade-in/fade-out sur l'audio
+   pendant le playback (le Lab ne l'a pas)
+5. Wall clock playhead : avancer le currentTime linéairement
+   pendant le play (le Lab utilise gMs du vid.currentTime)
+6. WebGL renderer : utiliser `webglRenderer.ts` du Hub V2
+   (identique à celui du Lab)
+7. Garder le throttle de setCurrentTime à ~15fps pendant le play
+   (utiliser timeRef.current pour le calcul, pas store.currentTime)
+
+## Pattern du RAF loop (inspiré du Lab, adapté pour Hub V2)
 ```typescript
-// RAF loop qui tourne à 60fps — trop souvent
-const loop = () => {
-  drawFrame(); // appelle texImage2D même si pas de nouvelle frame
-  requestAnimationFrame(loop);
-};
-```
-
-### Pattern corrigé :
-```typescript
-// rVFC — ne se déclenche que quand une nouvelle frame vidéo est prête
-function onVideoFrame(now: number, metadata: VideoFrameCallbackMetadata) {
-  // Upload la nouvelle frame dans la texture WebGL
-  renderVideoFrame(vid, CANVAS_W, CANVAS_H, uniforms);
-  // Continuer
-  vid.requestVideoFrameCallback(onVideoFrame);
-}
-vid.requestVideoFrameCallback(onVideoFrame);
-
-// RAF loop SÉPARÉ pour les overlays (sous-titres, texte)
-// qui doivent se mettre à jour à 60fps pour le drag fluide
-const overlayLoop = () => {
+const loop = (wallMs: number) => {
+  const vid = videoRef.current;
+  const t = timeRef.current;
+  
+  // 1. Si playing, avancer le temps linéairement
+  if (playingRef.current && prevWallRef.current !== null) {
+    const n = t + (wallMs - prevWallRef.current);
+    if (n >= durationRef.current) { setCurrentTime(0); setIsPlaying(false); }
+    else {
+      timeRef.current = n;
+      // Throttle store updates
+      if (wallMs - lastStoreUpdateRef.current > 66) {
+        setCurrentTime(n);
+        lastStoreUpdateRef.current = wallMs;
+      }
+    }
+    prevWallRef.current = wallMs;
+  } else if (playingRef.current) {
+    prevWallRef.current = wallMs;
+  } else {
+    prevWallRef.current = null;
+  }
+  
+  // 2. Seek vidéo au bon moment si nécessaire
+  const ar = findActiveClip(tracks, t);
+  if (ar && vid && vid.readyState >= 2) {
+    if (!playingRef.current) {
+      vid.currentTime = ar.localTimeMs / 1000;
+    }
+  }
+  
+  // 3. Dessiner la vidéo avec WebGL + filtres
+  if (vid && vid.readyState >= 2 && vid.videoWidth > 0) {
+    const uniforms = cssFilterToUniforms(activeCss, intensity);
+    renderVideoFrame(vid, CANVAS_W, CANVAS_H, uniforms);
+  }
+  
+  // 4. Dessiner les overlays sur le canvas 2D
   overlayCtx.clearRect(0, 0, CANVAS_W, CANVAS_H);
   renderFrame({ ..., skipBackground: true });
-  requestAnimationFrame(overlayLoop);
+  
+  // 5. Audio fade
+  applyAudioFade(t, audioRef, audioClip, audioVolume, duration);
+  
+  rafRef.current = requestAnimationFrame(loop);
 };
 ```
 
-### Séparation des responsabilités :
-1. **rVFC** → dessine la vidéo filtrée sur le canvas WebGL
-   (seulement quand une nouvelle frame est disponible)
-2. **RAF** → dessine les overlays sur le canvas 2D transparent
-   (à 60fps pour un drag fluide des sous-titres)
+## IMPORTANT
+- UN SEUL RAF loop — pas de rVFC séparé, pas de RAF overlay séparé
+- UN SEUL `<video>` element — pas de video pool
+- Le Lab utilise ce pattern et c'est FLUIDE sur Safari iOS
+- Retirer les logs de debug (PLAY, PERF, RVFC)
 
-### Fallback pour navigateurs sans rVFC :
-```typescript
-if ('requestVideoFrameCallback' in HTMLVideoElement.prototype) {
-  vid.requestVideoFrameCallback(onVideoFrame);
-} else {
-  // Fallback RAF pour Firefox
-  const fallback = () => { renderVideoFrame(...); requestAnimationFrame(fallback); };
-  requestAnimationFrame(fallback);
-}
-```
-
-### Multi-track : chaque vidéo dans le pool a son propre rVFC
-```typescript
-for (const { clip } of activeClips) {
-  const vid = pool.get(clip.id);
-  if (vid && !vid.__rvfcActive) {
-    vid.__rvfcActive = true;
-    const cb = (now, meta) => {
-      // Marquer cette vidéo comme ayant une nouvelle frame
-      vid.__hasNewFrame = true;
-      vid.requestVideoFrameCallback(cb);
-    };
-    vid.requestVideoFrameCallback(cb);
-  }
-}
-// Dans le RAF loop des overlays, redessiner le WebGL canvas
-// seulement si au moins une vidéo a une nouvelle frame
-```
-
-## Fichier à modifier
-- `components/features/editor-v2/SubtitleCanvas.tsx`
-
-## Attention
-- Le rVFC ne se déclenche que quand la vidéo JOUE (pas en pause)
-- Pour le scrub (pause + seek), garder le pattern `seeked` event actuel
-- Le wall clock playhead continue d'avancer via son propre RAF
-- Retirer le log PERF après le fix
+## Fichier
+- `components/features/editor-v2/SubtitleCanvas.tsx` — réécriture
 
 ## Definition of Done
-- [ ] Le playback vidéo est fluide sur Safari iOS (pas de judder)
-- [ ] Le scrub reste fluide
-- [ ] Les overlays (sous-titres, texte) se mettent à jour à 60fps
-- [ ] Le playhead avance linéairement
-- [ ] Les fades audio s'appliquent
-- [ ] Retirer les console.log PERF
+- [ ] Playback fluide sur Safari iOS (pas de saccades)
+- [ ] Filtres WebGL fonctionnent
+- [ ] Scrub fluide
+- [ ] Playhead avance linéairement
+- [ ] Audio fade-in/fade-out pendant le play
+- [ ] Drag sous-titres/overlays fonctionne
+- [ ] Pas de logs de debug
 - [ ] npm run build passe
