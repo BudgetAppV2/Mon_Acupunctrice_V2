@@ -318,7 +318,7 @@ export default function SubtitleCanvas() {
   const handleMove = (e: React.MouseEvent | React.TouchEvent) => { const c = canvasRef.current; if (c) onMove(e, c); };
 
   return (
-    <div className="relative w-full h-auto max-h-full" style={{ aspectRatio: '9/16' }}>
+    <div className="relative h-full mx-auto" style={{ aspectRatio: '9/16', maxHeight: '100%', maxWidth: '100%' }}>
       <canvas ref={canvasRef} width={CANVAS_W} height={CANVAS_H}
         className="w-full h-full"
         style={{ cursor: isDragging ? 'grabbing' : 'grab', touchAction: 'none' }}
