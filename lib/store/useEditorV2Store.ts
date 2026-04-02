@@ -37,7 +37,7 @@ const INITIAL_STATE = {
   selectedOverlayId: null as string | null,
   coverFrameMs: 0,
   coverDataUrl: null as string | null,
-  voiceVolume: 1.0,
+  voiceVolume: 0.3,
   audioVolume: 0.3,
   audioDucking: false,
   // V2 additions

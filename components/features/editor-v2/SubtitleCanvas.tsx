@@ -164,7 +164,6 @@ export default function SubtitleCanvas() {
   // Audio element
   useEffect(() => {
     const url = getFirstAudioUrl(tracks);
-    console.log('[AUDIO_INIT]', JSON.stringify({ hasUrl: !!url, url: url?.slice(0, 60) }));
     if (url) { if (!audioRef.current) audioRef.current = new Audio(); audioRef.current.src = url; audioRef.current.loop = true; }
     else if (audioRef.current) { audioRef.current.pause(); audioRef.current.removeAttribute('src'); audioRef.current = null; }
   }, [tracks]);
@@ -192,21 +191,9 @@ export default function SubtitleCanvas() {
     prevPlayingRef.current = isPlaying;
   }, [isPlaying, voiceVolume, poolRef, getOrCreate]);
   useEffect(() => {
-    const hasAudio = !!audioRef.current;
-    const audioSrc = audioRef.current?.src || 'none';
-    console.log('[AUDIO_STATE]', JSON.stringify({ 
-      isPlaying, hasAudio, 
-      src: audioSrc.slice(0, 50),
-      paused: audioRef.current?.paused,
-      readyState: audioRef.current?.readyState 
-    }));
     if (audioRef.current) {
-      if (isPlaying) {
-        const p = audioRef.current.play();
-        if (p) p.then(() => console.log('[AUDIO_OK] playing')).catch((e: Error) => console.warn('[AUDIO_PLAY_ERR]', e.message));
-      } else {
-        audioRef.current.pause();
-      }
+      if (isPlaying) audioRef.current.play().catch(() => {});
+      else audioRef.current.pause();
     }
   }, [isPlaying]);
 
