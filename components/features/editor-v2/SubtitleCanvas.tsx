@@ -68,54 +68,54 @@ export default function SubtitleCanvas() {
 
   useEffect(() => cleanupPool, [cleanupPool]);
 
-  // Draw one frame: WebGL for video+filters, 2D overlay for subtitles
-  const drawFrame = useCallback(() => {
+  // Draw WebGL video layer only (called by rVFC or on scrub seeked)
+  const drawVideo = useCallback(() => {
+    if (!glInitRef.current) return;
     const t = timeRef.current;
     const allTracks = tracksRef.current;
     const hasClips = allTracks.some(tr => tr.type === 'video' && tr.clips && tr.clips.length > 0);
 
-    // 1. WebGL canvas — video + filters
-    if (glInitRef.current) {
-      if (hasClips) {
-        const activeClips = findActiveClipsAllTracks(allTracks, t);
-        if (activeClips.length === 0) {
-          // Between clips — clear to black
-          const gl = glCanvasRef.current?.getContext('webgl');
-          if (gl) { gl.clearColor(0, 0, 0, 1); gl.clear(gl.COLOR_BUFFER_BIT); }
-        } else {
-          // Draw from lowest track to highest (painter's algorithm)
-          for (let i = activeClips.length - 1; i >= 0; i--) {
-            const { clip } = activeClips[i];
-            if (!clip.blobUrl) continue;
-            const vid = getOrCreate(clip.id, clip.blobUrl);
-            if (vid.readyState < 2 || vid.videoWidth === 0) continue;
-            const cFid = (clip.filterId && clip.filterId !== 'normal') ? clip.filterId : filterIdRef.current;
-            const af = FILTERS.find(f => f.id === cFid);
-            const uniforms = af ? cssFilterToUniforms(af.css, fIntensityRef.current) : IDENTITY_UNIFORMS;
-            renderVideoFrame(vid, CANVAS_W, CANVAS_H, uniforms);
-          }
-        }
-      } else {
-        // No clips — clear to transparent (gradient drawn by overlay)
+    if (hasClips) {
+      const activeClips = findActiveClipsAllTracks(allTracks, t);
+      if (activeClips.length === 0) {
         const gl = glCanvasRef.current?.getContext('webgl');
-        if (gl) { gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT); }
+        if (gl) { gl.clearColor(0, 0, 0, 1); gl.clear(gl.COLOR_BUFFER_BIT); }
+      } else {
+        for (let i = activeClips.length - 1; i >= 0; i--) {
+          const { clip } = activeClips[i];
+          if (!clip.blobUrl) continue;
+          const vid = getOrCreate(clip.id, clip.blobUrl);
+          if (vid.readyState < 2 || vid.videoWidth === 0) continue;
+          const cFid = (clip.filterId && clip.filterId !== 'normal') ? clip.filterId : filterIdRef.current;
+          const af = FILTERS.find(f => f.id === cFid);
+          const uniforms = af ? cssFilterToUniforms(af.css, fIntensityRef.current) : IDENTITY_UNIFORMS;
+          renderVideoFrame(vid, CANVAS_W, CANVAS_H, uniforms);
+        }
       }
-    }
-
-    // 2. 2D overlay canvas — subtitles + text overlays
-    const overlay = overlayCanvasRef.current;
-    if (overlay) {
-      const ctx = overlay.getContext('2d');
-      if (ctx) {
-        ctx.clearRect(0, 0, CANVAS_W, CANVAS_H);
-        renderFrame({
-          canvas: overlay, blocks: blocksRef.current, globalPreset: presetRef.current,
-          currentMs: t, nowMs: performance.now(), canvasWidth: CANVAS_W, canvasHeight: CANVAS_H,
-          skipBackground: hasClips, textOverlays: textOverlaysRef.current,
-        });
-      }
+    } else {
+      const gl = glCanvasRef.current?.getContext('webgl');
+      if (gl) { gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT); }
     }
   }, [getOrCreate]);
+
+  // Draw 2D overlay only (called at 60fps by RAF for fluid subtitle drag)
+  const drawOverlay = useCallback(() => {
+    const overlay = overlayCanvasRef.current;
+    if (!overlay) return;
+    const ctx = overlay.getContext('2d');
+    if (!ctx) return;
+    const t = timeRef.current;
+    const hasClips = tracksRef.current.some(tr => tr.type === 'video' && tr.clips && tr.clips.length > 0);
+    ctx.clearRect(0, 0, CANVAS_W, CANVAS_H);
+    renderFrame({
+      canvas: overlay, blocks: blocksRef.current, globalPreset: presetRef.current,
+      currentMs: t, nowMs: performance.now(), canvasWidth: CANVAS_W, canvasHeight: CANVAS_H,
+      skipBackground: hasClips, textOverlays: textOverlaysRef.current,
+    });
+  }, []);
+
+  // Combined draw for scrub (both layers at once)
+  const drawFrame = useCallback(() => { drawVideo(); drawOverlay(); }, [drawVideo, drawOverlay]);
 
   // Init first clip metadata + thumbnail
   useEffect(() => {
@@ -262,28 +262,54 @@ export default function SubtitleCanvas() {
     return () => { cancelAnimationFrame(id); playingClips.clear(); };
   }, [isPlaying, poolRef, voiceVolume]);
 
-  // Render loop
+  // rVFC: redraw WebGL video only when decoder has a new frame (no judder)
+  const rvfcIdsRef = useRef<Map<string, number>>(new Map());
+  useEffect(() => {
+    if (!isPlaying) { rvfcIdsRef.current.clear(); return; }
+    const hasRVFC = 'requestVideoFrameCallback' in HTMLVideoElement.prototype;
+    if (!hasRVFC) return; // fallback handled by overlay RAF below
+
+    const registerRVFC = (vid: HTMLVideoElement, clipId: string) => {
+      if (rvfcIdsRef.current.has(clipId)) return;
+      const cb = () => {
+        drawVideo();
+        if (useEditorV2Store.getState().isPlaying) {
+          const id = (vid as HTMLVideoElement & { requestVideoFrameCallback: (cb: () => void) => number }).requestVideoFrameCallback(cb);
+          rvfcIdsRef.current.set(clipId, id);
+        } else {
+          rvfcIdsRef.current.delete(clipId);
+        }
+      };
+      const id = (vid as HTMLVideoElement & { requestVideoFrameCallback: (cb: () => void) => number }).requestVideoFrameCallback(cb);
+      rvfcIdsRef.current.set(clipId, id);
+    };
+
+    // Register rVFC for all currently active clips
+    const actives = findActiveClipsAllTracks(tracksRef.current, timeRef.current);
+    for (const { clip } of actives) {
+      if (!clip.blobUrl) continue;
+      const vid = poolRef.current.get(clip.id);
+      if (vid) registerRVFC(vid, clip.id);
+    }
+
+    return () => { rvfcIdsRef.current.clear(); };
+  }, [isPlaying, drawVideo, poolRef]);
+
+  // RAF loop: overlays at 60fps + fallback video render when paused or no rVFC
   useEffect(() => {
     let active = true;
-    let frameCount = 0;
-    let lastFpsLog = performance.now();
+    const hasRVFC = 'requestVideoFrameCallback' in HTMLVideoElement.prototype;
     const loop = () => {
       if (!active) return;
-      const t0 = performance.now();
-      drawFrame();
-      const dt = performance.now() - t0;
-      frameCount++;
-      if (performance.now() - lastFpsLog > 3000) {
-        const fps = Math.round(frameCount / ((performance.now() - lastFpsLog) / 1000));
-        console.log('[PERF]', JSON.stringify({ fps, avgDrawMs: (dt).toFixed(1) }));
-        frameCount = 0;
-        lastFpsLog = performance.now();
-      }
+      // Video: only draw here if paused or browser lacks rVFC
+      if (!useEditorV2Store.getState().isPlaying || !hasRVFC) drawVideo();
+      // Overlays: always at 60fps
+      drawOverlay();
       rafRef.current = requestAnimationFrame(loop);
     };
     rafRef.current = requestAnimationFrame(loop);
     return () => { active = false; cancelAnimationFrame(rafRef.current); };
-  }, [drawFrame]);
+  }, [drawVideo, drawOverlay]);
 
   const handleDown = (e: React.MouseEvent | React.TouchEvent) => { const c = overlayCanvasRef.current; if (c) onDown(e, c); };
   const handleMove = (e: React.MouseEvent | React.TouchEvent) => { const c = overlayCanvasRef.current; if (c) onMove(e, c); };
