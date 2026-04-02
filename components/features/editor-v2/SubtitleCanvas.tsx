@@ -33,6 +33,9 @@ export default function SubtitleCanvas() {
   const glCanvasRef = useRef<HTMLCanvasElement>(null);
   const overlayCanvasRef = useRef<HTMLCanvasElement>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  // Version log — fires once to confirm deployed code version
+  useEffect(() => { console.log('[EDITOR_V2] v12 — trim Map, vid.muted=false, voiceVolume slider'); }, []);
   const rafRef = useRef<number>(0);
   const glInitRef = useRef(false);
   const { getOrCreate, poolRef, cleanup: cleanupPool } = useVideoPool();
