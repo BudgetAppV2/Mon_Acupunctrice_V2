@@ -297,11 +297,13 @@ export default function SubtitleCanvas() {
             activeClipRef.current.set(track.id, clip.id);
           }
           vid.currentTime = localTimeMs / 1000;
+          vid.muted = false;
           vid.play().catch(() => {});
           setGain(track.id, (track.volume ?? 1) * voiceVolumeRef.current);
         }
         if (musicElRef.current) {
           musicElRef.current.currentTime = t / 1000;
+          musicElRef.current.muted = false;
           musicElRef.current.play().catch(() => {});
           setGain('music', audioVolumeRef.current);
         }
@@ -389,6 +391,7 @@ export default function SubtitleCanvas() {
               activeClipRef.current.set(track.id, clip.id);
             }
             vid.currentTime = localTimeMs / 1000;
+            vid.muted = false;
             vid.play().catch(() => {});
             setGain(track.id, (track.volume ?? 1) * voiceVolumeRef.current);
             playingState.set(track.id, { clipId: clip.id, trimStart: clip.trimStart, trimEnd: clip.trimEnd });
