@@ -257,7 +257,10 @@ export default function SubtitleCanvas() {
           if (!playingClips.has(clip.id)) {
             // First time playing this clip — seek to start position then play
             vid.currentTime = localTimeMs / 1000;
-            vid.muted = false; vid.volume = voiceVolume;
+            // If a music track exists, mute video audio so music is heard
+            const hasMusic = !!getFirstAudioUrl(store.tracks);
+            vid.muted = hasMusic && voiceVolume <= 0.3;
+            vid.volume = voiceVolume;
             vid.play().catch(() => {});
             playingClips.add(clip.id);
           }
