@@ -182,7 +182,7 @@ export default function SubtitleCanvas() {
         if (!clip.blobUrl) continue;
         const vid = getOrCreate(clip.id, clip.blobUrl);
         vid.currentTime = localTimeMs / 1000;
-        vid.muted = false; vid.volume = voiceVolume;
+        vid.muted = voiceVolume === 0; vid.volume = voiceVolume;
         vid.play().catch(() => {});
       }
     } else if (!isPlaying) {
@@ -257,9 +257,7 @@ export default function SubtitleCanvas() {
           if (!playingClips.has(clip.id)) {
             // First time playing this clip — seek to start position then play
             vid.currentTime = localTimeMs / 1000;
-            // If a music track exists, mute video audio so music is heard
-            const hasMusic = !!getFirstAudioUrl(store.tracks);
-            vid.muted = hasMusic && voiceVolume <= 0.3;
+            vid.muted = voiceVolume === 0;
             vid.volume = voiceVolume;
             vid.play().catch(() => {});
             playingClips.add(clip.id);
