@@ -25,6 +25,16 @@ export default function CameraOverlay({ onClose }: Props) {
   useEffect(() => {
     if (viewfinderRef.current && stream) {
       viewfinderRef.current.srcObject = stream;
+      // Log actual camera resolution
+      const vt = stream.getVideoTracks()[0];
+      const settings = vt?.getSettings();
+      console.log('[CAMERA]', JSON.stringify({
+        width: settings?.width,
+        height: settings?.height,
+        aspectRatio: settings?.aspectRatio,
+        facingMode: settings?.facingMode,
+        frameRate: settings?.frameRate,
+      }));
     }
   }, [stream]);
 
@@ -39,6 +49,16 @@ export default function CameraOverlay({ onClose }: Props) {
     const result = await startRecording(stream);
     recordingRef.current = false;
     if (result) {
+      // Log recorded video dimensions
+      const testVid = document.createElement('video');
+      testVid.src = result.url;
+      testVid.onloadedmetadata = () => {
+        console.log('[RECORDED_VIDEO]', JSON.stringify({
+          videoWidth: testVid.videoWidth,
+          videoHeight: testVid.videoHeight,
+          duration: testVid.duration,
+        }));
+      };
       addVideoClip(result.file);
       onClose();
     }
@@ -65,12 +85,10 @@ export default function CameraOverlay({ onClose }: Props) {
         <div className="w-10" />
       </div>
 
-      {/* Viewfinder — 9:16 containment like the hub */}
-      <div className="flex-1 relative overflow-hidden flex items-center justify-center">
-        <div className="relative overflow-hidden mx-auto"
-          style={{ aspectRatio: '9/16', height: '100%', maxHeight: '100dvh', maxWidth: 'calc(100dvh * 9 / 16)' }}>
+      {/* Viewfinder — fills entire screen, no black bars */}
+      <div className="flex-1 relative overflow-hidden">
           <video ref={viewfinderRef} autoPlay playsInline muted
-            className="w-full h-full object-cover"
+            className="absolute inset-0 w-full h-full object-cover"
             style={{ transform: 'scaleX(-1)' }} />
 
           {/* Countdown overlay */}
@@ -81,7 +99,6 @@ export default function CameraOverlay({ onClose }: Props) {
               </span>
             </div>
           )}
-        </div>
       </div>
 
       {/* Record button */}
