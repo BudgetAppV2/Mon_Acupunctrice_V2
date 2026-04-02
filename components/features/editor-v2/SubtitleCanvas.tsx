@@ -114,7 +114,12 @@ export default function SubtitleCanvas() {
           : 'none';
 
         if (filterCss !== 'none') ctx.filter = filterCss;
-        const c = coverCrop(vid.videoWidth, vid.videoHeight, CANVAS_W, CANVAS_H);
+        const vw = vid.videoWidth, vh = vid.videoHeight;
+        if (!window.__vidDimLogged) {
+          console.log('[VID_DIM]', JSON.stringify({ vw, vh, canvasW: CANVAS_W, canvasH: CANVAS_H, aspect: (vw/vh).toFixed(2) }));
+          window.__vidDimLogged = true;
+        }
+        const c = coverCrop(vw, vh, CANVAS_W, CANVAS_H);
         ctx.drawImage(vid, c.sx, c.sy, c.sw, c.sh, 0, 0, CANVAS_W, CANVAS_H);
         ctx.filter = 'none';
       }
