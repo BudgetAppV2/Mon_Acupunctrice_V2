@@ -265,7 +265,22 @@ export default function SubtitleCanvas() {
   // Render loop
   useEffect(() => {
     let active = true;
-    const loop = () => { if (!active) return; drawFrame(); rafRef.current = requestAnimationFrame(loop); };
+    let frameCount = 0;
+    let lastFpsLog = performance.now();
+    const loop = () => {
+      if (!active) return;
+      const t0 = performance.now();
+      drawFrame();
+      const dt = performance.now() - t0;
+      frameCount++;
+      if (performance.now() - lastFpsLog > 3000) {
+        const fps = Math.round(frameCount / ((performance.now() - lastFpsLog) / 1000));
+        console.log('[PERF]', JSON.stringify({ fps, avgDrawMs: (dt).toFixed(1) }));
+        frameCount = 0;
+        lastFpsLog = performance.now();
+      }
+      rafRef.current = requestAnimationFrame(loop);
+    };
     rafRef.current = requestAnimationFrame(loop);
     return () => { active = false; cancelAnimationFrame(rafRef.current); };
   }, [drawFrame]);
