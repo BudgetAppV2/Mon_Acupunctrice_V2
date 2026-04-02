@@ -214,6 +214,7 @@ export default function SubtitleCanvas() {
   useEffect(() => {
     if (!isPlaying) return;
     let prevWall: number | null = null;
+    let lastStoreUpdate: number | null = null;
     let id: number;
     const playingClips = new Set<string>();
     const tick = (wallMs: number) => {
@@ -222,7 +223,13 @@ export default function SubtitleCanvas() {
         if (!store.isPlaying) return;
         const n = store.currentTime + (wallMs - prevWall);
         if (n >= store.duration) { store.setCurrentTime(0); store.setIsPlaying(false); return; }
-        store.setCurrentTime(n);
+        // Throttle store updates to ~15fps to reduce React re-renders on mobile
+        // The video plays natively — we only need to update the playhead/timer UI
+        timeRef.current = n;
+        if (!lastStoreUpdate || wallMs - lastStoreUpdate > 66) { // ~15fps
+          store.setCurrentTime(n);
+          lastStoreUpdate = wallMs;
+        }
         // Audio fade
         if (audioRef.current) {
           const audioClip = store.tracks.find(t => t.type === 'audio')?.audioClips?.[0];
@@ -267,15 +274,11 @@ export default function SubtitleCanvas() {
   useEffect(() => {
     if (!isPlaying) { rvfcIdsRef.current.clear(); return; }
     const hasRVFC = 'requestVideoFrameCallback' in HTMLVideoElement.prototype;
-    console.log('[RVFC_SUPPORT]', JSON.stringify({ hasRVFC, activeClips: findActiveClipsAllTracks(tracksRef.current, timeRef.current).length }));
     if (!hasRVFC) return; // fallback handled by overlay RAF below
 
     const registerRVFC = (vid: HTMLVideoElement, clipId: string) => {
       if (rvfcIdsRef.current.has(clipId)) return;
-      let rvfcCount = 0;
       const cb = () => {
-        rvfcCount++;
-        if (rvfcCount % 30 === 0) console.log('[RVFC]', JSON.stringify({ clipId: clipId.slice(0,8), frames: rvfcCount }));
         drawVideo();
         if (useEditorV2Store.getState().isPlaying) {
           const id = (vid as HTMLVideoElement & { requestVideoFrameCallback: (cb: () => void) => number }).requestVideoFrameCallback(cb);
