@@ -190,7 +190,17 @@ export default function SubtitleCanvas() {
     }
     prevPlayingRef.current = isPlaying;
   }, [isPlaying, voiceVolume, poolRef, getOrCreate]);
-  useEffect(() => { if (audioRef.current) { if (isPlaying) audioRef.current.play().catch(() => {}); else audioRef.current.pause(); } }, [isPlaying]);
+  useEffect(() => {
+    if (audioRef.current) {
+      if (isPlaying) {
+        // Safari iOS requires play() within user gesture — retry with logging
+        const p = audioRef.current.play();
+        if (p) p.catch((e: Error) => console.warn('[AUDIO_PLAY_ERR]', e.message));
+      } else {
+        audioRef.current.pause();
+      }
+    }
+  }, [isPlaying]);
 
   // Scrub: seek all relevant clips + redraw
   useEffect(() => {
