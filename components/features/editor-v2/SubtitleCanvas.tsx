@@ -62,6 +62,25 @@ function useAudioEngine() {
     }
   }, []);
 
+  // Resume AudioContext on ANY user gesture (required by Safari iOS)
+  // Must be in the synchronous call stack of touchstart/click — not in a useEffect reaction
+  useEffect(() => {
+    const handleGesture = () => {
+      const engine = engineRef.current;
+      if (engine && engine.ctx.state === 'suspended') {
+        engine.ctx.resume().then(() => {
+          console.log('[AUDIO_ENGINE] Resumed via user gesture, state:', engine.ctx.state);
+        });
+      }
+    };
+    document.addEventListener('touchstart', handleGesture, { passive: true });
+    document.addEventListener('click', handleGesture);
+    return () => {
+      document.removeEventListener('touchstart', handleGesture);
+      document.removeEventListener('click', handleGesture);
+    };
+  }, []);
+
   return { connectElement, setGain, resume, cleanup, engineRef };
 }
 
@@ -105,7 +124,7 @@ export default function SubtitleCanvas() {
   const glInitRef = useRef(false);
 
   const { getOrCreate: getTrackVideo, videosRef, activeClipRef, cleanup: cleanupVideos } = useTrackVideos();
-  const { connectElement, setGain, resume: resumeAudio, cleanup: cleanupAudio } = useAudioEngine();
+  const { connectElement, setGain, resume: resumeAudio, cleanup: cleanupAudio, engineRef } = useAudioEngine();
 
   const { blocks, globalPreset, currentTime, isPlaying, duration,
     filterId, videoUrl, voiceVolume, audioVolume, tracks, filterIntensity: fIntensity,
@@ -263,7 +282,9 @@ export default function SubtitleCanvas() {
   useEffect(() => {
     if (isPlaying && !prevPlayingRef.current) {
       // Resume AudioContext FIRST (required by iOS on user gesture), then play
+      console.log('[AUDIO_ENGINE] Play pressed, ctx state:', engineRef.current?.ctx.state ?? 'no engine');
       resumeAudio().then(() => {
+        console.log('[AUDIO_ENGINE] After resume in play effect, ctx state:', engineRef.current?.ctx.state);
         const t = useEditorV2Store.getState().currentTime;
         const allTracks = tracksRef.current;
         const actives = findActiveClipsAllTracks(allTracks, t);
