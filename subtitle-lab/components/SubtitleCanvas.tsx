@@ -1,20 +1,23 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import { useSubtitleStore, getVideoTrack } from '../lib/store';
 import { renderFrame } from '../lib/renderer';
 import { FILTERS } from '../lib/filters';
 import { CANVAS_W, CANVAS_H, findActiveClip,
-  createVideoElement, getFirstAudioUrl, coverCrop } from '../lib/playback';
+  createVideoElement, getFirstAudioUrl } from '../lib/playback';
 import { useSubtitleDrag } from '../lib/useSubtitleDrag';
+import { initWebGL, renderVideoFrame, destroyWebGL, cssFilterToUniforms, IDENTITY_UNIFORMS } from '../lib/webglRenderer';
 
 export default function SubtitleCanvas() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const glCanvasRef = useRef<HTMLCanvasElement>(null);
+  const overlayCanvasRef = useRef<HTMLCanvasElement>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const preloadRef = useRef<HTMLVideoElement | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const rafRef = useRef<number>(0);
   const activeClipIdRef = useRef<string | null>(null);
+  const glInitRef = useRef(false);
 
   const { blocks, globalPreset, currentTime, isPlaying, duration,
     filterId, videoUrl, voiceVolume, audioVolume, tracks, filterIntensity: fIntensity,
@@ -23,7 +26,7 @@ export default function SubtitleCanvas() {
   const dragPos = selOverlay ? selOverlay.style.position : globalPreset.position;
   const { isDragging, onDown, onMove, onUp } = useSubtitleDrag(dragPos, selectedOverlayId);
 
-  // Refs for RAF loop (avoids stale closures)
+  // Refs for RAF loop
   const timeRef = useRef(currentTime);
   const playingRef = useRef(isPlaying);
   const durationRef = useRef(duration);
@@ -44,7 +47,16 @@ export default function SubtitleCanvas() {
   useEffect(() => { filterIntensityRef.current = fIntensity; }, [fIntensity]);
   useEffect(() => { textOverlaysRef.current = textOverlays; }, [textOverlays]);
 
-  // Two video elements for double-buffered playback (A3)
+  // Init WebGL on mount
+  useEffect(() => {
+    const glCanvas = glCanvasRef.current;
+    if (glCanvas && !glInitRef.current) {
+      glInitRef.current = initWebGL(glCanvas);
+    }
+    return () => { destroyWebGL(); glInitRef.current = false; };
+  }, []);
+
+  // Two video elements for double-buffered playback
   useEffect(() => {
     videoRef.current = createVideoElement();
     preloadRef.current = createVideoElement();
@@ -54,17 +66,18 @@ export default function SubtitleCanvas() {
     };
   }, []);
 
-  // Audio element for music (A4)
+  // Audio element
   useEffect(() => {
     const url = getFirstAudioUrl(tracks);
     if (url) { if (!audioRef.current) audioRef.current = new Audio(); audioRef.current.src = url; audioRef.current.loop = true; }
     else if (audioRef.current) { audioRef.current.pause(); audioRef.current.removeAttribute('src'); audioRef.current = null; }
   }, [tracks]);
 
-  // Sync volumes (A4)
+  // Sync volumes
   useEffect(() => { if (videoRef.current) videoRef.current.volume = voiceVolume; if (preloadRef.current) preloadRef.current.volume = voiceVolume; }, [voiceVolume]);
   useEffect(() => { if (audioRef.current) audioRef.current.volume = audioVolume; }, [audioVolume]);
-  // FIX-1: Load video source immediately on import + init clip duration
+
+  // Load video source + init clip duration
   useEffect(() => {
     const vid = videoRef.current;
     if (!vid || !videoUrl) return;
@@ -77,26 +90,28 @@ export default function SubtitleCanvas() {
         const store = useSubtitleStore.getState();
         store.setDuration(dMs);
         if (firstClipId) store.initClipDuration(firstClipId, dMs);
-        // Generate thumbnail then show first frame
-        if (!store.thumbnailUrl) {
-          vid.currentTime = Math.min(2, vid.duration);
-          vid.onseeked = () => {
-            try { const c = document.createElement('canvas'); c.width = 90; c.height = 160; c.getContext('2d')!.drawImage(vid, 0, 0, 90, 160); const u = c.toDataURL('image/jpeg', 0.7); if (u.length > 100) store.setThumbnail(u); } catch {}
-            vid.currentTime = 0.01; // Show first frame
-            vid.onseeked = null;
-          };
-        } else {
-          vid.currentTime = 0.01; // Show first frame immediately
-        }
+        vid.currentTime = Math.min(2, vid.duration);
+        vid.onseeked = () => {
+          try {
+            const c = document.createElement('canvas'); c.width = 90; c.height = 160;
+            c.getContext('2d')!.drawImage(vid, 0, 0, 90, 160);
+            const u = c.toDataURL('image/jpeg', 0.7);
+            if (u.length > 100) store.setThumbnail(u);
+          } catch {}
+          vid.currentTime = 0.01;
+          vid.onseeked = null;
+        };
       }
     };
     vid.addEventListener('loadedmetadata', onMeta);
     return () => vid.removeEventListener('loadedmetadata', onMeta);
   }, [videoUrl]);
-  // Play/pause audio + video
+
+  // Play/pause
   useEffect(() => { if (audioRef.current) { if (isPlaying) audioRef.current.play().catch(() => {}); else audioRef.current.pause(); } }, [isPlaying]);
   useEffect(() => { if (audioRef.current && !isPlaying) audioRef.current.currentTime = currentTime / 1000; }, [currentTime, isPlaying]);
   useEffect(() => { const v = videoRef.current; if (!v) return; if (isPlaying) { v.muted = false; v.volume = voiceVolume; v.play().catch(() => {}); } else { v.pause(); } }, [isPlaying, voiceVolume]);
+
   // Scrub video to correct clip
   useEffect(() => {
     const vid = videoRef.current; if (!vid || isPlaying) return;
@@ -105,7 +120,6 @@ export default function SubtitleCanvas() {
       if (r.clip.id !== activeClipIdRef.current && r.clip.blobUrl) { vid.src = r.clip.blobUrl; activeClipIdRef.current = r.clip.id; }
       vid.currentTime = r.localTimeMs / 1000;
     } else {
-      // Fallback: seek first clip proportionally when findActiveClip misses
       const allClips = tracksRef.current.filter(t => t.type === 'video').flatMap(t => t.clips ?? []);
       if (allClips.length > 0 && duration > 0) {
         const first = allClips[0];
@@ -117,23 +131,14 @@ export default function SubtitleCanvas() {
     }
   }, [currentTime, isPlaying, duration]);
 
-  // RAF loop
+  // RAF loop — WebGL for video+filters, 2D overlay for subtitles
   useEffect(() => {
     let prevWall: number | null = null;
     const loop = (wallMs: number) => {
       const vid = videoRef.current;
       const ar = findActiveClip(tracksRef.current, timeRef.current);
-      if (playingRef.current) {
-        if (vid && vid.readyState >= 2 && ar) {
-          const gMs = ar.clip.timelineStart + (vid.currentTime * 1000 - ar.clip.trimStart);
-          if (Math.abs(gMs - timeRef.current) > 50) useSubtitleStore.getState().setCurrentTime(gMs);
-        } else if (prevWall !== null) {
-          const n = timeRef.current + (wallMs - prevWall);
-          if (n >= durationRef.current) { useSubtitleStore.getState().setCurrentTime(0); useSubtitleStore.getState().setIsPlaying(false); }
-          else useSubtitleStore.getState().setCurrentTime(n);
-        }
-        prevWall = wallMs;
-      } else { prevWall = null; }
+
+      // Clip switch detection
       if (vid && ar && ar.clip.id !== activeClipIdRef.current) {
         activeClipIdRef.current = ar.clip.id;
         if (ar.clip.blobUrl) {
@@ -146,42 +151,74 @@ export default function SubtitleCanvas() {
           if (playingRef.current) vid.play().catch(() => {});
         }
       }
-      const canvas = canvasRef.current;
-      if (canvas) {
-        const ctx = canvas.getContext('2d');
-        if (ctx) {
-          const hasAnyClips = tracksRef.current.some(t => t.type === 'video' && t.clips && t.clips.length > 0);
-          if (!ar && hasAnyClips) { ctx.fillStyle = '#000'; ctx.fillRect(0, 0, CANVAS_W, CANVAS_H); }
-          else if (!ar) { /* no clips — gradient drawn by renderFrame below */ }
-          else if (vid && vid.readyState >= 2 && vid.videoWidth > 0) {
-            const c = coverCrop(vid.videoWidth, vid.videoHeight, CANVAS_W, CANVAS_H);
-            ctx.drawImage(vid, c.sx, c.sy, c.sw, c.sh, 0, 0, CANVAS_W, CANVAS_H);
-          }
-          renderFrame({ canvas, blocks: blocksRef.current, globalPreset: presetRef.current,
-            currentMs: timeRef.current, nowMs: wallMs, canvasWidth: CANVAS_W, canvasHeight: CANVAS_H,
-            skipBackground: !!ar || hasAnyClips, textOverlays: textOverlaysRef.current });
+
+      // Playback time advancement
+      if (playingRef.current) {
+        if (vid && vid.readyState >= 2 && ar) {
+          const gMs = ar.clip.timelineStart + (vid.currentTime * 1000 - ar.clip.trimStart);
+          if (gMs >= 0 && Math.abs(gMs - timeRef.current) > 50) useSubtitleStore.getState().setCurrentTime(gMs);
+        } else if (prevWall !== null) {
+          const n = timeRef.current + (wallMs - prevWall);
+          if (n >= durationRef.current) { useSubtitleStore.getState().setCurrentTime(0); useSubtitleStore.getState().setIsPlaying(false); }
+          else useSubtitleStore.getState().setCurrentTime(n);
+        }
+        prevWall = wallMs;
+      } else { prevWall = null; }
+
+      // --- RENDER ---
+      const hasAnyClips = tracksRef.current.some(t => t.type === 'video' && t.clips && t.clips.length > 0);
+
+      // 1. WebGL canvas — video + filters
+      if (glInitRef.current && vid && vid.readyState >= 2 && vid.videoWidth > 0 && (ar || hasAnyClips)) {
+        // Resolve filter uniforms
+        const cFid = (ar?.clip.filterId && ar.clip.filterId !== 'normal') ? ar.clip.filterId : filterIdRef.current;
+        const af = FILTERS.find(f => f.id === cFid);
+        const uniforms = af ? cssFilterToUniforms(af.css, filterIntensityRef.current) : IDENTITY_UNIFORMS;
+        renderVideoFrame(vid, CANVAS_W, CANVAS_H, uniforms);
+      } else if (glInitRef.current) {
+        // No video ready — clear WebGL to black/transparent
+        const glCanvas = glCanvasRef.current;
+        if (glCanvas) {
+          const gl = glCanvas.getContext('webgl');
+          if (gl) { gl.clearColor(0, 0, 0, hasAnyClips ? 1 : 0); gl.clear(gl.COLOR_BUFFER_BIT); }
         }
       }
+
+      // 2. 2D overlay canvas — subtitles + text overlays
+      const overlay = overlayCanvasRef.current;
+      if (overlay) {
+        const ctx = overlay.getContext('2d');
+        if (ctx) {
+          ctx.clearRect(0, 0, CANVAS_W, CANVAS_H);
+          renderFrame({
+            canvas: overlay, blocks: blocksRef.current, globalPreset: presetRef.current,
+            currentMs: timeRef.current, nowMs: wallMs, canvasWidth: CANVAS_W, canvasHeight: CANVAS_H,
+            skipBackground: hasAnyClips || !!ar, textOverlays: textOverlaysRef.current,
+          });
+        }
+      }
+
       rafRef.current = requestAnimationFrame(loop);
     };
     rafRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(rafRef.current);
   }, []);
 
-  // CSS filter for Safari (ctx.filter not supported on WebKit)
-  const ac = findActiveClip(tracksRef.current, currentTime);
-  const cFid = (ac?.clip.filterId && ac.clip.filterId !== 'normal') ? ac.clip.filterId : filterId;
-  const af = FILTERS.find(f => f.id === cFid);
-  const cssFilter = (af?.css !== 'none' && fIntensity > 0) ? af?.css : undefined;
-
-  const handleDown = (e: React.MouseEvent | React.TouchEvent) => { const c = canvasRef.current; if (c) onDown(e, c); };
-  const handleMove = (e: React.MouseEvent | React.TouchEvent) => { const c = canvasRef.current; if (c) onMove(e, c); };
+  const handleDown = (e: React.MouseEvent | React.TouchEvent) => { const c = overlayCanvasRef.current; if (c) onDown(e, c); };
+  const handleMove = (e: React.MouseEvent | React.TouchEvent) => { const c = overlayCanvasRef.current; if (c) onMove(e, c); };
 
   return (
-    <canvas ref={canvasRef} width={CANVAS_W} height={CANVAS_H}
-      className="w-full h-auto max-h-full"
-      style={{ objectFit: 'contain', cursor: isDragging ? 'grabbing' : 'grab', touchAction: 'none', filter: cssFilter }}
-      onMouseDown={handleDown} onMouseMove={handleMove} onMouseUp={onUp} onMouseLeave={onUp}
-      onTouchStart={handleDown} onTouchMove={handleMove} onTouchEnd={onUp} />
+    <div className="relative w-full h-auto max-h-full" style={{ aspectRatio: '9/16' }}>
+      {/* WebGL canvas — video + GPU filters */}
+      <canvas ref={glCanvasRef} width={CANVAS_W} height={CANVAS_H}
+        className="absolute inset-0 w-full h-full" />
+
+      {/* 2D overlay canvas — subtitles + text overlays (transparent) */}
+      <canvas ref={overlayCanvasRef} width={CANVAS_W} height={CANVAS_H}
+        className="absolute inset-0 w-full h-full"
+        style={{ cursor: isDragging ? 'grabbing' : 'grab', touchAction: 'none' }}
+        onMouseDown={handleDown} onMouseMove={handleMove} onMouseUp={onUp} onMouseLeave={onUp}
+        onTouchStart={handleDown} onTouchMove={handleMove} onTouchEnd={onUp} />
+    </div>
   );
 }
