@@ -75,22 +75,20 @@ export default function AudioWaveform({ blobUrl, height, fadeIn = 0, fadeOut = 0
     const visibleBars = Math.ceil(amplitudes.length * visibleRatio);
     const barW = containerWidth / visibleBars;
 
-    // Draw bars with per-bar alpha that fades in/out matching the fade handles
+    // Draw bars with fade envelope applied to HEIGHT (triangle shape)
     const fadeInBars = (duration > 0 && fadeIn > 0) ? Math.round((fadeIn / duration) * visibleBars) : 0;
     const fadeOutBars = (duration > 0 && fadeOut > 0) ? Math.round((fadeOut / duration) * visibleBars) : 0;
+    ctx.fillStyle = 'rgba(251, 191, 36, 0.5)';
     for (let i = 0; i < visibleBars; i++) {
       const a = amplitudes[i] ?? 0;
-      const barH = Math.max(1, a * height * 0.9);
-      // Calculate alpha: fade-in ramps 0→1, fade-out ramps 1→0
-      let alpha = 0.5;
+      let envelope = 1;
       if (fadeInBars > 0 && i < fadeInBars) {
-        alpha = 0.1 + 0.4 * (i / fadeInBars);
+        envelope = i / fadeInBars;
       }
       if (fadeOutBars > 0 && i >= visibleBars - fadeOutBars) {
-        const fadePos = (visibleBars - i) / fadeOutBars;
-        alpha = Math.min(alpha, 0.1 + 0.4 * fadePos);
+        envelope = Math.min(envelope, (visibleBars - 1 - i) / fadeOutBars);
       }
-      ctx.fillStyle = `rgba(251, 191, 36, ${alpha})`;
+      const barH = Math.max(1, a * envelope * height * 0.9);
       ctx.fillRect(i * barW, (height - barH) / 2, Math.max(1, barW - 0.5), barH);
     }
   }, [amplitudes, containerWidth, height, audioDurationSec, duration, fadeIn, fadeOut]);
