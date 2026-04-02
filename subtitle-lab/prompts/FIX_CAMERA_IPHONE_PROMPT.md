@@ -1,35 +1,99 @@
-# FIX — Caméra iPhone saccadée + cadre noir
+# FIX — Capture caméra iPhone avec feeling natif
 
-## Problème 1: Image et son saccadés pendant l'enregistrement
-Le MediaRecorder utilise `recorder.start(1000)` — timeslice de 1s.
-Sur Safari iOS, ça cause des saccades.
-### Fix: `recorder.start()` sans timeslice (enregistrement continu).
+## Problème
+Le `getUserMedia` + `MediaRecorder` cause des saccades, cadre noir,
+et format étiré sur iOS Safari. On veut le feeling exact de la caméra
+native iPhone.
 
-## Problème 2: Cadre noir pendant l'enregistrement
-La contrainte caméra demande `width: { ideal: 1920 }, height: { ideal: 1080 }`
-ce qui capture en 16:9 paysage. Le viewfinder est en 9:16 portrait.
-### Fix: Demander une résolution portrait pour la caméra frontale:
+## Solution : `<input type="file" capture="user">`
+Au lieu d'utiliser getUserMedia + MediaRecorder (plein de bugs iOS),
+utiliser l'élément HTML natif `<input type="file" capture="user">`
+qui ouvre la caméra native iOS. C'est exactement la même UX que
+l'app Caméra de l'iPhone — pleine résolution, pas de saccades,
+format natif.
+
+## Implémentation
+
+### CameraOverlay.tsx — réécriture
+Remplacer le overlay fullscreen avec getUserMedia par deux options :
+
+1. **Bouton principal "Enregistrer"** → `<input type="file" capture="user" accept="video/*">`
+   - Ouvre la caméra native iOS
+   - L'utilisateur enregistre, appuie "Use Video"
+   - Le fichier revient comme un File objet
+   - On l'ajoute via `addVideoClip(file)`
+   - Aucun overlay pendant l'enregistrement (c'est la caméra native)
+
+2. **Bouton secondaire "Caméra web"** (optionnel, pour desktop)
+   - Garde le getUserMedia actuel comme fallback pour desktop
+   - Caché sur mobile (détecté via touch support ou screen size)
+
+### Détection de la plateforme
 ```typescript
-video: {
-  facingMode: 'user',
-  width: { ideal: 1080 },
-  height: { ideal: 1920 },
+const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+  (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const isMobile = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+```
+
+### Code simplifié pour la capture native
+```tsx
+export default function CameraOverlay({ onClose }: { onClose: () => void }) {
+  const { addVideoClip } = useEditorV2Store();
+  const fileRef = useRef<HTMLInputElement>(null);
+
+  const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      addVideoClip(file);
+      onClose();
+    }
+  };
+
+  // Sur mobile: ouvrir directement le file input qui lance la caméra native
+  useEffect(() => {
+    if (isMobile) {
+      fileRef.current?.click();
+    }
+  }, []);
+
+  return (
+    <div className="fixed inset-0 z-[100] bg-black flex items-center justify-center">
+      <input ref={fileRef} type="file" accept="video/*" capture="user"
+        onChange={handleFile} className="hidden" />
+      
+      {/* Fallback UI si la caméra native ne s'ouvre pas */}
+      <div className="text-center space-y-4">
+        <button onClick={() => fileRef.current?.click()}
+          className="px-6 py-3 bg-red-500 rounded-full text-white font-medium">
+          Ouvrir la caméra
+        </button>
+        <button onClick={onClose}
+          className="block mx-auto text-white/50 text-sm">
+          Annuler
+        </button>
+      </div>
+    </div>
+  );
 }
 ```
-Et aussi ajouter `aspectRatio: { ideal: 9/16 }` pour forcer le portrait.
 
-## Problème 3: Vidéo s'étire au playback
-La vidéo 16:9 est lue dans un container 9:16 avec object-cover →
-elle s'étire et perd les proportions.
-### Fix: Le SubtitleCanvas utilise déjà `object-cover` ce qui est
-correct. Mais si la vidéo source est en 16:9, le coverCrop la recadre.
-Avec le fix #2 (capture portrait), ce problème se résout aussi.
+## Avantages de cette approche
+- Pleine résolution native iPhone
+- Pas de saccades
+- Pas de cadre noir
+- L'utilisateur retrouve l'UI de sa caméra
+- Pas de bug de format/orientation
+- Fonctionne sur tous les navigateurs iOS (Safari, Chrome, Edge)
 
 ## Fichiers à modifier
-- `lib/editor-v2/useMediaRecorder.ts` — contraintes caméra + start()
+- `components/features/editor-v2/CameraOverlay.tsx` — réécriture
+- `lib/editor-v2/useMediaRecorder.ts` — garder mais ne plus utiliser
+  sur mobile
 
 ## Definition of Done
-- [ ] Enregistrement fluide sur iPhone (pas de saccades)
-- [ ] Pas de cadre noir pendant l'enregistrement
-- [ ] La vidéo enregistrée garde les bonnes proportions au playback
+- [ ] Sur iPhone: la caméra native s'ouvre quand on appuie "Enregistrer"
+- [ ] La vidéo enregistrée s'importe correctement (pas de saccades)
+- [ ] Pas de cadre noir ni d'étirement
+- [ ] Sur desktop: fallback getUserMedia fonctionne encore
+- [ ] Le bouton annuler ferme le overlay
 - [ ] npm run build passe
