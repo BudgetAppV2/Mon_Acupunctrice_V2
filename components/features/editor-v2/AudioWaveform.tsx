@@ -90,7 +90,7 @@ export default function AudioWaveform({ blobUrl, height, fadeIn = 0, fadeOut = 0
         const fadePos = (visibleBars - i) / fadeOutBars;
         alpha = Math.min(alpha, 0.1 + 0.4 * fadePos);
       }
-      ctx.fillStyle = \`rgba(251, 191, 36, \${alpha})\`;
+      ctx.fillStyle = `rgba(251, 191, 36, ${alpha})`;
       ctx.fillRect(i * barW, (height - barH) / 2, Math.max(1, barW - 0.5), barH);
     }
   }, [amplitudes, containerWidth, height, audioDurationSec, duration, fadeIn, fadeOut]);
