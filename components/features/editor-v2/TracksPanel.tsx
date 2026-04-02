@@ -125,8 +125,7 @@ export default function TracksPanel() {
                 <TrackBlock key={b.id} id={b.id} trackId={st.id} label={b.text.slice(0, 15)}
                   startMs={b.startMs} endMs={b.endMs} duration={refDuration} color="bg-blue-400/25"
                   selected={selectedItemId === b.id}
-                  onDrag={newStartMs => moveSubtitleBlock(b.id, newStartMs)}
-                  onTrimChange={(newStart, newEnd) => trimSubtitleBlock(b.id, newStart, newEnd)} />
+                  onDrag={newStartMs => moveSubtitleBlock(b.id, newStartMs)} />
               ))}
             </div>
           </div>

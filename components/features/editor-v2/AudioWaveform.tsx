@@ -75,13 +75,25 @@ export default function AudioWaveform({ blobUrl, height, fadeIn = 0, fadeOut = 0
     const visibleBars = Math.ceil(amplitudes.length * visibleRatio);
     const barW = containerWidth / visibleBars;
 
-    ctx.fillStyle = 'rgba(251, 191, 36, 0.4)';
+    // Draw bars with per-bar alpha that fades in/out matching the fade handles
+    const fadeInBars = (duration > 0 && fadeIn > 0) ? Math.round((fadeIn / duration) * visibleBars) : 0;
+    const fadeOutBars = (duration > 0 && fadeOut > 0) ? Math.round((fadeOut / duration) * visibleBars) : 0;
     for (let i = 0; i < visibleBars; i++) {
       const a = amplitudes[i] ?? 0;
       const barH = Math.max(1, a * height * 0.9);
+      // Calculate alpha: fade-in ramps 0→1, fade-out ramps 1→0
+      let alpha = 0.5;
+      if (fadeInBars > 0 && i < fadeInBars) {
+        alpha = 0.1 + 0.4 * (i / fadeInBars);
+      }
+      if (fadeOutBars > 0 && i >= visibleBars - fadeOutBars) {
+        const fadePos = (visibleBars - i) / fadeOutBars;
+        alpha = Math.min(alpha, 0.1 + 0.4 * fadePos);
+      }
+      ctx.fillStyle = \`rgba(251, 191, 36, \${alpha})\`;
       ctx.fillRect(i * barW, (height - barH) / 2, Math.max(1, barW - 0.5), barH);
     }
-  }, [amplitudes, containerWidth, height, audioDurationSec, duration]);
+  }, [amplitudes, containerWidth, height, audioDurationSec, duration, fadeIn, fadeOut]);
 
   useEffect(() => { drawWaveform(); }, [drawWaveform]);
 
@@ -119,14 +131,7 @@ export default function AudioWaveform({ blobUrl, height, fadeIn = 0, fadeOut = 0
       onPointerUp={onHandleUp}>
       <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none" />
 
-      {fadeInPx > 0 && (
-        <div className="absolute top-0 bottom-0 left-0 pointer-events-none"
-          style={{ width: fadeInPx, background: 'linear-gradient(to right, rgba(0,0,0,0.6), transparent)' }} />
-      )}
-      {fadeOutPx > 0 && (
-        <div className="absolute top-0 bottom-0 right-0 pointer-events-none"
-          style={{ width: fadeOutPx, background: 'linear-gradient(to left, rgba(0,0,0,0.6), transparent)' }} />
-      )}
+      {/* Fade zones — bars already fade via alpha, no dark overlay needed */}
 
       {duration > 0 && onFadeChange && (
         <div className="absolute top-0 bottom-0 z-10 cursor-col-resize flex items-center"
