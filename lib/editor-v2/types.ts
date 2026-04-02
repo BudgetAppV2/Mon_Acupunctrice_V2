@@ -90,6 +90,7 @@ export interface Track {
   type: TrackType;
   label: string;
   muted: boolean;
+  volume: number;
   clips?: VideoClip[];
   subtitles?: SubtitleTrackData;
   audioClips?: AudioClip[];

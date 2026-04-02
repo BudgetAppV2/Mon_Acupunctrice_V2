@@ -11,9 +11,9 @@ import {
 export { getVideoTrack, getVideoTracks, getSubtitleTrack, getAudioTrack, getClipAtTime, getActiveVideoClip } from '@/lib/editor-v2/store';
 
 const DEFAULT_TRACKS: Track[] = [
-  { id: 'v1', type: 'video', label: 'Video 1', muted: false, clips: [] },
-  { id: 'sub', type: 'subtitle', label: 'Sous-titres', muted: false, subtitles: { blocks: [], globalPreset: { ...DEFAULT_PRESET, position: { x: 0.5, y: 0.25 } } } },
-  { id: 'a1', type: 'audio', label: 'Audio', muted: false, audioClips: [] },
+  { id: 'v1', type: 'video', label: 'Video 1', muted: false, volume: 1, clips: [] },
+  { id: 'sub', type: 'subtitle', label: 'Sous-titres', muted: false, volume: 1, subtitles: { blocks: [], globalPreset: { ...DEFAULT_PRESET, position: { x: 0.5, y: 0.25 } } } },
+  { id: 'a1', type: 'audio', label: 'Audio', muted: false, volume: 1, audioClips: [] },
 ];
 
 const INITIAL_STATE = {
@@ -138,9 +138,9 @@ export const useEditorV2Store = create<EditorV2Store>((set, get) => ({
     set({
       ...INITIAL_STATE,
       tracks: [
-        { id: 'v1', type: 'video', label: 'Video 1', muted: false, clips: [] },
-        { id: 'sub', type: 'subtitle', label: 'Sous-titres', muted: false, subtitles: { blocks: [], globalPreset: { ...DEFAULT_PRESET, position: { x: 0.5, y: 0.25 } } } },
-        { id: 'a1', type: 'audio', label: 'Audio', muted: false, audioClips: [] },
+        { id: 'v1', type: 'video', label: 'Video 1', muted: false, volume: 1, clips: [] },
+        { id: 'sub', type: 'subtitle', label: 'Sous-titres', muted: false, volume: 1, subtitles: { blocks: [], globalPreset: { ...DEFAULT_PRESET, position: { x: 0.5, y: 0.25 } } } },
+        { id: 'a1', type: 'audio', label: 'Audio', muted: false, volume: 1, audioClips: [] },
       ],
     });
   },
@@ -161,13 +161,14 @@ export const useEditorV2Store = create<EditorV2Store>((set, get) => ({
     // Restore tracks with clips stripped of file/blobUrl
     if (Array.isArray(ed.tracks)) {
       const tracks = (ed.tracks as Track[]).map(t => {
-        if (t.type === 'video' && t.clips) {
-          return { ...t, clips: t.clips.map(c => ({ ...c, file: null, blobUrl: null })) };
+        const base = { ...t, volume: t.volume ?? 1 };
+        if (base.type === 'video' && base.clips) {
+          return { ...base, clips: base.clips.map(c => ({ ...c, file: null, blobUrl: null })) };
         }
-        if (t.type === 'audio' && t.audioClips) {
-          return { ...t, audioClips: t.audioClips.map(a => ({ ...a, file: null, blobUrl: null })) };
+        if (base.type === 'audio' && base.audioClips) {
+          return { ...base, audioClips: base.audioClips.map(a => ({ ...a, file: null, blobUrl: null })) };
         }
-        return t;
+        return base;
       });
       patch.tracks = tracks;
       // Sync flat fields from restored tracks
@@ -296,7 +297,7 @@ export const useEditorV2Store = create<EditorV2Store>((set, get) => ({
       const vt = getVideoTrack(s.tracks);
       let tracks: Track[];
       if (vt && (vt.clips?.length ?? 0) > 0) {
-        const v2: Track = { id: `v${Date.now()}`, type: 'video', label: `Video ${getVideoTracks(s.tracks).length + 1}`, muted: false, clips: [clip] };
+        const v2: Track = { id: `v${Date.now()}`, type: 'video', label: `Video ${getVideoTracks(s.tracks).length + 1}`, muted: false, volume: 1, clips: [clip] };
         tracks = [...s.tracks, v2];
       } else {
         tracks = s.tracks.map(t => t.id === 'v1' ? { ...t, clips: [...(t.clips ?? []), clip] } : t);
