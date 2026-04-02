@@ -89,7 +89,7 @@ export default function SubtitleCanvas() {
           const cFid = (clip.filterId && clip.filterId !== 'normal') ? clip.filterId : filterIdRef.current;
           const af = FILTERS.find(f => f.id === cFid);
           const uniforms = af ? cssFilterToUniforms(af.css, fIntensityRef.current) : IDENTITY_UNIFORMS;
-          renderVideoFrame(vid, CANVAS_W, CANVAS_H, uniforms);
+          (() => { const _t0 = performance.now(); renderVideoFrame(vid, CANVAS_W, CANVAS_H, uniforms); const _dt = performance.now() - _t0; if (_dt > 5) console.log('[SLOW_RENDER]', _dt.toFixed(1) + 'ms'); })();
         }
       }
     } else {
@@ -241,12 +241,22 @@ export default function SubtitleCanvas() {
             audioRef.current.volume = store.audioVolume * Math.max(0, Math.min(1, mul));
           }
         }
-        // Debug: log every second to see playback flow
-        if (Math.round(n) % 2000 < 20) {
-          const vids = Array.from(poolRef.current.entries()).map(([id, v]) => ({
-            id: id.slice(0,8), vt: v.currentTime.toFixed(2), paused: v.paused
-          }));
-          console.log('[PLAY]', JSON.stringify({ t: (n/1000).toFixed(1), vids }));
+        // Debug: log video sync every 500ms
+        if (Math.round(n) % 500 < 20) {
+          const vid0 = Array.from(poolRef.current.values())[0];
+          if (vid0) {
+            const expected = n / 1000;
+            const actual = vid0.currentTime;
+            const drift = (actual - expected).toFixed(3);
+            console.log('[SYNC]', JSON.stringify({
+              wallT: (n/1000).toFixed(2),
+              vidT: actual.toFixed(2),
+              drift,
+              paused: vid0.paused,
+              readyState: vid0.readyState,
+              seeking: vid0.seeking
+            }));
+          }
         }
         // Multi-track clip management
         const actives = findActiveClipsAllTracks(store.tracks, n);
@@ -286,7 +296,14 @@ export default function SubtitleCanvas() {
 
     const registerRVFC = (vid: HTMLVideoElement, clipId: string) => {
       if (rvfcIdsRef.current.has(clipId)) return;
+      let lastRvfcTime = 0;
       const cb = () => {
+        const now = performance.now();
+        const delta = lastRvfcTime ? (now - lastRvfcTime).toFixed(0) : '0';
+        lastRvfcTime = now;
+        if (parseInt(delta) > 0 && parseInt(delta) % 5 < 3) {
+          console.log('[RVFC_TICK]', delta + 'ms');
+        }
         drawVideo();
         if (useEditorV2Store.getState().isPlaying) {
           const id = (vid as HTMLVideoElement & { requestVideoFrameCallback: (cb: () => void) => number }).requestVideoFrameCallback(cb);
