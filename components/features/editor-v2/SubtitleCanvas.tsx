@@ -89,7 +89,7 @@ export default function SubtitleCanvas() {
           const cFid = (clip.filterId && clip.filterId !== 'normal') ? clip.filterId : filterIdRef.current;
           const af = FILTERS.find(f => f.id === cFid);
           const uniforms = af ? cssFilterToUniforms(af.css, fIntensityRef.current) : IDENTITY_UNIFORMS;
-          (() => { const _t0 = performance.now(); renderVideoFrame(vid, CANVAS_W, CANVAS_H, uniforms); const _dt = performance.now() - _t0; if (_dt > 5) console.log('[SLOW_RENDER]', _dt.toFixed(1) + 'ms'); })();
+          renderVideoFrame(vid, CANVAS_W, CANVAS_H, uniforms);
         }
       }
     } else {
@@ -241,23 +241,7 @@ export default function SubtitleCanvas() {
             audioRef.current.volume = store.audioVolume * Math.max(0, Math.min(1, mul));
           }
         }
-        // Debug: log video sync every 500ms
-        if (Math.round(n) % 500 < 20) {
-          const vid0 = Array.from(poolRef.current.values())[0];
-          if (vid0) {
-            const expected = n / 1000;
-            const actual = vid0.currentTime;
-            const drift = (actual - expected).toFixed(3);
-            console.log('[SYNC]', JSON.stringify({
-              wallT: (n/1000).toFixed(2),
-              vidT: actual.toFixed(2),
-              drift,
-              paused: vid0.paused,
-              readyState: vid0.readyState,
-              seeking: vid0.seeking
-            }));
-          }
-        }
+
         // Multi-track clip management
         const actives = findActiveClipsAllTracks(store.tracks, n);
         const activeIds = new Set(actives.map(a => a.clip.id));
@@ -266,15 +250,16 @@ export default function SubtitleCanvas() {
           const vid = poolRef.current.get(clip.id);
           if (!vid) continue;
           if (!playingClips.has(clip.id)) {
+            // First time playing this clip — seek to start position then play
             vid.currentTime = localTimeMs / 1000;
             vid.muted = false; vid.volume = voiceVolume;
             vid.play().catch(() => {});
             playingClips.add(clip.id);
-          } else {
-            const expected = localTimeMs / 1000;
-            // Only correct if video is BEHIND by more than 0.3s — never seek backwards
-            if (vid.currentTime < expected - 0.3) vid.currentTime = expected;
           }
+          // IMPORTANT: Do NOT seek during play — Safari iOS interrupts the
+          // decoder pipeline on every seek causing 300-400ms stutter gaps.
+          // Let vid.play() advance naturally. The wall clock and vid.currentTime
+          // may drift slightly but this is acceptable for smooth playback.
         }
         for (const clipId of playingClips) {
           if (!activeIds.has(clipId)) { poolRef.current.get(clipId)?.pause(); playingClips.delete(clipId); }
@@ -296,14 +281,7 @@ export default function SubtitleCanvas() {
 
     const registerRVFC = (vid: HTMLVideoElement, clipId: string) => {
       if (rvfcIdsRef.current.has(clipId)) return;
-      let lastRvfcTime = 0;
       const cb = () => {
-        const now = performance.now();
-        const delta = lastRvfcTime ? (now - lastRvfcTime).toFixed(0) : '0';
-        lastRvfcTime = now;
-        if (parseInt(delta) > 0 && parseInt(delta) % 5 < 3) {
-          console.log('[RVFC_TICK]', delta + 'ms');
-        }
         drawVideo();
         if (useEditorV2Store.getState().isPlaying) {
           const id = (vid as HTMLVideoElement & { requestVideoFrameCallback: (cb: () => void) => number }).requestVideoFrameCallback(cb);
