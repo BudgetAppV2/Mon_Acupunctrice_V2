@@ -182,8 +182,7 @@ export default function SubtitleCanvas() {
         if (!clip.blobUrl) continue;
         const vid = getOrCreate(clip.id, clip.blobUrl);
         vid.currentTime = localTimeMs / 1000;
-        vid.muted = voiceVolume === 0; vid.volume = voiceVolume;
-        console.log('[VID_AUDIO]', JSON.stringify({ muted: vid.muted, vidVol: voiceVolume, hasMusic: !!getFirstAudioUrl(tracks) }));
+        vid.muted = false; vid.volume = voiceVolume;
         vid.play().catch(() => {});
       }
     } else if (!isPlaying) {
@@ -222,12 +221,12 @@ export default function SubtitleCanvas() {
     let prevWall: number | null = null;
     let lastStoreUpdate: number | null = null;
     let id: number;
-    const playingClips = new Set<string>();
+    // Map clipId → { trimStart, trimEnd } to detect trim changes
+    const playingClips = new Map<string, { trimStart: number; trimEnd: number }>();
     const tick = (wallMs: number) => {
       if (prevWall !== null) {
         const store = useEditorV2Store.getState();
         if (!store.isPlaying) return;
-        // Use timeRef (always up-to-date) instead of store.currentTime (throttled, can be stale)
         const n = timeRef.current + (wallMs - prevWall);
         if (n >= store.duration) { store.setCurrentTime(0); store.setIsPlaying(false); timeRef.current = 0; return; }
         timeRef.current = n;
@@ -255,20 +254,19 @@ export default function SubtitleCanvas() {
           if (!clip.blobUrl) continue;
           const vid = poolRef.current.get(clip.id);
           if (!vid) continue;
-          if (!playingClips.has(clip.id)) {
-            // First time playing this clip — seek to start position then play
+          const prev = playingClips.get(clip.id);
+          const trimChanged = prev && (prev.trimStart !== clip.trimStart || prev.trimEnd !== clip.trimEnd);
+          if (!prev || trimChanged) {
+            // New clip or trim changed — seek to correct position then play
             vid.currentTime = localTimeMs / 1000;
-            vid.muted = voiceVolume === 0;
+            vid.muted = false;
             vid.volume = voiceVolume;
             vid.play().catch(() => {});
-            playingClips.add(clip.id);
+            playingClips.set(clip.id, { trimStart: clip.trimStart, trimEnd: clip.trimEnd });
           }
-          // IMPORTANT: Do NOT seek during play — Safari iOS interrupts the
-          // decoder pipeline on every seek causing 300-400ms stutter gaps.
-          // Let vid.play() advance naturally. The wall clock and vid.currentTime
-          // may drift slightly but this is acceptable for smooth playback.
+          // No seek if clip is already playing with same trim — avoid Safari stutter
         }
-        for (const clipId of playingClips) {
+        for (const [clipId] of playingClips) {
           if (!activeIds.has(clipId)) { poolRef.current.get(clipId)?.pause(); playingClips.delete(clipId); }
         }
       }
