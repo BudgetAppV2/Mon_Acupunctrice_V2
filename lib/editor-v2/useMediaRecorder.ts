@@ -22,7 +22,7 @@ export function useMediaRecorder() {
 
   const startWebcam = useCallback(async () => {
     const s = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: 'user', width: { ideal: 1920 }, height: { ideal: 1080 } },
+      video: { facingMode: 'user', width: { ideal: 1080 }, height: { ideal: 1920 }, aspectRatio: { ideal: 9 / 16 } },
       audio: true,
     });
     streamRef.current = s;
@@ -76,7 +76,7 @@ export function useMediaRecorder() {
       };
 
       startTimeRef.current = Date.now();
-      recorder.start(1000);
+      recorder.start();
     });
   }, []);
 
