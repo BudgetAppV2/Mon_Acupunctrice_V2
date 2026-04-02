@@ -15,26 +15,14 @@ export default function CameraOverlay({ onClose }: Props) {
   const viewfinderRef = useRef<HTMLVideoElement>(null);
   const recordingRef = useRef(false);
 
-  // Start camera on mount
   useEffect(() => {
     startWebcam().catch(() => onClose());
     return () => cleanup();
   }, [startWebcam, cleanup, onClose]);
 
-  // Attach stream to viewfinder
   useEffect(() => {
     if (viewfinderRef.current && stream) {
       viewfinderRef.current.srcObject = stream;
-      // Log actual camera resolution
-      const vt = stream.getVideoTracks()[0];
-      const settings = vt?.getSettings();
-      console.log('[CAMERA]', JSON.stringify({
-        width: settings?.width,
-        height: settings?.height,
-        aspectRatio: settings?.aspectRatio,
-        facingMode: settings?.facingMode,
-        frameRate: settings?.frameRate,
-      }));
     }
   }, [stream]);
 
@@ -49,16 +37,6 @@ export default function CameraOverlay({ onClose }: Props) {
     const result = await startRecording(stream);
     recordingRef.current = false;
     if (result) {
-      // Log recorded video dimensions
-      const testVid = document.createElement('video');
-      testVid.src = result.url;
-      testVid.onloadedmetadata = () => {
-        console.log('[RECORDED_VIDEO]', JSON.stringify({
-          videoWidth: testVid.videoWidth,
-          videoHeight: testVid.videoHeight,
-          duration: testVid.duration,
-        }));
-      };
       addVideoClip(result.file);
       onClose();
     }
@@ -70,41 +48,43 @@ export default function CameraOverlay({ onClose }: Props) {
   }, [cleanup, onClose]);
 
   return (
-    <div className="fixed inset-0 z-[100] bg-black flex flex-col">
-      {/* Top bar */}
-      <div className="flex items-center justify-between px-4 py-3 relative z-10">
-        <button onClick={handleCancel} className="p-2 rounded-full bg-black/40 active:bg-black/60">
-          <XMarkIcon className="w-6 h-6 text-white" />
-        </button>
-        {isRecording && (
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-red-500 animate-pulse" />
-            <span className="text-sm text-white font-medium">REC</span>
-          </div>
-        )}
-        <div className="w-10" />
-      </div>
+    <div className="fixed inset-0 z-[100] bg-black">
+      {/* Video fills the ENTIRE screen — no flex, no containers */}
+      <video ref={viewfinderRef} autoPlay playsInline muted
+        className="absolute inset-0 w-full h-full object-cover"
+        style={{ transform: 'scaleX(-1)' }} />
 
-      {/* Viewfinder — fills entire screen, no black bars */}
-      <div className="flex-1 relative overflow-hidden">
-          <video ref={viewfinderRef} autoPlay playsInline muted
-            className="absolute inset-0 w-full h-full object-cover"
-            style={{ transform: 'scaleX(-1)' }} />
+      {/* Controls overlaid on top of video */}
+      {/* Close button — top left */}
+      <button onClick={handleCancel}
+        className="absolute top-[env(safe-area-inset-top,12px)] left-4 z-10 p-2 rounded-full bg-black/40 active:bg-black/60"
+        style={{ marginTop: 12 }}>
+        <XMarkIcon className="w-6 h-6 text-white" />
+      </button>
 
-          {/* Countdown overlay */}
-          {countdown > 0 && (
-            <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-              <span className="text-8xl font-bold text-white" style={{ animation: 'countdownPulse 1s ease-out' }}>
-                {countdown}
-              </span>
-            </div>
-          )}
-      </div>
+      {/* REC indicator — top center */}
+      {isRecording && (
+        <div className="absolute top-[env(safe-area-inset-top,12px)] left-1/2 -translate-x-1/2 z-10 flex items-center gap-2"
+          style={{ marginTop: 16 }}>
+          <div className="w-3 h-3 rounded-full bg-red-500 animate-pulse" />
+          <span className="text-sm text-white font-medium">REC</span>
+        </div>
+      )}
 
-      {/* Record button */}
-      <div className="flex items-center justify-center py-6">
+      {/* Countdown — center */}
+      {countdown > 0 && (
+        <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/30">
+          <span className="text-8xl font-bold text-white" style={{ animation: 'countdownPulse 1s ease-out' }}>
+            {countdown}
+          </span>
+        </div>
+      )}
+
+      {/* Record button — bottom center */}
+      <div className="absolute bottom-0 left-0 right-0 z-10 flex items-center justify-center"
+        style={{ paddingBottom: 'max(env(safe-area-inset-bottom, 20px), 20px)', paddingTop: 16 }}>
         <button onClick={handleRecord}
-          className={`w-16 h-16 rounded-full border-4 border-white flex items-center justify-center transition-all ${isRecording ? 'bg-transparent' : 'bg-transparent'}`}>
+          className="w-16 h-16 rounded-full border-4 border-white flex items-center justify-center">
           {isRecording ? (
             <div className="w-6 h-6 rounded-sm bg-red-500" />
           ) : (
