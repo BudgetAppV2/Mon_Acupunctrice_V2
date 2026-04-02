@@ -116,6 +116,7 @@ export default function SubtitleCanvas() {
   useEffect(() => { console.log('[EDITOR_V2] build:2026-04-02T22:30 — trim-detect-map + audio-mix'); }, []);
   useEffect(() => { console.log('[EDITOR_V2] v12 — trim Map, vid.muted=false, voiceVolume slider'); }, []);
   useEffect(() => { console.log('[EDITOR_V2] M1 — per-track videos + Web Audio API'); }, []);
+  useEffect(() => { console.log('[EDITOR_V2] M1-fix3 — test muted true with Web Audio'); }, []);
 
   const glCanvasRef = useRef<HTMLCanvasElement>(null);
   const overlayCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -297,13 +298,12 @@ export default function SubtitleCanvas() {
             activeClipRef.current.set(track.id, clip.id);
           }
           vid.currentTime = localTimeMs / 1000;
-          vid.muted = false;
+          // Keep muted — audio routes via Web Audio graph, not native playback
           vid.play().catch(() => {});
           setGain(track.id, (track.volume ?? 1) * voiceVolumeRef.current);
         }
         if (musicElRef.current) {
           musicElRef.current.currentTime = t / 1000;
-          musicElRef.current.muted = false;
           musicElRef.current.play().catch(() => {});
           setGain('music', audioVolumeRef.current);
         }
@@ -391,7 +391,7 @@ export default function SubtitleCanvas() {
               activeClipRef.current.set(track.id, clip.id);
             }
             vid.currentTime = localTimeMs / 1000;
-            vid.muted = false;
+            // Keep muted — audio routes via Web Audio graph
             vid.play().catch(() => {});
             setGain(track.id, (track.volume ?? 1) * voiceVolumeRef.current);
             playingState.set(track.id, { clipId: clip.id, trimStart: clip.trimStart, trimEnd: clip.trimEnd });
