@@ -221,12 +221,12 @@ export default function SubtitleCanvas() {
       if (prevWall !== null) {
         const store = useEditorV2Store.getState();
         if (!store.isPlaying) return;
-        const n = store.currentTime + (wallMs - prevWall);
-        if (n >= store.duration) { store.setCurrentTime(0); store.setIsPlaying(false); return; }
-        // Throttle store updates to ~15fps to reduce React re-renders on mobile
-        // The video plays natively — we only need to update the playhead/timer UI
+        // Use timeRef (always up-to-date) instead of store.currentTime (throttled, can be stale)
+        const n = timeRef.current + (wallMs - prevWall);
+        if (n >= store.duration) { store.setCurrentTime(0); store.setIsPlaying(false); timeRef.current = 0; return; }
         timeRef.current = n;
-        if (!lastStoreUpdate || wallMs - lastStoreUpdate > 66) { // ~15fps
+        // Throttle store updates to ~15fps to reduce React re-renders on mobile
+        if (!lastStoreUpdate || wallMs - lastStoreUpdate > 66) {
           store.setCurrentTime(n);
           lastStoreUpdate = wallMs;
         }
@@ -240,6 +240,13 @@ export default function SubtitleCanvas() {
             if (audioClip.fadeOut > 0 && sec > durSec - audioClip.fadeOut) mul = Math.min(mul, (durSec - sec) / audioClip.fadeOut);
             audioRef.current.volume = store.audioVolume * Math.max(0, Math.min(1, mul));
           }
+        }
+        // Debug: log every second to see playback flow
+        if (Math.round(n) % 2000 < 20) {
+          const vids = Array.from(poolRef.current.entries()).map(([id, v]) => ({
+            id: id.slice(0,8), vt: v.currentTime.toFixed(2), paused: v.paused
+          }));
+          console.log('[PLAY]', JSON.stringify({ t: (n/1000).toFixed(1), vids }));
         }
         // Multi-track clip management
         const actives = findActiveClipsAllTracks(store.tracks, n);
@@ -255,7 +262,8 @@ export default function SubtitleCanvas() {
             playingClips.add(clip.id);
           } else {
             const expected = localTimeMs / 1000;
-            if (Math.abs(vid.currentTime - expected) > 0.3) vid.currentTime = expected;
+            // Only correct if video is BEHIND by more than 0.3s — never seek backwards
+            if (vid.currentTime < expected - 0.3) vid.currentTime = expected;
           }
         }
         for (const clipId of playingClips) {
