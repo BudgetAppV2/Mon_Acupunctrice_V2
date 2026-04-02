@@ -28,6 +28,8 @@ function useVideoPool() {
 }
 
 export default function SubtitleCanvas() {
+  // Build marker — always log to confirm deployed version
+  useEffect(() => { console.log('[EDITOR_V2] build:2026-04-02T22:30 — trim-detect-map + audio-mix'); }, []);
   const glCanvasRef = useRef<HTMLCanvasElement>(null);
   const overlayCanvasRef = useRef<HTMLCanvasElement>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
