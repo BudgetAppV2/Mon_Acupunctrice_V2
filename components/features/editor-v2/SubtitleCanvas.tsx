@@ -183,6 +183,7 @@ export default function SubtitleCanvas() {
         const vid = getOrCreate(clip.id, clip.blobUrl);
         vid.currentTime = localTimeMs / 1000;
         vid.muted = voiceVolume === 0; vid.volume = voiceVolume;
+            console.log('[VID_AUDIO]', JSON.stringify({ muted: vid.muted, vidVol: voiceVolume, hasAudioTrack: !!getFirstAudioUrl(store.tracks) }));
         vid.play().catch(() => {});
       }
     } else if (!isPlaying) {
