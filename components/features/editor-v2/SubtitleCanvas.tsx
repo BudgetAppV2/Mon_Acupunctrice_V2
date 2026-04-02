@@ -267,11 +267,15 @@ export default function SubtitleCanvas() {
   useEffect(() => {
     if (!isPlaying) { rvfcIdsRef.current.clear(); return; }
     const hasRVFC = 'requestVideoFrameCallback' in HTMLVideoElement.prototype;
+    console.log('[RVFC_SUPPORT]', JSON.stringify({ hasRVFC, activeClips: findActiveClipsAllTracks(tracksRef.current, timeRef.current).length }));
     if (!hasRVFC) return; // fallback handled by overlay RAF below
 
     const registerRVFC = (vid: HTMLVideoElement, clipId: string) => {
       if (rvfcIdsRef.current.has(clipId)) return;
+      let rvfcCount = 0;
       const cb = () => {
+        rvfcCount++;
+        if (rvfcCount % 30 === 0) console.log('[RVFC]', JSON.stringify({ clipId: clipId.slice(0,8), frames: rvfcCount }));
         drawVideo();
         if (useEditorV2Store.getState().isPlaying) {
           const id = (vid as HTMLVideoElement & { requestVideoFrameCallback: (cb: () => void) => number }).requestVideoFrameCallback(cb);
@@ -302,7 +306,8 @@ export default function SubtitleCanvas() {
     const loop = () => {
       if (!active) return;
       // Video: only draw here if paused or browser lacks rVFC
-      if (!useEditorV2Store.getState().isPlaying || !hasRVFC) drawVideo();
+      const playing = useEditorV2Store.getState().isPlaying;
+      if (!playing || !hasRVFC) drawVideo();
       // Overlays: always at 60fps
       drawOverlay();
       rafRef.current = requestAnimationFrame(loop);
