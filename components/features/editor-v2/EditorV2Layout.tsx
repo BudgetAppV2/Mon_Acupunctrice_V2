@@ -11,7 +11,7 @@ import { useEditorV2Store } from '@/lib/store/useEditorV2Store';
 import { useEditorV2Persistence } from '@/lib/hooks/useEditorV2Persistence';
 import { useEditorV2Upload } from '@/lib/hooks/useEditorV2Upload';
 import { getDoc, doc } from 'firebase/firestore';
-import { getFirebaseFirestore } from '@/lib/firebase';
+import { getFirebaseFirestore, getFirebaseAuth } from '@/lib/firebase';
 import type { ContentItem } from '@/lib/types';
 import ExportButtonV2 from './ExportButtonV2';
 import PublishSheet from '../publish/PublishSheet';
@@ -126,6 +126,8 @@ export default function EditorV2Layout({ itemId }: Props) {
       // Skip if a video is already loaded (user navigated back and forth)
       if (useEditorV2Store.getState().videoFile) { if (!cancelled) setLoading(false); return; }
       try {
+        const auth = getFirebaseAuth();
+        console.log('[EDITOR_V2_LOAD] uid:', auth.currentUser?.uid, 'itemId:', itemId);
         const db = getFirebaseFirestore();
         const snap = await getDoc(doc(db, 'contentItems', itemId));
         if (cancelled) return;
@@ -194,7 +196,7 @@ export default function EditorV2Layout({ itemId }: Props) {
             } catch { /* skip failed audio download */ }
           }
         }
-      } catch { /* show import UI */ }
+      } catch (e) { console.error('[EDITOR_V2_LOAD] Error:', e); }
       if (!cancelled) setLoading(false);
     };
     loadExisting();
