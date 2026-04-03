@@ -6,6 +6,8 @@ import { ArrowLeftIcon, ChartBarIcon, EyeIcon, HeartIcon, ChatBubbleLeftIcon, Sh
 import Link from 'next/link';
 import SummaryCard from '@/components/features/stats/SummaryCard';
 import PublicationCard from '@/components/features/stats/PublicationCard';
+import PublicationDetail from '@/components/features/stats/PublicationDetail';
+import type { ContentItem } from '@/lib/types';
 
 const PERIODS = [7, 30, 90] as const;
 type Period = typeof PERIODS[number];
@@ -19,6 +21,7 @@ const SORT_OPTIONS: { value: SortBy; label: string }[] = [
 export default function StatsPage() {
   const [period, setPeriod] = useState<Period>(30);
   const [sortBy, setSortBy] = useState<SortBy>('date');
+  const [selectedItem, setSelectedItem] = useState<ContentItem | null>(null);
   const summary = useInsightsSummary(period);
   const daily = useDailyAnalytics(period);
   const published = usePublishedItems(period, sortBy);
@@ -27,6 +30,10 @@ export default function StatsPage() {
     ? daily.data[daily.data.length - 1].followerCount - daily.data[0].followerCount
     : 0;
   const latestFollowers = daily.data.length > 0 ? daily.data[daily.data.length - 1].followerCount : 0;
+
+  if (selectedItem) {
+    return <PublicationDetail item={selectedItem} onBack={() => setSelectedItem(null)} />;
+  }
 
   return (
     <div className="min-h-screen bg-sand pb-24">
@@ -103,7 +110,7 @@ export default function StatsPage() {
               ) : (
                 <div className="space-y-2">
                   {published.data.map(item => (
-                    <PublicationCard key={item.id} item={item} onTap={() => {}} />
+                    <PublicationCard key={item.id} item={item} onTap={() => setSelectedItem(item)} />
                   ))}
                 </div>
               )}
