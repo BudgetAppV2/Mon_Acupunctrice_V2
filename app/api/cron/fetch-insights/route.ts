@@ -123,6 +123,7 @@ export async function GET(request: NextRequest) {
       let ytAccessToken: string | null = null;
       if (ytRefreshToken) {
         ytAccessToken = await refreshGoogleToken(ytRefreshToken);
+        if (!ytAccessToken) console.log('[CRON] YT refresh failed for user:', uid);
       }
 
       const thirtyDaysAgo = new Date(Date.now() - 30 * 86400 * 1000);
@@ -147,10 +148,11 @@ export async function GET(request: NextRequest) {
           } catch { /* skip IG error */ }
         }
 
-        // Facebook
-        if (item.facebookPostId && fbPageToken) {
+        // Facebook — use facebookVideoId (the actual video ID), fallback to facebookPostId
+        const fbVideoId = item.facebookVideoId || item.facebookPostId;
+        if (fbVideoId && fbPageToken) {
           try {
-            const fb = await fetchFacebookInsights(item.facebookPostId, fbPageToken);
+            const fb = await fetchFacebookInsights(fbVideoId, fbPageToken);
             if (fb.views > 0) insightsUpdate.facebookViews = fb.views;
           } catch { /* skip FB error */ }
         }

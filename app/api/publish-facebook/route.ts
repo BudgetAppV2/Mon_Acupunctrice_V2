@@ -77,9 +77,10 @@ export async function POST(request: NextRequest) {
     await db.doc(`contentItems/${itemId}`).update({
       facebookStatus: 'published',
       facebookPostId: publishData.post_id || initData.video_id,
+      facebookVideoId: initData.video_id || null,
     });
 
-    return NextResponse.json({ success: true, postId: publishData.post_id || initData.video_id });
+    return NextResponse.json({ success: true, postId: publishData.post_id || initData.video_id, videoId: initData.video_id });
   } catch (err) {
     const msg = err instanceof Error ? err.message : 'Erreur publication Facebook';
     // Marquer comme failed
