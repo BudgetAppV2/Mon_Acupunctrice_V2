@@ -1,13 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAdminFirestore } from '@/lib/firebase-admin';
 
-const GRAPH = 'https://graph.instagram.com/v25.0';
+const GRAPH_IG = 'https://graph.instagram.com/v25.0';
+const GRAPH_FB = 'https://graph.facebook.com/v25.0';
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '';
+const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET || '';
+
+// --- Instagram ---
 
 async function fetchMediaInsights(
   mediaId: string, token: string,
 ): Promise<Record<string, number>> {
   const res = await fetch(
-    `${GRAPH}/${mediaId}/insights?metric=views,reach,likes,comments,shares,saved,total_interactions&access_token=${token}`,
+    `${GRAPH_IG}/${mediaId}/insights?metric=views,reach,likes,comments,shares,saved,total_interactions&access_token=${token}`,
   );
   if (!res.ok) return {};
   const json = await res.json();
@@ -15,7 +20,6 @@ async function fetchMediaInsights(
   for (const entry of json.data || []) {
     metrics[entry.name] = entry.values?.[0]?.value ?? 0;
   }
-  // Map views → plays for backward compatibility with existing hooks/UI
   if (metrics.views !== undefined && metrics.plays === undefined) {
     metrics.plays = metrics.views;
   }
@@ -28,7 +32,7 @@ async function fetchAccountInsights(
   const now = Math.floor(Date.now() / 1000);
   const yesterday = now - 86400;
   const res = await fetch(
-    `${GRAPH}/${igId}/insights?metric=follower_count,reach&period=day&since=${yesterday}&until=${now}&access_token=${token}`,
+    `${GRAPH_IG}/${igId}/insights?metric=follower_count,reach&period=day&since=${yesterday}&until=${now}&access_token=${token}`,
   );
   if (!res.ok) return { followerCount: 0, reach: 0 };
   const json = await res.json();
@@ -41,7 +45,57 @@ async function fetchAccountInsights(
   return { followerCount, reach };
 }
 
-/** GET /api/cron/fetch-insights — Récupère les stats Instagram et les stocke */
+// --- Facebook ---
+
+async function fetchFacebookInsights(
+  videoId: string, pageToken: string,
+): Promise<{ views: number }> {
+  try {
+    const res = await fetch(`${GRAPH_FB}/${videoId}?fields=views&access_token=${pageToken}`);
+    if (!res.ok) return { views: 0 };
+    const json = await res.json() as { views?: number };
+    return { views: json.views ?? 0 };
+  } catch { return { views: 0 }; }
+}
+
+// --- YouTube ---
+
+async function refreshGoogleToken(refreshToken: string): Promise<string | null> {
+  if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET) return null;
+  try {
+    const res = await fetch('https://oauth2.googleapis.com/token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        refresh_token: refreshToken, client_id: GOOGLE_CLIENT_ID,
+        client_secret: GOOGLE_CLIENT_SECRET, grant_type: 'refresh_token',
+      }),
+    });
+    const data = await res.json() as { access_token?: string };
+    return data.access_token || null;
+  } catch { return null; }
+}
+
+async function fetchYouTubeInsights(
+  videoId: string, accessToken: string,
+): Promise<{ views: number; likes: number; comments: number }> {
+  try {
+    const res = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=statistics&id=${videoId}&access_token=${accessToken}`);
+    if (!res.ok) return { views: 0, likes: 0, comments: 0 };
+    const json = await res.json() as { items?: { statistics?: { viewCount?: string; likeCount?: string; commentCount?: string } }[] };
+    const stats = json.items?.[0]?.statistics;
+    if (!stats) return { views: 0, likes: 0, comments: 0 };
+    return {
+      views: parseInt(stats.viewCount || '0', 10),
+      likes: parseInt(stats.likeCount || '0', 10),
+      comments: parseInt(stats.commentCount || '0', 10),
+    };
+  } catch { return { views: 0, likes: 0, comments: 0 }; }
+}
+
+// --- Cron handler ---
+
+/** GET /api/cron/fetch-insights — Fetch Instagram + Facebook + YouTube stats */
 export async function GET(request: NextRequest) {
   const auth = request.headers.get('authorization');
   if (auth !== `Bearer ${process.env.CRON_SECRET}`) {
@@ -51,7 +105,6 @@ export async function GET(request: NextRequest) {
   const db = getAdminFirestore();
   let processed = 0, errors = 0;
 
-  // Trouver les users avec Instagram connecté
   const usersSnap = await db.collection('users').where('metaStatus', '==', 'connected').get();
 
   for (const userDoc of usersSnap.docs) {
@@ -60,10 +113,18 @@ export async function GET(request: NextRequest) {
       const uid = userDoc.id;
       const igId = userData.metaInstagramId;
       const tokensSnap = await db.doc(`users/${uid}/private/tokens`).get();
-      const token = tokensSnap.data()?.metaAccessToken;
-      if (!token || !igId) continue;
+      const tokensData = tokensSnap.data() || {};
+      const igToken = tokensData.metaAccessToken;
+      const fbPageToken = tokensData.facebookPageAccessToken;
+      const ytRefreshToken = tokensData.youtubeRefreshToken;
+      if (!igToken || !igId) continue;
 
-      // Items publiés < 30 jours avec instagramPostId
+      // Refresh YouTube access token once per user (if available)
+      let ytAccessToken: string | null = null;
+      if (ytRefreshToken) {
+        ytAccessToken = await refreshGoogleToken(ytRefreshToken);
+      }
+
       const thirtyDaysAgo = new Date(Date.now() - 30 * 86400 * 1000);
       const itemsSnap = await db.collection('contentItems')
         .where('userId', '==', uid)
@@ -74,23 +135,47 @@ export async function GET(request: NextRequest) {
 
       console.log('[CRON] processing user:', uid, 'items:', itemsSnap.size);
 
-      // Insights par media
       for (const itemDoc of itemsSnap.docs) {
         const item = itemDoc.data();
-        if (!item.instagramPostId) continue;
-        try {
-          const metrics = await fetchMediaInsights(item.instagramPostId, token);
-          if (Object.keys(metrics).length > 0) {
-            await db.doc(`contentItems/${itemDoc.id}`).update({
-              insights: { ...metrics, fetchedAt: new Date() },
-            });
-          }
-        } catch { /* skip individual media errors */ }
+        const insightsUpdate: Record<string, unknown> = {};
+
+        // Instagram
+        if (item.instagramPostId) {
+          try {
+            const igMetrics = await fetchMediaInsights(item.instagramPostId, igToken);
+            if (Object.keys(igMetrics).length > 0) Object.assign(insightsUpdate, igMetrics);
+          } catch { /* skip IG error */ }
+        }
+
+        // Facebook
+        if (item.facebookPostId && fbPageToken) {
+          try {
+            const fb = await fetchFacebookInsights(item.facebookPostId, fbPageToken);
+            if (fb.views > 0) insightsUpdate.facebookViews = fb.views;
+          } catch { /* skip FB error */ }
+        }
+
+        // YouTube
+        if (item.youtubeVideoId && ytAccessToken) {
+          try {
+            const yt = await fetchYouTubeInsights(item.youtubeVideoId, ytAccessToken);
+            if (yt.views > 0) insightsUpdate.youtubeViews = yt.views;
+            if (yt.likes > 0) insightsUpdate.youtubeLikes = yt.likes;
+            if (yt.comments > 0) insightsUpdate.youtubeComments = yt.comments;
+          } catch { /* skip YT error */ }
+        }
+
+        // Write merged insights
+        if (Object.keys(insightsUpdate).length > 0) {
+          await db.doc(`contentItems/${itemDoc.id}`).update({
+            insights: { ...insightsUpdate, fetchedAt: new Date() },
+          });
+        }
       }
 
-      // Insights compte
+      // Account insights (Instagram)
       try {
-        const account = await fetchAccountInsights(igId, token);
+        const account = await fetchAccountInsights(igId, igToken);
         const dateStr = new Date().toISOString().split('T')[0];
         await db.doc(`analytics/${uid}/daily/${dateStr}`).set({
           followerCount: account.followerCount,

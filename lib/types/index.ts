@@ -129,11 +129,17 @@ export interface ContentItem {
   mediaType?: 'reel' | 'story';
   insights?: {
     plays: number;
+    views?: number;
     reach: number;
     likes: number;
     comments: number;
     shares: number;
     saved: number;
+    totalInteractions?: number;
+    facebookViews?: number;
+    youtubeViews?: number;
+    youtubeLikes?: number;
+    youtubeComments?: number;
     fetchedAt: Timestamp;
   };
   createdAt: Timestamp;

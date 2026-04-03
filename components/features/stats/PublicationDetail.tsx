@@ -91,6 +91,31 @@ export default function PublicationDetail({ item, onBack }: Props) {
           ))}
         </div>
 
+        {/* Per-platform metrics */}
+        {(ins?.facebookViews || ins?.youtubeViews) && (
+          <div className="space-y-1.5">
+            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">Par plateforme</p>
+            {ins?.facebookViews !== undefined && ins.facebookViews > 0 && (
+              <div className="flex items-center gap-2 text-[11px]">
+                <div className="w-2 h-2 rounded-full bg-blue-600" />
+                <span className="text-gray-700 flex-1">Facebook</span>
+                <span className="text-gray-500">{fmt(ins.facebookViews)} vues</span>
+              </div>
+            )}
+            {ins?.youtubeViews !== undefined && ins.youtubeViews > 0 && (
+              <div className="flex items-center gap-2 text-[11px]">
+                <div className="w-2 h-2 rounded-full bg-red-500" />
+                <span className="text-gray-700 flex-1">YouTube</span>
+                <span className="text-gray-500">
+                  {fmt(ins.youtubeViews)} vues
+                  {ins.youtubeLikes ? ` / ${fmt(ins.youtubeLikes)} likes` : ''}
+                  {ins.youtubeComments ? ` / ${fmt(ins.youtubeComments)} com.` : ''}
+                </span>
+              </div>
+            )}
+          </div>
+        )}
+
         {/* External links */}
         <div className="space-y-2">
           {item.instagramPostId && (
