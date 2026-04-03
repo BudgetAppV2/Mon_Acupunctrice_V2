@@ -26,8 +26,7 @@ export default function IdeaActions({ item, onClose }: Props) {
   const ws = item.workflowState;
   const ds = item.distributionStatus;
 
-  const editorBase = process.env.NEXT_PUBLIC_EDITOR_V2 === 'true' ? '/editeur-v2' : '/editeur';
-  const goEditor = () => { router.push(`${editorBase}/${item.id}`); onClose(); };
+  const goEditor = () => { router.push(`/editeur-v2/${item.id}`); onClose(); };
   const goCalendar = () => { router.push('/calendrier'); onClose(); };
   const goStats = () => { router.push('/profil'); onClose(); };
 
