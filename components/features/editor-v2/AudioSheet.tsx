@@ -165,8 +165,10 @@ export default function AudioSheet() {
             <XMarkIcon className="w-3.5 h-3.5 text-white/40" />
           </button>
         </div>
-        <SliderRow label="Voix" value={voiceVolume} onChange={setVoiceVolume} />
-        <SliderRow label="Musique" value={audioVolume} onChange={setAudioVolume} />
+        <div className="flex gap-4 justify-center py-1">
+          <VerticalFader label="Voix" value={voiceVolume} onChange={setVoiceVolume} color="emerald" />
+          <VerticalFader label="Musique" value={audioVolume} onChange={setAudioVolume} color="amber" />
+        </div>
         <div className="grid grid-cols-2 gap-2">
           <FadeSlider label="Fade in" value={audioClip.fadeIn}
             onChange={(v) => setAudioFade(audioClip.id, v, audioClip.fadeOut)} />
@@ -347,16 +349,45 @@ export default function AudioSheet() {
   );
 }
 
-function SliderRow({ label, value, onChange }: { label: string; value: number; onChange: (v: number) => void }) {
+function VerticalFader({ label, value, onChange, color = 'emerald' }: {
+  label: string; value: number; onChange: (v: number) => void; color?: 'emerald' | 'amber';
+}) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const updateFromPointer = (e: React.PointerEvent) => {
+    const rect = containerRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const y = 1 - (e.clientY - rect.top) / rect.height;
+    onChange(Math.max(0, Math.min(1, y)));
+  };
+  const onDown = (e: React.PointerEvent) => {
+    e.stopPropagation(); e.preventDefault();
+    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+    updateFromPointer(e);
+  };
+  const onMove = (e: React.PointerEvent) => { if (e.buttons === 0) return; updateFromPointer(e); };
+  const fillColor = color === 'amber' ? 'bg-amber-400' : 'bg-emerald-400';
+  const pct = Math.round(value * 100);
+
   return (
-    <div className="space-y-1">
-      <div className="flex items-center justify-between">
-        <label className="text-[10px] text-white/30 font-medium">{label}</label>
-        <span className="text-[10px] text-white/30">{Math.round(value * 100)}%</span>
+    <div className="flex flex-col items-center gap-1">
+      <span className="text-[10px] text-white/30">{pct}%</span>
+      <div ref={containerRef} className="relative w-12 h-28 cursor-ns-resize"
+        style={{ touchAction: 'none' }}
+        onPointerDown={onDown} onPointerMove={onMove}>
+        {/* Track background */}
+        <div className="absolute left-1/2 -translate-x-1/2 w-[3px] h-full bg-white/10 rounded-full" />
+        {/* Track filled */}
+        <div className={`absolute left-1/2 -translate-x-1/2 w-[3px] bottom-0 rounded-full ${fillColor}/60`}
+          style={{ height: `${pct}%` }} />
+        {/* Thumb — fader knob */}
+        <div className="absolute left-1/2 w-10 h-3 rounded-sm pointer-events-none
+          bg-gradient-to-b from-white/95 to-white/80
+          shadow-[0_1px_3px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.3)]"
+          style={{ bottom: `${pct}%`, transform: 'translate(-50%, 50%)' }}>
+          <div className="absolute top-1/2 left-2 right-2 h-px bg-black/20" />
+        </div>
       </div>
-      <input type="range" min={0} max={100} value={Math.round(value * 100)}
-        onChange={(e) => onChange(Number(e.target.value) / 100)}
-        className="w-full accent-emerald-400 h-1.5" />
+      <span className="text-[10px] text-white/40 font-medium">{label}</span>
     </div>
   );
 }
