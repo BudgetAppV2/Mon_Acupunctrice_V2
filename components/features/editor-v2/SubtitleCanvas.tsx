@@ -168,7 +168,7 @@ function useTrackVideos() {
 export default function SubtitleCanvas() {
   // Build markers
   useEffect(() => { console.log('[EDITOR_V2] build:2026-04-02T22:30 — trim-detect-map + audio-mix'); }, []);
-  useEffect(() => { console.log('[EDITOR_V2] M1-fix4 — decodeAudioData for video audio, createMediaElementSource for music only'); }, []);
+  useEffect(() => { console.log('[EDITOR_V2] M1-fix6 — single playClipAudio call from tick only'); }, []);
 
   const glCanvasRef = useRef<HTMLCanvasElement>(null);
   const overlayCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -354,9 +354,7 @@ export default function SubtitleCanvas() {
           }
           vid.currentTime = localTimeMs / 1000;
           vid.play().catch(() => {}); // video stays muted — image only
-          // Play audio via AudioBufferSourceNode
-          playClipAudio(track.id, clip.id, localTimeMs / 1000);
-          setGain(track.id, (track.volume ?? 1) * voiceVolumeRef.current);
+          // Audio started by playback tick (avoids double-call race condition)
         }
         if (musicElRef.current) {
           musicElRef.current.currentTime = t / 1000;
@@ -370,7 +368,7 @@ export default function SubtitleCanvas() {
       if (musicElRef.current) musicElRef.current.pause();
     }
     prevPlayingRef.current = isPlaying;
-  }, [isPlaying, getTrackVideo, resumeAudio, setGain, playClipAudio, stopAllClipAudio, videosRef, activeClipRef, engineRef]);
+  }, [isPlaying, getTrackVideo, resumeAudio, setGain, stopAllClipAudio, videosRef, activeClipRef, engineRef]);
 
   // --- Scrub (paused) ---
   useEffect(() => {
