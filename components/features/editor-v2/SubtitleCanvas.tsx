@@ -9,6 +9,25 @@ import { useSubtitleDrag } from '@/lib/editor-v2/useSubtitleDrag';
 import { initWebGL, renderVideoFrame, destroyWebGL, cssFilterToUniforms, IDENTITY_UNIFORMS } from '@/lib/editor-v2/webglRenderer';
 import type { Track } from '@/lib/editor-v2/types';
 
+// --- Silent WAV blob for Safari iOS keeper ---
+function createSilentWavBlobUrl(): string {
+  const sampleRate = 44100;
+  const numSamples = sampleRate; // 1 second of silence
+  const buffer = new ArrayBuffer(44 + numSamples * 2);
+  const view = new DataView(buffer);
+  const w = (o: number, s: string) => { for (let i = 0; i < s.length; i++) view.setUint8(o + i, s.charCodeAt(i)); };
+  w(0, 'RIFF');
+  view.setUint32(4, 36 + numSamples * 2, true);
+  w(8, 'WAVE'); w(12, 'fmt ');
+  view.setUint32(16, 16, true);
+  view.setUint16(20, 1, true); view.setUint16(22, 1, true);
+  view.setUint32(24, sampleRate, true); view.setUint32(28, sampleRate * 2, true);
+  view.setUint16(32, 2, true); view.setUint16(34, 16, true);
+  w(36, 'data');
+  view.setUint32(40, numSamples * 2, true);
+  return URL.createObjectURL(new Blob([buffer], { type: 'audio/wav' }));
+}
+
 // --- Audio Engine ---
 // Video audio: decodeAudioData → AudioBufferSourceNode (Safari iOS compatible)
 // Music audio: createMediaElementSource(audioElement) (works for <audio>)
@@ -27,6 +46,11 @@ function useAudioEngine() {
   const getOrCreateEngine = useCallback((): AudioEngineState => {
     if (engineRef.current) return engineRef.current;
     const ctx = new AudioContext();
+    // iOS 17+: treat Web Audio as media playback (not UI sound) — plays even with ringer switch off
+    if ('audioSession' in navigator) {
+      (navigator as unknown as Record<string, { type: string }>).audioSession.type = 'playback';
+      console.log('[AUDIO_ENGINE] Set audioSession.type = playback');
+    }
     engineRef.current = { ctx, gains: new Map(), musicSource: null, audioBuffers: new Map(), activeSources: new Map() };
     console.log('[AUDIO_ENGINE] Created AudioContext, state:', ctx.state);
     return engineRef.current;
@@ -168,7 +192,7 @@ function useTrackVideos() {
 export default function SubtitleCanvas() {
   // Build markers
   useEffect(() => { console.log('[EDITOR_V2] build:2026-04-02T22:30 — trim-detect-map + audio-mix'); }, []);
-  useEffect(() => { console.log('[EDITOR_V2] M1-fix8 — silent keeper audio element'); }, []);
+  useEffect(() => { console.log('[EDITOR_V2] M1-fix10 — blob URL keeper + audioSession playback'); }, []);
 
   const glCanvasRef = useRef<HTMLCanvasElement>(null);
   const overlayCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -349,7 +373,7 @@ export default function SubtitleCanvas() {
         // keeps Safari iOS audio pipeline active for AudioBufferSourceNodes
         if (!keeperRef.current && engineRef.current) {
           const keeper = new Audio();
-          keeper.src = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=';
+          keeper.src = createSilentWavBlobUrl(); // blob URL, not data URI — Safari iOS requires real blob
           keeper.loop = true;
           const src = engineRef.current.ctx.createMediaElementSource(keeper);
           const gain = engineRef.current.ctx.createGain();
@@ -357,7 +381,7 @@ export default function SubtitleCanvas() {
           src.connect(gain).connect(engineRef.current.ctx.destination);
           keeper.play().catch(() => {});
           keeperRef.current = keeper;
-          console.log('[AUDIO_ENGINE] Silent keeper started to unlock Safari audio pipeline');
+          console.log('[AUDIO_ENGINE] Silent keeper (blob URL) started');
         }
         const t = useEditorV2Store.getState().currentTime;
         const allTracks = tracksRef.current;
