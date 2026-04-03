@@ -168,7 +168,7 @@ function useTrackVideos() {
 export default function SubtitleCanvas() {
   // Build markers
   useEffect(() => { console.log('[EDITOR_V2] build:2026-04-02T22:30 — trim-detect-map + audio-mix'); }, []);
-  useEffect(() => { console.log('[EDITOR_V2] M1-fix7 — silence unlock buffer'); }, []);
+  useEffect(() => { console.log('[EDITOR_V2] M1-fix8 — silent keeper audio element'); }, []);
 
   const glCanvasRef = useRef<HTMLCanvasElement>(null);
   const overlayCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -212,7 +212,10 @@ export default function SubtitleCanvas() {
     return () => { destroyWebGL(); glInitRef.current = false; };
   }, []);
 
-  useEffect(() => () => { cleanupVideos(); cleanupAudio(); }, [cleanupVideos, cleanupAudio]);
+  useEffect(() => () => {
+    cleanupVideos(); cleanupAudio();
+    if (keeperRef.current) { keeperRef.current.pause(); keeperRef.current.removeAttribute('src'); keeperRef.current = null; }
+  }, [cleanupVideos, cleanupAudio]);
 
   // --- Music element ---
   useEffect(() => {
@@ -336,22 +339,25 @@ export default function SubtitleCanvas() {
 
   // --- Play/pause ---
   const prevPlayingRef = useRef(false);
-  const unlockRef = useRef(false);
+  const keeperRef = useRef<HTMLAudioElement | null>(null);
   useEffect(() => {
     if (isPlaying && !prevPlayingRef.current) {
       console.log('[AUDIO_ENGINE] Play pressed, ctx state:', engineRef.current?.ctx.state ?? 'no engine');
       resumeAudio().then(() => {
         console.log('[AUDIO_ENGINE] After resume, ctx state:', engineRef.current?.ctx.state);
-        // Unlock Web Audio graph by playing a silent buffer (Tone.js/Howler.js pattern)
-        if (!unlockRef.current && engineRef.current) {
-          const ctx = engineRef.current.ctx;
-          const silence = ctx.createBuffer(1, 1, 22050);
-          const src = ctx.createBufferSource();
-          src.buffer = silence;
-          src.connect(ctx.destination);
-          src.start(0);
-          unlockRef.current = true;
-          console.log('[AUDIO_ENGINE] Played silence buffer to unlock graph');
+        // Silent keeper: a looping <audio> connected via createMediaElementSource
+        // keeps Safari iOS audio pipeline active for AudioBufferSourceNodes
+        if (!keeperRef.current && engineRef.current) {
+          const keeper = new Audio();
+          keeper.src = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=';
+          keeper.loop = true;
+          const src = engineRef.current.ctx.createMediaElementSource(keeper);
+          const gain = engineRef.current.ctx.createGain();
+          gain.gain.value = 0;
+          src.connect(gain).connect(engineRef.current.ctx.destination);
+          keeper.play().catch(() => {});
+          keeperRef.current = keeper;
+          console.log('[AUDIO_ENGINE] Silent keeper started to unlock Safari audio pipeline');
         }
         const t = useEditorV2Store.getState().currentTime;
         const allTracks = tracksRef.current;
