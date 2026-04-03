@@ -93,7 +93,9 @@ interface EditorV2Store {
   trimSubtitleBlock: (id: string, newStartMs: number, newEndMs: number) => void;
   moveTextOverlay: (id: string, newStartMs: number) => void;
   moveVideoClip: (clipId: string, newTimelineStart: number) => void;
-  addVideoClip: (file: File) => void;
+  addVideoTrack: () => void;
+  addVideoClip: (file: File, trackId?: string) => void;
+  setTrackVolume: (trackId: string, volume: number) => void;
   removeVideoClip: (id: string) => void;
   updateClipTrim: (clipId: string, trimStart: number, trimEnd: number) => void;
   setClipFilter: (clipId: string, filterId: string) => void;
@@ -289,17 +291,29 @@ export const useEditorV2Store = create<EditorV2Store>((set, get) => ({
     }));
   },
 
-  addVideoClip: (file) => {
+  addVideoTrack: () => set((s) => {
+    const idx = s.tracks.filter(t => t.type === 'video').length + 1;
+    const newTrack: Track = { id: `v${Date.now()}`, type: 'video', label: `Video ${idx}`, muted: false, volume: 1, clips: [] };
+    // Insert after the last video track
+    const lastVideoIdx = s.tracks.reduce((acc, t, i) => t.type === 'video' ? i : acc, -1);
+    const tracks = [...s.tracks];
+    tracks.splice(lastVideoIdx + 1, 0, newTrack);
+    return { tracks };
+  }),
+
+  addVideoClip: (file, trackId?) => {
     const blobUrl = URL.createObjectURL(file);
     const clipId = crypto.randomUUID();
     const clip: VideoClip = { id: clipId, file, blobUrl, duration: 0, trimStart: 0, trimEnd: 0, timelineStart: 0, filterId: 'normal', thumbnailUrl: null, sourceVideoUrl: null };
     set((s) => {
-      const vt = getVideoTrack(s.tracks);
+      const targetId = trackId ?? getVideoTrack(s.tracks)?.id ?? 'v1';
+      const targetTrack = s.tracks.find(t => t.id === targetId);
       let tracks: Track[];
-      if (vt && (vt.clips?.length ?? 0) > 0) {
-        const v2: Track = { id: `v${Date.now()}`, type: 'video', label: `Video ${getVideoTracks(s.tracks).length + 1}`, muted: false, volume: 1, clips: [clip] };
-        tracks = [...s.tracks, v2];
+      if (targetTrack) {
+        // Add clip to specified track
+        tracks = s.tracks.map(t => t.id === targetId ? { ...t, clips: [...(t.clips ?? []), clip] } : t);
       } else {
+        // Fallback: add to first video track
         tracks = s.tracks.map(t => t.id === 'v1' ? { ...t, clips: [...(t.clips ?? []), clip] } : t);
       }
       return { tracks, ...syncFlatFromTracks(tracks), duration: Math.max(s.duration, totalClipsDuration(tracks)) };
@@ -460,5 +474,9 @@ export const useEditorV2Store = create<EditorV2Store>((set, get) => ({
       if (t.type !== 'audio' || !t.audioClips) return t;
       return { ...t, audioClips: t.audioClips.map(a => a.id === clipId ? { ...a, audioUrl: url } : a) };
     }),
+  })),
+
+  setTrackVolume: (trackId, volume) => set((s) => ({
+    tracks: s.tracks.map(t => t.id === trackId ? { ...t, volume: Math.max(0, Math.min(1, volume)) } : t),
   })),
 }));

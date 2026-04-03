@@ -192,7 +192,7 @@ function useTrackVideos() {
 export default function SubtitleCanvas() {
   // Build markers
   useEffect(() => { console.log('[EDITOR_V2] build:2026-04-02T22:30 — trim-detect-map + audio-mix'); }, []);
-  useEffect(() => { console.log('[EDITOR_V2] M1-fix10 — blob URL keeper + audioSession playback'); }, []);
+  useEffect(() => { console.log('[EDITOR_V2] M3 — multi-track simultaneous playback'); }, []);
 
   const glCanvasRef = useRef<HTMLCanvasElement>(null);
   const overlayCanvasRef = useRef<HTMLCanvasElement>(null);
