@@ -18,9 +18,25 @@ export default function CameraOverlay({ onClose }: Props) {
   // Start webcam on mount — onClose excluded from deps to avoid re-fire on parent re-render
   const onCloseRef = useRef(onClose);
   onCloseRef.current = onClose;
+  const mountedRef = useRef(false);
   useEffect(() => {
-    startWebcam().catch(() => onCloseRef.current());
-    return () => cleanup();
+    console.log('[CAMERA] useEffect fired', { alreadyMounted: mountedRef.current, startWebcam: typeof startWebcam, cleanup: typeof cleanup });
+    if (mountedRef.current) {
+      console.log('[CAMERA] SKIPPING — already mounted (effect re-fired due to dep change)');
+      return;
+    }
+    mountedRef.current = true;
+    console.log('[CAMERA] startWebcam called');
+    startWebcam().then(() => {
+      console.log('[CAMERA] startWebcam resolved OK');
+    }).catch((err) => {
+      console.log('[CAMERA] startWebcam FAILED', err);
+      onCloseRef.current();
+    });
+    return () => {
+      console.log('[CAMERA] cleanup called');
+      cleanup();
+    };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [startWebcam, cleanup]);
 
