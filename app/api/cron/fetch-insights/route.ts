@@ -72,6 +72,8 @@ export async function GET(request: NextRequest) {
         .limit(50)
         .get();
 
+      console.log('[CRON] processing user:', uid, 'items:', itemsSnap.size);
+
       // Insights par media
       for (const itemDoc of itemsSnap.docs) {
         const item = itemDoc.data();
@@ -99,7 +101,7 @@ export async function GET(request: NextRequest) {
       } catch { /* skip account insights errors */ }
 
       processed++;
-    } catch { errors++; }
+    } catch (err) { console.error('[CRON] user error:', err); errors++; }
   }
 
   return NextResponse.json({ processed, errors });
