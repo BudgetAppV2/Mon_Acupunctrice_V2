@@ -7,6 +7,7 @@ import Link from 'next/link';
 import SummaryCard from '@/components/features/stats/SummaryCard';
 import PublicationCard from '@/components/features/stats/PublicationCard';
 import PublicationDetail from '@/components/features/stats/PublicationDetail';
+import GrowthChart from '@/components/features/stats/GrowthChart';
 import type { ContentItem } from '@/lib/types';
 
 const PERIODS = [7, 30, 90] as const;
@@ -87,6 +88,9 @@ export default function StatsPage() {
                 )}
               </div>
             )}
+
+            {/* Growth chart */}
+            {daily.data.length > 0 && <GrowthChart data={daily.data} />}
 
             {/* Publications */}
             <section>
