@@ -142,6 +142,7 @@ export interface ContentItem {
     youtubeComments?: number;
     fetchedAt: Timestamp;
   };
+  igComments?: { id: string; text: string; username: string; timestamp: string }[];
   createdAt: Timestamp;
   updatedAt: Timestamp;
 }

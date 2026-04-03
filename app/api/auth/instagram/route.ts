@@ -7,6 +7,7 @@ const SCOPES = [
   'instagram_business_basic',
   'instagram_business_content_publish',
   'instagram_business_manage_messages',
+  'instagram_business_manage_comments',
 ].join(',');
 
 /** GET /api/auth/instagram?uid=xxx — Redirige vers Meta OAuth */

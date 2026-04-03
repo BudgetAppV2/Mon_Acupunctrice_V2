@@ -14,6 +14,13 @@ function fmt(n: number): string {
   return String(n);
 }
 
+function relativeTs(isoStr: string): string {
+  const days = Math.floor((Date.now() - new Date(isoStr).getTime()) / 86400000);
+  if (days === 0) return "aujourd'hui";
+  if (days === 1) return 'hier';
+  return `il y a ${days}j`;
+}
+
 function formatDate(ts: ContentItem['publishedAt']): string {
   if (!ts) return '';
   const ms = 'toMillis' in ts ? ts.toMillis() : 0;
@@ -129,6 +136,26 @@ export default function PublicationDetail({ item, onBack }: Props) {
               className="flex items-center gap-2 text-sage text-[11px] font-medium">
               <ArrowTopRightOnSquareIcon className="w-4 h-4" /> Voir sur Facebook
             </a>
+          )}
+        </div>
+
+        {/* Comments */}
+        <div className="space-y-2">
+          <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">Commentaires</p>
+          {item.igComments && item.igComments.length > 0 ? (
+            <div className="space-y-2">
+              {item.igComments.map(c => (
+                <div key={c.id} className="bg-white rounded-xl px-3 py-2">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[11px] font-semibold text-gray-900">{c.username}</span>
+                    <span className="text-[10px] text-gray-400">{relativeTs(c.timestamp)}</span>
+                  </div>
+                  <p className="text-[11px] text-gray-600 mt-0.5">{c.text}</p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-[11px] text-gray-400">Aucun commentaire</p>
           )}
         </div>
       </div>

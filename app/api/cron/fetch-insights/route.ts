@@ -167,11 +167,24 @@ export async function GET(request: NextRequest) {
           } catch { /* skip YT error */ }
         }
 
-        // Write merged insights
-        if (Object.keys(insightsUpdate).length > 0) {
-          await db.doc(`contentItems/${itemDoc.id}`).update({
-            insights: { ...insightsUpdate, fetchedAt: new Date() },
-          });
+        // Fetch Instagram comments
+        let igComments: { id: string; text: string; username: string; timestamp: string }[] | null = null;
+        if (item.instagramPostId) {
+          try {
+            const cmRes = await fetch(`${GRAPH_IG}/${item.instagramPostId}/comments?fields=id,text,username,timestamp&limit=50&access_token=${igToken}`);
+            if (cmRes.ok) {
+              const cmJson = await cmRes.json() as { data?: { id: string; text: string; username: string; timestamp: string }[] };
+              if (cmJson.data && cmJson.data.length > 0) igComments = cmJson.data;
+            }
+          } catch { /* skip comments error — scope may not be granted yet */ }
+        }
+
+        // Write merged insights + comments
+        if (Object.keys(insightsUpdate).length > 0 || igComments) {
+          const update: Record<string, unknown> = {};
+          if (Object.keys(insightsUpdate).length > 0) update.insights = { ...insightsUpdate, fetchedAt: new Date() };
+          if (igComments) update.igComments = igComments;
+          await db.doc(`contentItems/${itemDoc.id}`).update(update);
         }
       }
 
