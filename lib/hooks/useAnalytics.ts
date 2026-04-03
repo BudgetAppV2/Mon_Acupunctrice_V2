@@ -9,8 +9,13 @@ import type { ContentItem } from '@/lib/types';
 interface InsightsSummary {
   totalPlays: number;
   totalReach: number;
+  totalLikes: number;
+  totalComments: number;
+  totalShares: number;
+  totalSaved: number;
   totalEngagement: number;
   publishCount: number;
+  trends: { plays: number; reach: number; engagement: number };
 }
 
 interface DailyEntry {
@@ -19,37 +24,77 @@ interface DailyEntry {
   reach: number;
 }
 
-/** Résumé des insights des 30 derniers jours */
-export function useInsightsSummary(): InsightsSummary & { loading: boolean } {
+function sumInsights(items: ContentItem[], cutoff: number, end: number) {
+  let plays = 0, reach = 0, likes = 0, comments = 0, shares = 0, saved = 0;
+  for (const item of items) {
+    if (!item.insights) continue;
+    const pub = item.publishedAt && 'toMillis' in item.publishedAt ? item.publishedAt.toMillis() : 0;
+    if (pub < cutoff || pub > end) continue;
+    plays += item.insights.plays || 0;
+    reach += item.insights.reach || 0;
+    likes += item.insights.likes || 0;
+    comments += item.insights.comments || 0;
+    shares += item.insights.shares || 0;
+    saved += item.insights.saved || 0;
+  }
+  const engagement = likes + comments + shares + saved;
+  return { plays, reach, likes, comments, shares, saved, engagement };
+}
+
+function pctChange(current: number, previous: number): number {
+  if (previous === 0) return current > 0 ? 100 : 0;
+  return Math.round(((current - previous) / previous) * 100);
+}
+
+/** Insights summary with period filter and trends */
+export function useInsightsSummary(days = 30): InsightsSummary & { loading: boolean } {
   const uid = useAuthStore((s) => s.user?.uid);
-  const [data, setData] = useState<InsightsSummary>({ totalPlays: 0, totalReach: 0, totalEngagement: 0, publishCount: 0 });
+  const [data, setData] = useState<InsightsSummary>({
+    totalPlays: 0, totalReach: 0, totalLikes: 0, totalComments: 0,
+    totalShares: 0, totalSaved: 0, totalEngagement: 0, publishCount: 0,
+    trends: { plays: 0, reach: 0, engagement: 0 },
+  });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!uid) { setLoading(false); return; }
     const db = getFirebaseFirestore();
-    const q = query(collection(db, 'contentItems'), where('userId', '==', uid), where('distributionStatus', '==', 'published'), orderBy('publishedAt', 'desc'), limit(50));
+    // Fetch enough items to cover current + previous period
+    const q = query(collection(db, 'contentItems'), where('userId', '==', uid), where('distributionStatus', '==', 'published'), orderBy('publishedAt', 'desc'), limit(100));
     const unsub = onSnapshot(q, (snap) => {
-      let plays = 0, reach = 0, engagement = 0, count = 0;
-      snap.docs.forEach(doc => {
-        const item = doc.data() as ContentItem;
-        if (item.insights) {
-          plays += item.insights.plays || 0;
-          reach += item.insights.reach || 0;
-          engagement += (item.insights.likes || 0) + (item.insights.comments || 0) + (item.insights.shares || 0) + (item.insights.saved || 0);
-          count++;
-        }
+      const items = snap.docs.map(d => ({ id: d.id, ...d.data() } as ContentItem));
+      const now = Date.now();
+      const periodStart = now - days * 86400 * 1000;
+      const prevStart = periodStart - days * 86400 * 1000;
+
+      const current = sumInsights(items, periodStart, now);
+      const previous = sumInsights(items, prevStart, periodStart);
+      const count = items.filter(i => {
+        if (!i.insights || !i.publishedAt) return false;
+        const pub = 'toMillis' in i.publishedAt ? i.publishedAt.toMillis() : 0;
+        return pub >= periodStart && pub <= now;
+      }).length;
+
+      setData({
+        totalPlays: current.plays, totalReach: current.reach,
+        totalLikes: current.likes, totalComments: current.comments,
+        totalShares: current.shares, totalSaved: current.saved,
+        totalEngagement: current.engagement, publishCount: count,
+        trends: {
+          plays: pctChange(current.plays, previous.plays),
+          reach: pctChange(current.reach, previous.reach),
+          engagement: pctChange(current.engagement, previous.engagement),
+        },
       });
-      setData({ totalPlays: plays, totalReach: reach, totalEngagement: engagement, publishCount: count });
       setLoading(false);
     });
     return unsub;
-  }, [uid]);
+  }, [uid, days]);
 
   return { ...data, loading };
 }
 
-/** Données quotidiennes (followers, reach) des N derniers jours */
+/** Daily account metrics (followers, reach) */
 export function useDailyAnalytics(days = 30): { data: DailyEntry[]; loading: boolean } {
   const uid = useAuthStore((s) => s.user?.uid);
   const [data, setData] = useState<DailyEntry[]>([]);
@@ -67,7 +112,7 @@ export function useDailyAnalytics(days = 30): { data: DailyEntry[]; loading: boo
   return { data, loading };
 }
 
-/** Top Reels par engagement */
+/** Top Reels by engagement */
 export function useTopReels(count = 5): { data: ContentItem[]; loading: boolean } {
   const uid = useAuthStore((s) => s.user?.uid);
   const [data, setData] = useState<ContentItem[]>([]);
