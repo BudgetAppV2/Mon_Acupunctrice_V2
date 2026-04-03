@@ -168,7 +168,7 @@ function useTrackVideos() {
 export default function SubtitleCanvas() {
   // Build markers
   useEffect(() => { console.log('[EDITOR_V2] build:2026-04-02T22:30 — trim-detect-map + audio-mix'); }, []);
-  useEffect(() => { console.log('[EDITOR_V2] M1-fix6 — single playClipAudio call from tick only'); }, []);
+  useEffect(() => { console.log('[EDITOR_V2] M1-fix7 — silence unlock buffer'); }, []);
 
   const glCanvasRef = useRef<HTMLCanvasElement>(null);
   const overlayCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -336,11 +336,23 @@ export default function SubtitleCanvas() {
 
   // --- Play/pause ---
   const prevPlayingRef = useRef(false);
+  const unlockRef = useRef(false);
   useEffect(() => {
     if (isPlaying && !prevPlayingRef.current) {
       console.log('[AUDIO_ENGINE] Play pressed, ctx state:', engineRef.current?.ctx.state ?? 'no engine');
       resumeAudio().then(() => {
         console.log('[AUDIO_ENGINE] After resume, ctx state:', engineRef.current?.ctx.state);
+        // Unlock Web Audio graph by playing a silent buffer (Tone.js/Howler.js pattern)
+        if (!unlockRef.current && engineRef.current) {
+          const ctx = engineRef.current.ctx;
+          const silence = ctx.createBuffer(1, 1, 22050);
+          const src = ctx.createBufferSource();
+          src.buffer = silence;
+          src.connect(ctx.destination);
+          src.start(0);
+          unlockRef.current = true;
+          console.log('[AUDIO_ENGINE] Played silence buffer to unlock graph');
+        }
         const t = useEditorV2Store.getState().currentTime;
         const allTracks = tracksRef.current;
         const actives = findActiveClipsAllTracks(allTracks, t);
