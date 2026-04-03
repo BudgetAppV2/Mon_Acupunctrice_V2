@@ -1,18 +1,27 @@
 'use client';
 
 import { useState } from 'react';
-import { useInsightsSummary, useDailyAnalytics } from '@/lib/hooks/useAnalytics';
+import { useInsightsSummary, useDailyAnalytics, usePublishedItems, type SortBy } from '@/lib/hooks/useAnalytics';
 import { ArrowLeftIcon, ChartBarIcon, EyeIcon, HeartIcon, ChatBubbleLeftIcon, ShareIcon, UserGroupIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import SummaryCard from '@/components/features/stats/SummaryCard';
+import PublicationCard from '@/components/features/stats/PublicationCard';
 
 const PERIODS = [7, 30, 90] as const;
 type Period = typeof PERIODS[number];
 
+const SORT_OPTIONS: { value: SortBy; label: string }[] = [
+  { value: 'date', label: 'Recent' },
+  { value: 'views', label: 'Vues' },
+  { value: 'engagement', label: 'Engage' },
+];
+
 export default function StatsPage() {
   const [period, setPeriod] = useState<Period>(30);
+  const [sortBy, setSortBy] = useState<SortBy>('date');
   const summary = useInsightsSummary(period);
   const daily = useDailyAnalytics(period);
+  const published = usePublishedItems(period, sortBy);
 
   const followerGain = daily.data.length >= 2
     ? daily.data[daily.data.length - 1].followerCount - daily.data[0].followerCount
@@ -47,6 +56,7 @@ export default function StatsPage() {
           </div>
         ) : (
           <>
+            {/* Summary cards */}
             <div className="grid grid-cols-2 gap-2">
               <SummaryCard label="Vues" value={summary.totalPlays} trend={summary.trends.plays} icon={EyeIcon} />
               <SummaryCard label="Likes" value={summary.totalLikes} icon={HeartIcon} />
@@ -55,6 +65,7 @@ export default function StatsPage() {
             </div>
             <SummaryCard label="Engagement total" value={summary.totalEngagement} trend={summary.trends.engagement} icon={ChartBarIcon} />
 
+            {/* Followers */}
             {latestFollowers > 0 && (
               <div className="bg-white rounded-xl px-4 py-3 flex items-center gap-3">
                 <UserGroupIcon className="w-5 h-5 text-sage/50" />
@@ -69,6 +80,34 @@ export default function StatsPage() {
                 )}
               </div>
             )}
+
+            {/* Publications */}
+            <section>
+              <div className="flex items-center justify-between mb-2">
+                <h2 className="text-sm font-semibold text-gray-700">Publications</h2>
+                <div className="flex bg-gray-100 rounded-lg p-0.5">
+                  {SORT_OPTIONS.map(s => (
+                    <button key={s.value} onClick={() => setSortBy(s.value)}
+                      className={`px-2 py-0.5 rounded-md text-[10px] font-medium transition ${
+                        sortBy === s.value ? 'bg-sage text-white shadow-sm' : 'text-gray-500'
+                      }`}>
+                      {s.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              {published.loading ? (
+                <p className="text-xs text-gray-400 text-center py-4">Chargement...</p>
+              ) : published.data.length === 0 ? (
+                <p className="text-xs text-gray-400 text-center py-4">Aucune publication sur cette periode</p>
+              ) : (
+                <div className="space-y-2">
+                  {published.data.map(item => (
+                    <PublicationCard key={item.id} item={item} onTap={() => {}} />
+                  ))}
+                </div>
+              )}
+            </section>
           </>
         )}
       </div>

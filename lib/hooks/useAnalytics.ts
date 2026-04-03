@@ -112,6 +112,49 @@ export function useDailyAnalytics(days = 30): { data: DailyEntry[]; loading: boo
   return { data, loading };
 }
 
+export type SortBy = 'date' | 'views' | 'engagement';
+
+function getEngagement(item: ContentItem): number {
+  if (!item.insights) return 0;
+  return (item.insights.likes || 0) + (item.insights.comments || 0) + (item.insights.shares || 0) + (item.insights.saved || 0);
+}
+
+/** Published items filtered by period with client-side sort */
+export function usePublishedItems(days = 30, sortBy: SortBy = 'date'): { data: ContentItem[]; loading: boolean } {
+  const uid = useAuthStore((s) => s.user?.uid);
+  const [data, setData] = useState<ContentItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!uid) { setLoading(false); return; }
+    const db = getFirebaseFirestore();
+    const q = query(collection(db, 'contentItems'), where('userId', '==', uid), where('distributionStatus', '==', 'published'), orderBy('publishedAt', 'desc'), limit(100));
+    const unsub = onSnapshot(q, (snap) => {
+      const now = Date.now();
+      const cutoff = now - days * 86400 * 1000;
+      let items = snap.docs
+        .map(d => ({ id: d.id, ...d.data() } as ContentItem))
+        .filter(i => {
+          if (!i.publishedAt) return false;
+          const pub = 'toMillis' in i.publishedAt ? i.publishedAt.toMillis() : 0;
+          return pub >= cutoff;
+        });
+      // Client-side sort
+      if (sortBy === 'views') {
+        items.sort((a, b) => (b.insights?.plays || 0) - (a.insights?.plays || 0));
+      } else if (sortBy === 'engagement') {
+        items.sort((a, b) => getEngagement(b) - getEngagement(a));
+      }
+      // 'date' is already desc from Firestore orderBy
+      setData(items);
+      setLoading(false);
+    });
+    return unsub;
+  }, [uid, days, sortBy]);
+
+  return { data, loading };
+}
+
 /** Top Reels by engagement */
 export function useTopReels(count = 5): { data: ContentItem[]; loading: boolean } {
   const uid = useAuthStore((s) => s.user?.uid);
