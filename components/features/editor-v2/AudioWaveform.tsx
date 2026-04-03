@@ -123,28 +123,28 @@ export default function AudioWaveform({ blobUrl, height, fadeIn = 0, fadeOut = 0
   const onHandleUp = () => { dragRef.current = null; };
 
   return (
-    <div ref={containerRef} className="absolute inset-0"
-      style={{ touchAction: 'none' }}
-      onPointerMove={onHandleMove}
-      onPointerUp={onHandleUp}>
+    <div ref={containerRef} className="absolute inset-0">
       <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none" />
 
-      {/* Fade zones — bars already fade via alpha, no dark overlay needed */}
-
-      {duration > 0 && onFadeChange && (
-        <div className="absolute top-0 bottom-0 z-10 cursor-col-resize flex items-center"
-          style={{ left: fadeInPx - 4, width: 8 }}
-          onPointerDown={e => onHandleDown('in', e)}>
-          <div className="w-[3px] h-full bg-amber-400 rounded-full" />
+      {/* Fade handles — 28px zones like TrackBlock trim handles */}
+      {duration > 0 && onFadeChange && (<>
+        <div className="absolute top-0 bottom-0 w-7 cursor-col-resize z-10
+          flex items-center justify-center bg-amber-400/30 rounded-l"
+          style={{ left: Math.max(0, fadeInPx - 14), touchAction: 'none' }}
+          onPointerDown={e => onHandleDown('in', e)}
+          onPointerMove={onHandleMove}
+          onPointerUp={onHandleUp}>
+          <div className="w-0.5 h-3 bg-amber-300 rounded-full" />
         </div>
-      )}
-      {duration > 0 && onFadeChange && (
-        <div className="absolute top-0 bottom-0 z-10 cursor-col-resize flex items-center"
-          style={{ right: fadeOutPx - 4, width: 8 }}
-          onPointerDown={e => onHandleDown('out', e)}>
-          <div className="w-[3px] h-full bg-amber-400 rounded-full" />
+        <div className="absolute top-0 bottom-0 w-7 cursor-col-resize z-10
+          flex items-center justify-center bg-amber-400/30 rounded-r"
+          style={{ right: Math.max(0, fadeOutPx - 14), touchAction: 'none' }}
+          onPointerDown={e => onHandleDown('out', e)}
+          onPointerMove={onHandleMove}
+          onPointerUp={onHandleUp}>
+          <div className="w-0.5 h-3 bg-amber-300 rounded-full" />
         </div>
-      )}
+      </>)}
     </div>
   );
 }

@@ -15,11 +15,11 @@ const TRACK_ICONS: Record<string, React.ReactNode> = {
 
 export default function TracksPanel() {
   const { tracks, currentTime, duration, setCurrentTime, selectedItemId,
-    updateClipTrim, splitClip, deleteClip, addVideoClip, textOverlays,
-    moveSubtitleBlock, moveTextOverlay, moveVideoClip, setAudioFade,
+    updateClipTrim, splitClip, deleteClip, addVideoClip, addVideoTrack, setTrackVolume,
+    textOverlays, moveSubtitleBlock, moveTextOverlay, moveVideoClip, setAudioFade,
     updateTextOverlay, trimSubtitleBlock } = useEditorV2Store();
   const containerRef = useRef<HTMLDivElement>(null);
-  const addFileRef = useRef<HTMLInputElement>(null);
+  const addFileRefs = useRef<Map<string, HTMLInputElement>>(new Map());
   const [confirmDelete, setConfirmDelete] = useState(false);
 
   // Fix 6: Reference duration = max source duration across all clips (prevents zoom on trim)
@@ -80,35 +80,50 @@ export default function TracksPanel() {
 
       {/* Video tracks */}
       {getVideoTracks(tracks).map(t => (
-        <div key={t.id} className="flex items-stretch h-12">
-          <div className="w-[50px] shrink-0 flex items-center gap-1 px-1 text-white/30">
-            {TRACK_ICONS.video}
-            <span className="text-[8px] truncate">{t.label}</span>
+        <div key={t.id}>
+          <div className="flex items-stretch h-12">
+            <div className="w-[50px] shrink-0 flex flex-col items-center justify-center px-1 text-white/30">
+              {TRACK_ICONS.video}
+              <span className="text-[8px] truncate">{t.label}</span>
+              {/* Volume mini-slider */}
+              <input type="range" min={0} max={100} value={Math.round((t.volume ?? 1) * 100)}
+                onChange={e => setTrackVolume(t.id, Number(e.target.value) / 100)}
+                className="w-10 h-1 accent-emerald-400" title={`Vol ${Math.round((t.volume ?? 1) * 100)}%`} />
+            </div>
+            <div className="flex-1 relative bg-white/5 rounded" data-track-row>
+              {t.clips?.map(c => (
+                <div key={c.id}>
+                  <TrackBlock id={c.id} trackId={t.id} label={c.file?.name?.slice(0, 12) ?? 'Clip'}
+                    startMs={c.timelineStart + c.trimStart} endMs={c.timelineStart + c.trimEnd}
+                    duration={refDuration} color="bg-emerald-500/25" selected={selectedItemId === c.id}
+                    onTrimChange={(s, e) => updateClipTrim(c.id, s - c.timelineStart, e - c.timelineStart)}
+                    onDrag={newStartMs => moveVideoClip(c.id, newStartMs - c.trimStart)} />
+                </div>
+              ))}
+              {/* Per-track add clip button (inside the track row) */}
+              {(!t.clips || t.clips.length === 0) && (
+                <button onClick={() => addFileRefs.current.get(t.id)?.click()}
+                  className="absolute inset-0 flex items-center justify-center text-[9px] text-white/20 active:bg-white/5">
+                  <PlusIcon className="w-3 h-3 mr-1" /> Ajouter clip
+                </button>
+              )}
+            </div>
           </div>
-          <div className="flex-1 relative bg-white/5 rounded" data-track-row>
-            {t.clips?.map(c => {
-              const clipDur = c.trimEnd - c.trimStart;
-              const srcL = refDuration > 0 ? (c.timelineStart / refDuration) * 100 : 0;
-              const srcW = refDuration > 0 ? (c.duration / refDuration) * 100 : 0;
-              return (<div key={c.id}>
-                <TrackBlock id={c.id} trackId={t.id} label={c.file?.name?.slice(0, 12) ?? 'Clip'}
-                  startMs={c.timelineStart + c.trimStart} endMs={c.timelineStart + c.trimEnd}
-                  duration={refDuration} color="bg-emerald-500/25" selected={selectedItemId === c.id}
-                  onTrimChange={(s, e) => updateClipTrim(c.id, s - c.timelineStart, e - c.timelineStart)}
-                  onDrag={newStartMs => moveVideoClip(c.id, newStartMs - c.trimStart)} />
-              </div>);
-            })}
-          </div>
+          <input ref={el => { if (el) addFileRefs.current.set(t.id, el); }}
+            type="file" accept="video/*" className="hidden"
+            onChange={e => { const f = e.target.files?.[0]; if (f) addVideoClip(f, t.id); }} />
         </div>
       ))}
-      {/* Add video button */}
-      <div className="px-1">
-        <button onClick={() => addFileRef.current?.click()}
+      {/* Add track + add clip buttons */}
+      <div className="flex items-center gap-2 px-1">
+        <button onClick={() => { const firstTrack = getVideoTracks(tracks)[0]; addFileRefs.current.get(firstTrack?.id ?? 'v1')?.click(); }}
           className="flex items-center gap-1 px-2 py-1 text-[10px] text-white/40 border border-dashed border-white/20 rounded-md active:bg-white/10">
-          <PlusIcon className="w-3 h-3" /> Ajouter video
+          <PlusIcon className="w-3 h-3" /> Clip
         </button>
-        <input ref={addFileRef} type="file" accept="video/*" className="hidden"
-          onChange={e => { const f = e.target.files?.[0]; if (f) addVideoClip(f); }} />
+        <button onClick={() => addVideoTrack()}
+          className="flex items-center gap-1 px-2 py-1 text-[10px] text-emerald-400/60 border border-dashed border-emerald-500/20 rounded-md active:bg-emerald-500/10">
+          <PlusIcon className="w-3 h-3" /> Piste video
+        </button>
       </div>
       {/* Subtitle track */}
       {(() => {
