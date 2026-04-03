@@ -15,10 +15,14 @@ export default function CameraOverlay({ onClose }: Props) {
   const viewfinderRef = useRef<HTMLVideoElement>(null);
   const recordingRef = useRef(false);
 
+  // Start webcam on mount — onClose excluded from deps to avoid re-fire on parent re-render
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
   useEffect(() => {
-    startWebcam().catch(() => onClose());
+    startWebcam().catch(() => onCloseRef.current());
     return () => cleanup();
-  }, [startWebcam, cleanup, onClose]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [startWebcam, cleanup]);
 
   useEffect(() => {
     if (viewfinderRef.current && stream) {
