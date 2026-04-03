@@ -15,7 +15,7 @@ const TRACK_ICONS: Record<string, React.ReactNode> = {
 
 export default function TracksPanel() {
   const { tracks, currentTime, duration, setCurrentTime, selectedItemId,
-    updateClipTrim, splitClip, deleteClip, addVideoClip, addVideoTrack, setTrackVolume,
+    updateClipTrim, splitClip, deleteClip, addVideoClip, addVideoTrack,
     textOverlays, moveSubtitleBlock, moveTextOverlay, moveVideoClip, setAudioFade,
     updateTextOverlay, trimSubtitleBlock } = useEditorV2Store();
   const containerRef = useRef<HTMLDivElement>(null);
@@ -82,13 +82,9 @@ export default function TracksPanel() {
       {getVideoTracks(tracks).map(t => (
         <div key={t.id}>
           <div className="flex items-stretch h-12">
-            <div className="w-[50px] shrink-0 flex flex-col items-center justify-center px-1 text-white/30">
+            <div className="w-[50px] shrink-0 flex items-center gap-1 px-1 text-white/30">
               {TRACK_ICONS.video}
               <span className="text-[8px] truncate">{t.label}</span>
-              {/* Volume mini-slider */}
-              <input type="range" min={0} max={100} value={Math.round((t.volume ?? 1) * 100)}
-                onChange={e => setTrackVolume(t.id, Number(e.target.value) / 100)}
-                className="w-10 h-1 accent-emerald-400" title={`Vol ${Math.round((t.volume ?? 1) * 100)}%`} />
             </div>
             <div className="flex-1 relative bg-white/5 rounded" data-track-row>
               {t.clips?.map(c => (
