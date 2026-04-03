@@ -1,19 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAdminFirestore } from '@/lib/firebase-admin';
 
-const GRAPH = 'https://graph.facebook.com/v25.0';
+const GRAPH = 'https://graph.instagram.com/v25.0';
 
 async function fetchMediaInsights(
   mediaId: string, token: string,
 ): Promise<Record<string, number>> {
   const res = await fetch(
-    `${GRAPH}/${mediaId}/insights?metric=plays,reach,likes,comments,shares,saved&access_token=${token}`,
+    `${GRAPH}/${mediaId}/insights?metric=views,reach,likes,comments,shares,saved,total_interactions&access_token=${token}`,
   );
   if (!res.ok) return {};
   const json = await res.json();
   const metrics: Record<string, number> = {};
   for (const entry of json.data || []) {
     metrics[entry.name] = entry.values?.[0]?.value ?? 0;
+  }
+  // Map views → plays for backward compatibility with existing hooks/UI
+  if (metrics.views !== undefined && metrics.plays === undefined) {
+    metrics.plays = metrics.views;
   }
   return metrics;
 }
