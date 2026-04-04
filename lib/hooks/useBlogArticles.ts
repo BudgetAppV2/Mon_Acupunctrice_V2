@@ -6,8 +6,10 @@ interface BlogPost {
   id: string;
   title: string;
   published: boolean;
+  hasUnpublishedChanges: boolean;
   firstPublishedDate: string | null;
   url: string | null;
+  coverImage: string | null;
 }
 
 export function useBlogArticles() {

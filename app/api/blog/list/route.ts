@@ -6,9 +6,10 @@ const WIX_SITE_ID = process.env.WIX_SITE_ID;
 interface WixPost {
   id: string;
   title: string;
-  published: boolean;
   firstPublishedDate?: string;
+  hasUnpublishedChanges?: boolean;
   url?: { base: string; path: string };
+  media?: { wixMedia?: { image?: { url: string } } };
 }
 
 /** GET /api/blog/list — List Wix blog posts */
@@ -34,9 +35,11 @@ export async function GET() {
     const posts = (data.posts || []).map(p => ({
       id: p.id,
       title: p.title,
-      published: p.published,
+      published: true, // /posts endpoint only returns published articles
+      hasUnpublishedChanges: p.hasUnpublishedChanges || false,
       firstPublishedDate: p.firstPublishedDate || null,
       url: p.url ? `${p.url.base}${p.url.path}` : null,
+      coverImage: p.media?.wixMedia?.image?.url || null,
     }));
 
     return NextResponse.json({ posts });

@@ -72,23 +72,28 @@ export default function BloguePage() {
           </div>
         ) : (
           posts.map(post => (
-            <div key={post.id} className="bg-white rounded-xl p-4">
-              <div className="flex items-start justify-between gap-2">
-                <div className="flex-1 min-w-0">
-                  <h3 className="text-sm font-medium text-gray-900 truncate">{post.title}</h3>
-                  <p className="text-[11px] text-gray-400 mt-0.5">
-                    {formatDate(post.firstPublishedDate)}
-                    {post.published ? ' \u2022 Publie' : ' \u2022 Brouillon'}
-                  </p>
+            <a key={post.id} href={post.url || '#'} target="_blank" rel="noopener noreferrer"
+              className="bg-white rounded-xl p-3 flex items-center gap-3 active:bg-gray-50 transition">
+              {/* Thumbnail */}
+              {post.coverImage ? (
+                <img src={post.coverImage} alt="" className="w-12 h-12 object-cover rounded-lg shrink-0" />
+              ) : (
+                <div className="w-12 h-12 bg-sage/10 rounded-lg shrink-0 flex items-center justify-center">
+                  <BookOpenIcon className="w-5 h-5 text-sage/40" />
                 </div>
-                {post.url && (
-                  <a href={post.url} target="_blank" rel="noopener noreferrer"
-                    className="shrink-0 p-1.5 rounded-lg text-sage bg-sage/10">
-                    <ArrowTopRightOnSquareIcon className="w-4 h-4" />
-                  </a>
-                )}
+              )}
+              <div className="flex-1 min-w-0">
+                <h3 className="text-sm font-medium text-gray-900 truncate">{post.title}</h3>
+                <div className="flex items-center gap-1.5 mt-0.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                  <span className="text-[11px] text-gray-400">
+                    Publie {formatDate(post.firstPublishedDate)}
+                    {post.hasUnpublishedChanges ? ' \u2022 Modifie' : ''}
+                  </span>
+                </div>
               </div>
-            </div>
+              <ArrowTopRightOnSquareIcon className="w-4 h-4 text-sage/50 shrink-0" />
+            </a>
           ))
         )}
       </div>
