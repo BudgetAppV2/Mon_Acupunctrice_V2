@@ -1,4 +1,5 @@
 import type { ContentStyle } from '@/lib/types';
+import { getRdvUrl } from '@/lib/utils/rdvUrl';
 
 export type PublishPlatform = 'instagram' | 'facebook' | 'youtube';
 
@@ -30,8 +31,8 @@ export const STYLE_CTAS: Record<ContentStyle, Record<PublishPlatform, string>> =
   },
   inspirer: {
     instagram: 'Prends rendez-vous, lien dans ma bio',
-    facebook: 'Prends rendez-vous ici : https://gorendezvous.com/lasourceensoi',
-    youtube: 'Prends rendez-vous : https://gorendezvous.com/lasourceensoi',
+    facebook: `Prends rendez-vous ici : ${getRdvUrl({ source: 'facebook', medium: 'caption' })}`,
+    youtube: `Prends rendez-vous : ${getRdvUrl({ source: 'youtube', medium: 'description' })}`,
   },
 };
 

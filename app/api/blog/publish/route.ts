@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { textToRicos, type FaqItem } from '@/lib/utils/ricosConverter';
+import { getRdvUrl, slugify } from '@/lib/utils/rdvUrl';
 
 const WIX_API_KEY = process.env.WIX_API_KEY;
 const WIX_SITE_ID = process.env.WIX_SITE_ID;
 const WIX_MEMBER_ID = process.env.WIX_MEMBER_ID;
-const RDV_URL = 'https://gorendezvous.com/lasourceensoi';
 
 const WIX_BASE = 'https://www.wixapis.com/blog/v3';
 
@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json() as { title?: string; content?: string; category?: string; ctaUrl?: string; faqs?: FaqItem[] };
     const { title, content, category } = body;
-    const ctaUrl = body.ctaUrl || RDV_URL;
+    const ctaUrl = body.ctaUrl || getRdvUrl({ source: 'blog', medium: 'article', campaign: title ? slugify(title) : undefined });
 
     if (!title || !content) {
       return NextResponse.json({ error: 'Titre et contenu requis' }, { status: 400 });

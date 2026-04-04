@@ -2,9 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import type { PublishPlatform } from '@/lib/utils/platformOptimization';
 import { STYLE_CTAS } from '@/lib/utils/platformOptimization';
 import type { ContentStyle } from '@/lib/types';
+import { getRdvUrl } from '@/lib/utils/rdvUrl';
 
 const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY;
-const RDV_URL = 'https://gorendezvous.com/lasourceensoi';
 
 function buildSystemPrompt(platform: PublishPlatform, cta: string): string {
   const base = `Tu es un assistant pour Judith, acupunctrice quebecoise a Montreal.
@@ -30,7 +30,7 @@ Regles Instagram :
 Regles Facebook :
 - Caption plus longue et conversationnelle
 - CTA communautaire (partager, commenter, rejoindre)
-- Inclure le lien de rendez-vous : ${RDV_URL}
+- Inclure le lien de rendez-vous : ${getRdvUrl({ source: 'facebook', medium: 'caption' })}
 - Pas de hashtags`;
   }
 
@@ -39,7 +39,7 @@ Regles Facebook :
 
 Regles YouTube :
 - Commence par un titre SEO-first avec mots-cles (ex: "Acupuncture et fertilite : 3 points essentiels")
-- Les 2 premieres lignes DOIVENT inclure : Prendre rendez-vous : ${RDV_URL}
+- Les 2 premieres lignes DOIVENT inclure : Prendre rendez-vous : ${getRdvUrl({ source: 'youtube', medium: 'description' })}
 - Description detaillee avec mots-cles naturels
 - Pas de hashtags dans la description`;
 }

@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getRdvUrl, slugify } from '@/lib/utils/rdvUrl';
 
 const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY;
-const RDV_URL = 'https://gorendezvous.com/lasourceensoi';
 
-function buildSystem(role: string, blogUrl: string): string {
+function buildSystem(role: string, blogUrl: string, blogTitle?: string): string {
+  const campaign = blogTitle ? 'blog_' + slugify(blogTitle) : undefined;
+  const rdvFb = getRdvUrl({ source: 'facebook', medium: 'caption', campaign });
+  const rdvYt = getRdvUrl({ source: 'youtube', medium: 'description', campaign });
   const roleInstr = role === 'reel_resume'
     ? 'Ce Reel RESUME les points cles de l\'article. La caption doit donner envie de lire l\'article complet.'
     : 'Ce Reel donne un CONSEIL PRATIQUE tire de l\'article. La caption doit etre actionnable et utile.';
@@ -28,12 +31,12 @@ Regles Instagram :
 Regles Facebook :
 - Ton conversationnel
 - Lien vers l'article : ${blogUrl}
-- Lien rendez-vous : ${RDV_URL}
+- Lien rendez-vous : ${rdvFb}
 - Pas de hashtags
 
 Regles YouTube :
 - Titre SEO en premiere ligne
-- Lien rendez-vous dans les 2 premieres lignes : ${RDV_URL}
+- Lien rendez-vous dans les 2 premieres lignes : ${rdvYt}
 - Lien vers l'article : ${blogUrl}
 
 Retourne UNIQUEMENT du JSON valide :
@@ -49,7 +52,7 @@ export async function POST(request: NextRequest) {
   };
   if (!blogTitle || !blogUrl) return NextResponse.json({ error: 'blogTitle et blogUrl requis' }, { status: 400 });
 
-  const system = buildSystem(role || 'reel_resume', blogUrl);
+  const system = buildSystem(role || 'reel_resume', blogUrl, blogTitle);
   const userMsg = `Article de blog :\nTitre : ${blogTitle}\n${blogContent ? `\nContenu :\n${blogContent.slice(0, 2000)}` : ''}`;
 
   try {

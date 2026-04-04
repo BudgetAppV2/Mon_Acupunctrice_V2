@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+import { getRdvUrl } from '@/lib/utils/rdvUrl';
+
 const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY;
-const RDV_URL = 'https://gorendezvous.com/lasourceensoi';
+const RDV_IG = getRdvUrl({ source: 'instagram', medium: 'reel' });
+const RDV_FB = getRdvUrl({ source: 'facebook', medium: 'caption' });
+const RDV_YT = getRdvUrl({ source: 'youtube', medium: 'description' });
 
 const SYSTEM = `Tu es un assistant pour Judith, acupunctrice quebecoise a Montreal.
 Tu rediges des captions pour ses publications video sur les reseaux sociaux.
@@ -22,13 +26,13 @@ Regles Instagram :
 Regles Facebook :
 - Ton plus conversationnel et personnel
 - Peut etre plus long qu'Instagram
-- Inclure le lien de rendez-vous : ${RDV_URL}
+- Inclure le lien de rendez-vous : ${RDV_FB}
 - Pas de hashtags
 - CTA communautaire (partager, commenter)
 
 Regles YouTube :
 - Premiere ligne = titre SEO avec mots-cles
-- Les 2 premieres lignes DOIVENT inclure : Prendre rendez-vous : ${RDV_URL}
+- Les 2 premieres lignes DOIVENT inclure : Prendre rendez-vous : ${RDV_YT}
 - Description qui resume la video avec mots-cles naturels
 - Format Shorts-friendly
 
