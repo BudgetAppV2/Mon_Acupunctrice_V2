@@ -40,14 +40,22 @@ export function getActiveVideoClip(tracks: Track[], currentTimeMs: number): Vide
 }
 
 export function totalClipsDuration(tracks: Track[]): number {
-  const vt = getVideoTrack(tracks);
-  if (!vt?.clips?.length) return 0;
-  return vt.clips.reduce((acc, c) => acc + c.duration, 0);
+  let maxEnd = 0;
+  for (const t of getVideoTracks(tracks)) {
+    if (!t.clips?.length) continue;
+    for (const c of t.clips) {
+      const clipEnd = c.timelineStart + c.trimEnd;
+      maxEnd = Math.max(maxEnd, clipEnd);
+    }
+  }
+  return maxEnd;
 }
 
 export function syncFlatFromTracks(tracks: Track[]) {
-  const vt = getVideoTrack(tracks);
-  const first = vt?.clips?.[0];
+  let first: VideoClip | undefined;
+  for (const t of getVideoTracks(tracks)) {
+    if (t.clips?.length) { first = t.clips[0]; break; }
+  }
   return {
     videoFile: first?.file ?? null,
     videoUrl: first?.blobUrl ?? null,
