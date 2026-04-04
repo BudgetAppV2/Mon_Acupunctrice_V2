@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { collection, doc, writeBatch, serverTimestamp, Timestamp } from 'firebase/firestore';
+import { collection, doc, writeBatch, serverTimestamp, Timestamp, updateDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { getFirebaseFirestore, getFirebaseStorage } from '@/lib/firebase';
 import { useAuth } from '@/lib/hooks/useAuth';
@@ -108,6 +108,25 @@ export function useBlogSequence() {
       });
 
       await batch.commit();
+
+      // Background: generate captions for the 2 reel slots (non-blocking)
+      const reelSlots = SEQUENCE_SLOTS
+        .map((def, idx) => ({ def, slotId: slotIds[idx] }))
+        .filter(s => s.def.role === 'reel_resume' || s.def.role === 'reel_pratique');
+      for (const { def, slotId } of reelSlots) {
+        fetch('/api/generate-blog-captions', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ blogTitle, blogUrl, role: def.role }),
+        })
+          .then(r => r.ok ? r.json() : null)
+          .then(captions => {
+            if (captions && (captions.instagram || captions.facebook || captions.youtube)) {
+              updateDoc(doc(db, 'calendarSlots', slotId), { generatedCaptions: captions });
+            }
+          })
+          .catch(() => { /* caption generation failed — non-blocking */ });
+      }
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Erreur inconnue');
       throw e;

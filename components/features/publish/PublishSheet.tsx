@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import BottomSheet from '@/components/ui/BottomSheet';
 import { usePublish } from '@/lib/hooks/usePublish';
 import { useMultiPlatformPublish } from '@/lib/hooks/useMultiPlatformPublish';
@@ -11,6 +11,8 @@ import PlatformToggles from './PlatformToggles';
 import { useUserProfile } from '@/lib/hooks/useUserProfile';
 import { useAuthStore } from '@/lib/store/useAuthStore';
 import { useEditorStore } from '@/lib/store/useEditorStore';
+import { doc, getDoc } from 'firebase/firestore';
+import { getFirebaseFirestore } from '@/lib/firebase';
 import { ArrowLeftIcon, PaperAirplaneIcon, CalendarIcon, CheckCircleIcon, ArrowUpOnSquareIcon } from '@heroicons/react/24/outline';
 import { useRouter } from 'next/navigation';
 
@@ -30,6 +32,20 @@ export default function PublishSheet({ isOpen, onClose, item }: Props) {
   const storeCaptions = useEditorStore((s) => s.captions);
   const setCaptions = useEditorStore((s) => s.setCaptions);
   const subtitles = useEditorStore((s) => s.subtitles);
+
+  // Pre-fill from slot generatedCaptions if available (blog sequence reels)
+  useEffect(() => {
+    if (!item.slotId || storeCaptions) return;
+    const db = getFirebaseFirestore();
+    getDoc(doc(db, 'calendarSlots', item.slotId)).then(snap => {
+      const data = snap.data();
+      const gen = data?.generatedCaptions as { instagram?: string; facebook?: string; youtube?: string } | undefined;
+      if (gen && (gen.instagram || gen.facebook || gen.youtube)) {
+        setCaptions({ instagram: gen.instagram || '', facebook: gen.facebook || '', youtube: gen.youtube || '' });
+      }
+    }).catch(() => {});
+  }, [item.slotId, storeCaptions, setCaptions]);
+
   const captions = storeCaptions || { instagram: item.caption || '', facebook: item.caption || '', youtube: item.caption || '' };
   const caption = captions.instagram;
   const transcript = subtitles.length > 0 ? subtitles.map(s => s.text).join(' ') : undefined;
