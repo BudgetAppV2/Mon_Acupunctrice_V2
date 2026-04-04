@@ -4,12 +4,13 @@ import { STYLE_CTAS } from '@/lib/utils/platformOptimization';
 import type { ContentStyle } from '@/lib/types';
 
 const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY;
-const RDV_URL = process.env.NEXT_PUBLIC_WIX_URL || 'https://mon-acupunctrice.ca';
+const RDV_URL = 'https://gorendezvous.com/lasourceensoi';
 
 function buildSystemPrompt(platform: PublishPlatform, cta: string): string {
   const base = `Tu es un assistant pour Judith, acupunctrice quebecoise a Montreal.
 Tu rediges des captions optimisees pour ses publications sur les reseaux sociaux.
 Ecris en francais quebecois naturel. Garde le ton chaleureux et professionnel de Judith.
+IMPORTANT : N'utilise JAMAIS d'emojis. Zero emoji. Texte uniquement.
 Termine toujours par ce CTA : "${cta}"`;
 
   if (platform === 'instagram') {
@@ -19,7 +20,8 @@ Regles Instagram :
 - Hook percutant en premiere ligne (max 125 caracteres)
 - Corps de la caption concis et engageant
 - 3 a 5 hashtags pertinents a la fin (ex: #acupuncture #fertilite #bienetre #montreal)
-- Pas de lien cliquable dans la caption (Instagram ne les supporte pas)`;
+- Pas de lien cliquable dans la caption (Instagram ne les supporte pas)
+- CTA final : Lien dans ma bio pour prendre rendez-vous`;
   }
 
   if (platform === 'facebook') {
@@ -28,7 +30,7 @@ Regles Instagram :
 Regles Facebook :
 - Caption plus longue et conversationnelle
 - CTA communautaire (partager, commenter, rejoindre)
-- Inclure le lien RDV cliquable : ${RDV_URL}
+- Inclure le lien de rendez-vous : ${RDV_URL}
 - Pas de hashtags`;
   }
 
@@ -37,8 +39,8 @@ Regles Facebook :
 
 Regles YouTube :
 - Commence par un titre SEO-first avec mots-cles (ex: "Acupuncture et fertilite : 3 points essentiels")
+- Les 2 premieres lignes DOIVENT inclure : Prendre rendez-vous : ${RDV_URL}
 - Description detaillee avec mots-cles naturels
-- Inclure le lien RDV cliquable : ${RDV_URL}
 - Pas de hashtags dans la description`;
 }
 

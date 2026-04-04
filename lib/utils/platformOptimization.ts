@@ -29,9 +29,9 @@ export const STYLE_CTAS: Record<ContentStyle, Record<PublishPlatform, string>> =
     youtube: 'Teste et partage ton experience',
   },
   inspirer: {
-    instagram: 'Lien rendez-vous dans ma bio',
-    facebook: 'Prends rendez-vous via le lien',
-    youtube: 'Lien pour prendre rendez-vous dans la description',
+    instagram: 'Prends rendez-vous, lien dans ma bio',
+    facebook: 'Prends rendez-vous ici : https://gorendezvous.com/lasourceensoi',
+    youtube: 'Prends rendez-vous : https://gorendezvous.com/lasourceensoi',
   },
 };
 
