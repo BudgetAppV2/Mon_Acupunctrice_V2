@@ -2,13 +2,14 @@
 
 import { useState } from 'react';
 import { useInsightsSummary, useDailyAnalytics, usePublishedItems, type SortBy } from '@/lib/hooks/useAnalytics';
-import { ArrowLeftIcon, ChartBarIcon, EyeIcon, HeartIcon, ChatBubbleLeftIcon, ShareIcon, UserGroupIcon } from '@heroicons/react/24/outline';
+import { ArrowLeftIcon, ChartBarIcon, EyeIcon, HeartIcon, ChatBubbleLeftIcon, ShareIcon, UserGroupIcon, DocumentTextIcon, ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import SummaryCard from '@/components/features/stats/SummaryCard';
 import PublicationCard from '@/components/features/stats/PublicationCard';
 import PublicationDetail from '@/components/features/stats/PublicationDetail';
 import GrowthChart from '@/components/features/stats/GrowthChart';
 import type { ContentItem } from '@/lib/types';
+import { useBlogStats } from '@/lib/hooks/useBlogStats';
 
 const PERIODS = [7, 30, 90] as const;
 type Period = typeof PERIODS[number];
@@ -26,6 +27,7 @@ export default function StatsPage() {
   const summary = useInsightsSummary(period);
   const daily = useDailyAnalytics(period);
   const published = usePublishedItems(period, sortBy);
+  const blog = useBlogStats();
 
   const followerGain = daily.data.length >= 2
     ? daily.data[daily.data.length - 1].followerCount - daily.data[0].followerCount
@@ -119,6 +121,47 @@ export default function StatsPage() {
                 </div>
               )}
             </section>
+
+            {/* Blog stats */}
+            {!blog.loading && blog.totals.posts > 0 && (
+              <section>
+                <h2 className="text-sm font-semibold text-gray-700 mb-2">Blog</h2>
+                <div className="grid grid-cols-3 gap-2 mb-3">
+                  <SummaryCard label="Vues blog" value={blog.totals.views} icon={EyeIcon} />
+                  <SummaryCard label="Likes" value={blog.totals.likes} icon={HeartIcon} />
+                  <SummaryCard label="Articles" value={blog.totals.posts} icon={DocumentTextIcon} />
+                </div>
+                <div className="space-y-2">
+                  {[...blog.posts].sort((a, b) => b.views - a.views).map(post => (
+                    <a key={post.id} href={post.url || '#'} target="_blank" rel="noopener noreferrer"
+                      className="bg-white rounded-xl p-2.5 flex items-center gap-2.5 active:bg-gray-50 transition">
+                      {post.image ? (
+                        <img src={post.image} alt="" className="w-11 h-11 object-cover rounded shrink-0" />
+                      ) : (
+                        <div className="w-11 h-11 bg-sage/10 rounded shrink-0 flex items-center justify-center">
+                          <DocumentTextIcon className="w-4 h-4 text-sage/40" />
+                        </div>
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-gray-900 truncate">{post.title}</p>
+                        <div className="flex items-center gap-2 mt-0.5">
+                          <span className="flex items-center gap-0.5 text-[10px] text-gray-400">
+                            <EyeIcon className="w-3 h-3" /> {post.views}
+                          </span>
+                          <span className="flex items-center gap-0.5 text-[10px] text-gray-400">
+                            <HeartIcon className="w-3 h-3" /> {post.likes}
+                          </span>
+                          <span className="flex items-center gap-0.5 text-[10px] text-gray-400">
+                            <ChatBubbleLeftIcon className="w-3 h-3" /> {post.comments}
+                          </span>
+                        </div>
+                      </div>
+                      <ArrowTopRightOnSquareIcon className="w-3.5 h-3.5 text-sage/40 shrink-0" />
+                    </a>
+                  ))}
+                </div>
+              </section>
+            )}
           </>
         )}
       </div>
