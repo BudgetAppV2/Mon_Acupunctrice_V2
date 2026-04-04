@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { textToRicos } from '@/lib/utils/ricosConverter';
+import { textToRicos, type FaqItem } from '@/lib/utils/ricosConverter';
 
 const WIX_API_KEY = process.env.WIX_API_KEY;
 const WIX_SITE_ID = process.env.WIX_SITE_ID;
@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const body = await request.json() as { title?: string; content?: string; category?: string; ctaUrl?: string };
+    const body = await request.json() as { title?: string; content?: string; category?: string; ctaUrl?: string; faqs?: FaqItem[] };
     const { title, content, category } = body;
     const ctaUrl = body.ctaUrl || RDV_URL;
 
@@ -31,8 +31,24 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Titre et contenu requis' }, { status: 400 });
     }
 
-    // Convert plain text to Ricos JSON
-    const richContent = textToRicos(content, ctaUrl);
+    // Generate FAQ if not provided (non-blocking fallback)
+    let faqs = body.faqs;
+    if (!faqs || faqs.length === 0) {
+      try {
+        const faqRes = await fetch(new URL('/api/generate-blog-faq', request.url), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title, content }),
+        });
+        if (faqRes.ok) {
+          const faqData = await faqRes.json() as { faqs?: FaqItem[] };
+          faqs = faqData.faqs;
+        }
+      } catch { /* FAQ generation failed — publish without */ }
+    }
+
+    // Convert plain text to Ricos JSON (with FAQ if available)
+    const richContent = textToRicos(content, ctaUrl, faqs);
 
     // Step 1: Create draft post
     const draftRes = await fetch(`${WIX_BASE}/draft-posts`, {

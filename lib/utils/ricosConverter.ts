@@ -42,7 +42,19 @@ function bulletItemNode(text: string): RicosNode {
   return { type: 'BULLETED_LIST', bulletedListData: {}, nodes: [{ type: 'LIST_ITEM', nodes: [{ type: 'PARAGRAPH', paragraphData: {}, nodes: [textNode(text)] }] }] };
 }
 
-export function textToRicos(text: string, ctaUrl: string): RicosContent {
+export interface FaqItem { question: string; answer: string }
+
+function faqNodes(faqs: FaqItem[]): RicosNode[] {
+  const nodes: RicosNode[] = [];
+  nodes.push(headingNode('Questions frequentes', 2));
+  for (const faq of faqs) {
+    nodes.push(headingNode(faq.question, 3));
+    nodes.push(paragraphNode(faq.answer));
+  }
+  return nodes;
+}
+
+export function textToRicos(text: string, ctaUrl: string, faqs?: FaqItem[]): RicosContent {
   const lines = text.split('\n');
   const nodes: RicosNode[] = [];
   let i = 0;
@@ -81,6 +93,12 @@ export function textToRicos(text: string, ctaUrl: string): RicosContent {
       i++;
     }
     nodes.push(paragraphNode(para));
+  }
+
+  // FAQ section (before CTA)
+  if (faqs && faqs.length > 0) {
+    nodes.push({ type: 'PARAGRAPH', paragraphData: {}, nodes: [] });
+    nodes.push(...faqNodes(faqs));
   }
 
   // CTA paragraph with clickable link

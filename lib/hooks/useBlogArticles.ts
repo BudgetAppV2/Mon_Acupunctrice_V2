@@ -38,6 +38,7 @@ interface PublishBlogParams {
   content: string;
   category?: string;
   ctaUrl?: string;
+  faqs?: { question: string; answer: string }[];
 }
 
 export function usePublishBlog() {
