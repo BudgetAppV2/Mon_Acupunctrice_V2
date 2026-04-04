@@ -39,6 +39,7 @@ interface PublishBlogParams {
   category?: string;
   ctaUrl?: string;
   faqs?: { question: string; answer: string }[];
+  coverImageUrl?: string;
 }
 
 export function usePublishBlog() {

@@ -1,7 +1,10 @@
 'use client';
 
-import { useState } from 'react';
-import { ArrowLeftIcon, EyeIcon, PencilIcon, SparklesIcon } from '@heroicons/react/24/outline';
+import { useState, useRef } from 'react';
+import { ArrowLeftIcon, EyeIcon, PencilIcon, SparklesIcon, PhotoIcon, ArrowTopRightOnSquareIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { getFirebaseStorage } from '@/lib/firebase';
+import { useAuthStore } from '@/lib/store/useAuthStore';
 
 const RDV_URL = 'https://gorendezvous.com/lasourceensoi';
 
@@ -18,6 +21,7 @@ export interface BlogArticle {
   category: string;
   ctaUrl: string;
   faqs?: FaqItem[];
+  coverImageUrl?: string;
 }
 
 interface Props {
@@ -26,7 +30,25 @@ interface Props {
   publishing?: boolean;
 }
 
+async function resizeAndUpload(file: File, uid: string): Promise<string> {
+  const img = await createImageBitmap(file);
+  const maxW = 1200;
+  const scale = img.width > maxW ? maxW / img.width : 1;
+  const w = Math.round(img.width * scale);
+  const h = Math.round(img.height * scale);
+  const canvas = document.createElement('canvas');
+  canvas.width = w; canvas.height = h;
+  canvas.getContext('2d')!.drawImage(img, 0, 0, w, h);
+  const blob = await new Promise<Blob>((res) => canvas.toBlob((b) => res(b!), 'image/jpeg', 0.85));
+  const storage = getFirebaseStorage();
+  const path = `blog-covers/${uid}/${Date.now()}.jpg`;
+  const storageRef = ref(storage, path);
+  await uploadBytes(storageRef, blob);
+  return getDownloadURL(storageRef);
+}
+
 export default function BlogEditor({ onPublish, onCancel, publishing }: Props) {
+  const uid = useAuthStore((s) => s.user?.uid);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [category, setCategory] = useState('Acupuncture');
@@ -34,6 +56,9 @@ export default function BlogEditor({ onPublish, onCancel, publishing }: Props) {
   const [preview, setPreview] = useState(false);
   const [faqs, setFaqs] = useState<FaqItem[]>([]);
   const [faqLoading, setFaqLoading] = useState(false);
+  const [coverImageUrl, setCoverImageUrl] = useState<string | undefined>();
+  const [uploading, setUploading] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
 
   const canPublish = title.trim().length > 0 && content.trim().length > 0;
 
@@ -50,8 +75,19 @@ export default function BlogEditor({ onPublish, onCancel, publishing }: Props) {
         const data = await res.json() as { faqs?: FaqItem[] };
         if (data.faqs?.length) setFaqs(data.faqs);
       }
-    } catch { /* failed — ignore */ }
+    } catch { /* failed */ }
     finally { setFaqLoading(false); }
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !uid) return;
+    setUploading(true);
+    try {
+      const url = await resizeAndUpload(file, uid);
+      setCoverImageUrl(url);
+    } catch { /* upload failed */ }
+    finally { setUploading(false); }
   };
 
   return (
@@ -69,6 +105,7 @@ export default function BlogEditor({ onPublish, onCancel, publishing }: Props) {
       <div className="px-4 pt-4 space-y-4">
         {preview ? (
           <div className="bg-white rounded-xl p-4 space-y-3">
+            {coverImageUrl && <img src={coverImageUrl} alt="" className="w-full rounded-lg object-cover" style={{ aspectRatio: '16/9' }} />}
             <span className="text-[10px] font-medium text-sage bg-sage/10 px-2 py-0.5 rounded-full">{category}</span>
             <h2 className="text-lg font-bold text-gray-900">{title || 'Sans titre'}</h2>
             <div className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">{content}</div>
@@ -105,6 +142,35 @@ export default function BlogEditor({ onPublish, onCancel, publishing }: Props) {
               </select>
             </div>
 
+            {/* Cover image */}
+            <div>
+              <label className="text-xs text-gray-500 font-medium">Image de couverture</label>
+              {coverImageUrl ? (
+                <div className="relative mt-1">
+                  <img src={coverImageUrl} alt="" className="w-full rounded-xl object-cover" style={{ aspectRatio: '16/9' }} />
+                  <button onClick={() => setCoverImageUrl(undefined)}
+                    className="absolute top-2 right-2 p-1 rounded-full bg-black/50 active:bg-black/70">
+                    <XMarkIcon className="w-4 h-4 text-white" />
+                  </button>
+                </div>
+              ) : (
+                <div className="mt-1 space-y-2">
+                  <div className="flex gap-2">
+                    <button onClick={() => fileRef.current?.click()} disabled={uploading}
+                      className="flex-1 flex items-center justify-center gap-1.5 py-3 border border-gray-200 rounded-xl text-xs text-gray-600 active:bg-gray-50">
+                      <PhotoIcon className="w-4 h-4" /> {uploading ? 'Upload...' : 'Importer'}
+                    </button>
+                    <button onClick={() => window.open('https://www.canva.com/create/instagram-stories', '_blank')}
+                      className="flex-1 flex items-center justify-center gap-1.5 py-3 border border-gray-200 rounded-xl text-xs text-gray-600 active:bg-gray-50">
+                      <ArrowTopRightOnSquareIcon className="w-4 h-4" /> Creer dans Canva
+                    </button>
+                  </div>
+                  <p className="text-[10px] text-gray-400 text-center">Cree ton design dans Canva, telecharge-le, puis importe-le ici</p>
+                </div>
+              )}
+              <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
+            </div>
+
             <div>
               <label className="text-xs text-gray-500 font-medium">Contenu</label>
               <textarea value={content} onChange={e => setContent(e.target.value)}
@@ -113,7 +179,7 @@ export default function BlogEditor({ onPublish, onCancel, publishing }: Props) {
                 className="w-full mt-1 bg-white border border-gray-200 rounded-xl px-3 py-2.5 text-sm text-gray-900 leading-relaxed focus:outline-none focus:ring-1 focus:ring-sage resize-none" />
             </div>
 
-            {/* FAQ section */}
+            {/* FAQ */}
             <div className="bg-white border border-gray-200 rounded-xl p-3 space-y-2">
               <div className="flex items-center justify-between">
                 <label className="text-xs text-gray-500 font-medium">FAQ SEO (3 questions)</label>
@@ -150,7 +216,7 @@ export default function BlogEditor({ onPublish, onCancel, publishing }: Props) {
           </>
         )}
 
-        <button onClick={() => onPublish({ title, content, category, ctaUrl, faqs: faqs.length > 0 ? faqs : undefined })}
+        <button onClick={() => onPublish({ title, content, category, ctaUrl, faqs: faqs.length > 0 ? faqs : undefined, coverImageUrl })}
           disabled={!canPublish || publishing}
           className={`w-full py-3 rounded-xl text-sm font-semibold transition ${
             canPublish && !publishing ? 'bg-sage text-white active:bg-sage/90' : 'bg-gray-200 text-gray-400'

@@ -48,8 +48,8 @@ export function useBlogSequence() {
     try {
       // Pré-générer les deux images story côté client
       const [promoBlob, rappelBlob] = await Promise.all([
-        generateStoryImage(blogTitle, 'promo'),
-        generateStoryImage(blogTitle, 'rappel'),
+        generateStoryImage(blogTitle, 'promo', blogImageUrl),
+        generateStoryImage(blogTitle, 'rappel', blogImageUrl),
       ]);
       const [promoUrl, rappelUrl] = await Promise.all([
         uploadStoryImage(promoBlob, 'promo'),

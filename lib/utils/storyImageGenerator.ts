@@ -1,5 +1,6 @@
 /** Genere une image 1080x1920 pour les stories Instagram.
  * Design brande "La Source en Soi" avec CTA GoRendezVous.
+ * Supporte une image de fond optionnelle (Canva) en mode cover.
  * Utilise Canvas API cote client — ne pas appeler dans le cron.
  */
 
@@ -28,22 +29,30 @@ function wrapText(
   return currentY;
 }
 
-function drawBackground(ctx: CanvasRenderingContext2D) {
-  // Gradient vertical sage fonce → sage moyen
+function drawCoverImage(ctx: CanvasRenderingContext2D, img: ImageBitmap) {
+  const scale = Math.max(W / img.width, H / img.height);
+  const sw = W / scale;
+  const sh = H / scale;
+  const sx = (img.width - sw) / 2;
+  const sy = (img.height - sh) / 2;
+  ctx.drawImage(img, sx, sy, sw, sh, 0, 0, W, H);
+}
+
+function drawGradientBackground(ctx: CanvasRenderingContext2D) {
   const bg = ctx.createLinearGradient(0, 0, 0, H);
   bg.addColorStop(0, '#3D5E40');
   bg.addColorStop(1, '#5C7A5F');
   ctx.fillStyle = bg;
   ctx.fillRect(0, 0, W, H);
+}
 
-  // Overlay sombre en haut
+function drawOverlays(ctx: CanvasRenderingContext2D) {
   const top = ctx.createLinearGradient(0, 0, 0, 500);
   top.addColorStop(0, 'rgba(0,0,0,0.4)');
   top.addColorStop(1, 'rgba(0,0,0,0)');
   ctx.fillStyle = top;
   ctx.fillRect(0, 0, W, 500);
 
-  // Overlay sombre en bas
   const bot = ctx.createLinearGradient(0, H - 600, 0, H);
   bot.addColorStop(0, 'rgba(0,0,0,0)');
   bot.addColorStop(1, 'rgba(0,0,0,0.5)');
@@ -53,15 +62,12 @@ function drawBackground(ctx: CanvasRenderingContext2D) {
 
 function drawBranding(ctx: CanvasRenderingContext2D) {
   ctx.textAlign = 'center';
-
-  // Nom de la pratique
   ctx.shadowColor = 'rgba(0,0,0,0.5)';
   ctx.shadowBlur = 8;
   ctx.font = 'bold 42px Inter, sans-serif';
   ctx.fillStyle = '#FFFFFF';
   ctx.fillText('LA SOURCE EN SOI', W / 2, 280);
 
-  // Nom + titre
   ctx.shadowBlur = 4;
   ctx.font = '28px Inter, sans-serif';
   ctx.fillStyle = 'rgba(255,255,255,0.8)';
@@ -76,17 +82,14 @@ function drawCTA(ctx: CanvasRenderingContext2D) {
   ctx.shadowColor = 'rgba(0,0,0,0.4)';
   ctx.shadowBlur = 6;
 
-  // CTA
   ctx.font = 'bold 36px Inter, sans-serif';
   ctx.fillStyle = '#FFFFFF';
   ctx.fillText('Prends rendez-vous', W / 2, 1480);
 
-  // URL GoRendezVous
   ctx.font = '28px Inter, sans-serif';
   ctx.fillStyle = 'rgba(255,255,255,0.9)';
   ctx.fillText('gorendezvous.com/lasourceensoi', W / 2, 1530);
 
-  // Instruction Instagram
   ctx.font = '24px Inter, sans-serif';
   ctx.fillStyle = 'rgba(255,255,255,0.55)';
   ctx.fillText('Lien dans ma bio', W / 2, 1600);
@@ -98,27 +101,41 @@ function drawCTA(ctx: CanvasRenderingContext2D) {
 export async function generateStoryImage(
   title: string,
   type: 'promo' | 'rappel',
+  backgroundImageUrl?: string,
 ): Promise<Blob> {
   const canvas = document.createElement('canvas');
   canvas.width = W;
   canvas.height = H;
   const ctx = canvas.getContext('2d')!;
 
-  drawBackground(ctx);
+  // Background: Canva image or gradient fallback
+  if (backgroundImageUrl) {
+    try {
+      const res = await fetch(backgroundImageUrl);
+      const blob = await res.blob();
+      const img = await createImageBitmap(blob);
+      drawCoverImage(ctx, img);
+      ctx.fillStyle = 'rgba(0,0,0,0.35)';
+      ctx.fillRect(0, 0, W, H);
+    } catch {
+      drawGradientBackground(ctx);
+    }
+  } else {
+    drawGradientBackground(ctx);
+  }
+
+  drawOverlays(ctx);
   drawBranding(ctx);
 
-  // Title section — centered vertically
   ctx.textAlign = 'center';
   ctx.shadowColor = 'rgba(0,0,0,0.5)';
   ctx.shadowBlur = 10;
 
   if (type === 'promo') {
-    // Promo: blog title large
     ctx.font = 'bold 60px Inter, sans-serif';
     ctx.fillStyle = '#FFFFFF';
     wrapText(ctx, title, W / 2, 780, 900, 76);
   } else {
-    // Rappel: "Tu as manque cet article?" + title smaller
     ctx.font = 'bold 48px Inter, sans-serif';
     ctx.fillStyle = '#FFFFFF';
     ctx.fillText('Tu as manque cet article?', W / 2, 740);
