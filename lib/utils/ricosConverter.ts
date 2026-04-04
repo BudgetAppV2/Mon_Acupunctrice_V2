@@ -113,3 +113,27 @@ export function textToRicos(text: string, ctaUrl: string, faqs?: FaqItem[]): Ric
 
   return { nodes };
 }
+
+/** Convert tiptap HTML output to markdown-style text for textToRicos() */
+export function htmlToMarkdownText(html: string): string {
+  if (!html) return '';
+  return html
+    .replace(/<h2[^>]*>(.*?)<\/h2>/gi, '\n# $1\n')
+    .replace(/<h3[^>]*>(.*?)<\/h3>/gi, '\n## $1\n')
+    .replace(/<li[^>]*>(.*?)<\/li>/gi, '- $1')
+    .replace(/<ul[^>]*>|<\/ul>/gi, '\n')
+    .replace(/<ol[^>]*>|<\/ol>/gi, '\n')
+    .replace(/<p[^>]*>(.*?)<\/p>/gi, '$1\n')
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<strong>(.*?)<\/strong>/gi, '$1')
+    .replace(/<em>(.*?)<\/em>/gi, '$1')
+    .replace(/<u>(.*?)<\/u>/gi, '$1')
+    .replace(/<[^>]+>/g, '')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+}
