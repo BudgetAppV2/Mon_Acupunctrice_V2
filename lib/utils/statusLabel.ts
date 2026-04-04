@@ -9,13 +9,18 @@ export function getStatusLabel(item: ContentItem): string {
 }
 
 export function getStatusColor(item: ContentItem): string {
-  if (item.distributionStatus === 'published') return 'bg-emerald-500';
-  if (item.distributionStatus === 'scheduled') return 'bg-blue-500';
-  if (item.distributionStatus === 'publishing') return 'bg-amber-500';
+  if (item.distributionStatus === 'published') return 'bg-status-published';
+  if (item.distributionStatus === 'scheduled') return 'bg-status-planned';
+  if (item.distributionStatus === 'publishing') return 'bg-status-editing';
   if (item.distributionStatus === 'failed') return 'bg-red-500';
+  // These classes map to custom colors in tailwind.config.ts
   const colors: Record<string, string> = {
-    idea: 'bg-gray-400', planned: 'bg-blue-400', ready_to_shoot: 'bg-amber-400',
-    shot: 'bg-orange-400', editing: 'bg-purple-400', ready: 'bg-emerald-500',
+    idea: 'bg-status-idea',
+    planned: 'bg-status-planned',
+    ready_to_shoot: 'bg-status-shot',
+    shot: 'bg-status-shot',
+    editing: 'bg-status-editing',
+    ready: 'bg-status-ready',
   };
-  return colors[item.workflowState] || 'bg-gray-400';
+  return colors[item.workflowState] || 'bg-status-idea';
 }
