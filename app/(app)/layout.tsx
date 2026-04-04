@@ -8,20 +8,20 @@ import { useProgression } from '@/lib/hooks/useProgression';
 import {
   LightBulbIcon as LightBulbOutline,
   CalendarIcon as CalendarOutline,
-  SparklesIcon as SparklesOutline,
+  BookOpenIcon as BookOpenOutline,
   UserIcon as UserOutline,
 } from '@heroicons/react/24/outline';
 import {
   LightBulbIcon as LightBulbSolid,
   CalendarIcon as CalendarSolid,
-  SparklesIcon as SparklesSolid,
+  BookOpenIcon as BookOpenSolid,
   UserIcon as UserSolid,
 } from '@heroicons/react/24/solid';
 
 const TABS = [
   { href: '/idees', label: 'Idees', outline: LightBulbOutline, solid: LightBulbSolid },
   { href: '/calendrier', label: 'Calendrier', outline: CalendarOutline, solid: CalendarSolid },
-  { href: '/inspiration', label: 'Inspiration', outline: SparklesOutline, solid: SparklesSolid },
+  { href: '/blogue', label: 'Blogue', outline: BookOpenOutline, solid: BookOpenSolid },
   { href: '/profil', label: 'Profil', outline: UserOutline, solid: UserSolid },
 ] as const;
 
