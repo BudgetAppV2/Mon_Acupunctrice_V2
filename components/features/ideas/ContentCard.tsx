@@ -2,15 +2,10 @@
 
 import { useState, useRef } from 'react';
 import { TrashIcon } from '@heroicons/react/24/outline';
-import type { ContentItem, WorkflowState } from '@/lib/types';
-import { WORKFLOW_LABELS } from '@/lib/types';
+import type { ContentItem } from '@/lib/types';
 import { getCategoryLabel } from '@/lib/utils/categories';
 import { getStyleColor } from '@/lib/utils/contentStyles';
-
-const STATUS_COLORS: Record<WorkflowState, string> = {
-  idea: 'bg-status-idea', planned: 'bg-status-planned', ready_to_shoot: 'bg-status-shot',
-  shot: 'bg-status-shot', editing: 'bg-status-editing', ready: 'bg-status-ready',
-};
+import { getStatusLabel, getStatusColor } from '@/lib/utils/statusLabel';
 
 interface Props {
   item: ContentItem;
@@ -80,8 +75,8 @@ export default function ContentCard({ item, onDelete, onClick }: Props) {
               )}
             </div>
           </div>
-          <span className={`shrink-0 px-2 py-0.5 rounded-full text-xs font-medium text-white ${STATUS_COLORS[item.workflowState]}`}>
-            {WORKFLOW_LABELS[item.workflowState]}
+          <span className={`shrink-0 px-2 py-0.5 rounded-full text-xs font-medium text-white ${getStatusColor(item)}`}>
+            {getStatusLabel(item)}
           </span>
         </div>
       </div>

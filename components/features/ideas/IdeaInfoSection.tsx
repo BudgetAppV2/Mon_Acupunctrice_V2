@@ -4,21 +4,9 @@ import { useState, useEffect } from 'react';
 import { useUpdateContentItem } from '@/lib/hooks/useUpdateContentItem';
 import { useUserProfile } from '@/lib/hooks/useUserProfile';
 import { getAllCategories } from '@/lib/utils/categories';
-import { WORKFLOW_LABELS, type ContentItem, type WorkflowState, type ContentStyle } from '@/lib/types';
+import { type ContentItem, type WorkflowState, type ContentStyle } from '@/lib/types';
 import ContentStyleSelector from './ContentStyleSelector';
-
-function getStatusLabel(item: ContentItem): string {
-  if (item.distributionStatus === 'published') return 'Publiee';
-  if (item.distributionStatus === 'scheduled') return 'Planifiee';
-  if (item.distributionStatus === 'publishing') return 'Publication...';
-  if (item.distributionStatus === 'failed') return 'Echouee';
-  return WORKFLOW_LABELS[item.workflowState];
-}
-
-const STATUS_COLORS: Record<WorkflowState, string> = {
-  idea: 'bg-status-idea', planned: 'bg-status-planned', ready_to_shoot: 'bg-status-shot',
-  shot: 'bg-status-shot', editing: 'bg-status-editing', ready: 'bg-status-ready',
-};
+import { getStatusLabel, getStatusColor } from '@/lib/utils/statusLabel';
 
 export default function IdeaInfoSection({ item }: { item: ContentItem }) {
   const { updateItem } = useUpdateContentItem();
@@ -57,7 +45,7 @@ export default function IdeaInfoSection({ item }: { item: ContentItem }) {
     <div className="space-y-3">
       {/* Badge statut + date */}
       <div className="flex items-center justify-between">
-        <span className={`px-2 py-0.5 rounded-full text-xs font-medium text-white ${STATUS_COLORS[item.workflowState]}`}>
+        <span className={`px-2 py-0.5 rounded-full text-xs font-medium text-white ${getStatusColor(item)}`}>
           {getStatusLabel(item)}
         </span>
         {created && <span className="text-[10px] text-gray-400">{created.toLocaleDateString('fr-CA', { day: 'numeric', month: 'short', year: 'numeric' })}</span>}
