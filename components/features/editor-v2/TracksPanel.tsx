@@ -4,7 +4,7 @@ import { useRef, useState } from 'react';
 import { useEditorV2Store, getVideoTracks, getSubtitleTrack, getAudioTrack, getClipAtTime } from '@/lib/store/useEditorV2Store';
 import TrackBlock from './TrackBlock';
 import AudioWaveform from './AudioWaveform';
-import { FilmIcon, ChatBubbleBottomCenterTextIcon, MusicalNoteIcon, PlusIcon } from '@heroicons/react/24/outline';
+import { FilmIcon, ChatBubbleBottomCenterTextIcon, MusicalNoteIcon, PlusIcon, VideoCameraIcon, FolderOpenIcon } from '@heroicons/react/24/outline';
 import { ScissorsIcon, TrashIcon } from '@heroicons/react/24/solid';
 
 const TRACK_ICONS: Record<string, React.ReactNode> = {
@@ -13,7 +13,9 @@ const TRACK_ICONS: Record<string, React.ReactNode> = {
   audio: <MusicalNoteIcon className="w-3.5 h-3.5" />,
 };
 
-export default function TracksPanel() {
+interface TracksPanelProps { onOpenCamera?: (trackId: string) => void }
+
+export default function TracksPanel({ onOpenCamera }: TracksPanelProps = {}) {
   const { tracks, currentTime, duration, setCurrentTime, selectedItemId,
     updateClipTrim, splitClip, deleteClip, addVideoClip, addVideoTrack,
     textOverlays, moveSubtitleBlock, moveTextOverlay, moveVideoClip, setAudioFade,
@@ -96,12 +98,20 @@ export default function TracksPanel() {
                     onDrag={newStartMs => moveVideoClip(c.id, newStartMs - c.trimStart)} />
                 </div>
               ))}
-              {/* Per-track add clip button (inside the track row) */}
+              {/* Per-track add clip: import or camera */}
               {(!t.clips || t.clips.length === 0) && (
-                <button onClick={() => addFileRefs.current.get(t.id)?.click()}
-                  className="absolute inset-0 flex items-center justify-center text-[9px] text-white/20 active:bg-white/5">
-                  <PlusIcon className="w-3 h-3 mr-1" /> Ajouter clip
-                </button>
+                <div className="absolute inset-0 flex items-center justify-center gap-2">
+                  <button onClick={() => addFileRefs.current.get(t.id)?.click()}
+                    className="flex items-center gap-1 px-2 py-1 text-[9px] text-white/30 active:bg-white/5 rounded">
+                    <FolderOpenIcon className="w-3 h-3" /> Importer
+                  </button>
+                  {onOpenCamera && (
+                    <button onClick={() => onOpenCamera(t.id)}
+                      className="flex items-center gap-1 px-2 py-1 text-[9px] text-white/30 active:bg-white/5 rounded">
+                      <VideoCameraIcon className="w-3 h-3" /> Camera
+                    </button>
+                  )}
+                </div>
               )}
             </div>
           </div>
@@ -114,8 +124,14 @@ export default function TracksPanel() {
       <div className="flex items-center gap-2 px-1">
         <button onClick={() => { const firstTrack = getVideoTracks(tracks)[0]; addFileRefs.current.get(firstTrack?.id ?? 'v1')?.click(); }}
           className="flex items-center gap-1 px-2 py-1 text-[10px] text-white/40 border border-dashed border-white/20 rounded-md active:bg-white/10">
-          <PlusIcon className="w-3 h-3" /> Clip
+          <FolderOpenIcon className="w-3 h-3" /> Importer
         </button>
+        {onOpenCamera && (
+          <button onClick={() => onOpenCamera(getVideoTracks(tracks)[0]?.id ?? 'v1')}
+            className="flex items-center gap-1 px-2 py-1 text-[10px] text-white/40 border border-dashed border-white/20 rounded-md active:bg-white/10">
+            <VideoCameraIcon className="w-3 h-3" /> Camera
+          </button>
+        )}
         <button onClick={() => addVideoTrack()}
           className="flex items-center gap-1 px-2 py-1 text-[10px] text-emerald-400/60 border border-dashed border-emerald-500/20 rounded-md active:bg-emerald-500/10">
           <PlusIcon className="w-3 h-3" /> Piste video

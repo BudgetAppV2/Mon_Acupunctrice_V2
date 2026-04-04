@@ -7,9 +7,10 @@ import { XMarkIcon } from '@heroicons/react/24/outline';
 
 interface Props {
   onClose: () => void;
+  targetTrackId?: string;
 }
 
-export default function CameraOverlay({ onClose }: Props) {
+export default function CameraOverlay({ onClose, targetTrackId }: Props) {
   const { stream, isRecording, countdown, startWebcam, startRecording, stopRecording, cleanup } = useMediaRecorder();
   const { addVideoClip } = useEditorV2Store();
   const viewfinderRef = useRef<HTMLVideoElement>(null);
@@ -57,7 +58,7 @@ export default function CameraOverlay({ onClose }: Props) {
     const result = await startRecording(stream);
     recordingRef.current = false;
     if (result) {
-      addVideoClip(result.file);
+      addVideoClip(result.file, targetTrackId);
       onClose();
     }
   }, [stream, startRecording, stopRecording, addVideoClip, onClose]);

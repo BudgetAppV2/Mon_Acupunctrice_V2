@@ -107,7 +107,7 @@ interface Props { itemId: string }
 
 export default function EditorV2Layout({ itemId }: Props) {
   const [activeSheet, setActiveSheet] = useState<SheetId>(null);
-  const [showCamera, setShowCamera] = useState(false);
+  const [cameraTargetTrack, setCameraTargetTrack] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [showPublish, setShowPublish] = useState(false);
   const [publishItem, setPublishItem] = useState<ContentItem | null>(null);
@@ -244,13 +244,13 @@ export default function EditorV2Layout({ itemId }: Props) {
       <div className="flex flex-col lg:flex-row flex-1 min-h-0">
         <div className="flex-1 flex flex-col min-h-0 lg:flex-1">
           <div className="relative z-[45]">
-            <Toolbar activeSheet={activeSheet} onToggleSheet={toggleSheet} onOpenCamera={() => setShowCamera(true)} />
+            <Toolbar activeSheet={activeSheet} onToggleSheet={toggleSheet} onOpenCamera={() => setCameraTargetTrack('v1')} />
           </div>
           <div className="flex-1 flex items-center justify-center min-h-0 overflow-hidden px-0 lg:px-4">
             <SubtitleCanvas />
           </div>
           <div className="hidden lg:block"><MiniScrubber /></div>
-          <div className="hidden lg:block"><TracksPanel /></div>
+          <div className="hidden lg:block"><TracksPanel onOpenCamera={(trackId) => setCameraTargetTrack(trackId)} /></div>
         </div>
         <div className="hidden lg:block lg:w-80 border-l border-white/10 overflow-y-auto">
           <TranscribeButton />
@@ -268,7 +268,7 @@ export default function EditorV2Layout({ itemId }: Props) {
       </div>
 
       <BottomSheet isOpen={activeSheet === 'tracks'} onClose={() => setActiveSheet(null)}>
-        <TracksPanel />
+        <TracksPanel onOpenCamera={(trackId) => setCameraTargetTrack(trackId)} />
       </BottomSheet>
       <BottomSheet isOpen={activeSheet === 'sub'} onClose={() => setActiveSheet(null)}>
         <TranscribeButton />
@@ -288,7 +288,7 @@ export default function EditorV2Layout({ itemId }: Props) {
         <CoverPanel />
       </BottomSheet>
 
-      {showCamera && <CameraOverlay onClose={() => setShowCamera(false)} />}
+      {cameraTargetTrack && <CameraOverlay onClose={() => setCameraTargetTrack(null)} targetTrackId={cameraTargetTrack} />}
 
       {showPublish && publishItem && (
         <PublishSheet isOpen={showPublish} onClose={() => setShowPublish(false)} item={publishItem} />
