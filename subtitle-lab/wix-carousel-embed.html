@@ -1,0 +1,103 @@
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Avenir', 'Helvetica Neue', sans-serif; background: transparent; }
+  .carousel-section { padding: 40px 20px; max-width: 1100px; margin: 0 auto; }
+  .carousel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+  .carousel-title { font-size: 24px; font-weight: 600; color: #5C7A5F; }
+  .carousel-link { font-size: 14px; color: #5C7A5F; text-decoration: none; }
+  .carousel-link:hover { text-decoration: underline; }
+  .carousel-container { position: relative; overflow: hidden; }
+  .carousel-track { display: flex; gap: 16px; transition: transform 0.4s ease; }
+  .card { min-width: calc(33.333% - 11px); background: #fff; border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06); overflow: hidden; cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s; flex-shrink: 0; }
+  .card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+  .card img { width: 100%; height: 180px; object-fit: cover; }
+  .card-body { padding: 16px; }
+  .card-date { font-size: 12px; color: #9ca3af; margin-bottom: 6px; }
+  .card-title { font-size: 15px; font-weight: 600; color: #374151; line-height: 1.4;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .nav-btn { position: absolute; top: 50%; transform: translateY(-50%);
+    width: 40px; height: 40px; border-radius: 50%; border: none;
+    background: rgba(92,122,95,0.9); color: white; font-size: 20px;
+    cursor: pointer; z-index: 10; display: flex; align-items: center;
+    justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+  .nav-btn:hover { background: rgba(92,122,95,1); }
+</style>
+</head>
+<style>
+  .nav-btn.prev { left: -4px; }
+  .nav-btn.next { right: -4px; }
+  .nav-btn:disabled { opacity: 0.3; cursor: default; }
+  @media (max-width: 768px) {
+    .card { min-width: calc(85% - 8px); }
+    .carousel-track { scroll-snap-type: x mandatory; overflow-x: auto;
+      -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+    .carousel-track::-webkit-scrollbar { display: none; }
+    .card { scroll-snap-align: start; }
+    .nav-btn { display: none; }
+  }
+</style>
+<body>
+<div class="carousel-section">
+  <div class="carousel-header">
+    <h2 class="carousel-title">Nos derniers articles</h2>
+    <a href="https://www.acupuncturejudith.ca/blog" class="carousel-link">Voir tout &#8594;</a>
+  </div>
+  <div class="carousel-container">
+    <button class="nav-btn prev" id="prevBtn" onclick="slide(-1)">&#8249;</button>
+    <div class="carousel-track" id="track"></div>
+    <button class="nav-btn next" id="nextBtn" onclick="slide(1)">&#8250;</button>
+  </div>
+</div>
+<script>
+var posts = [
+  { title: "L'acupuncture pour les naus\u00e9es de grossesse", date: "29 janvier 2026",
+    image: "https://static.wixstatic.com/media/6745f7_1a29cb1923b246b38fa4d11e45995db8~mv2.png",
+    url: "https://www.acupuncturejudith.ca/post/acupuncture-nausees-grossesse" },
+  { title: "Acupuncture et syst\u00e8me immunitaire : renforcez vos d\u00e9fenses", date: "28 octobre 2025",
+    image: "https://static.wixstatic.com/media/6745f7_7d1059cb69124a03ad453ebeb2312f89~mv2.png",
+    url: "https://www.acupuncturejudith.ca/post/acupuncture-systeme-immunitaire" },
+  { title: "Coliques du nouveau-n\u00e9 : l'acupuncture est-elle efficace ?", date: "9 juillet 2025",
+    image: "https://static.wixstatic.com/media/6745f7_b717810c6c0144029f1e7b12027b6e0f~mv2.png",
+    url: "https://www.acupuncturejudith.ca/post/acupuncture-coliques-nourrisson" },
+  { title: "Stress et anxi\u00e9t\u00e9 chez l'enfant : les bienfaits de l'acupuncture", date: "10 juin 2025",
+    image: "https://static.wixstatic.com/media/6745f7_36afbcf92a7c479985e8878465f6fc15~mv2.jpg",
+    url: "https://www.acupuncturejudith.ca/post/stress-anxiete-enfant-bienfaits-acupuncture" },
+  { title: "Fatigue post-natale : l'acupuncture pour retrouver votre \u00e9nergie", date: "21 mai 2025",
+    image: "https://static.wixstatic.com/media/6745f7_d5a5f39bc15c45169319fa12ca5334df~mv2.png",
+    url: "https://www.acupuncturejudith.ca/post/fatigue-post-natale-acupuncture" },
+  { title: "Comment soulager mon enfant sans m\u00e9dicaments gr\u00e2ce \u00e0 l'acupuncture", date: "30 avril 2025",
+    image: "https://static.wixstatic.com/media/6745f7_84667389eb754e249a67ff5707fa83a8~mv2.png",
+    url: "https://www.acupuncturejudith.ca/post/acupuncture-pediatrique" }
+];
+var currentIndex = 0;
+var track = document.getElementById('track');
+function render() {
+  track.innerHTML = posts.map(function(p) {
+    return '<div class="card" onclick="window.top.location.href=\'' + p.url + '\'">' +
+      '<img src="' + p.image + '" alt="" loading="lazy">' +
+      '<div class="card-body">' +
+      '<p class="card-date">' + p.date + '</p>' +
+      '<h3 class="card-title">' + p.title + '</h3>' +
+      '</div></div>';
+  }).join('');
+}
+function slide(dir) {
+  var cardWidth = track.querySelector('.card').offsetWidth + 16;
+  currentIndex += dir;
+  var maxIndex = posts.length - 3;
+  if (currentIndex < 0) currentIndex = 0;
+  if (currentIndex > maxIndex) currentIndex = maxIndex;
+  track.style.transform = 'translateX(-' + (currentIndex * cardWidth) + 'px)';
+  document.getElementById('prevBtn').disabled = currentIndex === 0;
+  document.getElementById('nextBtn').disabled = currentIndex >= maxIndex;
+}
+render();
+document.getElementById('prevBtn').disabled = true;
+</script>
+</body>
+</html>

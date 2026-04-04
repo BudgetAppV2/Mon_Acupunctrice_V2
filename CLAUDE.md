@@ -90,7 +90,7 @@ app/
     editeur/                 → Éditeur vidéo
     profil/                  → Profil + stats résumé
     stats/                   → Stats détaillées (recharts)
-    blitz/                   → Page vide (placeholder, candidat remplacement)
+    inspiration/              → Page Inspiration (suggestions de contenu)
     layout.tsx               → BottomTabBar (4 onglets: Idées, Calendrier, Stats, Profil)
   (auth)/                    → Login
   api/
@@ -144,7 +144,7 @@ lib/
 
 ### Navigation
 - 4 onglets dans BottomTabBar : Idées, Calendrier, Stats, Profil
-- Page `blitz` existe mais vide (candidat pour remplacement par Inspiration)
+- 4 onglets dans BottomTabBar : Idées, Calendrier, Inspiration, Profil
 - `grid-cols-4` dans le layout
 
 ---

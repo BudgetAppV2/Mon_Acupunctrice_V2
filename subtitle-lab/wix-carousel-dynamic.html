@@ -1,0 +1,140 @@
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Avenir', 'Helvetica Neue', sans-serif; background: transparent; }
+  .carousel-section { padding: 40px 20px; max-width: 1100px; margin: 0 auto; }
+  .carousel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+  .carousel-title { font-size: 24px; font-weight: 600; color: #5C7A5F; }
+  .carousel-link { font-size: 14px; color: #5C7A5F; text-decoration: none; }
+  .carousel-link:hover { text-decoration: underline; }
+  .carousel-container { position: relative; overflow: hidden; }
+  .carousel-track { display: flex; gap: 16px; transition: transform 0.4s ease;
+    cursor: grab; user-select: none; -webkit-user-select: none; }
+  .carousel-track.dragging { cursor: grabbing; transition: none; }
+  .card { min-width: calc(33.333% - 11px); background: #fff; border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06); overflow: hidden; cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s; flex-shrink: 0; }
+  .card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+  .card img { width: 100%; height: 240px; object-fit: cover; pointer-events: none; }
+  .card-body { padding: 20px; }
+  .card-date { font-size: 12px; color: #9ca3af; margin-bottom: 8px; }
+  .card-title { font-size: 16px; font-weight: 600; color: #374151; line-height: 1.5;
+    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+    min-height: 72px; }
+  .nav-btn { position: absolute; top: 50%; transform: translateY(-50%);
+    width: 40px; height: 40px; border-radius: 50%; border: none;
+    background: rgba(92,122,95,0.9); color: white; font-size: 20px;
+    cursor: pointer; z-index: 10; display: flex; align-items: center;
+    justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+  .nav-btn:hover { background: rgba(92,122,95,1); }
+  .nav-btn.prev { left: -4px; }
+  .nav-btn.next { right: -4px; }
+  .nav-btn:disabled { opacity: 0.3; cursor: default; }
+  .loading { text-align: center; padding: 60px; color: #9ca3af; font-size: 14px; }
+  @media (max-width: 768px) {
+    .card { min-width: calc(85% - 8px); }
+    .card img { height: 200px; }
+    .nav-btn { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="carousel-section">
+  <div class="carousel-header">
+    <h2 class="carousel-title">Nos derniers articles</h2>
+    <a href="https://www.acupuncturejudith.ca/blog" class="carousel-link">Voir tout &#8594;</a>
+  </div>
+  <div class="carousel-container">
+    <button class="nav-btn prev" id="prevBtn">&#8249;</button>
+    <div class="carousel-track" id="track"><div class="loading">Chargement des articles...</div></div>
+    <button class="nav-btn next" id="nextBtn">&#8250;</button>
+  </div>
+</div>
+<script>
+var API_URL = 'https://mon-acupunctrice-v2.vercel.app/api/blog/carousel';
+var posts = [], currentIndex = 0, track = document.getElementById('track');
+var isDragging = false, startX = 0, currentTranslate = 0, prevTranslate = 0, dragMoved = false;
+
+document.getElementById('prevBtn').addEventListener('click', function() { slide(-1); });
+document.getElementById('nextBtn').addEventListener('click', function() { slide(1); });
+
+fetch(API_URL).then(function(r) { return r.json(); }).then(function(data) {
+  posts = data.posts || [];
+  render(); initDrag(); updateButtons();
+}).catch(function() {
+  track.innerHTML = '<div class="loading">Impossible de charger les articles</div>';
+});
+
+function render() {
+  track.innerHTML = posts.map(function(p) {
+    return '<div class="card">' +
+      (p.image ? '<img src="' + p.image + '" alt="" loading="lazy" draggable="false">' : '') +
+      '<div class="card-body">' +
+      '<p class="card-date">' + p.date + '</p>' +
+      '<h3 class="card-title">' + p.title + '</h3>' +
+      '</div></div>';
+  }).join('');
+  track.querySelectorAll('.card').forEach(function(card, i) {
+    card.addEventListener('click', function() {
+      if (!dragMoved) window.top.location.href = posts[i].url;
+    });
+  });
+}
+function getCardWidth() { var c = track.querySelector('.card'); return c ? c.offsetWidth + 16 : 300; }
+function getVisible() { return window.innerWidth < 768 ? 1 : 3; }
+function getMaxIndex() { return Math.max(0, posts.length - getVisible()); }
+function updateButtons() {
+  document.getElementById('prevBtn').disabled = currentIndex <= 0;
+  document.getElementById('nextBtn').disabled = currentIndex >= getMaxIndex();
+}
+function setPosition() {
+  currentTranslate = -(currentIndex * getCardWidth());
+  prevTranslate = currentTranslate;
+  track.style.transform = 'translateX(' + currentTranslate + 'px)';
+}
+function slide(dir) {
+  currentIndex += dir;
+  if (currentIndex < 0) currentIndex = 0;
+  if (currentIndex > getMaxIndex()) currentIndex = getMaxIndex();
+  setPosition(); updateButtons();
+}
+
+function initDrag() {
+  function down(e) {
+    isDragging = true; dragMoved = false;
+    startX = (e.touches ? e.touches[0] : e).clientX;
+    prevTranslate = currentTranslate;
+    track.classList.add('dragging');
+  }
+  function move(e) {
+    if (!isDragging) return;
+    var x = (e.touches ? e.touches[0] : e).clientX;
+    var diff = x - startX;
+    if (Math.abs(diff) > 5) dragMoved = true;
+    currentTranslate = prevTranslate + diff;
+    track.style.transform = 'translateX(' + currentTranslate + 'px)';
+  }
+  function up() {
+    if (!isDragging) return;
+    isDragging = false;
+    track.classList.remove('dragging');
+    var moved = currentTranslate - prevTranslate;
+    var threshold = getCardWidth() * 0.25;
+    if (moved < -threshold) currentIndex = Math.min(currentIndex + 1, getMaxIndex());
+    else if (moved > threshold) currentIndex = Math.max(currentIndex - 1, 0);
+    setPosition(); updateButtons();
+    setTimeout(function() { dragMoved = false; }, 10);
+  }
+  track.addEventListener('touchstart', down, { passive: true });
+  track.addEventListener('touchmove', move, { passive: true });
+  track.addEventListener('touchend', up);
+  track.addEventListener('mousedown', down);
+  track.addEventListener('mousemove', move);
+  track.addEventListener('mouseup', up);
+  track.addEventListener('mouseleave', up);
+}
+</script>
+</body>
+</html>
