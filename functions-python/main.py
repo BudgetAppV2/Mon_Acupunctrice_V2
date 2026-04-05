@@ -4,15 +4,17 @@ Publishes Instagram Stories with StoryMention, StoryLink, and StoryHashtag
 using instagrapi (private API). Called by the Vercel cron via HTTPS.
 """
 
+from __future__ import annotations
 import json
 import os
 import tempfile
 import requests
-import functions_framework
-from flask import Request, jsonify
+from firebase_functions import https_fn
+from flask import jsonify
 from google.cloud import storage
-from instagrapi import Client
-from instagrapi.types import StoryMention, StoryLink, StoryHashtag, UserShort
+# Lazy imports — instagrapi is heavy, import inside function to avoid deployment timeout
+# from instagrapi import Client
+# from instagrapi.types import StoryMention, StoryLink, StoryHashtag, UserShort
 
 # Config
 STORAGE_BUCKET = os.environ.get("STORAGE_BUCKET", "mon-acupunctrice-hub.firebasestorage.app")
@@ -73,14 +75,17 @@ def download_media(url: str, suffix: str = ".jpg") -> str:
     return tmp.name
 
 
-@functions_framework.http
-def publish_story_instagrapi(request: Request):
+@https_fn.on_request(secrets=["IG_USERNAME", "IG_PASSWORD"])
+def publish_story_instagrapi(req: https_fn.Request) -> https_fn.Response:
     """HTTPS Cloud Function — publishes an IG Story with mention/link/hashtag."""
-    if request.method == "OPTIONS":
-        return ("", 204, {"Access-Control-Allow-Origin": "*", "Access-Control-Allow-Methods": "POST"})
+    if req.method == "OPTIONS":
+        return https_fn.Response("", 204, {"Access-Control-Allow-Origin": "*", "Access-Control-Allow-Methods": "POST"})
 
     try:
-        body = request.get_json(silent=True) or {}
+        from instagrapi import Client
+        from instagrapi.types import StoryMention, StoryLink, StoryHashtag, UserShort
+
+        body = req.get_json(silent=True) or {}
 
         video_url = body.get("videoUrl")
         image_url = body.get("imageUrl")

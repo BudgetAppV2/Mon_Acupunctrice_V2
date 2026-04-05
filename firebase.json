@@ -9,7 +9,7 @@
   "functions": [
     {
       "source": "functions-python",
-      "runtime": "python312",
+      "runtime": "python313",
       "codebase": "python-instagrapi"
     }
   ]
