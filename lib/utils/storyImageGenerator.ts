@@ -152,3 +152,16 @@ export async function generateStoryImage(
 
   return new Promise((resolve) => canvas.toBlob((b) => resolve(b!), 'image/jpeg', 0.92));
 }
+
+/** Crop a 9:16 story image to 16:9 blog cover (takes center band) */
+export async function cropStoryToBlogCover(storyImageUrl: string): Promise<Blob> {
+  const img = await fetch(storyImageUrl).then(r => r.blob()).then(b => createImageBitmap(b));
+  const canvas = document.createElement('canvas');
+  canvas.width = 1200;
+  canvas.height = 675; // 16:9
+  const ctx = canvas.getContext('2d')!;
+  const cropH = img.width * (9 / 16);
+  const srcY = (img.height - cropH) / 2;
+  ctx.drawImage(img, 0, srcY, img.width, cropH, 0, 0, 1200, 675);
+  return new Promise(resolve => canvas.toBlob(b => resolve(b!), 'image/jpeg', 0.92));
+}

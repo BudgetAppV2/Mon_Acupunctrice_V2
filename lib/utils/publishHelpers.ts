@@ -133,3 +133,33 @@ export async function publishInstagramStory(
   if (!publishData.id) throw new Error(`story_publish_failed: ${JSON.stringify(publishData)}`);
   return publishData.id;
 }
+
+/** Publie une Story Instagram via la Cloud Function Python (instagrapi)
+ * Ajoute des stickers cliquables invisibles (mention, lien, hashtag)
+ * par-dessus le texte visuel baked dans l'image Canva. */
+export async function publishStoryViaInstagrapi(
+  item: Record<string, unknown>,
+  options?: { clinicUsername?: string; linkUrl?: string; hashtags?: string[] },
+): Promise<string | null> {
+  const cfUrl = process.env.INSTAGRAPI_CF_URL;
+  if (!cfUrl) throw new Error('INSTAGRAPI_CF_URL not set');
+
+  const body = {
+    videoUrl: item.videoUrl || null,
+    imageUrl: item.coverImageUrl || item.storyImageUrl || null,
+    caption: item.caption || '',
+    clinicUsername: options?.clinicUsername || 'lasourceensoi',
+    linkUrl: options?.linkUrl || 'https://acupuncturejudith.ca',
+    hashtags: options?.hashtags || ['acupuncture'],
+  };
+
+  const res = await fetch(cfUrl, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+
+  const data = await res.json();
+  if (!data.success) throw new Error(`instagrapi_failed: ${data.error}`);
+  return data.storyPk;
+}

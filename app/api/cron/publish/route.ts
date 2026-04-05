@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAdminFirestore } from '@/lib/firebase-admin';
 import { FieldValue } from 'firebase-admin/firestore';
-import { publishInstagram, publishInstagramStory, publishFacebook, publishYouTube } from '@/lib/utils/publishHelpers';
+import { publishInstagram, publishInstagramStory, publishStoryViaInstagrapi, publishFacebook, publishYouTube } from '@/lib/utils/publishHelpers';
 
 /** GET /api/cron/publish — Publie les items planifiés dont scheduledAt <= maintenant */
 export async function GET(request: NextRequest) {
@@ -68,10 +68,18 @@ export async function GET(request: NextRequest) {
         }
       }
 
-      // Story IG (si item de type story)
+      // Story IG (si item de type story) — instagrapi (mention+link) avec fallback Graph API
       if (user.metaInstagramId && tokens.metaAccessToken && item.mediaType === 'story') {
         try {
-          const storyId = await publishInstagramStory(item, user.metaInstagramId as string, tokens.metaAccessToken as string);
+          let storyId: string | null = null;
+          try {
+            storyId = await publishStoryViaInstagrapi(item);
+            updates.storyPublishMethod = 'instagrapi';
+          } catch (e) {
+            console.warn('[CRON] instagrapi failed, falling back to Graph API:', e);
+            storyId = await publishInstagramStory(item, user.metaInstagramId as string, tokens.metaAccessToken as string);
+            updates.storyPublishMethod = 'graph_api_fallback';
+          }
           updates.storyStatus = 'published';
           updates.storyMediaId = storyId;
         } catch { updates.storyStatus = 'failed'; }
@@ -119,7 +127,11 @@ export async function GET(request: NextRequest) {
       const u = uSnap.data() || {};
       const t = tSnap.data() || {};
       if (u.metaInstagramId && t.metaAccessToken) {
-        await publishInstagramStory(slot, u.metaInstagramId, t.metaAccessToken);
+        try {
+          await publishStoryViaInstagrapi(slot);
+        } catch {
+          await publishInstagramStory(slot, u.metaInstagramId, t.metaAccessToken);
+        }
       }
       await db.doc(`calendarSlots/${slotDoc.id}`).update({ status: 'completed', updatedAt: FieldValue.serverTimestamp() });
       published++;

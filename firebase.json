@@ -5,5 +5,12 @@
   },
   "storage": {
     "rules": "storage.rules"
-  }
+  },
+  "functions": [
+    {
+      "source": "functions-python",
+      "runtime": "python312",
+      "codebase": "python-instagrapi"
+    }
+  ]
 }
