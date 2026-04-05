@@ -34,8 +34,9 @@ export default function PresetGallery() {
             <button
               key={preset.id}
               onClick={() => handlePresetClick(preset)}
+              style={{ touchAction: 'manipulation' }}
               className={`
-                shrink-0 px-3 py-1.5 rounded-full text-[11px] font-medium border transition-all whitespace-nowrap
+                shrink-0 px-3 py-2 rounded-full text-[11px] font-medium border transition-all whitespace-nowrap
                 ${isActive
                   ? 'border-emerald-500 bg-emerald-500/15 text-emerald-300'
                   : 'border-white/10 text-white/50 active:border-white/30 active:text-white/80'

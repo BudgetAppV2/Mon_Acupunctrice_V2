@@ -11,16 +11,16 @@ interface BottomSheetProps {
 export default function BottomSheet({ isOpen, onClose, children }: BottomSheetProps) {
   return (
     <>
-      {/* Backdrop — only covers the bottom 40dvh to keep canvas interactive */}
+      {/* Backdrop — covers area ABOVE the sheet to allow closing by tapping outside */}
       {isOpen && (
         <div
-          className="fixed left-0 right-0 bottom-0 bg-black/10 z-40 lg:hidden"
-          style={{ height: '40dvh' }}
+          className="fixed inset-0 z-40 lg:hidden"
+          style={{ bottom: '40dvh' }}
           onClick={onClose}
         />
       )}
 
-      {/* Panel — compact 35% height */}
+      {/* Panel */}
       <div
         className={`
           fixed bottom-0 left-0 right-0 z-50 lg:hidden
@@ -28,10 +28,11 @@ export default function BottomSheet({ isOpen, onClose, children }: BottomSheetPr
           ${isOpen ? 'translate-y-0' : 'translate-y-full'}
         `}
         style={{ height: '40dvh' }}
+        onClick={e => e.stopPropagation()}
       >
         <div className="h-full bg-[#1a1a1a]/95 backdrop-blur-sm rounded-t-2xl flex flex-col
                         shadow-[0_-2px_20px_rgba(0,0,0,0.4)] border-t border-white/5">
-          {/* Compact header */}
+          {/* Header */}
           <div className="flex items-center justify-between px-4 py-1.5 shrink-0">
             <span className="text-[10px] font-semibold text-white/40 uppercase tracking-wider">Style</span>
             <button onClick={onClose} className="p-1 rounded-full active:bg-white/10">
