@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import { Canvas, Rect, Ellipse, Textbox, FabricImage } from 'fabric';
 import { getTemplateObjects, LOGO_URL } from '@/lib/data/imageEditorTemplates';
 
@@ -11,76 +11,91 @@ interface Props {
   onCanvasReady?: (canvas: Canvas) => void;
 }
 
+/** Create a Fabric object from a template config, stripping type/text from options */
+function createFabricObject(obj: Record<string, unknown>) {
+  const { type, text, ...opts } = obj;
+  switch (type) {
+    case 'rect':    return new Rect(opts);
+    case 'ellipse': return new Ellipse(opts);
+    case 'textbox': return new Textbox((text as string) ?? '', opts);
+    default:        return null;
+  }
+}
+
 export default function ImageEditorCanvas({ onCanvasReady }: Props) {
   const canvasElRef = useRef<HTMLCanvasElement>(null);
   const fabricRef = useRef<Canvas | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [scale, setScale] = useState(1);
   const loadedRef = useRef(false);
 
   const loadTemplate = useCallback(async (canvas: Canvas) => {
     if (loadedRef.current) return;
     loadedRef.current = true;
 
-    const objects = getTemplateObjects();
-    for (const obj of objects) {
-      const t = obj.type as string;
-      let fabricObj;
-      if (t === 'rect') {
-        fabricObj = new Rect(obj as Record<string, unknown>);
-      } else if (t === 'ellipse') {
-        fabricObj = new Ellipse(obj as Record<string, unknown>);
-      } else if (t === 'textbox') {
-        fabricObj = new Textbox(obj.text as string, obj as Record<string, unknown>);
-      }
-      if (fabricObj) canvas.add(fabricObj);
+    // Wait for Google Fonts before rendering text on canvas
+    try {
+      await Promise.all([
+        document.fonts.load('110px "Antic Slab"'),
+        document.fonts.load('800 72px "Mulish"'),
+      ]);
+    } catch { /* fonts may not be ready yet — text will render in fallback */ }
+
+    for (const obj of getTemplateObjects()) {
+      const fo = createFabricObject(obj);
+      if (fo) canvas.add(fo);
     }
 
-    // Load logo image
     try {
       const img = await FabricImage.fromURL(LOGO_URL, { crossOrigin: 'anonymous' });
-      const logoSize = 220;
-      img.scaleToWidth(logoSize);
-      img.set({ left: CANVAS_W - logoSize - 60, top: CANVAS_H - logoSize - 60, selectable: true, evented: true });
+      img.scaleToWidth(220);
+      img.set({ left: CANVAS_W - 280, top: CANVAS_H - 280, selectable: true, evented: true });
       canvas.add(img);
-    } catch { /* logo load failed — continue without */ }
+    } catch { /* logo unavailable */ }
 
     canvas.renderAll();
   }, []);
 
-  // Init Fabric canvas
   useEffect(() => {
     if (!canvasElRef.current || fabricRef.current) return;
+
     const canvas = new Canvas(canvasElRef.current, {
       width: CANVAS_W,
       height: CANVAS_H,
       backgroundColor: '#D4EDEC',
       preserveObjectStacking: true,
+      selection: true,
     });
     fabricRef.current = canvas;
+
+    // Scale to fit container via CSS-only dimensions.
+    // Keeps internal resolution at 1080x1920 (crisp export)
+    // and Fabric.js correctly maps pointer coords via getBoundingClientRect.
+    const container = containerRef.current!;
+    const fit = () => {
+      const { width: cw, height: ch } = container.getBoundingClientRect();
+      const s = Math.min((cw - 32) / CANVAS_W, (ch - 32) / CANVAS_H, 1);
+      canvas.setDimensions(
+        { width: CANVAS_W * s, height: CANVAS_H * s },
+        { cssOnly: true },
+      );
+    };
+    fit();
+    const obs = new ResizeObserver(fit);
+    obs.observe(container);
+
     loadTemplate(canvas);
     if (onCanvasReady) onCanvasReady(canvas);
-    return () => { canvas.dispose(); fabricRef.current = null; };
-  }, [onCanvasReady, loadTemplate]);
 
-  // Scale to fit container
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-    const obs = new ResizeObserver(([e]) => {
-      const { width: cw, height: ch } = e.contentRect;
-      const s = Math.min(cw / CANVAS_W, ch / CANVAS_H, 1);
-      setScale(s);
-    });
-    obs.observe(container);
-    return () => obs.disconnect();
-  }, []);
+    return () => {
+      obs.disconnect();
+      canvas.dispose();
+      fabricRef.current = null;
+    };
+  }, [onCanvasReady, loadTemplate]);
 
   return (
     <div ref={containerRef} className="flex-1 flex items-center justify-center bg-gray-800 overflow-hidden p-4">
-      <div style={{ transform: `scale(${scale})`, transformOrigin: 'center center' }}>
-        <canvas ref={canvasElRef} className="shadow-2xl rounded" />
-      </div>
+      <canvas ref={canvasElRef} className="shadow-2xl rounded" />
     </div>
   );
 }

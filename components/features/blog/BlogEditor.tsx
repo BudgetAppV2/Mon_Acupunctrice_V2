@@ -123,12 +123,12 @@ export default function BlogEditor({ onPublish, onCancel, publishing }: Props) {
                       className="flex-1 flex items-center justify-center gap-1.5 py-3 border border-gray-200 rounded-xl text-xs text-gray-600 active:bg-gray-50">
                       <PhotoIcon className="w-4 h-4" /> {uploading ? 'Upload...' : 'Importer'}
                     </button>
-                    <button onClick={() => window.open('https://www.canva.com/create/instagram-stories', '_blank')}
+                    <button onClick={() => window.open('/editeur-image', '_blank')}
                       className="flex-1 flex items-center justify-center gap-1.5 py-3 border border-gray-200 rounded-xl text-xs text-gray-600 active:bg-gray-50">
-                      <ArrowTopRightOnSquareIcon className="w-4 h-4" /> Creer dans Canva
+                      <ArrowTopRightOnSquareIcon className="w-4 h-4" /> Creer l&apos;image
                     </button>
                   </div>
-                  <p className="text-[10px] text-gray-400 text-center">Cree ton design dans Canva, telecharge-le, puis importe-le ici</p>
+                  <p className="text-[10px] text-gray-400 text-center">Cree ton design, telecharge-le, puis importe-le ici</p>
                 </div>
               )}
               <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
