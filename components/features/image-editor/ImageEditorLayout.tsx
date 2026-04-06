@@ -131,37 +131,33 @@ export default function ImageEditorLayout() {
     const grp = canvas.getActiveObject();
     if (!grp || !(grp instanceof Group)) return;
 
+    // Capture absolute center of each child WHILE still in group
     const items = grp.getObjects().slice();
-
-    // Capture each item's absolute transform WHILE still inside the group
-    const absTransforms = items.map((item) => {
+    const centers = items.map((item) => {
       const m = item.calcTransformMatrix();
-      return util.qrDecompose(m);
+      const d = util.qrDecompose(m);
+      return { x: d.translateX, y: d.translateY, sx: d.scaleX, sy: d.scaleY, a: d.angle };
     });
 
+    // Fabric's removeAll detaches children from the group properly
+    grp.removeAll();
     canvas.remove(grp);
 
     items.forEach((item, i) => {
-      const t = absTransforms[i];
-      item.set({
-        scaleX: t.scaleX,
-        scaleY: t.scaleY,
-        angle: t.angle,
-        skewX: t.skewX,
-        skewY: t.skewY,
-        selectable: true,
-        evented: true,
-      });
-      // Textboxes: editable for double-tap text editing on mobile
+      const c = centers[i];
+      // Make every item interactive
+      item.set({ selectable: true, evented: true, hasControls: true });
+      item.scaleX = c.sx;
+      item.scaleY = c.sy;
+      item.angle = c.a;
+
+      // Enable text editing — direct property access (TypeScript set() ignores unknown keys)
       if (item.type === 'textbox' || item.type === 'i-text') {
-        item.set('editable' as keyof typeof item, true);
+        (item as unknown as { editable: boolean }).editable = true;
       }
+
       canvas.add(item);
-      // Place center at the exact absolute position from the decomposed matrix
-      item.setPositionByOrigin(
-        new Point(t.translateX, t.translateY),
-        'center', 'center',
-      );
+      item.setPositionByOrigin(new Point(c.x, c.y), 'center', 'center');
       item.setCoords();
     });
 
