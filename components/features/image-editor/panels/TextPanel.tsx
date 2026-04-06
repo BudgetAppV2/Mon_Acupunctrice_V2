@@ -54,9 +54,10 @@ function scaleAndPlace(
   canvas.discardActiveObject();
 
   for (const el of elements) {
+    // Positions relative to preset origin (0,0) — Group handles canvas placement
     const opts: Record<string, unknown> = {
-      left: offsetX + ((el.left ?? 0) - referenceX) * scale,
-      top: offsetY + ((el.top ?? 0) - referenceY) * scale,
+      left: ((el.left ?? 0) - referenceX) * scale,
+      top: ((el.top ?? 0) - referenceY) * scale,
       selectable: true, evented: true,
     };
     // Scale-dependent props
@@ -104,17 +105,13 @@ function scaleAndPlace(
     return 0;
   }
 
-  // Group all elements so Judith can move/resize the whole block, then ungroup
+  // Group all elements — children already have positions relative to (0,0)
   const group = new Group(fabricObjs, {
     left: offsetX,
     top: offsetY,
     selectable: true,
     evented: true,
     subTargetCheck: true,
-  });
-  // Reset children positions relative to group (they were placed with absolute offsets)
-  fabricObjs.forEach((obj) => {
-    obj.set({ left: (obj.left ?? 0) - offsetX, top: (obj.top ?? 0) - offsetY });
   });
   canvas.add(group);
   canvas.setActiveObject(group);
