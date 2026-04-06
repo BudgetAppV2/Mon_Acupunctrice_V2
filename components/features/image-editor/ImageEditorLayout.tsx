@@ -2,10 +2,12 @@
 
 import { useState, useCallback, useEffect, useRef } from 'react';
 import type { Canvas, FabricObject } from 'fabric';
+import { ActiveSelection, Group } from 'fabric';
 import Link from 'next/link';
 import {
   ArrowLeftIcon, ArrowDownTrayIcon, PlayIcon, StopIcon,
   ArrowUturnLeftIcon, ArrowUturnRightIcon, ScissorsIcon, TrashIcon,
+  Square2StackIcon,
 } from '@heroicons/react/24/outline';
 import ImageEditorCanvas from './ImageEditorCanvas';
 import Sidebar from './Sidebar';
@@ -100,9 +102,45 @@ export default function ImageEditorLayout() {
 
   const deleteSelected = useCallback(() => {
     if (!canvas) return;
-    const obj = canvas.getActiveObject();
-    if (!obj) return;
-    canvas.remove(obj);
+    const active = canvas.getActiveObject();
+    if (!active) return;
+    // Multi-selection (shift+click) → remove all selected objects
+    if (active instanceof ActiveSelection) {
+      const objs = active.getObjects();
+      canvas.discardActiveObject();
+      objs.forEach((o) => canvas.remove(o));
+    } else {
+      canvas.remove(active);
+    }
+    canvas.discardActiveObject();
+    canvas.renderAll();
+  }, [canvas]);
+
+  const ungroupSelected = useCallback(() => {
+    if (!canvas) return;
+    const active = canvas.getActiveObject();
+    if (!active || !(active instanceof Group)) return;
+    const items = active.getObjects();
+    // Remove group, add children back as individual objects
+    const { left: gLeft, top: gTop, scaleX: gSx, scaleY: gSy, angle: gAngle } = active;
+    canvas.remove(active);
+    items.forEach((item) => {
+      // Fabric Group stores items with relative coords — transform to absolute
+      const matrix = active.calcTransformMatrix();
+      const point = (item as unknown as { getRelativeCenterPoint: () => { x: number; y: number } }).getRelativeCenterPoint?.();
+      if (point && matrix) {
+        // Use fabric util to get absolute position
+        item.set({
+          left: (item.left ?? 0) * (gSx ?? 1) + (gLeft ?? 0),
+          top: (item.top ?? 0) * (gSy ?? 1) + (gTop ?? 0),
+          scaleX: (item.scaleX ?? 1) * (gSx ?? 1),
+          scaleY: (item.scaleY ?? 1) * (gSy ?? 1),
+          angle: (item.angle ?? 0) + (gAngle ?? 0),
+        });
+      }
+      item.set({ selectable: true, evented: true });
+      canvas.add(item);
+    });
     canvas.discardActiveObject();
     canvas.renderAll();
   }, [canvas]);
@@ -163,6 +201,9 @@ export default function ImageEditorLayout() {
           <HBtn icon={ArrowUturnRightIcon} onClick={doRedo} disabled={!hist.r} title="Redo" />
           {hasSelection && (
             <HBtn icon={TrashIcon} onClick={deleteSelected} title="Supprimer" />
+          )}
+          {selectedType === 'group' && (
+            <HBtn icon={Square2StackIcon} onClick={ungroupSelected} title="Degrouper" />
           )}
           <div className="w-px h-5 bg-white/10 mx-0.5" />
           {selectedType === 'image' && (

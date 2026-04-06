@@ -1,0 +1,287 @@
+[
+  {
+    "name": "Le Passé Vous Va Si Bien",
+    "elements": [
+      {
+        "type": "textbox",
+        "text": "LE PASSÉ",
+        "left": 182.429,
+        "top": 47.244,
+        "width": 413.494,
+        "originX": "left",
+        "originY": "top",
+        "textAlign": "center",
+        "fontFamily": "Lucy Rose",
+        "fontSize": 112,
+        "fontWeight": 400,
+        "fontStyle": "normal",
+        "fill": "#000000"
+      },
+      {
+        "type": "textbox",
+        "text": "VOUS VA",
+        "left": 186.254,
+        "top": 140.779,
+        "width": 404.77,
+        "originX": "left",
+        "originY": "top",
+        "textAlign": "center",
+        "fontFamily": "Lucy Rose",
+        "fontSize": 92,
+        "fontWeight": 400,
+        "fontStyle": "normal",
+        "fill": "#000000"
+      },
+      {
+        "type": "textbox",
+        "text": "si bien",
+        "left": 285.287,
+        "top": 197.26,
+        "width": 217.987,
+        "originX": "left",
+        "originY": "top",
+        "textAlign": "center",
+        "fontFamily": "Bright Sight Script",
+        "fontSize": 116,
+        "fontWeight": 400,
+        "fontStyle": "italic",
+        "fill": "#df6b28"
+      }
+    ]
+  },
+  {
+    "name": "Le Lab Bas-Carbone",
+    "elements": [
+      {
+        "type": "textbox",
+        "text": "LE LAB",
+        "left": 303.496,
+        "top": 300.437,
+        "width": 204.554,
+        "originX": "left",
+        "originY": "top",
+        "textAlign": "center",
+        "fontFamily": "Knockout Sumo",
+        "fontSize": 48,
+        "fontWeight": 400,
+        "fontStyle": "normal",
+        "charSpacing": 40,
+        "fill": "#000000"
+      },
+      {
+        "type": "rect",
+        "left": 156.485,
+        "top": 360.777,
+        "width": 524.417,
+        "height": 139.214,
+        "originX": "left",
+        "originY": "top",
+        "angle": -6.867,
+        "rx": 20.185,
+        "ry": 20.185,
+        "fill": "#b3f0f0"
+      },
+      {
+        "type": "textbox",
+        "text": "Bas-Carbone",
+        "left": 188.224,
+        "top": 391.347,
+        "width": 465.829,
+        "originX": "left",
+        "originY": "top",
+        "angle": -6.867,
+        "textAlign": "center",
+        "fontFamily": "Placard Next Wide",
+        "fontSize": 112,
+        "fontWeight": 700,
+        "fontStyle": "normal",
+        "fill": "#000000"
+      }
+    ]
+  },
+  {
+    "name": "ÉCOlogique",
+    "elements": [
+      {
+        "type": "textbox",
+        "text": "ÉCO",
+        "left": 245.4,
+        "top": 499.93,
+        "width": 319.172,
+        "originX": "left",
+        "originY": "top",
+        "textAlign": "center",
+        "fontFamily": "TAN St. Canard",
+        "fontSize": 138,
+        "fontWeight": 850,
+        "fontStyle": "normal",
+        "charSpacing": 120,
+        "fill": "#5d8662"
+      },
+      {
+        "type": "textbox",
+        "text": "logique",
+        "left": 228.289,
+        "top": 587.478,
+        "width": 364.235,
+        "originX": "left",
+        "originY": "top",
+        "textAlign": "center",
+        "fontFamily": "Ahsing",
+        "fontSize": 118,
+        "fontWeight": 400,
+        "fontStyle": "normal",
+        "fill": "#003c64"
+      }
+    ]
+  },
+  {
+    "name": "Le cercle végétal",
+    "elements": [
+      {
+        "type": "textbox",
+        "text": "LE CERCLE",
+        "left": 201.952,
+        "top": 732.704,
+        "width": 380.063,
+        "originX": "left",
+        "originY": "top",
+        "textAlign": "center",
+        "fontFamily": "Radnika Next Condensed",
+        "fontSize": 76,
+        "fontWeight": 700,
+        "fontStyle": "normal",
+        "charSpacing": 260,
+        "fill": "#814a4a"
+      },
+      {
+        "type": "textbox",
+        "text": "végétal",
+        "left": 213.398,
+        "top": 820.175,
+        "width": 356.521,
+        "originX": "left",
+        "originY": "top",
+        "textAlign": "center",
+        "fontFamily": "Calps Sans",
+        "fontSize": 118,
+        "fontWeight": 400,
+        "fontStyle": "italic",
+        "fill": "#abbb74",
+        "stroke": "#814a4a",
+        "strokeWidth": 5,
+        "strokeLineJoin": "round"
+      }
+    ]
+  },
+  {
+    "name": "Expression Libre",
+    "elements": [
+      {
+        "type": "textbox",
+        "text": "EXPRESSION",
+        "left": 164.894,
+        "top": 995.476,
+        "width": 447.59,
+        "originX": "left",
+        "originY": "top",
+        "textAlign": "center",
+        "fontFamily": "Cooperative",
+        "fontSize": 132,
+        "fontWeight": 400,
+        "fontStyle": "normal",
+        "fill": "#072b50"
+      },
+      {
+        "type": "rect",
+        "left": 403.113,
+        "top": 1102.336,
+        "width": 158.459,
+        "height": 54.832,
+        "originX": "left",
+        "originY": "top",
+        "angle": -10.043,
+        "fill": "#ff6105"
+      },
+      {
+        "type": "textbox",
+        "text": "LIBRE",
+        "left": 427.703,
+        "top": 1107.401,
+        "width": 111.81,
+        "originX": "left",
+        "originY": "top",
+        "angle": -10.043,
+        "textAlign": "center",
+        "fontFamily": "Posey Textured",
+        "fontSize": 58,
+        "fontWeight": 400,
+        "fontStyle": "italic",
+        "fill": "#072b50"
+      }
+    ]
+  },
+  {
+    "name": "Valence",
+    "elements": [
+      {
+        "type": "textbox",
+        "text": "AUBERGE CLASSIQUE",
+        "left": 275.933,
+        "top": 1207.933,
+        "width": 224.209,
+        "originX": "left",
+        "originY": "top",
+        "textAlign": "center",
+        "fontFamily": "Libre Baskerville",
+        "fontSize": 16,
+        "fontWeight": 400,
+        "fontStyle": "normal",
+        "charSpacing": 220,
+        "fill": "#000000"
+      },
+      {
+        "type": "textbox",
+        "text": "VALENCE",
+        "left": 211.666,
+        "top": 1253.345,
+        "width": 349.486,
+        "originX": "left",
+        "originY": "top",
+        "textAlign": "center",
+        "fontFamily": "Libre Baskerville",
+        "fontSize": 74,
+        "fontWeight": 400,
+        "fontStyle": "normal",
+        "charSpacing": 80,
+        "fill": "#000000"
+      },
+      {
+        "type": "rect",
+        "left": 91,
+        "top": 1317.441,
+        "width": 595.5,
+        "height": 0.75,
+        "originX": "left",
+        "originY": "top",
+        "fill": "#000000"
+      },
+      {
+        "type": "textbox",
+        "text": "PLACE DE LA COURONNE",
+        "left": 257.542,
+        "top": 1351.128,
+        "width": 263.067,
+        "originX": "left",
+        "originY": "top",
+        "textAlign": "center",
+        "fontFamily": "Libre Baskerville",
+        "fontSize": 14,
+        "fontWeight": 400,
+        "fontStyle": "normal",
+        "charSpacing": 180,
+        "fill": "#000000"
+      }
+    ]
+  }
+]

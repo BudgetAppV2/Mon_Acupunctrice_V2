@@ -4,6 +4,7 @@ import { useState, useCallback, useRef } from 'react';
 import type { Canvas } from 'fabric';
 import { Path, Group, FabricImage } from 'fabric';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import { ORGANIC_SHAPES, type OrganicShape } from '@/lib/data/organicShapes';
 
 interface Props { canvas: Canvas | null }
 
@@ -65,6 +66,16 @@ async function addSvgToCanvas(canvas: Canvas, iconName: string) {
   } catch { /* SVG fetch/parse failed */ }
 }
 
+function addOrganic(canvas: Canvas, shape: OrganicShape) {
+  const p = new Path(shape.pathData, {
+    fill: shape.defaultFill, left: 340, top: 760,
+    scaleX: 3, scaleY: 3, selectable: true, evented: true,
+  });
+  canvas.add(p);
+  canvas.setActiveObject(p);
+  canvas.renderAll();
+}
+
 export default function IconSearchPanel({ canvas }: Props) {
   const [query, setQuery] = useState('');
   const [icons, setIcons] = useState<string[]>(DEFAULT_FALLBACK);
@@ -114,6 +125,17 @@ export default function IconSearchPanel({ canvas }: Props) {
           </button>
         ))}
       </div>
+      {/* Organic shapes */}
+      <h4 className="text-[10px] font-semibold text-white/50 uppercase mb-2 mt-3">Formes organiques</h4>
+      <div className="grid grid-cols-3 gap-2 mb-4">
+        {ORGANIC_SHAPES.map((s) => (
+          <button key={s.id} onClick={() => canvas && addOrganic(canvas, s)}
+            className="aspect-square rounded-lg bg-white/5 hover:bg-white/10 transition-colors flex items-center justify-center p-2" title={s.name}>
+            <svg viewBox={s.viewBox} className="w-8 h-8"><path d={s.pathData} fill={s.defaultFill} /></svg>
+          </button>
+        ))}
+      </div>
+
       {loading && <p className="text-xs text-white/40">Chargement...</p>}
       <div className="grid grid-cols-4 gap-2">
         {icons.map((icon) => (

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useCallback } from 'react';
-import { Canvas, Rect, Ellipse, Textbox, FabricImage } from 'fabric';
+import { Canvas, Rect, Ellipse, Textbox, FabricImage, FabricObject } from 'fabric';
 import { getTemplateObjects, LOGO_URL } from '@/lib/data/imageEditorTemplates';
 
 const CANVAS_W = 1080;
@@ -66,6 +66,17 @@ export default function ImageEditorCanvas({ onCanvasReady }: Props) {
       selection: true,
     });
     fabricRef.current = canvas;
+
+    // Global selection styling — turquoise theme
+    canvas.selectionColor = 'rgba(126, 190, 197, 0.15)';
+    canvas.selectionBorderColor = '#7EBEC5';
+    canvas.selectionLineWidth = 2;
+    FabricObject.ownDefaults.borderColor = '#7EBEC5';
+    FabricObject.ownDefaults.borderScaleFactor = 2.5;
+    FabricObject.ownDefaults.cornerColor = '#7EBEC5';
+    FabricObject.ownDefaults.cornerSize = 14;
+    FabricObject.ownDefaults.cornerStyle = 'circle';
+    FabricObject.ownDefaults.transparentCorners = false;
 
     // Scale to fit container via CSS-only dimensions.
     // Keeps internal resolution at 1080x1920 (crisp export)
