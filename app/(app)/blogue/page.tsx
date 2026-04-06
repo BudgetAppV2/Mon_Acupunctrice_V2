@@ -38,7 +38,7 @@ export default function BloguePage() {
 
   return (
     <div className="min-h-screen bg-sand pb-24">
-      <header className="px-4 py-3 bg-white border-b border-gray-200 flex items-center gap-3">
+      <header className="sticky top-0 z-10 px-4 py-3 bg-white border-b border-gray-200 flex items-center gap-3">
         <BookOpenIcon className="w-5 h-5 text-sage" />
         <h1 className="text-lg font-semibold text-sage flex-1">Blogue</h1>
         <button onClick={() => setShowEditor(true)}

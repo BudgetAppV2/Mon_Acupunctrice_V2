@@ -31,7 +31,7 @@ function InspirationContent() {
   return (
     <div className="min-h-screen bg-sand pb-6">
       {/* Header */}
-      <header className="px-4 pt-12 pb-4 flex items-center gap-2">
+      <header className="px-4 pt-4 pb-4 flex items-center gap-2">
         <SparklesIcon className="w-6 h-6 text-sage" />
         <h1 className="text-xl font-bold text-gray-800">Inspiration</h1>
       </header>

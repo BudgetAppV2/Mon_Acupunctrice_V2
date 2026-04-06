@@ -186,13 +186,14 @@ export default function ImageEditorLayout() {
     try {
       const sd = canvas.toDataURL({ format: 'png', multiplier: 1 });
 
-      // Generate blog cover (1200x675 crop)
+      // Generate blog cover (1200x675) — crop 16:9 band from center of 1080x1920
       const im = document.createElement('img'); im.src = sd;
       await new Promise<void>((r) => { im.onload = () => r(); });
       const c = document.createElement('canvas'); c.width = 1200; c.height = 675;
       const cx = c.getContext('2d')!;
-      const ch = im.width * (675 / 1200);
-      cx.drawImage(im, 0, (im.height - ch) / 2, im.width, ch, 0, 0, 1200, 675);
+      const cropH = im.width * (9 / 16); // 607.5px for 1080 wide
+      const srcY = (im.height - cropH) / 2; // center vertically
+      cx.drawImage(im, 0, srcY, im.width, cropH, 0, 0, 1200, 675);
       const blogDataUrl = c.toDataURL('image/png');
 
       if (returnTo === 'blog') {

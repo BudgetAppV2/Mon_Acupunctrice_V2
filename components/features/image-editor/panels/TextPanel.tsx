@@ -54,11 +54,10 @@ function scaleAndPlace(
   canvas.discardActiveObject();
 
   for (const el of elements) {
-    const isDecor = el.selectable === false;
     const opts: Record<string, unknown> = {
       left: offsetX + ((el.left ?? 0) - referenceX) * scale,
       top: offsetY + ((el.top ?? 0) - referenceY) * scale,
-      selectable: !isDecor, evented: !isDecor,
+      selectable: true, evented: true,
     };
     // Scale-dependent props
     if (el.width) opts.width = el.width * scale;

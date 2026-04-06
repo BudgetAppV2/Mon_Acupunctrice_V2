@@ -37,7 +37,6 @@ function getTypeIcon(obj: FabricObject): string {
 
 export default function LayersPanel({ canvas }: Props) {
   const [objects, setObjects] = useState<FabricObject[]>([]);
-  const [activeId, setActiveId] = useState<number | null>(null);
   const [, forceUpdate] = useState(0);
   const dragIdx = useRef<number | null>(null);
 
@@ -45,8 +44,7 @@ export default function LayersPanel({ canvas }: Props) {
     if (!canvas) return;
     // Top-to-bottom order (reversed from canvas internal order)
     setObjects([...canvas.getObjects()].reverse());
-    const sel = canvas.getActiveObject();
-    setActiveId(sel ? canvas.getObjects().indexOf(sel) : null);
+    forceUpdate((n) => n + 1);
   }, [canvas]);
 
   useEffect(() => {
@@ -111,13 +109,12 @@ export default function LayersPanel({ canvas }: Props) {
       {/* Layer list */}
       <div className="space-y-0.5 mb-3 max-h-[400px] overflow-y-auto">
         {objects.map((obj, i) => {
-          const canvasIdx = (canvas?.getObjects().length ?? 0) - 1 - i;
           const isActive = obj === selected;
           const isLocked = !obj.selectable;
           const isHidden = !obj.visible;
 
           return (
-            <div key={`${canvasIdx}-${obj.type}`}
+            <div key={`layer-${i}-${obj.type}-${getLayerName(obj).slice(0, 8)}`}
               draggable
               onDragStart={() => onDragStart(i)}
               onDragOver={onDragOver}
