@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useCallback, useRef } from 'react';
-import type { Canvas } from 'fabric';
-import { Path, Group, FabricImage } from 'fabric';
+import type { Canvas, FabricObject } from 'fabric';
+import { Path, Group, FabricImage, Rect, loadSVGFromString } from 'fabric';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { ORGANIC_SHAPES, type OrganicShape } from '@/lib/data/organicShapes';
 import { DECORATIVE_ELEMENTS, DECORATIVE_CATEGORIES, type DecorativeElement } from '@/lib/data/decorativeElements';
@@ -28,9 +28,127 @@ const FALLBACK: Record<string, string[]> = {
 };
 const DEFAULT_FALLBACK = [...FALLBACK.zen, ...FALLBACK.formes, ...FALLBACK.sante];
 
+type LocalSvgElement = {
+  id: string;
+  name: string;
+  src: string;
+};
+
+const LOCAL_SVG_ELEMENTS: LocalSvgElement[] = [
+  { id: 'artnouveau-divider', name: 'Diviseur art nouveau', src: '/svg-elements/artnouveau-divider.svg' },
+  { id: 'artnouveau-panel-frame', name: 'Cadre panneau art nouveau', src: '/svg-elements/artnouveau-panel-frame.svg' },
+  { id: 'border-floral-horizontal', name: 'Bordure florale', src: '/svg-elements/border-floral-horizontal.svg' },
+  { id: 'botanical-floral-lineart', name: 'Fleurs line art', src: '/svg-elements/botanical-floral-lineart.svg' },
+  { id: 'botanical-monstera', name: 'Monstera', src: '/svg-elements/botanical-monstera.svg' },
+  { id: 'botanical-olive-branch', name: 'Branche d’olivier', src: '/svg-elements/botanical-olive-branch.svg' },
+  { id: 'botanical-wreath', name: 'Couronne botanique', src: '/svg-elements/botanical-wreath.svg' },
+  { id: 'frame-art-nouveau-variant', name: 'Cadre art nouveau variante', src: '/svg-elements/frame-art-nouveau%20(1).svg' },
+  { id: 'frame-art-nouveau', name: 'Cadre art nouveau', src: '/svg-elements/frame-art-nouveau.svg' },
+  { id: 'frame-corner-ornaments', name: 'Coins ornementaux', src: '/svg-elements/frame-corner-ornaments.svg' },
+  { id: 'frame-oval-ornamental', name: 'Cadre ovale ornemental', src: '/svg-elements/frame-oval-ornamental.svg' },
+  { id: 'ornament-corner-antique', name: 'Coin antique', src: '/svg-elements/ornament-corner-antique.svg' },
+  { id: 'ornament-divider-flourish', name: 'Diviseur flourish', src: '/svg-elements/ornament-divider-flourish.svg' },
+  { id: 'ornament-ribbon-banner', name: 'Ruban bannière', src: '/svg-elements/ornament-ribbon-banner.svg' },
+  { id: 'ornament-sun-decorative', name: 'Soleil décoratif', src: '/svg-elements/ornament-sun-decorative.svg' },
+  { id: 'wellness-japanese-wave', name: 'Vague japonaise', src: '/svg-elements/wellness-japanese-wave.svg' },
+  { id: 'wellness-lotus', name: 'Lotus', src: '/svg-elements/wellness-lotus.svg' },
+  { id: 'wellness-mandala', name: 'Mandala', src: '/svg-elements/wellness-mandala.svg' },
+];
+
 /** Convert "mdi:leaf" → "mdi/leaf" for the SVG API URL */
 function iconSvgUrl(icon: string) {
   return `https://api.iconify.design/${icon.replace(':', '/')}.svg?height=120`;
+}
+
+function isNearWhite(fill: unknown) {
+  if (typeof fill !== 'string') return false;
+  const normalized = fill.toLowerCase().replace(/\s/g, '');
+  return normalized === '#fff'
+    || normalized === '#ffffff'
+    || normalized === '#fefdfd'
+    || normalized === 'white'
+    || normalized === 'rgb(255,255,255)'
+    || normalized === 'rgba(255,255,255,1)';
+}
+
+function parseSvgDimension(value: unknown) {
+  if (typeof value === 'number' && Number.isFinite(value)) return value;
+  if (typeof value !== 'string') return undefined;
+  const parsed = Number.parseFloat(value);
+  return Number.isFinite(parsed) ? parsed : undefined;
+}
+
+async function addLocalSvgElement(canvas: Canvas, el: LocalSvgElement) {
+  try {
+    console.log('[IconPanel] addLocalSvgElement:start', el);
+    const res = await fetch(el.src);
+    if (!res.ok) throw new Error(`SVG fetch failed: ${res.status}`);
+
+    const svgStr = await res.text();
+    const parsed = await loadSVGFromString(svgStr);
+    const sourceWidth = parseSvgDimension(parsed.options.width) ?? 512;
+    const sourceHeight = parseSvgDimension(parsed.options.height) ?? 512;
+    const vectorObjects = parsed.objects.filter((obj): obj is FabricObject => {
+      if (!obj) return false;
+      const width = obj.width ?? 0;
+      const height = obj.height ?? 0;
+      const isLargeBackground = isNearWhite(obj.fill)
+        && width >= sourceWidth * 0.85
+        && height >= sourceHeight * 0.85;
+      return !isLargeBackground;
+    });
+
+    if (vectorObjects.length === 0) {
+      console.log('[IconPanel] addLocalSvgElement:no-objects', el.id);
+      return;
+    }
+
+    const anchor = new Rect({
+      left: 0,
+      top: 0,
+      width: sourceWidth,
+      height: sourceHeight,
+      fill: 'rgba(0,0,0,0)',
+      strokeWidth: 0,
+      selectable: false,
+      evented: false,
+    });
+
+    vectorObjects.forEach((obj) => {
+      obj.set({ selectable: false, evented: false });
+    });
+
+    const group = new Group([anchor, ...vectorObjects], {
+      originX: 'left',
+      originY: 'top',
+      selectable: true,
+      evented: true,
+    });
+
+    const maxWidth = Math.min(canvas.getWidth() * 0.55, 420);
+    const maxHeight = Math.min(canvas.getHeight() * 0.28, 420);
+    const scale = Math.min(maxWidth / sourceWidth, maxHeight / sourceHeight, 1);
+    group.set({
+      left: (canvas.getWidth() - sourceWidth * scale) / 2,
+      top: (canvas.getHeight() - sourceHeight * scale) / 2,
+      scaleX: scale,
+      scaleY: scale,
+    });
+
+    canvas.add(group);
+    group.setCoords();
+    canvas.setActiveObject(group);
+    canvas.requestRenderAll();
+    console.log('[IconPanel] addLocalSvgElement:added', {
+      id: el.id,
+      objects: vectorObjects.length,
+      sourceWidth,
+      sourceHeight,
+      scale,
+    });
+  } catch (error) {
+    console.error('[IconPanel] addLocalSvgElement:error', error);
+  }
 }
 
 async function addSvgToCanvas(canvas: Canvas, iconName: string) {
@@ -138,6 +256,29 @@ export default function IconSearchPanel({ canvas }: Props) {
           </button>
         ))}
       </div>
+
+      <h4 className="text-[10px] font-semibold text-white/50 uppercase mb-2">Elements SVG</h4>
+      <div className="grid grid-cols-3 gap-2 mb-4">
+        {LOCAL_SVG_ELEMENTS.map((el) => (
+          <button
+            key={el.id}
+            type="button"
+            onClick={() => canvas && addLocalSvgElement(canvas, el)}
+            className="aspect-square rounded-lg bg-white p-2 shadow-sm transition-colors hover:bg-teal-50"
+            title={el.name}
+            aria-label={`Ajouter ${el.name}`}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={el.src}
+              alt=""
+              loading="lazy"
+              className="h-full w-full object-contain"
+            />
+          </button>
+        ))}
+      </div>
+
       {/* Decorative elements — 4 sub-categories */}
       {DECORATIVE_CATEGORIES.map((cat) => {
         const items = DECORATIVE_ELEMENTS.filter((e) => e.category === cat.id);
