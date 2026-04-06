@@ -22,6 +22,7 @@ export interface BlogArticle {
   ctaUrl: string;
   faqs?: FaqItem[];
   coverImageUrl?: string;
+  storyImageUrl?: string;
 }
 
 interface Props { onPublish: (article: BlogArticle) => void; onCancel: () => void; publishing?: boolean }
@@ -51,6 +52,7 @@ export default function BlogEditor({ onPublish, onCancel, publishing }: Props) {
   const [faqs, setFaqs] = useState<FaqItem[]>([]);
   const [faqLoading, setFaqLoading] = useState(false);
   const [coverImageUrl, setCoverImageUrl] = useState<string | undefined>();
+  const [storyImageUrl, setStoryImageUrl] = useState<string | undefined>();
   const [uploading, setUploading] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -60,7 +62,14 @@ export default function BlogEditor({ onPublish, onCancel, publishing }: Props) {
   useEffect(() => {
     const handler = (e: StorageEvent) => {
       if (e.key !== 'editor-export-blog' || !e.newValue) return;
-      setCoverImageUrl(e.newValue);
+      try {
+        const data = JSON.parse(e.newValue) as { coverDataUrl?: string; storyDataUrl?: string };
+        if (data.coverDataUrl) setCoverImageUrl(data.coverDataUrl);
+        if (data.storyDataUrl) setStoryImageUrl(data.storyDataUrl);
+      } catch {
+        // Legacy format: plain data URL string
+        setCoverImageUrl(e.newValue);
+      }
       localStorage.removeItem('editor-export-blog');
     };
     window.addEventListener('storage', handler);
@@ -84,9 +93,40 @@ export default function BlogEditor({ onPublish, onCancel, publishing }: Props) {
     try { setCoverImageUrl(await resizeAndUpload(file, uid)); } catch {} finally { setUploading(false); }
   };
 
-  const handlePublish = () => {
+  const handlePublish = async () => {
+    if (!uid) return;
     const content = htmlToMarkdownText(htmlContent);
-    onPublish({ title, content, category, ctaUrl, faqs: faqs.length > 0 ? faqs : undefined, coverImageUrl });
+
+    // Upload story image to Firebase Storage if it's a data URL
+    let uploadedStoryUrl = storyImageUrl;
+    if (storyImageUrl?.startsWith('data:')) {
+      try {
+        const blob = await (await fetch(storyImageUrl)).blob();
+        const storage = getFirebaseStorage();
+        const sRef = ref(storage, `blog-covers/${uid}/story-${Date.now()}.png`);
+        await uploadBytes(sRef, blob);
+        uploadedStoryUrl = await getDownloadURL(sRef);
+      } catch { /* story upload failed */ }
+    }
+
+    // Upload cover image if it's a data URL
+    let uploadedCoverUrl = coverImageUrl;
+    if (coverImageUrl?.startsWith('data:')) {
+      try {
+        const blob = await (await fetch(coverImageUrl)).blob();
+        const storage = getFirebaseStorage();
+        const cRef = ref(storage, `blog-covers/${uid}/cover-${Date.now()}.png`);
+        await uploadBytes(cRef, blob);
+        uploadedCoverUrl = await getDownloadURL(cRef);
+      } catch { /* cover upload failed */ }
+    }
+
+    onPublish({
+      title, content, category, ctaUrl,
+      faqs: faqs.length > 0 ? faqs : undefined,
+      coverImageUrl: uploadedCoverUrl,
+      storyImageUrl: uploadedStoryUrl,
+    });
   };
 
   const today = new Date();
