@@ -10,7 +10,7 @@ import {
   buildPreviewUrl, loadFont, type FontCategory,
 } from '@/lib/image-editor/fontList';
 import { TEXT_STYLE_PRESETS, presetFonts, type TextStylePreset, type PresetElement } from '@/lib/data/textStylePresets';
-import { CANVA_PRESETS, canvaFonts, type CanvaPreset, type CanvaElement } from '@/lib/data/canvaTextPresets';
+import { SVG_PRESETS, extractFontsFromSvg, parseSvgTexts, type SvgPreset } from '@/lib/data/canvaTextPresets';
 
 interface Props { canvas: Canvas | null; extractedPalette: string[] }
 
@@ -20,7 +20,7 @@ const CH = 1920;
 /** Scale + center elements onto canvas as a Group (degroupable) */
 function scaleAndPlace(
   canvas: Canvas,
-  elements: (PresetElement | CanvaElement)[],
+  elements: PresetElement[],
   srcW?: number, srcH?: number,
 ) {
   let minX = Infinity, minY = Infinity, maxX = 0, maxY = 0;
@@ -100,10 +100,29 @@ export default function TextPanel({ canvas, extractedPalette }: Props) {
   const txt = isText ? (active as TTextbox) : null;
   const set = (k: string, v: unknown) => { if (txt && canvas) { txt.set(k as keyof TTextbox, v); canvas.renderAll(); } };
 
-  const addCanva = async (p: CanvaPreset) => {
+  const addSvgPreset = async (p: SvgPreset) => {
     if (!canvas) return;
-    await Promise.all(canvaFonts(p).map((f) => loadFont(f)));
-    scaleAndPlace(canvas, p.elements, p.cw, p.ch);
+    const fonts = extractFontsFromSvg(p.svg);
+    await Promise.all(fonts.map((f) => loadFont(f)));
+    const { elements, vw, vh } = parseSvgTexts(p.svg);
+    // Convert parsed elements to PresetElement format for scaleAndPlace
+    const asPreset: PresetElement[] = elements.map((e) => ({
+      type: 'textbox' as const,
+      text: e.text,
+      fontFamily: e.fontFamily,
+      fontSize: e.fontSize,
+      fontWeight: e.fontWeight,
+      fontStyle: e.fontStyle,
+      fill: e.fill,
+      left: e.left,
+      top: e.top,
+      width: e.width,
+      textAlign: e.textAlign,
+      charSpacing: e.charSpacing,
+      lineHeight: e.lineHeight,
+      angle: e.angle,
+    }));
+    scaleAndPlace(canvas, asPreset, vw, vh);
   };
 
   const addPreset = async (p: TextStylePreset) => {
@@ -172,24 +191,12 @@ export default function TextPanel({ canvas, extractedPalette }: Props) {
 
       {section === 'canva' ? (
         <div className="grid grid-cols-2 gap-2">
-          {CANVA_PRESETS.map((p) => (
-            <button key={p.id} onClick={() => addCanva(p)}
-              className="rounded-lg border border-gray-200 hover:border-teal-400 transition-colors overflow-hidden bg-white">
-              <div className="p-2 h-20 flex flex-col justify-center">
-                {p.elements.slice(0, 3).map((el, i) => (
-                  <div key={i} className="truncate leading-tight" style={{
-                    fontFamily: `"${el.fontFamily}", sans-serif`,
-                    fontSize: Math.max(Math.min((el.fontSize ?? 16) * 0.12, 16), 8),
-                    fontWeight: el.fontWeight ?? 400,
-                    fontStyle: el.fontStyle ?? 'normal',
-                    color: el.fill ?? '#222',
-                    textAlign: (el.textAlign ?? 'left') as React.CSSProperties['textAlign'],
-                    letterSpacing: el.charSpacing ? `${Math.min(el.charSpacing / 200, 3)}px` : undefined,
-                  }}>
-                    {el.textTransform === 'uppercase' ? (el.text ?? '').toUpperCase().split('\n')[0] : (el.text ?? '').split('\n')[0]}
-                  </div>
-                ))}
-              </div>
+          {SVG_PRESETS.map((p) => (
+            <button key={p.id} onClick={() => addSvgPreset(p)}
+              className="rounded-lg border border-gray-200 hover:border-teal-400 transition-colors overflow-hidden bg-white p-1">
+              {/* SVG thumbnail — fonts loaded via @import in SVG defs */}
+              <div className="w-full" style={{ maxHeight: 80 }}
+                dangerouslySetInnerHTML={{ __html: p.svg.replace(/<\?xml[^?]*\?>/, '').replace(/width="\d+"/, 'width="100%"').replace(/height="\d+"/, 'height="auto"') }} />
             </button>
           ))}
         </div>
