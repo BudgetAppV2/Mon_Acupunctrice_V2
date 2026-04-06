@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useRef, useCallback } from 'react';
-import type { Canvas } from 'fabric';
-import { Gradient } from 'fabric';
+import type { Canvas, FabricObject } from 'fabric';
+import { Gradient, Group, ActiveSelection } from 'fabric';
 import { PlusIcon, EyeDropperIcon } from '@heroicons/react/24/outline';
 import { hsvToHex, hexToHsv, GRADIENT_DIRS, BRAND_GRADIENTS } from '@/lib/image-editor/colorUtils';
 
@@ -29,25 +29,34 @@ export default function ColorPanel({ canvas }: Props) {
     { offset: 1, color: '#AAD1D2' },
   ]);
 
-  const apply = useCallback((color: string) => {
-    if (!canvas) return;
+  /** Get all leaf objects to color — drills into Groups and ActiveSelections */
+  const getTargets = useCallback((): FabricObject[] => {
+    if (!canvas) return [];
     const obj = canvas.getActiveObject();
-    if (!obj) return;
-    obj.set(mode, color);
-    canvas.renderAll();
-  }, [canvas, mode]);
+    if (!obj) return [];
+    if (obj instanceof ActiveSelection) return obj.getObjects();
+    if (obj instanceof Group) return obj.getObjects();
+    return [obj];
+  }, [canvas]);
+
+  const apply = useCallback((color: string) => {
+    const targets = getTargets();
+    if (targets.length === 0) return;
+    targets.forEach((t) => t.set(mode, color));
+    canvas?.renderAll();
+  }, [canvas, mode, getTargets]);
 
   const applyGrad = useCallback((stops: { offset: number; color: string }[], dirId?: string) => {
-    if (!canvas) return;
-    const obj = canvas.getActiveObject();
-    if (!obj) return;
+    const targets = getTargets();
+    if (targets.length === 0) return;
     const dir = GRADIENT_DIRS.find((d) => d.id === (dirId ?? gDir)) ?? GRADIENT_DIRS[0];
-    // Use object's local width/height (before scale) — Fabric applies scale at render time
-    const w = obj.width ?? 100;
-    const h = obj.height ?? 100;
-    obj.set('fill', new Gradient({ type: dir.type, coords: dir.coords(w, h), colorStops: stops }));
-    canvas.renderAll();
-  }, [canvas, gDir]);
+    targets.forEach((t) => {
+      const w = t.width ?? 100;
+      const h = t.height ?? 100;
+      t.set('fill', new Gradient({ type: dir.type, coords: dir.coords(w, h), colorStops: stops }));
+    });
+    canvas?.renderAll();
+  }, [canvas, gDir, getTargets]);
 
   const pickHsv = (h: number, s: number, v: number) => {
     setHue(h); setSat(s); setVal(v);
