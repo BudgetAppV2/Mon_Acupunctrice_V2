@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useEffect, useRef } from 'react';
 import type { Canvas, FabricObject } from 'fabric';
-import { ActiveSelection, Group } from 'fabric';
+import { ActiveSelection, Group, Point, util } from 'fabric';
 import Link from 'next/link';
 import {
   ArrowLeftIcon, ArrowDownTrayIcon, PlayIcon, StopIcon,
@@ -132,38 +132,36 @@ export default function ImageEditorLayout() {
     if (!grp || !(grp instanceof Group)) return;
 
     const items = grp.getObjects().slice();
-    // Get group's full transform matrix BEFORE removing — converts child coords to canvas coords
-    const m = grp.calcTransformMatrix(); // [a, b, c, d, e, f]
-    const gSx = grp.scaleX ?? 1;
-    const gSy = grp.scaleY ?? 1;
-    const gAngle = grp.angle ?? 0;
 
-    // Pre-calculate absolute positions while items are still in the group
-    const transforms = items.map((item) => {
-      const cx = item.left ?? 0;
-      const cy = item.top ?? 0;
-      return {
-        left: m[0] * cx + m[2] * cy + m[4],
-        top: m[1] * cx + m[3] * cy + m[5],
-        scaleX: (item.scaleX ?? 1) * gSx,
-        scaleY: (item.scaleY ?? 1) * gSy,
-        angle: (item.angle ?? 0) + gAngle,
-      };
+    // Capture each item's absolute transform WHILE still inside the group
+    const absTransforms = items.map((item) => {
+      const m = item.calcTransformMatrix();
+      return util.qrDecompose(m);
     });
 
     canvas.remove(grp);
 
     items.forEach((item, i) => {
+      const t = absTransforms[i];
       item.set({
-        ...transforms[i],
+        scaleX: t.scaleX,
+        scaleY: t.scaleY,
+        angle: t.angle,
+        skewX: t.skewX,
+        skewY: t.skewY,
         selectable: true,
         evented: true,
       });
-      // Textboxes must be editable for double-click text editing
+      // Textboxes: editable for double-tap text editing on mobile
       if (item.type === 'textbox' || item.type === 'i-text') {
         item.set('editable' as keyof typeof item, true);
       }
       canvas.add(item);
+      // Place center at the exact absolute position from the decomposed matrix
+      item.setPositionByOrigin(
+        new Point(t.translateX, t.translateY),
+        'center', 'center',
+      );
       item.setCoords();
     });
 
