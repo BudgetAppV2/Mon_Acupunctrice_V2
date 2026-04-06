@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useBlogArticles, usePublishBlog } from '@/lib/hooks/useBlogArticles';
 import { PlusIcon, ArrowTopRightOnSquareIcon, BookOpenIcon } from '@heroicons/react/24/outline';
 import BlogEditor from '@/components/features/blog/BlogEditor';
@@ -17,6 +17,14 @@ export default function BloguePage() {
   const { publish, loading: publishing } = usePublishBlog();
   const [showEditor, setShowEditor] = useState(false);
   const [success, setSuccess] = useState<string | null>(null);
+
+  // Auto-open editor if there's a pending draft with content or exported images
+  useEffect(() => {
+    const hasExport = !!localStorage.getItem('editor-export-blog');
+    const draft = localStorage.getItem('blog-editor-draft');
+    const hasDraft = draft ? (() => { try { const d = JSON.parse(draft); return !!(d.title || d.htmlContent); } catch { return false; } })() : false;
+    if (hasExport || hasDraft) setShowEditor(true);
+  }, []);
 
   if (showEditor) {
     return (

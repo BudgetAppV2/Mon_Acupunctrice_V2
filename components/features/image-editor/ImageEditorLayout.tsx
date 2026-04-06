@@ -213,6 +213,9 @@ export default function ImageEditorLayout() {
         localStorage.setItem('editor-export-blog', JSON.stringify({ coverDataUrl, storyDataUrl }));
         // Close this tab — user returns to BlogEditor
         window.close();
+        // Fallback: if window.close() is blocked (tab not opened by window.open),
+        // navigate to /blogue which auto-opens the editor with the draft
+        setTimeout(() => { if (!window.closed) window.location.href = '/blogue'; }, 200);
       } else {
         // Standard export — download both files
         dl(storyDataUrl, 'design-story-1080x1920.png');
