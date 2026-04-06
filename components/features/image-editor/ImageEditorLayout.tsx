@@ -203,13 +203,15 @@ export default function ImageEditorLayout() {
     try {
       const storyDataUrl = canvas.toDataURL({ format: 'png', multiplier: 1 });
 
-      // Generate blog cover (1200x675) — crop 16:9 band from center of 1080x1920
+      // Generate blog cover (1200x675) — crop 16:9 band from upper-center of 1080x1920
+      // The title area is in the upper third of the canvas, so crop at ~35% from top
       const im = document.createElement('img'); im.src = storyDataUrl;
       await new Promise<void>((r) => { im.onload = () => r(); });
       const cropCanvas = document.createElement('canvas'); cropCanvas.width = 1200; cropCanvas.height = 675;
       const ctx = cropCanvas.getContext('2d')!;
-      const cropH = im.width * (9 / 16);
-      ctx.drawImage(im, 0, (im.height - cropH) / 2, im.width, cropH, 0, 0, 1200, 675);
+      const cropH = im.width * (9 / 16); // 607.5px
+      const srcY = (im.height - cropH) * 0.35; // upper-center instead of dead center
+      ctx.drawImage(im, 0, srcY, im.width, cropH, 0, 0, 1200, 675);
       const blogDataUrl = cropCanvas.toDataURL('image/png');
 
       // Upload both images to Firebase Storage
