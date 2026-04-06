@@ -8,20 +8,23 @@ import {
   PuzzlePieceIcon,
   PhotoIcon,
   SparklesIcon,
+  SwatchIcon,
 } from '@heroicons/react/24/outline';
 import TemplatesPanel from './panels/TemplatesPanel';
 import TextPanel from './panels/TextPanel';
 import IconSearchPanel from './panels/IconSearchPanel';
 import PhotosPanel from './panels/PhotosPanel';
 import AnimatePanel from './panels/AnimatePanel';
+import ColorPanel from './panels/ColorPanel';
 
-type Tab = 'templates' | 'text' | 'icons' | 'photos' | 'animate';
+type Tab = 'templates' | 'text' | 'icons' | 'photos' | 'animate' | 'colors';
 
 const TABS: { id: Tab; icon: typeof Squares2X2Icon; label: string }[] = [
   { id: 'templates', icon: Squares2X2Icon, label: 'Templates' },
   { id: 'text', icon: DocumentTextIcon, label: 'Texte' },
   { id: 'icons', icon: PuzzlePieceIcon, label: 'Icones' },
   { id: 'photos', icon: PhotoIcon, label: 'Photos' },
+  { id: 'colors', icon: SwatchIcon, label: 'Couleurs' },
   { id: 'animate', icon: SparklesIcon, label: 'Animer' },
 ];
 
@@ -53,6 +56,7 @@ export default function Sidebar({ canvas, selectedType, extractedPalette }: Prop
           {activeTab === 'text' && <TextPanel canvas={canvas} extractedPalette={extractedPalette} />}
           {activeTab === 'icons' && <IconSearchPanel canvas={canvas} />}
           {activeTab === 'photos' && <PhotosPanel canvas={canvas} />}
+          {activeTab === 'colors' && <ColorPanel canvas={canvas} />}
           {activeTab === 'animate' && <AnimatePanel canvas={canvas} selectedType={selectedType} />}
         </div>
       )}
