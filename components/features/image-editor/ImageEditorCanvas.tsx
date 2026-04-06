@@ -75,10 +75,11 @@ export default function ImageEditorCanvas({ onCanvasReady }: Props) {
     FabricObject.ownDefaults.borderScaleFactor = 2.5;
     FabricObject.ownDefaults.cornerColor = '#7EBEC5';
     FabricObject.ownDefaults.cornerStrokeColor = '#FFFFFF';
-    FabricObject.ownDefaults.cornerSize = 14;
+    FabricObject.ownDefaults.cornerSize = 16;
+    FabricObject.ownDefaults.touchCornerSize = 40; // Large touch zone for mobile
     FabricObject.ownDefaults.cornerStyle = 'circle';
     FabricObject.ownDefaults.transparentCorners = false;
-    FabricObject.ownDefaults.padding = 8;
+    FabricObject.ownDefaults.padding = 10;
     FabricObject.ownDefaults.selectionBackgroundColor = 'rgba(126, 190, 197, 0.05)';
 
     // Scale to fit container via CSS-only dimensions.

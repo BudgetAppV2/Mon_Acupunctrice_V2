@@ -211,9 +211,9 @@ export default function ImageEditorLayout() {
   const hasSelection = selectedType !== null;
 
   return (
-    <div className="h-[100dvh] flex flex-col bg-gray-900">
+    <div className="h-[100dvh] flex flex-col bg-gray-900" style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}>
       {/* Header */}
-      <header className="flex items-center justify-between px-3 py-2 bg-gray-900 border-b border-white/10 shrink-0">
+      <header className="flex items-center justify-between px-2 py-1.5 sm:px-3 sm:py-2 bg-gray-900 border-b border-white/10 shrink-0">
         <div className="flex items-center gap-2">
           <Link href="/idees" className="text-white/60 hover:text-white"><ArrowLeftIcon className="w-5 h-5" /></Link>
           <span className="text-sm font-semibold text-white/80 hidden sm:inline">Editeur d&apos;images</span>
@@ -263,7 +263,7 @@ export default function ImageEditorLayout() {
 function HBtn({ icon: I, onClick, disabled, title }: { icon: React.ComponentType<{ className?: string }>; onClick: () => void; disabled?: boolean; title?: string }) {
   return (
     <button onClick={onClick} disabled={disabled} title={title}
-      className="p-1.5 rounded-lg text-white/50 hover:text-white hover:bg-white/10 disabled:opacity-25 disabled:pointer-events-none">
+      className="p-2 sm:p-1.5 rounded-lg text-white/50 hover:text-white hover:bg-white/10 disabled:opacity-25 disabled:pointer-events-none min-w-[36px] min-h-[36px] flex items-center justify-center">
       <I className="w-4 h-4" />
     </button>
   );

@@ -104,13 +104,20 @@ function scaleAndPlace(
     return 0;
   }
 
-  fabricObjs.forEach((obj) => {
-    canvas.add(obj);
-    obj.setCoords();
+  // Group all elements so Judith can move/resize the whole block, then ungroup
+  const group = new Group(fabricObjs, {
+    left: offsetX,
+    top: offsetY,
+    selectable: true,
+    evented: true,
+    subTargetCheck: true,
   });
-
-  const selection = new ActiveSelection(fabricObjs, { canvas });
-  canvas.setActiveObject(selection);
+  // Reset children positions relative to group (they were placed with absolute offsets)
+  fabricObjs.forEach((obj) => {
+    obj.set({ left: (obj.left ?? 0) - offsetX, top: (obj.top ?? 0) - offsetY });
+  });
+  canvas.add(group);
+  canvas.setActiveObject(group);
   canvas.requestRenderAll();
 
   console.log('[CanvaPreset] scaleAndPlace:added', {
