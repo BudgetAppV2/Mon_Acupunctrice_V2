@@ -128,29 +128,45 @@ export default function ImageEditorLayout() {
 
   const ungroupSelected = useCallback(() => {
     if (!canvas) return;
-    const active = canvas.getActiveObject();
-    if (!active || !(active instanceof Group)) return;
-    const items = active.getObjects();
-    // Remove group, add children back as individual objects
-    const { left: gLeft, top: gTop, scaleX: gSx, scaleY: gSy, angle: gAngle } = active;
-    canvas.remove(active);
-    items.forEach((item) => {
-      // Fabric Group stores items with relative coords — transform to absolute
-      const matrix = active.calcTransformMatrix();
-      const point = (item as unknown as { getRelativeCenterPoint: () => { x: number; y: number } }).getRelativeCenterPoint?.();
-      if (point && matrix) {
-        // Use fabric util to get absolute position
-        item.set({
-          left: (item.left ?? 0) * (gSx ?? 1) + (gLeft ?? 0),
-          top: (item.top ?? 0) * (gSy ?? 1) + (gTop ?? 0),
-          scaleX: (item.scaleX ?? 1) * (gSx ?? 1),
-          scaleY: (item.scaleY ?? 1) * (gSy ?? 1),
-          angle: (item.angle ?? 0) + (gAngle ?? 0),
-        });
-      }
-      item.set({ selectable: true, evented: true });
-      canvas.add(item);
+    const grp = canvas.getActiveObject();
+    if (!grp || !(grp instanceof Group)) return;
+
+    const items = grp.getObjects().slice();
+    // Get group's full transform matrix BEFORE removing — converts child coords to canvas coords
+    const m = grp.calcTransformMatrix(); // [a, b, c, d, e, f]
+    const gSx = grp.scaleX ?? 1;
+    const gSy = grp.scaleY ?? 1;
+    const gAngle = grp.angle ?? 0;
+
+    // Pre-calculate absolute positions while items are still in the group
+    const transforms = items.map((item) => {
+      const cx = item.left ?? 0;
+      const cy = item.top ?? 0;
+      return {
+        left: m[0] * cx + m[2] * cy + m[4],
+        top: m[1] * cx + m[3] * cy + m[5],
+        scaleX: (item.scaleX ?? 1) * gSx,
+        scaleY: (item.scaleY ?? 1) * gSy,
+        angle: (item.angle ?? 0) + gAngle,
+      };
     });
+
+    canvas.remove(grp);
+
+    items.forEach((item, i) => {
+      item.set({
+        ...transforms[i],
+        selectable: true,
+        evented: true,
+      });
+      // Textboxes must be editable for double-click text editing
+      if (item.type === 'textbox' || item.type === 'i-text') {
+        item.set('editable' as keyof typeof item, true);
+      }
+      canvas.add(item);
+      item.setCoords();
+    });
+
     canvas.discardActiveObject();
     canvas.renderAll();
   }, [canvas]);
