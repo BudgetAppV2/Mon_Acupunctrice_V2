@@ -13,6 +13,9 @@ import ImageEditorCanvas from './ImageEditorCanvas';
 import Sidebar from './Sidebar';
 import MobileBar from './MobileBar';
 import { playPreview, type PlaybackHandle } from '@/lib/image-editor/animationEngine';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { getFirebaseStorage } from '@/lib/firebase';
+import { useAuthStore } from '@/lib/store/useAuthStore';
 import { HistoryManager } from '@/lib/image-editor/historyManager';
 
 function useIsMobile() {
@@ -39,8 +42,11 @@ function useReturnTo() {
 export default function ImageEditorLayout() {
   const [canvas, setCanvas] = useState<Canvas | null>(null);
   const returnTo = useReturnTo();
+  const uid = useAuthStore((s) => s.user?.uid);
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const [palette, setPalette] = useState<string[]>([]);
+  const [exporting, setExporting] = useState(false);
+  const [exported, setExported] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [removing, setRemoving] = useState(false);
   const [hist, setHist] = useState({ u: false, r: false });
@@ -191,32 +197,53 @@ export default function ImageEditorLayout() {
   }, [canvas]);
 
   const doExport = useCallback(async () => {
-    if (!canvas) return;
+    if (!canvas || exporting) return;
+    setExporting(true);
     canvas.discardActiveObject(); canvas.renderAll();
     try {
-      const sd = canvas.toDataURL({ format: 'png', multiplier: 1 });
+      const storyDataUrl = canvas.toDataURL({ format: 'png', multiplier: 1 });
 
       // Generate blog cover (1200x675) — crop 16:9 band from center of 1080x1920
-      const im = document.createElement('img'); im.src = sd;
+      const im = document.createElement('img'); im.src = storyDataUrl;
       await new Promise<void>((r) => { im.onload = () => r(); });
-      const c = document.createElement('canvas'); c.width = 1200; c.height = 675;
-      const cx = c.getContext('2d')!;
-      const cropH = im.width * (9 / 16); // 607.5px for 1080 wide
-      const srcY = (im.height - cropH) / 2; // center vertically
-      cx.drawImage(im, 0, srcY, im.width, cropH, 0, 0, 1200, 675);
-      const blogDataUrl = c.toDataURL('image/png');
+      const cropCanvas = document.createElement('canvas'); cropCanvas.width = 1200; cropCanvas.height = 675;
+      const ctx = cropCanvas.getContext('2d')!;
+      const cropH = im.width * (9 / 16);
+      ctx.drawImage(im, 0, (im.height - cropH) / 2, im.width, cropH, 0, 0, 1200, 675);
+      const blogDataUrl = cropCanvas.toDataURL('image/png');
 
-      if (returnTo === 'blog') {
-        // Send blog cover back to BlogEditor via localStorage bridge
-        localStorage.setItem('editor-export-blog', blogDataUrl);
-        window.close();
-      } else {
-        // Standard export — download both files
-        dl(sd, 'design-story-1080x1920.png');
-        dl(blogDataUrl, 'design-blog-1200x675.png');
+      // Upload both images to Firebase Storage
+      let blogCoverUrl = blogDataUrl;
+      if (uid) {
+        try {
+          const storage = getFirebaseStorage();
+          const ts = Date.now();
+          // Upload blog cover
+          const blogBlob = await (await fetch(blogDataUrl)).blob();
+          const blogRef = ref(storage, `image-editor/${uid}/blog-cover-${ts}.png`);
+          await uploadBytes(blogRef, blogBlob);
+          blogCoverUrl = await getDownloadURL(blogRef);
+          // Upload story
+          const storyBlob = await (await fetch(storyDataUrl)).blob();
+          const storyRef = ref(storage, `image-editor/${uid}/story-${ts}.png`);
+          await uploadBytes(storyRef, storyBlob);
+        } catch { /* upload failed — still download locally */ }
       }
+
+      // Always download locally
+      dl(storyDataUrl, 'design-story-1080x1920.png');
+      dl(blogDataUrl, 'design-blog-1200x675.png');
+
+      // If opened from BlogEditor, send the uploaded URL back
+      if (returnTo === 'blog') {
+        localStorage.setItem('editor-export-blog', blogCoverUrl);
+      }
+
+      setExported(true);
+      setTimeout(() => setExported(false), 3000);
     } catch { /* tainted canvas */ }
-  }, [canvas, returnTo]);
+    setExporting(false);
+  }, [canvas, returnTo, uid, exporting]);
 
   const hasSelection = selectedType !== null;
 
@@ -249,10 +276,10 @@ export default function ImageEditorLayout() {
             {playing ? <StopIcon className="w-3.5 h-3.5" /> : <PlayIcon className="w-3.5 h-3.5" />}
             <span className="hidden sm:inline">{playing ? 'Arreter' : 'Jouer'}</span>
           </button>
-          <button onClick={doExport}
-            className={`flex items-center gap-1 px-2 py-1.5 text-[10px] font-medium text-white rounded-lg ${returnTo === 'blog' ? 'bg-sage hover:bg-sage/90' : 'bg-teal-600 hover:bg-teal-500'}`}>
+          <button onClick={doExport} disabled={exporting}
+            className={`flex items-center gap-1 px-2 py-1.5 text-[10px] font-medium text-white rounded-lg disabled:opacity-50 ${exported ? 'bg-emerald-600' : 'bg-teal-600 hover:bg-teal-500'}`}>
             <ArrowDownTrayIcon className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">{returnTo === 'blog' ? 'Utiliser dans le blog' : 'Exporter'}</span>
+            <span className="hidden sm:inline">{exporting ? 'Export...' : exported ? 'Exporte!' : 'Exporter'}</span>
           </button>
         </div>
       </header>
