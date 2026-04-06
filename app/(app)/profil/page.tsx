@@ -51,7 +51,7 @@ export default function ProfilPage() {
 
   return (
     <div className="min-h-screen bg-sand">
-      {toast && <div className="fixed top-4 left-4 right-4 z-50 bg-green-600 text-white text-sm font-medium px-4 py-2.5 rounded-xl text-center shadow-lg">{toast}</div>}
+      {toast && <div className="fixed left-4 right-4 z-50 bg-green-600 text-white text-sm font-medium px-4 py-2.5 rounded-xl text-center shadow-lg" style={{ top: 'calc(16px + env(safe-area-inset-top, 0px))' }}>{toast}</div>}
       <div className="px-4 pt-6 pb-4">
         <div className="flex items-center gap-3 mb-6">
           {user?.photoURL ? (

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useBlogArticles, usePublishBlog } from '@/lib/hooks/useBlogArticles';
 import { PlusIcon, ArrowTopRightOnSquareIcon, BookOpenIcon } from '@heroicons/react/24/outline';
 import BlogEditor from '@/components/features/blog/BlogEditor';
@@ -17,6 +17,14 @@ export default function BloguePage() {
   const { publish, loading: publishing } = usePublishBlog();
   const [showEditor, setShowEditor] = useState(false);
   const [success, setSuccess] = useState<string | null>(null);
+
+  // Auto-open editor if there's a pending draft with content or exported images
+  useEffect(() => {
+    const hasExport = !!localStorage.getItem('editor-export-blog');
+    const draft = localStorage.getItem('blog-editor-draft');
+    const hasDraft = draft ? (() => { try { const d = JSON.parse(draft); return !!(d.title || d.htmlContent); } catch { return false; } })() : false;
+    if (hasExport || hasDraft) setShowEditor(true);
+  }, []);
 
   if (showEditor) {
     return (
@@ -38,7 +46,7 @@ export default function BloguePage() {
 
   return (
     <div className="min-h-screen bg-sand pb-24">
-      <header className="px-4 py-3 bg-white border-b border-gray-200 flex items-center gap-3">
+      <header className="sticky top-0 z-10 px-4 py-3 bg-white border-b border-gray-200 flex items-center gap-3">
         <BookOpenIcon className="w-5 h-5 text-sage" />
         <h1 className="text-lg font-semibold text-sage flex-1">Blogue</h1>
         <button onClick={() => setShowEditor(true)}

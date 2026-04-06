@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 import { ArrowLeftIcon, EyeIcon, PencilIcon, SparklesIcon, PhotoIcon, ArrowTopRightOnSquareIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
@@ -12,6 +12,8 @@ const TiptapEditor = dynamic(() => import('./TiptapEditor'), { ssr: false });
 
 const RDV_URL = 'https://gorendezvous.com/lasourceensoi';
 const CATEGORIES = ['Acupuncture', 'Fertilite', 'Grossesse', 'Bien-etre', 'Medecine chinoise', 'Conseils sante', 'Autre'];
+const DRAFT_KEY = 'blog-editor-draft';
+const EXPORT_KEY = 'editor-export-blog';
 
 interface FaqItem { question: string; answer: string }
 
@@ -22,6 +24,7 @@ export interface BlogArticle {
   ctaUrl: string;
   faqs?: FaqItem[];
   coverImageUrl?: string;
+  storyImageUrl?: string;
 }
 
 interface Props { onPublish: (article: BlogArticle) => void; onCancel: () => void; publishing?: boolean }
@@ -51,10 +54,73 @@ export default function BlogEditor({ onPublish, onCancel, publishing }: Props) {
   const [faqs, setFaqs] = useState<FaqItem[]>([]);
   const [faqLoading, setFaqLoading] = useState(false);
   const [coverImageUrl, setCoverImageUrl] = useState<string | undefined>();
+  const [storyImageUrl, setStoryImageUrl] = useState<string | undefined>();
   const [uploading, setUploading] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+  const mountedRef = useRef(false);
 
   const canPublish = title.trim().length > 0 && htmlContent.trim().length > 0;
+
+  // Restore draft + check for editor export on mount
+  useEffect(() => {
+    if (mountedRef.current) return;
+    mountedRef.current = true;
+
+    // Check if the image editor left exported images
+    const exportData = localStorage.getItem(EXPORT_KEY);
+    if (exportData) {
+      try {
+        const data = JSON.parse(exportData) as { coverDataUrl?: string; storyDataUrl?: string };
+        if (data.coverDataUrl) setCoverImageUrl(data.coverDataUrl);
+        if (data.storyDataUrl) setStoryImageUrl(data.storyDataUrl);
+      } catch {
+        setCoverImageUrl(exportData);
+      }
+      localStorage.removeItem(EXPORT_KEY);
+    }
+
+    // Restore draft
+    const saved = localStorage.getItem(DRAFT_KEY);
+    if (saved) {
+      try {
+        const d = JSON.parse(saved);
+        if (d.title) setTitle(d.title);
+        if (d.htmlContent) setHtmlContent(d.htmlContent);
+        if (d.category) setCategory(d.category);
+        if (d.faqs?.length) setFaqs(d.faqs);
+        // Only restore images from draft if we didn't just get them from editor export
+        if (!exportData) {
+          if (d.coverImageUrl) setCoverImageUrl(d.coverImageUrl);
+          if (d.storyImageUrl) setStoryImageUrl(d.storyImageUrl);
+        }
+      } catch { /* corrupt draft */ }
+    }
+  }, []);
+
+  // Auto-save draft on every change
+  const saveDraft = useCallback(() => {
+    const draft = { title, htmlContent, category, faqs, coverImageUrl, storyImageUrl };
+    localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+  }, [title, htmlContent, category, faqs, coverImageUrl, storyImageUrl]);
+
+  useEffect(() => { saveDraft(); }, [saveDraft]);
+
+  // Listen for image export while editor is open (StorageEvent from another tab)
+  useEffect(() => {
+    const handler = (e: StorageEvent) => {
+      if (e.key !== EXPORT_KEY || !e.newValue) return;
+      try {
+        const data = JSON.parse(e.newValue) as { coverDataUrl?: string; storyDataUrl?: string };
+        if (data.coverDataUrl) setCoverImageUrl(data.coverDataUrl);
+        if (data.storyDataUrl) setStoryImageUrl(data.storyDataUrl);
+      } catch {
+        setCoverImageUrl(e.newValue);
+      }
+      localStorage.removeItem(EXPORT_KEY);
+    };
+    window.addEventListener('storage', handler);
+    return () => window.removeEventListener('storage', handler);
+  }, []);
 
   const generateFaq = async () => {
     if (!title.trim()) return;
@@ -73,9 +139,46 @@ export default function BlogEditor({ onPublish, onCancel, publishing }: Props) {
     try { setCoverImageUrl(await resizeAndUpload(file, uid)); } catch {} finally { setUploading(false); }
   };
 
-  const handlePublish = () => {
+  const handlePublish = async () => {
+    if (!uid) return;
     const content = htmlToMarkdownText(htmlContent);
-    onPublish({ title, content, category, ctaUrl, faqs: faqs.length > 0 ? faqs : undefined, coverImageUrl });
+
+    let uploadedStoryUrl = storyImageUrl;
+    if (storyImageUrl?.startsWith('data:')) {
+      try {
+        const blob = await (await fetch(storyImageUrl)).blob();
+        const storage = getFirebaseStorage();
+        const sRef = ref(storage, `blog-covers/${uid}/story-${Date.now()}.png`);
+        await uploadBytes(sRef, blob);
+        uploadedStoryUrl = await getDownloadURL(sRef);
+      } catch { /* story upload failed */ }
+    }
+
+    let uploadedCoverUrl = coverImageUrl;
+    if (coverImageUrl?.startsWith('data:')) {
+      try {
+        const blob = await (await fetch(coverImageUrl)).blob();
+        const storage = getFirebaseStorage();
+        const cRef = ref(storage, `blog-covers/${uid}/cover-${Date.now()}.png`);
+        await uploadBytes(cRef, blob);
+        uploadedCoverUrl = await getDownloadURL(cRef);
+      } catch { /* cover upload failed */ }
+    }
+
+    // Clear draft after successful publish
+    localStorage.removeItem(DRAFT_KEY);
+
+    onPublish({
+      title, content, category, ctaUrl,
+      faqs: faqs.length > 0 ? faqs : undefined,
+      coverImageUrl: uploadedCoverUrl,
+      storyImageUrl: uploadedStoryUrl,
+    });
+  };
+
+  const handleCancel = () => {
+    // Keep draft in localStorage so it can be restored later
+    onCancel();
   };
 
   const today = new Date();
@@ -84,7 +187,7 @@ export default function BlogEditor({ onPublish, onCancel, publishing }: Props) {
   return (
     <div className="min-h-screen bg-sand pb-24">
       <header className="px-4 py-3 bg-white border-b border-gray-200 flex items-center gap-3">
-        <button onClick={onCancel} className="p-1"><ArrowLeftIcon className="w-5 h-5 text-gray-600" /></button>
+        <button onClick={handleCancel} className="p-1"><ArrowLeftIcon className="w-5 h-5 text-gray-600" /></button>
         <h1 className="text-lg font-semibold text-sage flex-1">Nouvel article</h1>
         <button onClick={() => setPreview(!preview)} className="flex items-center gap-1 px-2 py-1 rounded-lg text-[11px] font-medium text-sage bg-sage/10">
           {preview ? <PencilIcon className="w-3.5 h-3.5" /> : <EyeIcon className="w-3.5 h-3.5" />}
@@ -113,8 +216,9 @@ export default function BlogEditor({ onPublish, onCancel, publishing }: Props) {
               <label className="text-xs text-gray-500 font-medium">Image de couverture</label>
               {coverImageUrl ? (
                 <div className="relative mt-1">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={coverImageUrl} alt="" className="w-full rounded-xl object-cover" style={{ aspectRatio: '16/9' }} />
-                  <button onClick={() => setCoverImageUrl(undefined)} className="absolute top-2 right-2 p-1 rounded-full bg-black/50"><XMarkIcon className="w-4 h-4 text-white" /></button>
+                  <button onClick={() => { setCoverImageUrl(undefined); setStoryImageUrl(undefined); }} className="absolute top-2 right-2 p-1 rounded-full bg-black/50"><XMarkIcon className="w-4 h-4 text-white" /></button>
                 </div>
               ) : (
                 <div className="mt-1 space-y-2">
@@ -123,12 +227,12 @@ export default function BlogEditor({ onPublish, onCancel, publishing }: Props) {
                       className="flex-1 flex items-center justify-center gap-1.5 py-3 border border-gray-200 rounded-xl text-xs text-gray-600 active:bg-gray-50">
                       <PhotoIcon className="w-4 h-4" /> {uploading ? 'Upload...' : 'Importer'}
                     </button>
-                    <button onClick={() => window.open('https://www.canva.com/create/instagram-stories', '_blank')}
-                      className="flex-1 flex items-center justify-center gap-1.5 py-3 border border-gray-200 rounded-xl text-xs text-gray-600 active:bg-gray-50">
-                      <ArrowTopRightOnSquareIcon className="w-4 h-4" /> Creer dans Canva
+                    <button onClick={() => window.open('/editeur-image?returnTo=blog', '_blank')}
+                      className="flex-1 flex items-center justify-center gap-1.5 py-3 border border-sage/30 rounded-xl text-xs text-sage font-medium active:bg-sage/5">
+                      <ArrowTopRightOnSquareIcon className="w-4 h-4" /> Creer l&apos;image
                     </button>
                   </div>
-                  <p className="text-[10px] text-gray-400 text-center">Cree ton design dans Canva, telecharge-le, puis importe-le ici</p>
+                  <p className="text-[10px] text-gray-400 text-center">Cree ton design — l&apos;image revient automatiquement ici</p>
                 </div>
               )}
               <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
@@ -152,10 +256,10 @@ export default function BlogEditor({ onPublish, onCancel, publishing }: Props) {
                   <textarea value={faq.answer} rows={2} onChange={e => setFaqs(f => f.map((q, j) => j === i ? { ...q, answer: e.target.value } : q))}
                     className="w-full text-xs text-gray-600 bg-gray-50 rounded px-2 py-1.5 resize-none focus:outline-none" />
                 </div>
-              )) : <p className="text-[11px] text-gray-400">Clique "Generer FAQ" pour creer 3 questions SEO</p>}
+              )) : <p className="text-[11px] text-gray-400">Clique &quot;Generer FAQ&quot; pour creer 3 questions SEO</p>}
             </div>
             <div className="bg-sage/5 border border-sage/20 rounded-xl px-3 py-2.5">
-              <label className="text-[10px] text-sage font-semibold uppercase tracking-wider">CTA rendez-vous (ajoute en fin d'article)</label>
+              <label className="text-[10px] text-sage font-semibold uppercase tracking-wider">CTA rendez-vous (ajoute en fin d&apos;article)</label>
               <p className="text-sm text-sage mt-1">Prendre rendez-vous : {ctaUrl}</p>
             </div>
           </>
@@ -174,6 +278,7 @@ function BlogPreview({ title, htmlContent, category, coverImageUrl, faqs, ctaUrl
 }) {
   return (
     <div className="bg-white rounded-xl overflow-hidden">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
       {coverImageUrl && <img src={coverImageUrl} alt="" className="w-full object-cover" style={{ aspectRatio: '16/9' }} />}
       <div className="p-4 space-y-3">
         <span className="text-[10px] font-medium text-sage bg-sage/10 px-2 py-0.5 rounded-full">{category}</span>

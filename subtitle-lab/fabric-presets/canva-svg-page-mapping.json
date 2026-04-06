@@ -1,0 +1,561 @@
+{
+  "description": "Mapping of Canva design pages to font combination presets (Google Fonts only)",
+  "totalPages": 60,
+  "originalPages": [
+    1,
+    2
+  ],
+  "manualTestPages": [
+    3,
+    4
+  ],
+  "presetPages": {
+    "start": 5,
+    "end": 60,
+    "count": 56
+  },
+  "presets": [
+    {
+      "pageNumber": 5,
+      "svgFilename": "Votre texte de paragraphe - 5.svg",
+      "presetName": "Etiquette chic",
+      "fonts": [
+        "Cinzel",
+        "Montserrat"
+      ],
+      "cefUrl": "EADae_l4lgk/1/0/web-2-1_hAheMosq8.cef"
+    },
+    {
+      "pageNumber": 6,
+      "svgFilename": "Votre texte de paragraphe - 6.svg",
+      "presetName": "Oreillers au choix",
+      "fonts": [
+        "Racing Sans One",
+        "Arimo"
+      ],
+      "cefUrl": "EADae1Aycr0/1/0/web-2--BjcPbiuQwc.cef"
+    },
+    {
+      "pageNumber": 7,
+      "svgFilename": "Votre texte de paragraphe - 7.svg",
+      "presetName": "Bières pour tous",
+      "fonts": [
+        "PT Sans"
+      ],
+      "cefUrl": "EADae3-Bcl4/1/0/web-2-RTxW0rov4GY.cef"
+    },
+    {
+      "pageNumber": 8,
+      "svgFilename": "Votre texte de paragraphe - 8.svg",
+      "presetName": "Citation célébre",
+      "fonts": [
+        "Lora",
+        "Glacial Indifference"
+      ],
+      "cefUrl": "EADae6p4yIY/1/0/web-2-sV20uuOnutY.cef"
+    },
+    {
+      "pageNumber": 9,
+      "svgFilename": "Votre texte de paragraphe - 9.svg",
+      "presetName": "Crée pour vous",
+      "fonts": [
+        "Glass Antiqua",
+        "Vollkorn"
+      ],
+      "cefUrl": "EADae7SuPiI/1/0/web-2-a8QbP3yP97A.cef"
+    },
+    {
+      "pageNumber": 10,
+      "svgFilename": "Votre texte de paragraphe - 10.svg",
+      "presetName": "Conseils voyages",
+      "fonts": [
+        "Quicksand",
+        "Londrina Shadow"
+      ],
+      "cefUrl": "EADaeyZg2g8/1/0/web-2-2PxrxOta2lM.cef"
+    },
+    {
+      "pageNumber": 11,
+      "svgFilename": "Votre texte de paragraphe - 11.svg",
+      "presetName": "Jeune diplômé",
+      "fonts": [
+        "Limelight",
+        "Yellowtail",
+        "Raleway"
+      ],
+      "cefUrl": "EADae_ndwK4/1/0/web-2-uMrCg4J7lsI.cef"
+    },
+    {
+      "pageNumber": 12,
+      "svgFilename": "Votre texte de paragraphe - 12.svg",
+      "presetName": "Carte de visite",
+      "fonts": [
+        "Roboto",
+        "Glegoo"
+      ],
+      "cefUrl": "EADae9QdJzw/1/0/web-2-NEhUNC32qNY.cef"
+    },
+    {
+      "pageNumber": 13,
+      "svgFilename": "Votre texte de paragraphe - 13.svg",
+      "presetName": "Projet Marketing",
+      "fonts": [
+        "Anton",
+        "Yellowtail",
+        "Glacial Indifference"
+      ],
+      "cefUrl": "EADaexgWzSY/1/0/web-2-Bin_NMnyE6Y.cef"
+    },
+    {
+      "pageNumber": 14,
+      "svgFilename": "Votre texte de paragraphe - 14.svg",
+      "presetName": "Obituaire",
+      "fonts": [
+        "Great Vibes",
+        "Lora"
+      ],
+      "cefUrl": "EADae5Zkj6s/1/0/web-2-_dkYVGUK-u8.cef"
+    },
+    {
+      "pageNumber": 15,
+      "svgFilename": "Votre texte de paragraphe - 15.svg",
+      "presetName": "Proposition marketing",
+      "fonts": [
+        "Raleway"
+      ],
+      "cefUrl": "EADYfjTgZDQ/1/0/web-2-uXoSFSRP2lU.cef"
+    },
+    {
+      "pageNumber": 16,
+      "svgFilename": "Votre texte de paragraphe - 16.svg",
+      "presetName": "Nouveau chapitre",
+      "fonts": [
+        "Fredoka",
+        "Quicksand"
+      ],
+      "cefUrl": "EADae1Bj6lw/1/0/web-2-spb6ag2iGYw.cef"
+    },
+    {
+      "pageNumber": 17,
+      "svgFilename": "Votre texte de paragraphe - 17.svg",
+      "presetName": "Secrétaire médicale",
+      "fonts": [
+        "Ubuntu"
+      ],
+      "cefUrl": "EADae9VNBes/1/0/web-2-lDRi33P8gL8.cef"
+    },
+    {
+      "pageNumber": 18,
+      "svgFilename": "Votre texte de paragraphe - 18.svg",
+      "presetName": "Docteur",
+      "fonts": [
+        "Alfa Slab One",
+        "Source Sans Pro"
+      ],
+      "cefUrl": "EADaezFatyc/1/0/web-2-jOFQs7PFEoo.cef"
+    },
+    {
+      "pageNumber": 19,
+      "svgFilename": "Votre texte de paragraphe - 19.svg",
+      "presetName": "L'amour de l'architecture",
+      "fonts": [
+        "Abril Fatface",
+        "Montserrat"
+      ],
+      "cefUrl": "EADae5GS8BQ/1/0/web-2-yOHB4LHSHTM.cef"
+    },
+    {
+      "pageNumber": 20,
+      "svgFilename": "Votre texte de paragraphe - 20.svg",
+      "presetName": "Le Loft Digital Text Effect in Pink Royal Purple Style",
+      "fonts": [
+        "DM Sans",
+        "Great Vibes"
+      ],
+      "cefUrl": "EAG76hPB5ao/2/0/web-2-cy3mXN6_CWI.cef"
+    },
+    {
+      "pageNumber": 21,
+      "svgFilename": "Votre texte de paragraphe - 21.svg",
+      "presetName": "Photographe amateur",
+      "fonts": [
+        "Montserrat"
+      ],
+      "cefUrl": "EADae5XRhhM/1/0/web-2-SqNTM31l7hI.cef"
+    },
+    {
+      "pageNumber": 22,
+      "svgFilename": "Votre texte de paragraphe - 22.svg",
+      "presetName": "Témoignage vacances",
+      "fonts": [
+        "Amatic SC",
+        "Sacramento",
+        "Glacial Indifference"
+      ],
+      "cefUrl": "EADae1iiwWM/1/0/web-2-larOruF-MvE.cef"
+    },
+    {
+      "pageNumber": 23,
+      "svgFilename": "Votre texte de paragraphe - 23.svg",
+      "presetName": "Allez les bleus",
+      "fonts": [
+        "Raleway",
+        "Exo 2"
+      ],
+      "cefUrl": "EADaezGe4jw/1/0/web-2-1xh_Bk8sAxQ.cef"
+    },
+    {
+      "pageNumber": 24,
+      "svgFilename": "Votre texte de paragraphe - 24.svg",
+      "presetName": "Projection",
+      "fonts": [
+        "Raleway",
+        "Libre Baskerville"
+      ],
+      "cefUrl": "EADae2DBnpQ/1/0/web-2-4v6pM-uGvlM.cef"
+    },
+    {
+      "pageNumber": 25,
+      "svgFilename": "Votre texte de paragraphe - 25.svg",
+      "presetName": "Chapeau l'artiste",
+      "fonts": [
+        "Source Sans Pro",
+        "Source Serif Pro"
+      ],
+      "cefUrl": "EADYfj4c8KI/1/0/web-2-LmxBRxJTid8.cef"
+    },
+    {
+      "pageNumber": 26,
+      "svgFilename": "Votre texte de paragraphe - 26.svg",
+      "presetName": "Bonne fête des mères !",
+      "fonts": [
+        "Playfair Display"
+      ],
+      "cefUrl": "EADae4q72HA/1/0/web-2-5_cFORn4V8Q.cef"
+    },
+    {
+      "pageNumber": 27,
+      "svgFilename": "Votre texte de paragraphe - 27.svg",
+      "presetName": "Recettes d'amour",
+      "fonts": [
+        "Josefin Sans",
+        "Lora"
+      ],
+      "cefUrl": "EADae2-2NyY/1/0/web-2-u4hMFhC_uUA.cef"
+    },
+    {
+      "pageNumber": 28,
+      "svgFilename": "Votre texte de paragraphe - 28.svg",
+      "presetName": "Bold Serif",
+      "fonts": [
+        "Playfair Display"
+      ],
+      "cefUrl": "EADYfgmARXU/2/0/web-2-5G78pEHNW24.cef"
+    },
+    {
+      "pageNumber": 29,
+      "svgFilename": "Votre texte de paragraphe - 29.svg",
+      "presetName": "Valence",
+      "fonts": [
+        "Libre Baskerville"
+      ],
+      "cefUrl": "EADYfj1Ff8M/2/0/web-2-bMZZuOOFFzk.cef"
+    },
+    {
+      "pageNumber": 30,
+      "svgFilename": "Votre texte de paragraphe - 30.svg",
+      "presetName": "Photography Workshop Left",
+      "fonts": [
+        "Lora",
+        "Glacial Indifference"
+      ],
+      "cefUrl": "EADYfr8zzNA/2/0/web-2-3qGZoYnPEf8.cef"
+    },
+    {
+      "pageNumber": 31,
+      "svgFilename": "Votre texte de paragraphe - 31.svg",
+      "presetName": "Perfume Label Center",
+      "fonts": [
+        "Glacial Indifference"
+      ],
+      "cefUrl": "EADYfslHasg/2/0/web-2-raPLYOqV8AQ.cef"
+    },
+    {
+      "pageNumber": 32,
+      "svgFilename": "Votre texte de paragraphe - 32.svg",
+      "presetName": "Homeware List",
+      "fonts": [
+        "Glacial Indifference"
+      ],
+      "cefUrl": "EADYfh9mH6A/2/0/web-2-ksJKN1w5mv0.cef"
+    },
+    {
+      "pageNumber": 33,
+      "svgFilename": "Votre texte de paragraphe - 33.svg",
+      "presetName": "Clearance Text Effect in Dark Blue Experimental Type Style",
+      "fonts": [
+        "Space Mono"
+      ],
+      "cefUrl": "EAGblPg0pI4/1/0/web-2-VQqevGL4Vlw.cef"
+    },
+    {
+      "pageNumber": 34,
+      "svgFilename": "Votre texte de paragraphe - 34.svg",
+      "presetName": "Xocolat",
+      "fonts": [
+        "Playfair Display",
+        "Montserrat"
+      ],
+      "cefUrl": "EADYftQhJkc/2/0/web-2-Pd-RvTjTL_8.cef"
+    },
+    {
+      "pageNumber": 35,
+      "svgFilename": "Votre texte de paragraphe - 35.svg",
+      "presetName": "Pivot Strategy Text Effect in Dark Blue Blue Style",
+      "fonts": [
+        "Libre Baskerville",
+        "Work Sans"
+      ],
+      "cefUrl": "EAGuIRVwdYk/1/0/web-2-2nEe24l7MDs.cef"
+    },
+    {
+      "pageNumber": 36,
+      "svgFilename": "Votre texte de paragraphe - 36.svg",
+      "presetName": "This week Text Effect in Pastel Purple Black Style",
+      "fonts": [
+        "Arimo"
+      ],
+      "cefUrl": "EAGWzvtwTpA/1/0/web-2-XYET-vR3x0o.cef"
+    },
+    {
+      "pageNumber": 37,
+      "svgFilename": "Votre texte de paragraphe - 37.svg",
+      "presetName": "Title, Heading, Paragraph",
+      "fonts": [
+        "Lato"
+      ],
+      "cefUrl": "EADYfrQ2JsM/1/0/web-2-pqQ7e3DDKm4.cef"
+    },
+    {
+      "pageNumber": 38,
+      "svgFilename": "Votre texte de paragraphe - 38.svg",
+      "presetName": "Elegant and Feminine",
+      "fonts": [
+        "Playfair Display"
+      ],
+      "cefUrl": "EADYfvLM0aw/2/0/web-2-pX9N5q963rY.cef"
+    },
+    {
+      "pageNumber": 39,
+      "svgFilename": "Votre texte de paragraphe - 39.svg",
+      "presetName": "Heading, Paragraph",
+      "fonts": [
+        "Lato"
+      ],
+      "cefUrl": "EADYfqPTRLY/1/0/web-2-epvmUaFXTMk.cef"
+    },
+    {
+      "pageNumber": 40,
+      "svgFilename": "Votre texte de paragraphe - 40.svg",
+      "presetName": "Dulce verdad",
+      "fonts": [
+        "Glass Antiqua",
+        "Josefin Sans"
+      ],
+      "cefUrl": "EADae3J8kyw/2/0/web-2-mj0yjJZY6qY.cef"
+    },
+    {
+      "pageNumber": 41,
+      "svgFilename": "Votre texte de paragraphe - 41.svg",
+      "presetName": "Budget approved",
+      "fonts": [
+        "Space Mono"
+      ],
+      "cefUrl": "EAGiJOOmjAU/2/0/web-2-Cx86q5PEfCY.cef"
+    },
+    {
+      "pageNumber": 42,
+      "svgFilename": "Votre texte de paragraphe - 42.svg",
+      "presetName": "Bridal Shower",
+      "fonts": [
+        "Lora",
+        "Montserrat"
+      ],
+      "cefUrl": "EADYfvdwUP4/1/0/web-2-vguGnCzXGI0.cef"
+    },
+    {
+      "pageNumber": 43,
+      "svgFilename": "Votre texte de paragraphe - 43.svg",
+      "presetName": "Storybook Quote",
+      "fonts": [
+        "Glass Antiqua",
+        "Montserrat"
+      ],
+      "cefUrl": "EADYfgCptW8/1/0/web-2-O1tJfcUcREI.cef"
+    },
+    {
+      "pageNumber": 44,
+      "svgFilename": "Votre texte de paragraphe - 44.svg",
+      "presetName": "Freundschaft Bridge",
+      "fonts": [
+        "Lato",
+        "Libre Baskerville"
+      ],
+      "cefUrl": "EADYfhnxTb4/1/0/web-2-eccIQ7yyROA.cef"
+    },
+    {
+      "pageNumber": 45,
+      "svgFilename": "Votre texte de paragraphe - 45.svg",
+      "presetName": "Table of Contents",
+      "fonts": [
+        "Oswald",
+        "Glacial Indifference"
+      ],
+      "cefUrl": "EADYfrPR66k/1/0/web-2-LfbNMWi8Sa8.cef"
+    },
+    {
+      "pageNumber": 46,
+      "svgFilename": "Votre texte de paragraphe - 46.svg",
+      "presetName": "Elegant Serif",
+      "fonts": [
+        "Libre Baskerville"
+      ],
+      "cefUrl": "EADYfrAFcps/1/0/web-2-sa731gGXeA0.cef"
+    },
+    {
+      "pageNumber": 47,
+      "svgFilename": "Votre texte de paragraphe - 47.svg",
+      "presetName": "Business Card Center Details",
+      "fonts": [
+        "Playfair Display",
+        "Glacial Indifference"
+      ],
+      "cefUrl": "EADYfq51dy4/1/0/web-2-rEjsbLUznrI.cef"
+    },
+    {
+      "pageNumber": 48,
+      "svgFilename": "Votre texte de paragraphe - 48.svg",
+      "presetName": "Register Now Text Effect in Green Black Corporate Geometric Style",
+      "fonts": [
+        "Montserrat"
+      ],
+      "cefUrl": "EAGbkxE-wqU/1/0/web-2-AndMVCohFb4.cef"
+    },
+    {
+      "pageNumber": 49,
+      "svgFilename": "Votre texte de paragraphe - 49.svg",
+      "presetName": "Marketing Proposal Cover",
+      "fonts": [
+        "Exo 2",
+        "Glegoo"
+      ],
+      "cefUrl": "EADYfpc9kPQ/1/0/web-2-K1hsuv5lNkc.cef"
+    },
+    {
+      "pageNumber": 50,
+      "svgFilename": "Votre texte de paragraphe - 50.svg",
+      "presetName": "Playfair Quote",
+      "fonts": [
+        "Playfair Display",
+        "Source Sans Pro"
+      ],
+      "cefUrl": "EADYfjcXQlM/1/0/web-2-o52ZiLv4GvE.cef"
+    },
+    {
+      "pageNumber": 51,
+      "svgFilename": "Votre texte de paragraphe - 51.svg",
+      "presetName": "Project Description",
+      "fonts": [
+        "Montserrat"
+      ],
+      "cefUrl": "EADYfkGQf48/1/0/web-2-emIGaVyaX2s.cef"
+    },
+    {
+      "pageNumber": 52,
+      "svgFilename": "Votre texte de paragraphe - 52.svg",
+      "presetName": "Clean Sans Serif",
+      "fonts": [
+        "Open Sans"
+      ],
+      "cefUrl": "EADYfiuGo70/1/0/web-2-3h0gyVm2m60.cef"
+    },
+    {
+      "pageNumber": 53,
+      "svgFilename": "Votre texte de paragraphe - 53.svg",
+      "presetName": "Five Tips for Great Skin Editorial Text Effect in Peach Trendy Business Style",
+      "fonts": [
+        "Playfair Display"
+      ],
+      "cefUrl": "EAGEl_rjC8w/2/0/web-2-rS7E56G443k.cef"
+    },
+    {
+      "pageNumber": 54,
+      "svgFilename": "Votre texte de paragraphe - 54.svg",
+      "presetName": "Certificate Center",
+      "fonts": [
+        "Lora"
+      ],
+      "cefUrl": "EADYfhQX9Gc/1/0/web-2-vAX8o_OB4qA.cef"
+    },
+    {
+      "pageNumber": 55,
+      "svgFilename": "Votre texte de paragraphe - 55.svg",
+      "presetName": "Take the Next Step",
+      "fonts": [
+        "Lora",
+        "Lato"
+      ],
+      "cefUrl": "EADYfpY0pvE/1/0/web-2-7hK4Loiu9D8.cef"
+    },
+    {
+      "pageNumber": 56,
+      "svgFilename": "Votre texte de paragraphe - 56.svg",
+      "presetName": "Love and Joy",
+      "fonts": [
+        "Sacramento",
+        "Montserrat"
+      ],
+      "cefUrl": "EADYfo8Hn4c/2/0/web-2-xq0OX-xal6g.cef"
+    },
+    {
+      "pageNumber": 57,
+      "svgFilename": "Votre texte de paragraphe - 57.svg",
+      "presetName": "Elegant White Christmas Text Group",
+      "fonts": [
+        "Great Vibes",
+        "Libre Baskerville"
+      ],
+      "cefUrl": "EADYfos2N6U/2/0/web-2-tarEgi0Qmco.cef"
+    },
+    {
+      "pageNumber": 58,
+      "svgFilename": "Votre texte de paragraphe - 58.svg",
+      "presetName": "Will you be my Valentine?",
+      "fonts": [
+        "Playfair Display",
+        "Glacial Indifference"
+      ],
+      "cefUrl": "EADYftVBQWQ/1/0/web-2-0PMCoEsoAiE.cef"
+    },
+    {
+      "pageNumber": 59,
+      "svgFilename": "Votre texte de paragraphe - 59.svg",
+      "presetName": "Hugs and kisses",
+      "fonts": [
+        "Fredoka",
+        "Glacial Indifference"
+      ],
+      "cefUrl": "EADYfhpOg0c/1/0/web-2-4qcVtM-tv_g.cef"
+    },
+    {
+      "pageNumber": 60,
+      "svgFilename": "Votre texte de paragraphe - 60.svg",
+      "presetName": "Sans Serif Invitation",
+      "fonts": [
+        "Bebas Neue",
+        "Montserrat"
+      ],
+      "cefUrl": "EADYfqTVmuE/1/0/web-2-afnxZPv2s0Y.cef"
+    }
+  ]
+}

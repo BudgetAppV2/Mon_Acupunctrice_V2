@@ -1,0 +1,4012 @@
+[
+  {
+    "version": "5.3.0",
+    "objects": [
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 223,
+        "top": 67,
+        "width": 981,
+        "height": 156,
+        "angle": 0,
+        "text": "Nova créa",
+        "fontFamily": "Ambiguity Inline",
+        "fontSize": 129.795,
+        "fontWeight": 950,
+        "fontStyle": "normal",
+        "fill": "#003c64",
+        "textAlign": "center",
+        "charSpacing": -76,
+        "lineHeight": 0.91,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "subtitle",
+          "fontRef": "YAFcfjekdfw,0",
+          "textTransform": "uppercase",
+          "fontKerning": "normal",
+          "originalLeading": 910,
+          "fillId": "none",
+          "canvaStyle": ""
+        }
+      },
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 36,
+        "top": 451,
+        "width": 646,
+        "height": 265,
+        "angle": 0,
+        "text": "tudio",
+        "fontFamily": "Snell Roundhand",
+        "fontSize": 242.135,
+        "fontWeight": 850,
+        "fontStyle": "normal",
+        "fill": "#ad0a05",
+        "textAlign": "left",
+        "charSpacing": 0,
+        "lineHeight": 0.7,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "title",
+          "fontRef": "YAFcf-RMpoo,0",
+          "textTransform": "",
+          "fontKerning": "normal",
+          "originalLeading": 700,
+          "fillId": "none",
+          "canvaStyle": ""
+        }
+      },
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 0,
+        "top": 0,
+        "width": 505,
+        "height": 227,
+        "angle": 0,
+        "text": "S",
+        "fontFamily": "Maldina Script",
+        "fontSize": 208.293,
+        "fontWeight": 400,
+        "fontStyle": "normal",
+        "fill": "#ad0a05",
+        "textAlign": "end",
+        "charSpacing": 0,
+        "lineHeight": 0.7,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "pretitle",
+          "fontRef": "YADcrrpBZbc,0",
+          "textTransform": "uppercase",
+          "fontKerning": "normal",
+          "originalLeading": 700,
+          "fillId": "none",
+          "canvaStyle": ""
+        }
+      }
+    ],
+    "background": "",
+    "_presetMeta": {
+      "source": "canva",
+      "templateId": "LBj2FXKYMKj96SDn",
+      "schema": "web-2",
+      "canvasSize": {
+        "width": 1261,
+        "height": 435
+      },
+      "fonts": [
+        {
+          "id": "YAFcfjekdfw",
+          "name": "Ambiguity Inline",
+          "variants": [
+            {
+              "style": "HEAVY",
+              "weight": 950
+            }
+          ]
+        },
+        {
+          "id": "YAFcf-RMpoo",
+          "name": "Snell Roundhand",
+          "variants": [
+            {
+              "style": "ULTRA_BOLD",
+              "weight": 850
+            },
+            {
+              "style": "BOLD",
+              "weight": 700
+            },
+            {
+              "style": "REGULAR",
+              "weight": 400
+            }
+          ]
+        },
+        {
+          "id": "YADcrrpBZbc",
+          "name": "Maldina Script",
+          "variants": [
+            {
+              "style": "REGULAR",
+              "weight": 400
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "version": "5.3.0",
+    "objects": [
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 0,
+        "top": 0,
+        "width": 757,
+        "height": 28,
+        "angle": 0,
+        "text": "voici un cadeau",
+        "fontFamily": "Proxima Nova",
+        "fontSize": 24,
+        "fontWeight": 700,
+        "fontStyle": "normal",
+        "fill": "#222222",
+        "textAlign": "center",
+        "charSpacing": 80,
+        "lineHeight": 1.16,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "pretitle-a",
+          "fontRef": "YAFcfjveRFU,0",
+          "textTransform": "uppercase",
+          "fontKerning": "",
+          "originalLeading": 0,
+          "fillId": "",
+          "canvaStyle": ""
+        }
+      },
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 68,
+        "top": 0,
+        "width": 757,
+        "height": 140,
+        "angle": 0,
+        "text": "Juste pour vous !",
+        "fontFamily": "Sacramento",
+        "fontSize": 117.33333333333333,
+        "fontWeight": 400,
+        "fontStyle": "normal",
+        "fill": "#222222",
+        "textAlign": "center",
+        "charSpacing": 0,
+        "lineHeight": 1.25,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "title-a",
+          "fontRef": "YACgEf5ivwU,0",
+          "textTransform": "",
+          "fontKerning": "",
+          "originalLeading": 1250,
+          "fillId": "",
+          "canvaStyle": ""
+        }
+      },
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 273,
+        "top": 0,
+        "width": 757,
+        "height": 33,
+        "angle": 0,
+        "text": "De la part de Marcy et cie",
+        "fontFamily": "Proxima Nova",
+        "fontSize": 28,
+        "fontWeight": 700,
+        "fontStyle": "normal",
+        "fill": "#222222",
+        "textAlign": "center",
+        "charSpacing": 20,
+        "lineHeight": 1.16,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "subtitle-a",
+          "fontRef": "YAFcfjveRFU,0",
+          "textTransform": "",
+          "fontKerning": "",
+          "originalLeading": 0,
+          "fillId": "",
+          "canvaStyle": ""
+        }
+      }
+    ],
+    "background": "",
+    "_presetMeta": {
+      "source": "canva",
+      "templateId": "LB11rbkPy2jGLZhz",
+      "schema": "web-2",
+      "canvasSize": {
+        "width": 757,
+        "height": 307
+      },
+      "fonts": [
+        {
+          "id": "YAFcfjveRFU",
+          "name": "Proxima Nova",
+          "variants": [
+            {
+              "style": "BOLD",
+              "weight": 700
+            },
+            {
+              "style": "HEAVY_ITALICS",
+              "weight": 900
+            },
+            {
+              "style": "LIGHT",
+              "weight": 300
+            },
+            {
+              "style": "HEAVY",
+              "weight": 900
+            },
+            {
+              "style": "REGULAR",
+              "weight": 400
+            },
+            {
+              "style": "ITALICS",
+              "weight": 400
+            },
+            {
+              "style": "BOLD_ITALICS",
+              "weight": 700
+            },
+            {
+              "style": "LIGHT_ITALICS",
+              "weight": 300
+            }
+          ]
+        },
+        {
+          "id": "YACgEf5ivwU",
+          "name": "Sacramento",
+          "variants": [
+            {
+              "style": "REGULAR",
+              "weight": 400
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "version": "5.3.0",
+    "objects": [
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 33,
+        "top": 0,
+        "width": 757,
+        "height": 273,
+        "angle": 0,
+        "text": "Raphaël \nLeblanc",
+        "fontFamily": "Glass Antiqua",
+        "fontSize": 128,
+        "fontWeight": 400,
+        "fontStyle": "normal",
+        "fill": "#222222",
+        "textAlign": "left",
+        "charSpacing": 30,
+        "lineHeight": 0.93,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "title-a",
+          "fontRef": "YACgEUgmFiM,0",
+          "textTransform": "uppercase",
+          "fontKerning": "",
+          "originalLeading": 930,
+          "fillId": "",
+          "canvaStyle": "title"
+        }
+      },
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 0,
+        "top": 0,
+        "width": 757,
+        "height": 33,
+        "angle": 0,
+        "text": "Crée pour",
+        "fontFamily": "Vollkorn",
+        "fontSize": 28,
+        "fontWeight": 400,
+        "fontStyle": "normal",
+        "fill": "#222222",
+        "textAlign": "left",
+        "charSpacing": 40,
+        "lineHeight": 1.16,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "pretitle-a",
+          "fontRef": "YAFdJli9wSA,0",
+          "textTransform": "uppercase",
+          "fontKerning": "",
+          "originalLeading": 0,
+          "fillId": "",
+          "canvaStyle": "pretitle"
+        }
+      },
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 316,
+        "top": 0,
+        "width": 757,
+        "height": 72,
+        "angle": 0,
+        "text": "Directeur exécutif, Construction Polaris\nParis Vème",
+        "fontFamily": "Glass Antiqua",
+        "fontSize": 28,
+        "fontWeight": 400,
+        "fontStyle": "normal",
+        "fill": "#222222",
+        "textAlign": "left",
+        "charSpacing": 50,
+        "lineHeight": 1.16,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "subtitle-a",
+          "fontRef": "YACgEUgmFiM,0",
+          "textTransform": "",
+          "fontKerning": "",
+          "originalLeading": 0,
+          "fillId": "",
+          "canvaStyle": "subtitle"
+        }
+      }
+    ],
+    "background": "",
+    "_presetMeta": {
+      "source": "canva",
+      "templateId": "LBkTC4Kw20VDPrjF",
+      "schema": "web-2",
+      "canvasSize": {
+        "width": 758,
+        "height": 389
+      },
+      "fonts": [
+        {
+          "id": "YACgEUgmFiM",
+          "name": "Glass Antiqua",
+          "variants": [
+            {
+              "style": "REGULAR",
+              "weight": 400
+            }
+          ]
+        },
+        {
+          "id": "YAFdJli9wSA",
+          "name": "Vollkorn",
+          "variants": [
+            {
+              "style": "REGULAR",
+              "weight": 400
+            },
+            {
+              "style": "ITALICS",
+              "weight": 400
+            },
+            {
+              "style": "BOLD_ITALICS",
+              "weight": 700
+            },
+            {
+              "style": "BOLD",
+              "weight": 700
+            },
+            {
+              "style": "SEMI_BOLD_ITALICS",
+              "weight": 500
+            },
+            {
+              "style": "SEMI_BOLD",
+              "weight": 600
+            },
+            {
+              "style": "HEAVY_ITALICS",
+              "weight": 900
+            },
+            {
+              "style": "HEAVY",
+              "weight": 900
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "version": "5.3.0",
+    "objects": [
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 0,
+        "top": 0,
+        "width": 757,
+        "height": 405,
+        "angle": 0,
+        "text": "Fraîches,\nDouces &\nDélicieuses",
+        "fontFamily": "PT Sans",
+        "fontSize": 128,
+        "fontWeight": 700,
+        "fontStyle": "normal",
+        "fill": "#222222",
+        "textAlign": "left",
+        "charSpacing": 20,
+        "lineHeight": 0.99,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "title-a",
+          "fontRef": "YACgEYbsV-E,0",
+          "textTransform": "",
+          "fontKerning": "",
+          "originalLeading": 990,
+          "fillId": "",
+          "canvaStyle": "title"
+        }
+      },
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 427,
+        "top": 0,
+        "width": 757,
+        "height": 28,
+        "angle": 0,
+        "text": "Brasserie antonin",
+        "fontFamily": "PT Sans",
+        "fontSize": 24,
+        "fontWeight": 700,
+        "fontStyle": "normal",
+        "fill": "#222222",
+        "textAlign": "left",
+        "charSpacing": 210,
+        "lineHeight": 1.16,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "pretitle-a",
+          "fontRef": "YACgEYbsV-E,0",
+          "textTransform": "uppercase",
+          "fontKerning": "",
+          "originalLeading": 0,
+          "fillId": "",
+          "canvaStyle": "pretitle"
+        }
+      }
+    ],
+    "background": "",
+    "_presetMeta": {
+      "source": "canva",
+      "templateId": "LBH1qPYwxlXTnx0S",
+      "schema": "web-2",
+      "canvasSize": {
+        "width": 757,
+        "height": 455
+      },
+      "fonts": [
+        {
+          "id": "YACgEYbsV-E",
+          "name": "PT Sans",
+          "variants": [
+            {
+              "style": "BOLD",
+              "weight": 700
+            },
+            {
+              "style": "ITALICS",
+              "weight": 400
+            },
+            {
+              "style": "REGULAR",
+              "weight": 400
+            },
+            {
+              "style": "BOLD_ITALICS",
+              "weight": 700
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "version": "5.3.0",
+    "objects": [
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 0,
+        "top": 30,
+        "width": 195,
+        "height": 83,
+        "angle": 0,
+        "text": "SUPER",
+        "fontFamily": "Modak",
+        "fontSize": 225.274,
+        "fontWeight": 400,
+        "fontStyle": "normal",
+        "fill": "#ffa5f0",
+        "textAlign": "center",
+        "charSpacing": 0,
+        "lineHeight": 0.91,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "pretitle",
+          "fontRef": "YALBs_cEz8M,0",
+          "textTransform": "uppercase",
+          "fontKerning": "normal",
+          "originalLeading": 910,
+          "fillId": "",
+          "canvaStyle": ""
+        }
+      },
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 43,
+        "top": 0,
+        "width": 252,
+        "height": 91,
+        "angle": 0,
+        "text": "kawaii",
+        "fontFamily": "Kawaii RT Shine",
+        "fontSize": 227.12,
+        "fontWeight": 400,
+        "fontStyle": "normal",
+        "fill": "#ffffff",
+        "textAlign": "center",
+        "charSpacing": 0,
+        "lineHeight": 0.91,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "title",
+          "fontRef": "YADZ-aroAZ0,0",
+          "textTransform": "uppercase",
+          "fontKerning": "normal",
+          "originalLeading": 910,
+          "fillId": "",
+          "canvaStyle": ""
+        }
+      }
+    ],
+    "background": "",
+    "_presetMeta": {
+      "source": "canva",
+      "templateId": "LBWpT4vzHlt1wFCh",
+      "schema": "web-2",
+      "canvasSize": {
+        "width": 922,
+        "height": 489
+      },
+      "fonts": [
+        {
+          "id": "YALBs_cEz8M",
+          "name": "Modak",
+          "variants": [
+            {
+              "style": "REGULAR",
+              "weight": 400
+            }
+          ]
+        },
+        {
+          "id": "YADZ-aroAZ0",
+          "name": "Kawaii RT Shine",
+          "variants": [
+            {
+              "style": "REGULAR",
+              "weight": 400
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "version": "5.3.0",
+    "objects": [
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 0,
+        "top": 18,
+        "width": 758,
+        "height": 220,
+        "angle": 0,
+        "text": "La créativité",
+        "fontFamily": "Lora",
+        "fontSize": 96,
+        "fontWeight": 400,
+        "fontStyle": "italic",
+        "fill": "#222222",
+        "textAlign": "center",
+        "charSpacing": 50,
+        "lineHeight": 1.1,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "pretitle-a",
+          "fontRef": "YACgEXvxf8Q,0",
+          "textTransform": "uppercase",
+          "fontKerning": "",
+          "originalLeading": 1100,
+          "fillId": "",
+          "canvaStyle": ""
+        }
+      },
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 329,
+        "top": 0,
+        "width": 758,
+        "height": 89,
+        "angle": 0,
+        "text": "qui s'amuse",
+        "fontFamily": "Glacial Indifference",
+        "fontSize": 74.66666666666667,
+        "fontWeight": 400,
+        "fontStyle": "normal",
+        "fill": "#222222",
+        "textAlign": "center",
+        "charSpacing": 130,
+        "lineHeight": 1.18,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "title-a",
+          "fontRef": "YACgETiWKS8,0",
+          "textTransform": "uppercase",
+          "fontKerning": "",
+          "originalLeading": 1180,
+          "fillId": "",
+          "canvaStyle": ""
+        }
+      },
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 220,
+        "top": 18,
+        "width": 758,
+        "height": 90,
+        "angle": 0,
+        "text": "C'est l'intelligence",
+        "fontFamily": "Lora",
+        "fontSize": 74.66666666666667,
+        "fontWeight": 400,
+        "fontStyle": "italic",
+        "fill": "#222222",
+        "textAlign": "center",
+        "charSpacing": 40,
+        "lineHeight": 1.16,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "subtitle-a",
+          "fontRef": "YACgEXvxf8Q,0",
+          "textTransform": "",
+          "fontKerning": "",
+          "originalLeading": 0,
+          "fillId": "",
+          "canvaStyle": ""
+        }
+      }
+    ],
+    "background": "",
+    "_presetMeta": {
+      "source": "canva",
+      "templateId": "LB0Q3Sz5tqMWVhfj",
+      "schema": "web-2",
+      "canvasSize": {
+        "width": 776,
+        "height": 418
+      },
+      "fonts": [
+        {
+          "id": "YACgEXvxf8Q",
+          "name": "Lora",
+          "variants": [
+            {
+              "style": "ITALICS",
+              "weight": 400
+            },
+            {
+              "style": "BOLD",
+              "weight": 700
+            },
+            {
+              "style": "REGULAR",
+              "weight": 400
+            },
+            {
+              "style": "BOLD_ITALICS",
+              "weight": 700
+            }
+          ]
+        },
+        {
+          "id": "YACgETiWKS8",
+          "name": "Glacial Indifference",
+          "variants": [
+            {
+              "style": "REGULAR",
+              "weight": 400
+            },
+            {
+              "style": "ITALICS",
+              "weight": 400
+            },
+            {
+              "style": "BOLD",
+              "weight": 700
+            },
+            {
+              "style": "BOLD_ITALICS",
+              "weight": 700
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "version": "5.3.0",
+    "objects": [
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 0,
+        "top": 4,
+        "width": 772,
+        "height": 89,
+        "angle": 0,
+        "text": "Article",
+        "fontFamily": "Racing Sans One",
+        "fontSize": 74.66666666666667,
+        "fontWeight": 400,
+        "fontStyle": "normal",
+        "fill": "#222222",
+        "textAlign": "left",
+        "charSpacing": -10,
+        "lineHeight": 0.9,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "title-a",
+          "fontRef": "YACgEbcqMPM,0",
+          "textTransform": "uppercase",
+          "fontKerning": "",
+          "originalLeading": 900,
+          "fillId": "",
+          "canvaStyle": "title"
+        }
+      },
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 97,
+        "top": 0,
+        "width": 371,
+        "height": 126,
+        "angle": 0,
+        "text": "Oreiller en ouate\nOreiller en coton\nOreiller en plume",
+        "fontFamily": "Arimo",
+        "fontSize": 32,
+        "fontWeight": 700,
+        "fontStyle": "italic",
+        "fill": "#222222",
+        "textAlign": "left",
+        "charSpacing": 140,
+        "lineHeight": 1.16,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "subtitle-a",
+          "fontRef": "YACgEZ1cb1Q,0",
+          "textTransform": "",
+          "fontKerning": "",
+          "originalLeading": 0,
+          "fillId": "",
+          "canvaStyle": "subtitle"
+        }
+      },
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 0,
+        "top": 520,
+        "width": 166,
+        "height": 89,
+        "angle": 0,
+        "text": "Prix",
+        "fontFamily": "Racing Sans One",
+        "fontSize": 74.66666666666667,
+        "fontWeight": 400,
+        "fontStyle": "normal",
+        "fill": "#222222",
+        "textAlign": "end",
+        "charSpacing": -10,
+        "lineHeight": 0.9,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "title-a",
+          "fontRef": "YACgEbcqMPM,0",
+          "textTransform": "uppercase",
+          "fontKerning": "",
+          "originalLeading": 900,
+          "fillId": "",
+          "canvaStyle": "title"
+        }
+      },
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 97,
+        "top": 520,
+        "width": 255,
+        "height": 126,
+        "angle": 0,
+        "text": "60€\n65€\n70€",
+        "fontFamily": "Arimo",
+        "fontSize": 32,
+        "fontWeight": 700,
+        "fontStyle": "italic",
+        "fill": "#222222",
+        "textAlign": "left",
+        "charSpacing": 140,
+        "lineHeight": 1.16,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "subtitle-a",
+          "fontRef": "YACgEZ1cb1Q,0",
+          "textTransform": "",
+          "fontKerning": "",
+          "originalLeading": 0,
+          "fillId": "",
+          "canvaStyle": "subtitle"
+        }
+      }
+    ],
+    "background": "",
+    "_presetMeta": {
+      "source": "canva",
+      "templateId": "LB8RlHCgT56Y5WJX",
+      "schema": "web-2",
+      "canvasSize": {
+        "width": 775,
+        "height": 222
+      },
+      "fonts": [
+        {
+          "id": "YACgEbcqMPM",
+          "name": "Racing Sans One",
+          "variants": [
+            {
+              "style": "REGULAR",
+              "weight": 400
+            }
+          ]
+        },
+        {
+          "id": "YACgEZ1cb1Q",
+          "name": "Arimo",
+          "variants": [
+            {
+              "style": "BOLD_ITALICS",
+              "weight": 700
+            },
+            {
+              "style": "ITALICS",
+              "weight": 400
+            },
+            {
+              "style": "REGULAR",
+              "weight": 400
+            },
+            {
+              "style": "BOLD",
+              "weight": 700
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "version": "5.3.0",
+    "objects": [
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 0,
+        "top": 0,
+        "width": 752,
+        "height": 285,
+        "angle": 0,
+        "text": "shine",
+        "fontFamily": "Colo Pro",
+        "fontSize": 238.198,
+        "fontWeight": 400,
+        "fontStyle": "normal",
+        "fill": "#ffc001",
+        "textAlign": "center",
+        "charSpacing": 0,
+        "lineHeight": 1.16,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "title",
+          "fontRef": "YAD0tebqvkc,0",
+          "textTransform": "uppercase",
+          "fontKerning": "normal",
+          "originalLeading": 0,
+          "fillId": "",
+          "canvaStyle": ""
+        }
+      },
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 208,
+        "top": 0,
+        "width": 752,
+        "height": 286,
+        "angle": 0,
+        "text": "shine",
+        "fontFamily": "Colo Pro",
+        "fontSize": 160,
+        "fontWeight": 400,
+        "fontStyle": "normal",
+        "fill": "#ffc001",
+        "textAlign": "center",
+        "charSpacing": 0,
+        "lineHeight": 1.16,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "title",
+          "fontRef": "YAD0tebqvkc,0",
+          "textTransform": "uppercase",
+          "fontKerning": "normal",
+          "originalLeading": 0,
+          "fillId": "",
+          "canvaStyle": ""
+        }
+      },
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 417,
+        "top": 0,
+        "width": 752,
+        "height": 286,
+        "angle": 0,
+        "text": "shine",
+        "fontFamily": "Colo Pro",
+        "fontSize": 160,
+        "fontWeight": 400,
+        "fontStyle": "normal",
+        "fill": "#ffc001",
+        "textAlign": "center",
+        "charSpacing": 0,
+        "lineHeight": 1.16,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "subtitle",
+          "fontRef": "YAD0tebqvkc,0",
+          "textTransform": "uppercase",
+          "fontKerning": "normal",
+          "originalLeading": 0,
+          "fillId": "",
+          "canvaStyle": ""
+        }
+      }
+    ],
+    "background": "",
+    "_presetMeta": {
+      "source": "canva",
+      "templateId": "LBJGQylRGy90fTW9",
+      "schema": "web-2",
+      "canvasSize": {
+        "width": 752,
+        "height": 703
+      },
+      "fonts": [
+        {
+          "id": "YAD0tebqvkc",
+          "name": "Colo Pro",
+          "variants": [
+            {
+              "style": "REGULAR",
+              "weight": 400
+            },
+            {
+              "style": "BOLD",
+              "weight": 400
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "version": "5.3.0",
+    "objects": [
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 0,
+        "top": 0,
+        "width": 1039,
+        "height": 336,
+        "angle": 0,
+        "text": "L’Oasis",
+        "fontFamily": "Perandory",
+        "fontSize": 232.926,
+        "fontWeight": 400,
+        "fontStyle": "normal",
+        "fill": "#00c4cc",
+        "textAlign": "center",
+        "charSpacing": 0,
+        "lineHeight": 0.73,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "title",
+          "fontRef": "YAFJstPFAd8,0",
+          "textTransform": "uppercase",
+          "fontKerning": "normal",
+          "originalLeading": 730,
+          "fillId": "none",
+          "canvaStyle": ""
+        }
+      },
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 211,
+        "top": 36,
+        "width": 968,
+        "height": 183,
+        "angle": 0,
+        "text": "du Futur",
+        "fontFamily": "Barlow Condensed",
+        "fontSize": 126.667,
+        "fontWeight": 400,
+        "fontStyle": "normal",
+        "fill": "#000000",
+        "textAlign": "center",
+        "charSpacing": 0,
+        "lineHeight": 0.75,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "subtitle",
+          "fontRef": "YAFdJljEuFc,0",
+          "textTransform": "uppercase",
+          "fontKerning": "normal",
+          "originalLeading": 750,
+          "fillId": "none",
+          "canvaStyle": ""
+        }
+      }
+    ],
+    "background": "",
+    "_presetMeta": {
+      "source": "canva",
+      "templateId": "LBWt0fFcCzhDYXBB",
+      "schema": "web-2",
+      "canvasSize": {
+        "width": 1141,
+        "height": 432
+      },
+      "fonts": [
+        {
+          "id": "YAFJstPFAd8",
+          "name": "Perandory",
+          "variants": [
+            {
+              "style": "REGULAR",
+              "weight": 400
+            }
+          ]
+        },
+        {
+          "id": "YAFdJljEuFc",
+          "name": "Barlow Condensed",
+          "variants": [
+            {
+              "style": "REGULAR",
+              "weight": 400
+            },
+            {
+              "style": "ITALICS",
+              "weight": 400
+            },
+            {
+              "style": "BOLD_ITALICS",
+              "weight": 700
+            },
+            {
+              "style": "BOLD",
+              "weight": 700
+            },
+            {
+              "style": "SEMI_BOLD",
+              "weight": 600
+            },
+            {
+              "style": "SEMI_BOLD_ITALICS",
+              "weight": 600
+            },
+            {
+              "style": "HEAVY_ITALICS",
+              "weight": 900
+            },
+            {
+              "style": "HEAVY",
+              "weight": 900
+            },
+            {
+              "style": "THIN",
+              "weight": 250
+            },
+            {
+              "style": "THIN_ITALICS",
+              "weight": 250
+            },
+            {
+              "style": "MEDIUM_ITALICS",
+              "weight": 500
+            },
+            {
+              "style": "MEDIUM",
+              "weight": 500
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "version": "5.3.0",
+    "objects": [
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 23,
+        "top": 0,
+        "width": 425,
+        "height": 101,
+        "angle": 0,
+        "text": "best",
+        "fontFamily": "Shrikhand",
+        "fontSize": 84.5576,
+        "fontWeight": 400,
+        "fontStyle": "normal",
+        "fill": "#ffeedc",
+        "textAlign": "center",
+        "charSpacing": 0,
+        "lineHeight": 0.97,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "title",
+          "fontRef": "YACkoEA0Kc0,0",
+          "textTransform": "none",
+          "fontKerning": "normal",
+          "originalLeading": 970,
+          "fillId": "",
+          "canvaStyle": ""
+        }
+      },
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 0,
+        "top": 0,
+        "width": 433,
+        "height": 28,
+        "angle": 0,
+        "text": "you are the",
+        "fontFamily": "Neue Einstellung",
+        "fontSize": 91.061,
+        "fontWeight": 400,
+        "fontStyle": "normal",
+        "fill": "#1c794c",
+        "textAlign": "center",
+        "charSpacing": 0,
+        "lineHeight": 1.1,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "pretitle",
+          "fontRef": "YAFdJl36Ts4,0",
+          "textTransform": "uppercase",
+          "fontKerning": "normal",
+          "originalLeading": 1100,
+          "fillId": "",
+          "canvaStyle": ""
+        }
+      }
+    ],
+    "background": "",
+    "_presetMeta": {
+      "source": "canva",
+      "templateId": "LBYFTvc2LMLGWHNN",
+      "schema": "web-2",
+      "canvasSize": {
+        "width": 1679,
+        "height": 481
+      },
+      "fonts": [
+        {
+          "id": "YACkoEA0Kc0",
+          "name": "Shrikhand",
+          "variants": [
+            {
+              "style": "REGULAR",
+              "weight": 400
+            }
+          ]
+        },
+        {
+          "id": "YAFdJl36Ts4",
+          "name": "Neue Einstellung",
+          "variants": [
+            {
+              "style": "REGULAR",
+              "weight": 400
+            },
+            {
+              "style": "MEDIUM",
+              "weight": 500
+            },
+            {
+              "style": "BOLD",
+              "weight": 700
+            },
+            {
+              "style": "HEAVY",
+              "weight": 900
+            },
+            {
+              "style": "THIN",
+              "weight": 100
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "version": "5.3.0",
+    "objects": [
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 0,
+        "top": 0,
+        "width": 934,
+        "height": 240,
+        "angle": 0,
+        "text": "PIXEL",
+        "fontFamily": "SCR-N Seven",
+        "fontSize": 200,
+        "fontWeight": 400,
+        "fontStyle": "normal",
+        "fill": "#c67de0",
+        "textAlign": "center",
+        "charSpacing": 70,
+        "lineHeight": 0.92,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "title",
+          "fontRef": "YAFcf7RT1ow,0",
+          "textTransform": "uppercase",
+          "fontKerning": "normal",
+          "originalLeading": 920,
+          "fillId": "",
+          "canvaStyle": ""
+        }
+      },
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 189,
+        "top": 0,
+        "width": 934,
+        "height": 240,
+        "angle": 0,
+        "text": "DREAMS",
+        "fontFamily": "SCR-N Seven",
+        "fontSize": 200,
+        "fontWeight": 400,
+        "fontStyle": "normal",
+        "fill": "#7edaf2",
+        "textAlign": "center",
+        "charSpacing": 0,
+        "lineHeight": 0.92,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "title",
+          "fontRef": "YAFcf7RT1ow,0",
+          "textTransform": "uppercase",
+          "fontKerning": "normal",
+          "originalLeading": 920,
+          "fillId": "",
+          "canvaStyle": ""
+        }
+      }
+    ],
+    "background": "",
+    "_presetMeta": {
+      "source": "canva",
+      "templateId": "LBMgH7jBW29fGk4K",
+      "schema": "web-2",
+      "canvasSize": {
+        "width": 934,
+        "height": 429
+      },
+      "fonts": [
+        {
+          "id": "YAFcf7RT1ow",
+          "name": "SCR-N Seven",
+          "variants": [
+            {
+              "style": "BOLD",
+              "weight": 400
+            },
+            {
+              "style": "REGULAR",
+              "weight": 400
+            },
+            {
+              "style": "ULTRA_BOLD",
+              "weight": 400
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "version": "5.3.0",
+    "objects": [
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 0,
+        "top": 0,
+        "width": 867,
+        "height": 146,
+        "angle": 0,
+        "text": "Subscribe",
+        "fontFamily": "Helvetica Now Display",
+        "fontSize": 121.852,
+        "fontWeight": 900,
+        "fontStyle": "italic",
+        "fill": "#e0feca",
+        "textAlign": "center",
+        "charSpacing": 0,
+        "lineHeight": 0.85,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "pretitle",
+          "fontRef": "YAFcfyB4XC8,0",
+          "textTransform": "none",
+          "fontKerning": "normal",
+          "originalLeading": 850,
+          "fillId": "",
+          "canvaStyle": "body"
+        }
+      },
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 214,
+        "top": 0,
+        "width": 867,
+        "height": 148,
+        "angle": 0,
+        "text": "Subscribe",
+        "fontFamily": "Helvetica Now Display",
+        "fontSize": 123.181,
+        "fontWeight": 900,
+        "fontStyle": "italic",
+        "fill": "#000000",
+        "textAlign": "center",
+        "charSpacing": 0,
+        "lineHeight": 0.85,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "title",
+          "fontRef": "YAFcfyB4XC8,0",
+          "textTransform": "none",
+          "fontKerning": "normal",
+          "originalLeading": 850,
+          "fillId": "",
+          "canvaStyle": "body"
+        }
+      },
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 432,
+        "top": 0,
+        "width": 867,
+        "height": 148,
+        "angle": 0,
+        "text": "Subscribe",
+        "fontFamily": "Helvetica Now Display",
+        "fontSize": 123.181,
+        "fontWeight": 900,
+        "fontStyle": "italic",
+        "fill": "#000000",
+        "textAlign": "center",
+        "charSpacing": 0,
+        "lineHeight": 0.85,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "heading",
+          "fontRef": "YAFcfyB4XC8,0",
+          "textTransform": "none",
+          "fontKerning": "normal",
+          "originalLeading": 850,
+          "fillId": "",
+          "canvaStyle": "body"
+        }
+      }
+    ],
+    "background": "",
+    "_presetMeta": {
+      "source": "canva",
+      "templateId": "LBKTrGXTqH2pwFJJ",
+      "schema": "web-2",
+      "canvasSize": {
+        "width": 864,
+        "height": 577
+      },
+      "fonts": [
+        {
+          "id": "YAFcfyB4XC8",
+          "name": "Helvetica Now Display",
+          "variants": [
+            {
+              "style": "HEAVY_ITALICS",
+              "weight": 900
+            },
+            {
+              "style": "LIGHT_ITALICS",
+              "weight": 325
+            },
+            {
+              "style": "LIGHT",
+              "weight": 325
+            },
+            {
+              "style": "BOLD",
+              "weight": 700
+            },
+            {
+              "style": "HEAVY",
+              "weight": 900
+            },
+            {
+              "style": "BOLD_ITALICS",
+              "weight": 700
+            },
+            {
+              "style": "REGULAR",
+              "weight": 400
+            },
+            {
+              "style": "ITALICS",
+              "weight": 400
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "version": "5.3.0",
+    "objects": [
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 0,
+        "top": 0,
+        "width": 445,
+        "height": 132,
+        "angle": 0,
+        "text": "Art or",
+        "fontFamily": "Sloop Script Pro",
+        "fontSize": 132.327,
+        "fontWeight": 400,
+        "fontStyle": "normal",
+        "fill": "#ffffff",
+        "textAlign": "center",
+        "charSpacing": 0,
+        "lineHeight": 0.66,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "title",
+          "fontRef": "YAEz2L9phwY,0",
+          "textTransform": "",
+          "fontKerning": "",
+          "originalLeading": 660,
+          "fillId": "",
+          "canvaStyle": ""
+        }
+      },
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 88,
+        "top": 0,
+        "width": 499,
+        "height": 103,
+        "angle": 0,
+        "text": "not",
+        "fontFamily": "Migra",
+        "fontSize": 103.343,
+        "fontWeight": 800,
+        "fontStyle": "italic",
+        "fill": "#ffffff",
+        "textAlign": "center",
+        "charSpacing": 0,
+        "lineHeight": 0.85,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "subtitle",
+          "fontRef": "YAFdJh4apno,0",
+          "textTransform": "uppercase",
+          "fontKerning": "",
+          "originalLeading": 850,
+          "fillId": "",
+          "canvaStyle": ""
+        }
+      }
+    ],
+    "background": "",
+    "_presetMeta": {
+      "source": "canva",
+      "templateId": "LBlR9MFZbmvS7P2W",
+      "schema": "web-2",
+      "canvasSize": {
+        "width": 1766,
+        "height": 675
+      },
+      "fonts": [
+        {
+          "id": "YAEz2L9phwY",
+          "name": "Sloop Script Pro",
+          "variants": [
+            {
+              "style": "REGULAR",
+              "weight": 400
+            }
+          ]
+        },
+        {
+          "id": "YAFdJh4apno",
+          "name": "Migra",
+          "variants": [
+            {
+              "style": "ULTRA_BOLD_ITALICS",
+              "weight": 800
+            },
+            {
+              "style": "ULTRA_BOLD",
+              "weight": 800
+            },
+            {
+              "style": "EXTRA_LIGHT_ITALICS",
+              "weight": 200
+            },
+            {
+              "style": "EXTRA_LIGHT",
+              "weight": 200
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "version": "5.3.0",
+    "objects": [
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 0,
+        "top": 0,
+        "width": 864,
+        "height": 352,
+        "angle": 0,
+        "text": "New Product Alert!",
+        "fontFamily": "Placard Next",
+        "fontSize": 160,
+        "fontWeight": 200,
+        "fontStyle": "normal",
+        "fill": "#832eff",
+        "textAlign": "center",
+        "charSpacing": 0,
+        "lineHeight": 1,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "title",
+          "fontRef": "YAFcf5xclp4,0",
+          "textTransform": "",
+          "fontKerning": "",
+          "originalLeading": 1000,
+          "fillId": "",
+          "canvaStyle": ""
+        }
+      },
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 364,
+        "top": 0,
+        "width": 864,
+        "height": 63,
+        "angle": 0,
+        "text": "Speedy Pocket Wi-Fi",
+        "fontFamily": "Placard Next Wide",
+        "fontSize": 53.3332,
+        "fontWeight": 700,
+        "fontStyle": "normal",
+        "fill": "#ffffff",
+        "textAlign": "center",
+        "charSpacing": 0,
+        "lineHeight": 1.16,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "subtitle",
+          "fontRef": "YAFcfwTVqhE,0",
+          "textTransform": "uppercase",
+          "fontKerning": "",
+          "originalLeading": 0,
+          "fillId": "",
+          "canvaStyle": ""
+        }
+      },
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 467,
+        "top": 0,
+        "width": 864,
+        "height": 63,
+        "angle": 0,
+        "text": "Get yours now!",
+        "fontFamily": "Placard Next Wide",
+        "fontSize": 53.3332,
+        "fontWeight": 700,
+        "fontStyle": "normal",
+        "fill": "#ffffff",
+        "textAlign": "center",
+        "charSpacing": 0,
+        "lineHeight": 1.16,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "paragraph",
+          "fontRef": "YAFcfwTVqhE,0",
+          "textTransform": "",
+          "fontKerning": "",
+          "originalLeading": 0,
+          "fillId": "",
+          "canvaStyle": ""
+        }
+      }
+    ],
+    "background": "",
+    "_presetMeta": {
+      "source": "canva",
+      "templateId": "LBZpXHPLpbv6kwrj",
+      "schema": "web-2",
+      "canvasSize": {
+        "width": 864,
+        "height": 530
+      },
+      "fonts": [
+        {
+          "id": "YAFcf5xclp4",
+          "name": "Placard Next",
+          "variants": [
+            {
+              "style": "EXTRA_LIGHT",
+              "weight": 200
+            },
+            {
+              "style": "BOLD",
+              "weight": 700
+            },
+            {
+              "style": "REGULAR",
+              "weight": 400
+            },
+            {
+              "style": "LIGHT",
+              "weight": 300
+            }
+          ]
+        },
+        {
+          "id": "YAFcfwTVqhE",
+          "name": "Placard Next Wide",
+          "variants": [
+            {
+              "style": "BOLD",
+              "weight": 700
+            },
+            {
+              "style": "LIGHT",
+              "weight": 300
+            },
+            {
+              "style": "EXTRA_LIGHT",
+              "weight": 200
+            },
+            {
+              "style": "REGULAR",
+              "weight": 400
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "version": "5.3.0",
+    "objects": [
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 0,
+        "top": 0,
+        "width": 332,
+        "height": 167,
+        "angle": 0,
+        "text": "s",
+        "fontFamily": "Rosella Flourish",
+        "fontSize": 665.904,
+        "fontWeight": 400,
+        "fontStyle": "normal",
+        "fill": "#597cff",
+        "textAlign": "center",
+        "charSpacing": 0,
+        "lineHeight": 0.85,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "title",
+          "fontRef": "YAFcf2p5k9k,0",
+          "textTransform": "",
+          "fontKerning": "normal",
+          "originalLeading": 850,
+          "fillId": "",
+          "canvaStyle": ""
+        }
+      },
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 158,
+        "top": 0,
+        "width": 332,
+        "height": 45,
+        "angle": 0,
+        "text": "surname",
+        "fontFamily": "Monterchi Serif",
+        "fontSize": 179.195,
+        "fontWeight": 400,
+        "fontStyle": "normal",
+        "fill": "#ababab",
+        "textAlign": "center",
+        "charSpacing": 0,
+        "lineHeight": 1.06,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "subtitle",
+          "fontRef": "YAEp6Z28lQs,0",
+          "textTransform": "",
+          "fontKerning": "normal",
+          "originalLeading": 1060,
+          "fillId": "",
+          "canvaStyle": ""
+        }
+      }
+    ],
+    "background": "",
+    "_presetMeta": {
+      "source": "canva",
+      "templateId": "LBLxGgCVglKsCPMy",
+      "schema": "web-2",
+      "canvasSize": {
+        "width": 1585,
+        "height": 969
+      },
+      "fonts": [
+        {
+          "id": "YAFcf2p5k9k",
+          "name": "Rosella Flourish",
+          "variants": [
+            {
+              "style": "REGULAR",
+              "weight": 400
+            }
+          ]
+        },
+        {
+          "id": "YAEp6Z28lQs",
+          "name": "Monterchi Serif",
+          "variants": [
+            {
+              "style": "REGULAR",
+              "weight": 400
+            },
+            {
+              "style": "ITALICS",
+              "weight": 400
+            },
+            {
+              "style": "BOLD_ITALICS",
+              "weight": 700
+            },
+            {
+              "style": "BOLD",
+              "weight": 700
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "version": "5.3.0",
+    "objects": [
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 0,
+        "top": 0,
+        "width": 345,
+        "height": 29,
+        "angle": 0,
+        "text": "Business",
+        "fontFamily": "Coco Gothic",
+        "fontSize": 89.3783,
+        "fontWeight": 400,
+        "fontStyle": "italic",
+        "fill": "#000000",
+        "textAlign": "center",
+        "charSpacing": 186,
+        "lineHeight": 1.1,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "pretitle",
+          "fontRef": "YAFdJqkJIt4,0",
+          "textTransform": "uppercase",
+          "fontKerning": "",
+          "originalLeading": 1100,
+          "fillId": "",
+          "canvaStyle": ""
+        }
+      },
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 27,
+        "top": 0,
+        "width": 345,
+        "height": 60,
+        "angle": 0,
+        "text": "JOURNAL",
+        "fontFamily": "ITC New Baskerville",
+        "fontSize": 187.39,
+        "fontWeight": 400,
+        "fontStyle": "italic",
+        "fill": "#000000",
+        "textAlign": "center",
+        "charSpacing": 0,
+        "lineHeight": 0.9,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "title",
+          "fontRef": "YAFcf6iNb84,0",
+          "textTransform": "uppercase",
+          "fontKerning": "",
+          "originalLeading": 900,
+          "fillId": "",
+          "canvaStyle": ""
+        }
+      }
+    ],
+    "background": "",
+    "_presetMeta": {
+      "source": "canva",
+      "templateId": "LBMx8xKrSdCYw66K",
+      "schema": "web-2",
+      "canvasSize": {
+        "width": 1288,
+        "height": 325
+      },
+      "fonts": [
+        {
+          "id": "YAFdJqkJIt4",
+          "name": "Coco Gothic",
+          "variants": [
+            {
+              "style": "ITALICS",
+              "weight": 400
+            },
+            {
+              "style": "REGULAR",
+              "weight": 400
+            },
+            {
+              "style": "BOLD_ITALICS",
+              "weight": 700
+            },
+            {
+              "style": "BOLD",
+              "weight": 700
+            },
+            {
+              "style": "HEAVY_ITALICS",
+              "weight": 950
+            },
+            {
+              "style": "HEAVY",
+              "weight": 950
+            },
+            {
+              "style": "EXTRA_LIGHT",
+              "weight": 100
+            },
+            {
+              "style": "EXTRA_LIGHT_ITALICS",
+              "weight": 100
+            }
+          ]
+        },
+        {
+          "id": "YAFcf6iNb84",
+          "name": "ITC New Baskerville",
+          "variants": [
+            {
+              "style": "ITALICS",
+              "weight": 400
+            },
+            {
+              "style": "BOLD",
+              "weight": 700
+            },
+            {
+              "style": "SEMI_BOLD_ITALICS",
+              "weight": 600
+            },
+            {
+              "style": "SEMI_BOLD",
+              "weight": 600
+            },
+            {
+              "style": "REGULAR",
+              "weight": 400
+            },
+            {
+              "style": "BOLD_ITALICS",
+              "weight": 700
+            },
+            {
+              "style": "HEAVY",
+              "weight": 900
+            },
+            {
+              "style": "HEAVY_ITALICS",
+              "weight": 900
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "version": "5.3.0",
+    "objects": [
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 0,
+        "top": 139,
+        "width": 692,
+        "height": 114,
+        "angle": 0,
+        "text": "Lille en",
+        "fontFamily": "TT Squares",
+        "fontSize": 172.132,
+        "fontWeight": 700,
+        "fontStyle": "normal",
+        "fill": "#c3cb69",
+        "textAlign": "center",
+        "charSpacing": 0,
+        "lineHeight": 0.8,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "pretitle",
+          "fontRef": "YAEnXdv0JYA,0",
+          "textTransform": "",
+          "fontKerning": "normal",
+          "originalLeading": 800,
+          "fillId": "none",
+          "canvaStyle": ""
+        }
+      },
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 94,
+        "top": 0,
+        "width": 969,
+        "height": 176,
+        "angle": 0,
+        "text": "Lumière",
+        "fontFamily": "Lucidity Psych",
+        "fontSize": 146.657,
+        "fontWeight": 400,
+        "fontStyle": "normal",
+        "fill": "#ff7828",
+        "textAlign": "center",
+        "charSpacing": 76,
+        "lineHeight": 1.03,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "title",
+          "fontRef": "YAEbv6fUJX8,0",
+          "textTransform": "uppercase",
+          "fontKerning": "normal",
+          "originalLeading": 1030,
+          "fillId": "none",
+          "canvaStyle": ""
+        }
+      }
+    ],
+    "background": "",
+    "_presetMeta": {
+      "source": "canva",
+      "templateId": "LBtCp8tJdzXGkKk1",
+      "schema": "web-2",
+      "canvasSize": {
+        "width": 1746,
+        "height": 485
+      },
+      "fonts": [
+        {
+          "id": "YAEnXdv0JYA",
+          "name": "TT Squares",
+          "variants": [
+            {
+              "style": "BOLD",
+              "weight": 700
+            },
+            {
+              "style": "REGULAR",
+              "weight": 400
+            },
+            {
+              "style": "BOLD_ITALICS",
+              "weight": 700
+            },
+            {
+              "style": "ITALICS",
+              "weight": 400
+            }
+          ]
+        },
+        {
+          "id": "YAEbv6fUJX8",
+          "name": "Lucidity Psych",
+          "variants": [
+            {
+              "style": "REGULAR",
+              "weight": 400
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "version": "5.3.0",
+    "objects": [
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 0,
+        "top": 0,
+        "width": 757,
+        "height": 38,
+        "angle": 0,
+        "text": "C'est bientôt",
+        "fontFamily": "Quicksand",
+        "fontSize": 32,
+        "fontWeight": 700,
+        "fontStyle": "normal",
+        "fill": "#222222",
+        "textAlign": "center",
+        "charSpacing": 30,
+        "lineHeight": 1.16,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "pretitle-a",
+          "fontRef": "YAFdJpYtCxE,1",
+          "textTransform": "uppercase",
+          "fontKerning": "",
+          "originalLeading": 0,
+          "fillId": "",
+          "canvaStyle": ""
+        }
+      },
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 38,
+        "top": 0,
+        "width": 791,
+        "height": 150,
+        "angle": 0,
+        "text": "Les vacances !",
+        "fontFamily": "Londrina Shadow",
+        "fontSize": 125.33333333333333,
+        "fontWeight": 400,
+        "fontStyle": "normal",
+        "fill": "#222222",
+        "textAlign": "center",
+        "charSpacing": 50,
+        "lineHeight": 0.96,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "title-a",
+          "fontRef": "YACgEQAAXG0,0",
+          "textTransform": "",
+          "fontKerning": "",
+          "originalLeading": 960,
+          "fillId": "",
+          "canvaStyle": ""
+        }
+      },
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 207,
+        "top": 0,
+        "width": 757,
+        "height": 82,
+        "angle": 0,
+        "text": "Retrouvez tous nos conseils de voyages sur sitevraimentsuper.com",
+        "fontFamily": "Quicksand",
+        "fontSize": 32,
+        "fontWeight": 700,
+        "fontStyle": "normal",
+        "fill": "#222222",
+        "textAlign": "center",
+        "charSpacing": 20,
+        "lineHeight": 1.16,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "subtitle-a",
+          "fontRef": "YAFdJpYtCxE,1",
+          "textTransform": "uppercase",
+          "fontKerning": "",
+          "originalLeading": 0,
+          "fillId": "",
+          "canvaStyle": ""
+        }
+      }
+    ],
+    "background": "",
+    "_presetMeta": {
+      "source": "canva",
+      "templateId": "LBc1Vh3VbbBLzLq9",
+      "schema": "web-2",
+      "canvasSize": {
+        "width": 791,
+        "height": 288
+      },
+      "fonts": [
+        {
+          "id": "YAFdJpYtCxE",
+          "name": "Quicksand",
+          "variants": [
+            {
+              "style": "MEDIUM",
+              "weight": 500
+            },
+            {
+              "style": "BOLD",
+              "weight": 700
+            },
+            {
+              "style": "LIGHT",
+              "weight": 300
+            },
+            {
+              "style": "REGULAR",
+              "weight": 400
+            }
+          ]
+        },
+        {
+          "id": "YACgEQAAXG0",
+          "name": "Londrina Shadow",
+          "variants": [
+            {
+              "style": "REGULAR",
+              "weight": 400
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "version": "5.3.0",
+    "objects": [
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 0,
+        "top": 0,
+        "width": 223,
+        "height": 313,
+        "angle": 0,
+        "text": "T",
+        "fontFamily": "Citadel Script",
+        "fontSize": 133.333,
+        "fontWeight": 400,
+        "fontStyle": "normal",
+        "fill": "#d4e68a",
+        "textAlign": "center",
+        "charSpacing": 0,
+        "lineHeight": 1.16,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "title",
+          "fontRef": "YAFcf5Qrkvs,0",
+          "textTransform": "",
+          "fontKerning": "",
+          "originalLeading": 0,
+          "fillId": "",
+          "canvaStyle": ""
+        }
+      },
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 229,
+        "top": 89,
+        "width": 252,
+        "height": 313,
+        "angle": 0,
+        "text": "C",
+        "fontFamily": "Citadel Script",
+        "fontSize": 133.333,
+        "fontWeight": 400,
+        "fontStyle": "normal",
+        "fill": "#d4e68a",
+        "textAlign": "center",
+        "charSpacing": 0,
+        "lineHeight": 1.16,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "title",
+          "fontRef": "YAFcf5Qrkvs,0",
+          "textTransform": "",
+          "fontKerning": "",
+          "originalLeading": 0,
+          "fillId": "",
+          "canvaStyle": ""
+        }
+      },
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 81,
+        "top": 215,
+        "width": 436,
+        "height": 197,
+        "angle": 0,
+        "text": "ake",
+        "fontFamily": "Juana",
+        "fontSize": 133.333,
+        "fontWeight": 700,
+        "fontStyle": "normal",
+        "fill": "#d4e68a",
+        "textAlign": "left",
+        "charSpacing": 0,
+        "lineHeight": 1.16,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "heading",
+          "fontRef": "YAFcf33XhFs,0",
+          "textTransform": "",
+          "fontKerning": "",
+          "originalLeading": 0,
+          "fillId": "",
+          "canvaStyle": ""
+        }
+      },
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 311,
+        "top": 321,
+        "width": 330,
+        "height": 197,
+        "angle": 0,
+        "text": "are!",
+        "fontFamily": "Juana",
+        "fontSize": 133.333,
+        "fontWeight": 700,
+        "fontStyle": "normal",
+        "fill": "#d4e68a",
+        "textAlign": "left",
+        "charSpacing": 0,
+        "lineHeight": 1.16,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "do-not-change",
+          "fontRef": "YAFcf33XhFs,0",
+          "textTransform": "",
+          "fontKerning": "",
+          "originalLeading": 0,
+          "fillId": "",
+          "canvaStyle": ""
+        }
+      }
+    ],
+    "background": "",
+    "_presetMeta": {
+      "source": "canva",
+      "templateId": "LBc9pHDVs1hXXPZb",
+      "schema": "web-2",
+      "canvasSize": {
+        "width": 651,
+        "height": 542
+      },
+      "fonts": [
+        {
+          "id": "YAFcf5Qrkvs",
+          "name": "Citadel Script",
+          "variants": [
+            {
+              "style": "REGULAR",
+              "weight": 400
+            }
+          ]
+        },
+        {
+          "id": "YAFcf33XhFs",
+          "name": "Juana",
+          "variants": [
+            {
+              "style": "BOLD",
+              "weight": 700
+            },
+            {
+              "style": "HEAVY_ITALICS",
+              "weight": 900
+            },
+            {
+              "style": "LIGHT",
+              "weight": 300
+            },
+            {
+              "style": "HEAVY",
+              "weight": 900
+            },
+            {
+              "style": "REGULAR",
+              "weight": 400
+            },
+            {
+              "style": "ITALICS",
+              "weight": 400
+            },
+            {
+              "style": "BOLD_ITALICS",
+              "weight": 700
+            },
+            {
+              "style": "LIGHT_ITALICS",
+              "weight": 300
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "version": "5.3.0",
+    "objects": [
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 216,
+        "top": 3,
+        "width": 771,
+        "height": 259,
+        "angle": 0,
+        "text": "Michel \nRobeyns",
+        "fontFamily": "Limelight",
+        "fontSize": 117.33333333333333,
+        "fontWeight": 400,
+        "fontStyle": "normal",
+        "fill": "#222222",
+        "textAlign": "center",
+        "charSpacing": -10,
+        "lineHeight": 1.02,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "title-a",
+          "fontRef": "YACgEUpkTXE,0",
+          "textTransform": "",
+          "fontKerning": "",
+          "originalLeading": 1020,
+          "fillId": "",
+          "canvaStyle": "title"
+        }
+      },
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 54,
+        "top": 7,
+        "width": 757,
+        "height": 115,
+        "angle": -8.365809044821622,
+        "text": "Félicitations !",
+        "fontFamily": "Yellowtail",
+        "fontSize": 96,
+        "fontWeight": 400,
+        "fontStyle": "normal",
+        "fill": "#222222",
+        "textAlign": "center",
+        "charSpacing": 50,
+        "lineHeight": 1.16,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "pretitle-a",
+          "fontRef": "YACgEYG4kG4,0",
+          "textTransform": "",
+          "fontKerning": "",
+          "originalLeading": 0,
+          "fillId": "",
+          "canvaStyle": "pretitle"
+        }
+      },
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 503,
+        "top": 0,
+        "width": 757,
+        "height": 54,
+        "angle": 0,
+        "text": "Classe de 2020\nAdministration des entreprises",
+        "fontFamily": "Raleway",
+        "fontSize": 21.333333333333332,
+        "fontWeight": 700,
+        "fontStyle": "normal",
+        "fill": "#222222",
+        "textAlign": "center",
+        "charSpacing": 130,
+        "lineHeight": 1.16,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "subtitle-a",
+          "fontRef": "YAFdJhmxbVQ,1",
+          "textTransform": "uppercase",
+          "fontKerning": "",
+          "originalLeading": 0,
+          "fillId": "",
+          "canvaStyle": "subtitle"
+        }
+      }
+    ],
+    "background": "",
+    "_presetMeta": {
+      "source": "canva",
+      "templateId": "LBc8cjXQyTsyjPlp",
+      "schema": "web-2",
+      "canvasSize": {
+        "width": 774,
+        "height": 557
+      },
+      "fonts": [
+        {
+          "id": "YACgEUpkTXE",
+          "name": "Limelight",
+          "variants": [
+            {
+              "style": "REGULAR",
+              "weight": 400
+            }
+          ]
+        },
+        {
+          "id": "YACgEYG4kG4",
+          "name": "Yellowtail",
+          "variants": [
+            {
+              "style": "REGULAR",
+              "weight": 400
+            }
+          ]
+        },
+        {
+          "id": "YAFdJhmxbVQ",
+          "name": "Raleway",
+          "variants": [
+            {
+              "style": "REGULAR",
+              "weight": 400
+            },
+            {
+              "style": "BOLD",
+              "weight": 700
+            },
+            {
+              "style": "HEAVY",
+              "weight": 900
+            },
+            {
+              "style": "THIN",
+              "weight": 250
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "version": "5.3.0",
+    "objects": [
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 57,
+        "top": 14,
+        "width": 949,
+        "height": 294,
+        "angle": -7.040856536989128,
+        "text": "Beach",
+        "fontFamily": "Carlsons Script",
+        "fontSize": 300.364,
+        "fontWeight": 400,
+        "fontStyle": "normal",
+        "fill": "#5ce1e6",
+        "textAlign": "center",
+        "charSpacing": -50,
+        "lineHeight": 0.9,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "title",
+          "fontRef": "YADZ-Vmq5FE,0",
+          "textTransform": "",
+          "fontKerning": "normal",
+          "originalLeading": 900,
+          "fillId": "",
+          "canvaStyle": ""
+        }
+      },
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 226,
+        "top": 88,
+        "width": 949,
+        "height": 294,
+        "angle": -7.040856536989128,
+        "text": "Please",
+        "fontFamily": "Carlsons Script",
+        "fontSize": 300.364,
+        "fontWeight": 400,
+        "fontStyle": "normal",
+        "fill": "#ffde59",
+        "textAlign": "center",
+        "charSpacing": -50,
+        "lineHeight": 0.9,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "subtitle",
+          "fontRef": "YADZ-Vmq5FE,0",
+          "textTransform": "",
+          "fontKerning": "normal",
+          "originalLeading": 900,
+          "fillId": "",
+          "canvaStyle": ""
+        }
+      }
+    ],
+    "background": "",
+    "_presetMeta": {
+      "source": "canva",
+      "templateId": "LB0Cf1XZHFKLlYwp",
+      "schema": "web-2",
+      "canvasSize": {
+        "width": 1252,
+        "height": 688
+      },
+      "fonts": [
+        {
+          "id": "YADZ-Vmq5FE",
+          "name": "Carlsons Script",
+          "variants": [
+            {
+              "style": "REGULAR",
+              "weight": 400
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "version": "5.3.0",
+    "objects": [
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 121,
+        "top": 36,
+        "width": 999,
+        "height": 311,
+        "angle": 0,
+        "text": "HACK",
+        "fontFamily": "Cubic",
+        "fontSize": 356.628,
+        "fontWeight": 400,
+        "fontStyle": "normal",
+        "fill": "#b49eff",
+        "textAlign": "center",
+        "charSpacing": 0,
+        "lineHeight": 0.75,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "title",
+          "fontRef": "YAD02jGnWpo,0",
+          "textTransform": "uppercase",
+          "fontKerning": "normal",
+          "originalLeading": 750,
+          "fillId": "none",
+          "canvaStyle": ""
+        }
+      },
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 0,
+        "top": 0,
+        "width": 978,
+        "height": 230,
+        "angle": 0,
+        "text": "Life",
+        "fontFamily": "Badhorse Script",
+        "fontSize": 63.4489,
+        "fontWeight": 400,
+        "fontStyle": "normal",
+        "fill": "#000000",
+        "textAlign": "center",
+        "charSpacing": 0,
+        "lineHeight": 0.8,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "pretitle",
+          "fontRef": "YADcrvzN8a0,0",
+          "textTransform": "",
+          "fontKerning": "normal",
+          "originalLeading": 800,
+          "fillId": "none",
+          "canvaStyle": ""
+        }
+      }
+    ],
+    "background": "",
+    "_presetMeta": {
+      "source": "canva",
+      "templateId": "LB5lhK7LNdXtK2Z9",
+      "schema": "web-2",
+      "canvasSize": {
+        "width": 1423,
+        "height": 594
+      },
+      "fonts": [
+        {
+          "id": "YAD02jGnWpo",
+          "name": "Cubic",
+          "variants": [
+            {
+              "style": "REGULAR",
+              "weight": 400
+            }
+          ]
+        },
+        {
+          "id": "YADcrvzN8a0",
+          "name": "Badhorse Script",
+          "variants": [
+            {
+              "style": "REGULAR",
+              "weight": 400
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "version": "5.3.0",
+    "objects": [
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 0,
+        "top": 7,
+        "width": 941,
+        "height": 280,
+        "angle": 0,
+        "text": "BIG",
+        "fontFamily": "Code Pro",
+        "fontSize": 81.5313,
+        "fontWeight": 400,
+        "fontStyle": "normal",
+        "fill": "#364fab",
+        "textAlign": "center",
+        "charSpacing": -20,
+        "lineHeight": 0.78,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "title",
+          "fontRef": "YAFdJu4q1FA,0",
+          "textTransform": "uppercase",
+          "fontKerning": "normal",
+          "originalLeading": 780,
+          "fillId": "none",
+          "canvaStyle": ""
+        }
+      },
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 186,
+        "top": 0,
+        "width": 916,
+        "height": 185,
+        "angle": 0,
+        "text": "strategy",
+        "fontFamily": "Times New Roman MT",
+        "fontSize": 54.0355,
+        "fontWeight": 500,
+        "fontStyle": "normal",
+        "fill": "#364fab",
+        "textAlign": "center",
+        "charSpacing": -60,
+        "lineHeight": 0.75,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "subtitle",
+          "fontRef": "YAFcfkb7jcU,0",
+          "textTransform": "",
+          "fontKerning": "normal",
+          "originalLeading": 750,
+          "fillId": "none",
+          "canvaStyle": ""
+        }
+      }
+    ],
+    "background": "",
+    "_presetMeta": {
+      "source": "canva",
+      "templateId": "LBJyvd51MbGbqmGf",
+      "schema": "web-2",
+      "canvasSize": {
+        "width": 1675,
+        "height": 656
+      },
+      "fonts": [
+        {
+          "id": "YAFdJu4q1FA",
+          "name": "Code Pro",
+          "variants": [
+            {
+              "style": "REGULAR",
+              "weight": 400
+            },
+            {
+              "style": "BOLD",
+              "weight": 700
+            },
+            {
+              "style": "HEAVY",
+              "weight": 900
+            },
+            {
+              "style": "LIGHT",
+              "weight": 400
+            }
+          ]
+        },
+        {
+          "id": "YAFcfkb7jcU",
+          "name": "Times New Roman MT",
+          "variants": [
+            {
+              "style": "MEDIUM",
+              "weight": 500
+            },
+            {
+              "style": "ULTRA_BOLD",
+              "weight": 800
+            },
+            {
+              "style": "MEDIUM_ITALICS",
+              "weight": 500
+            },
+            {
+              "style": "SEMI_BOLD_ITALICS",
+              "weight": 600
+            },
+            {
+              "style": "ITALICS",
+              "weight": 400
+            },
+            {
+              "style": "BOLD_ITALICS",
+              "weight": 700
+            },
+            {
+              "style": "SEMI_BOLD",
+              "weight": 600
+            },
+            {
+              "style": "BOLD",
+              "weight": 700
+            },
+            {
+              "style": "REGULAR",
+              "weight": 400
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "version": "5.3.0",
+    "objects": [
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 13,
+        "top": 2,
+        "width": 889,
+        "height": 133,
+        "angle": -1.6489498988041538,
+        "text": "NEW PRODUCT",
+        "fontFamily": "Bloc",
+        "fontSize": 110.667,
+        "fontWeight": 400,
+        "fontStyle": "normal",
+        "fill": "#eb2030",
+        "textAlign": "center",
+        "charSpacing": 0,
+        "lineHeight": 1,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "title",
+          "fontRef": "YAFcf--b3YI,1",
+          "textTransform": "uppercase",
+          "fontKerning": "normal",
+          "originalLeading": 1000,
+          "fillId": "",
+          "canvaStyle": ""
+        }
+      },
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 156,
+        "top": 86,
+        "width": 719,
+        "height": 133,
+        "angle": 1.489120119752716,
+        "text": "ALERT!",
+        "fontFamily": "Bloc",
+        "fontSize": 110.667,
+        "fontWeight": 400,
+        "fontStyle": "normal",
+        "fill": "#faf1b3",
+        "textAlign": "center",
+        "charSpacing": 0,
+        "lineHeight": 1,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "subtitle",
+          "fontRef": "YAFcf--b3YI,1",
+          "textTransform": "uppercase",
+          "fontKerning": "normal",
+          "originalLeading": 1000,
+          "fillId": "",
+          "canvaStyle": ""
+        }
+      }
+    ],
+    "background": "",
+    "_presetMeta": {
+      "source": "canva",
+      "templateId": "LBWLJ46Cvwdfz32V",
+      "schema": "web-2",
+      "canvasSize": {
+        "width": 892,
+        "height": 297
+      },
+      "fonts": [
+        {
+          "id": "YAFcf--b3YI",
+          "name": "Bloc",
+          "variants": [
+            {
+              "style": "HEAVY",
+              "weight": 400
+            },
+            {
+              "style": "REGULAR",
+              "weight": 400
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "version": "5.3.0",
+    "objects": [
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 0,
+        "top": 0,
+        "width": 195,
+        "height": 79,
+        "angle": 0,
+        "text": "PICK",
+        "fontFamily": "Brice SemiExpanded",
+        "fontSize": 259.378,
+        "fontWeight": 200,
+        "fontStyle": "normal",
+        "fill": "#102f76",
+        "textAlign": "center",
+        "charSpacing": -60,
+        "lineHeight": 1,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "title",
+          "fontRef": "YAFdJq4xlHw,0",
+          "textTransform": "",
+          "fontKerning": "",
+          "originalLeading": 1000,
+          "fillId": "none",
+          "canvaStyle": ""
+        }
+      },
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 54,
+        "top": 24,
+        "width": 141,
+        "height": 36,
+        "angle": 0,
+        "text": "of the week",
+        "fontFamily": "HK Sentiments",
+        "fontSize": 26.1869,
+        "fontWeight": 500,
+        "fontStyle": "italic",
+        "fill": "#000000",
+        "textAlign": "center",
+        "charSpacing": 0,
+        "lineHeight": 1,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "subtitle",
+          "fontRef": "YAFdJoSDfEo,0",
+          "textTransform": "",
+          "fontKerning": "",
+          "originalLeading": 1000,
+          "fillId": "none",
+          "canvaStyle": ""
+        }
+      }
+    ],
+    "background": "",
+    "_presetMeta": {
+      "source": "canva",
+      "templateId": "LBGsp0NLbtyFHgsg",
+      "schema": "web-2",
+      "canvasSize": {
+        "width": 864,
+        "height": 398
+      },
+      "fonts": [
+        {
+          "id": "YAFdJq4xlHw",
+          "name": "Brice SemiExpanded",
+          "variants": [
+            {
+              "style": "EXTRA_LIGHT",
+              "weight": 200
+            },
+            {
+              "style": "BOLD",
+              "weight": 400
+            },
+            {
+              "style": "REGULAR",
+              "weight": 400
+            },
+            {
+              "style": "HEAVY",
+              "weight": 900
+            }
+          ]
+        },
+        {
+          "id": "YAFdJoSDfEo",
+          "name": "HK Sentiments",
+          "variants": [
+            {
+              "style": "MEDIUM_ITALICS",
+              "weight": 500
+            },
+            {
+              "style": "MEDIUM",
+              "weight": 500
+            },
+            {
+              "style": "HEAVY",
+              "weight": 900
+            },
+            {
+              "style": "HEAVY_ITALICS",
+              "weight": 900
+            },
+            {
+              "style": "LIGHT_ITALICS",
+              "weight": 300
+            },
+            {
+              "style": "LIGHT",
+              "weight": 300
+            },
+            {
+              "style": "REGULAR",
+              "weight": 400
+            },
+            {
+              "style": "ITALICS",
+              "weight": 400
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "version": "5.3.0",
+    "objects": [
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 0,
+        "top": 0,
+        "width": 325,
+        "height": 105,
+        "angle": 3.552713678800501e-15,
+        "text": "street",
+        "fontFamily": "Blowing",
+        "fontSize": 88.1162,
+        "fontWeight": 400,
+        "fontStyle": "normal",
+        "fill": "#ff5055",
+        "textAlign": "center",
+        "charSpacing": 0,
+        "lineHeight": 0.85,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "title",
+          "fontRef": "YADZ-WLsSO4,0",
+          "textTransform": "",
+          "fontKerning": "",
+          "originalLeading": 850,
+          "fillId": "",
+          "canvaStyle": ""
+        }
+      },
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 68,
+        "top": 0,
+        "width": 325,
+        "height": 105,
+        "angle": 3.552713678800501e-15,
+        "text": "food",
+        "fontFamily": "Blowing",
+        "fontSize": 88.1162,
+        "fontWeight": 400,
+        "fontStyle": "normal",
+        "fill": "#ffffff",
+        "textAlign": "center",
+        "charSpacing": 0,
+        "lineHeight": 0.85,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "title",
+          "fontRef": "YADZ-WLsSO4,0",
+          "textTransform": "",
+          "fontKerning": "",
+          "originalLeading": 850,
+          "fillId": "",
+          "canvaStyle": ""
+        }
+      }
+    ],
+    "background": "",
+    "_presetMeta": {
+      "source": "canva",
+      "templateId": "LBdS20xHj8Fvx30n",
+      "schema": "web-2",
+      "canvasSize": {
+        "width": 1686,
+        "height": 897
+      },
+      "fonts": [
+        {
+          "id": "YADZ-WLsSO4",
+          "name": "Blowing",
+          "variants": [
+            {
+              "style": "REGULAR",
+              "weight": 400
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "version": "5.3.0",
+    "objects": [
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 0,
+        "top": 0,
+        "width": 1147,
+        "height": 223,
+        "angle": 0,
+        "text": "Typo",
+        "fontFamily": "Eastman Condensed",
+        "fontSize": 185.806,
+        "fontWeight": 400,
+        "fontStyle": "normal",
+        "fill": "#ffd200",
+        "textAlign": "center",
+        "charSpacing": 380,
+        "lineHeight": 0.9,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "do-not-change",
+          "fontRef": "YAEp7YdQ2WM,0",
+          "textTransform": "uppercase",
+          "fontKerning": "normal",
+          "originalLeading": 900,
+          "fillId": "none",
+          "canvaStyle": ""
+        }
+      },
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 126,
+        "top": 0,
+        "width": 1147,
+        "height": 269,
+        "angle": 0,
+        "text": "thérapie",
+        "fontFamily": "ITC Motter Corpus Condensed",
+        "fontSize": 224.73,
+        "fontWeight": 400,
+        "fontStyle": "normal",
+        "fill": "#363dff",
+        "textAlign": "center",
+        "charSpacing": 57,
+        "lineHeight": 0.9,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "title",
+          "fontRef": "YAFcfg-Psoo,0",
+          "textTransform": "",
+          "fontKerning": "normal",
+          "originalLeading": 900,
+          "fillId": "none",
+          "canvaStyle": ""
+        }
+      }
+    ],
+    "background": "",
+    "_presetMeta": {
+      "source": "canva",
+      "templateId": "LBdHBnXsY3xPkXgQ",
+      "schema": "web-2",
+      "canvasSize": {
+        "width": 1147,
+        "height": 395
+      },
+      "fonts": [
+        {
+          "id": "YAEp7YdQ2WM",
+          "name": "Eastman Condensed",
+          "variants": [
+            {
+              "style": "REGULAR",
+              "weight": 400
+            },
+            {
+              "style": "ITALICS",
+              "weight": 400
+            },
+            {
+              "style": "BOLD_ITALICS",
+              "weight": 700
+            },
+            {
+              "style": "BOLD",
+              "weight": 700
+            }
+          ]
+        },
+        {
+          "id": "YAFcfg-Psoo",
+          "name": "ITC Motter Corpus Condensed",
+          "variants": [
+            {
+              "style": "REGULAR",
+              "weight": 400
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "version": "5.3.0",
+    "objects": [
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 48,
+        "top": 2,
+        "width": 476,
+        "height": 83,
+        "angle": 0,
+        "text": "MOOD",
+        "fontFamily": "Frankfurter Normal",
+        "fontSize": 277.901,
+        "fontWeight": 400,
+        "fontStyle": "normal",
+        "fill": "#fe95f6",
+        "textAlign": "center",
+        "charSpacing": -90,
+        "lineHeight": 0.8,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "subtitle",
+          "fontRef": "YAFcf4jVkds,0",
+          "textTransform": "",
+          "fontKerning": "normal",
+          "originalLeading": 800,
+          "fillId": "",
+          "canvaStyle": ""
+        }
+      },
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 0,
+        "top": 0,
+        "width": 476,
+        "height": 86,
+        "angle": 0,
+        "text": "Spring",
+        "fontFamily": "Handelson Three",
+        "fontSize": 295.694,
+        "fontWeight": 30,
+        "fontStyle": "normal",
+        "fill": "#398602",
+        "textAlign": "center",
+        "charSpacing": 0,
+        "lineHeight": 0.7,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "title",
+          "fontRef": "YAF3uT0MhnE,0",
+          "textTransform": "",
+          "fontKerning": "normal",
+          "originalLeading": 700,
+          "fillId": "",
+          "canvaStyle": ""
+        }
+      }
+    ],
+    "background": "",
+    "_presetMeta": {
+      "source": "canva",
+      "templateId": "LBJp0Cl4bmlLNlkg",
+      "schema": "web-2",
+      "canvasSize": {
+        "width": 1978,
+        "height": 543
+      },
+      "fonts": [
+        {
+          "id": "YAFcf4jVkds",
+          "name": "Frankfurter Normal",
+          "variants": [
+            {
+              "style": "REGULAR",
+              "weight": 400
+            }
+          ]
+        },
+        {
+          "id": "YAF3uT0MhnE",
+          "name": "Handelson Three",
+          "variants": [
+            {
+              "style": "REGULAR",
+              "weight": 30
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "version": "5.3.0",
+    "objects": [
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 0,
+        "top": 0,
+        "width": 152,
+        "height": 28,
+        "angle": 0,
+        "text": "Crée pour",
+        "fontFamily": "Roboto",
+        "fontSize": 24,
+        "fontWeight": 700,
+        "fontStyle": "italic",
+        "fill": "#222222",
+        "textAlign": "left",
+        "charSpacing": 90,
+        "lineHeight": 1.16,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "pretitle-a",
+          "fontRef": "YACgEev4gKc,0",
+          "textTransform": "uppercase",
+          "fontKerning": "",
+          "originalLeading": 0,
+          "fillId": "",
+          "canvaStyle": "pretitle"
+        }
+      },
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 33,
+        "top": 0,
+        "width": 609,
+        "height": 102,
+        "angle": 0,
+        "text": "Richard Levin",
+        "fontFamily": "Glegoo",
+        "fontSize": 85.33333333333333,
+        "fontWeight": 400,
+        "fontStyle": "normal",
+        "fill": "#222222",
+        "textAlign": "left",
+        "charSpacing": 20,
+        "lineHeight": 1.1399999999999997,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "title-a",
+          "fontRef": "YACgEcwnG_8,0",
+          "textTransform": "",
+          "fontKerning": "",
+          "originalLeading": 1139.9999999999998,
+          "fillId": "",
+          "canvaStyle": "title"
+        }
+      },
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 152,
+        "top": 0,
+        "width": 341,
+        "height": 94,
+        "angle": 0,
+        "text": "PDG de S.A.R.L. Construction\n22 boulevard des Capucins\nParis",
+        "fontFamily": "Roboto",
+        "fontSize": 24,
+        "fontWeight": 700,
+        "fontStyle": "italic",
+        "fill": "#222222",
+        "textAlign": "left",
+        "charSpacing": 40,
+        "lineHeight": 1.16,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "subtitle-a",
+          "fontRef": "YACgEev4gKc,0",
+          "textTransform": "",
+          "fontKerning": "",
+          "originalLeading": 0,
+          "fillId": "",
+          "canvaStyle": "subtitle"
+        }
+      }
+    ],
+    "background": "",
+    "_presetMeta": {
+      "source": "canva",
+      "templateId": "LBmcnpmxKyfswy9s",
+      "schema": "web-2",
+      "canvasSize": {
+        "width": 610,
+        "height": 246
+      },
+      "fonts": [
+        {
+          "id": "YACgEev4gKc",
+          "name": "Roboto",
+          "variants": [
+            {
+              "style": "BOLD_ITALICS",
+              "weight": 700
+            },
+            {
+              "style": "BOLD",
+              "weight": 700
+            },
+            {
+              "style": "ITALICS",
+              "weight": 400
+            },
+            {
+              "style": "REGULAR",
+              "weight": 400
+            }
+          ]
+        },
+        {
+          "id": "YACgEcwnG_8",
+          "name": "Glegoo",
+          "variants": [
+            {
+              "style": "REGULAR",
+              "weight": 400
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "version": "5.3.0",
+    "objects": [
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 0,
+        "top": 0,
+        "width": 757,
+        "height": 257,
+        "angle": 0,
+        "text": "Proposition \nMarketing",
+        "fontFamily": "Anton",
+        "fontSize": 117.33333333333333,
+        "fontWeight": 400,
+        "fontStyle": "normal",
+        "fill": "#222222",
+        "textAlign": "left",
+        "charSpacing": 20,
+        "lineHeight": 0.99,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "title-a",
+          "fontRef": "YACgEcYqQ-A,0",
+          "textTransform": "uppercase",
+          "fontKerning": "",
+          "originalLeading": 990,
+          "fillId": "",
+          "canvaStyle": "title"
+        }
+      },
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 287,
+        "top": 0,
+        "width": 757,
+        "height": 45,
+        "angle": 0,
+        "text": "Projet",
+        "fontFamily": "Yellowtail",
+        "fontSize": 37.333333333333336,
+        "fontWeight": 400,
+        "fontStyle": "normal",
+        "fill": "#222222",
+        "textAlign": "left",
+        "charSpacing": 0,
+        "lineHeight": 1.16,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "pretitle-a",
+          "fontRef": "YACgEYG4kG4,0",
+          "textTransform": "",
+          "fontKerning": "",
+          "originalLeading": 0,
+          "fillId": "",
+          "canvaStyle": "pretitle"
+        }
+      },
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 369,
+        "top": 18,
+        "width": 757,
+        "height": 83,
+        "angle": 0,
+        "text": "Un plan marketing est un document ou un plan contenant les objectifs de publicité et de marketing d'une entreprise pour l'année suivante.",
+        "fontFamily": "Glacial Indifference",
+        "fontSize": 21.333333333333332,
+        "fontWeight": 400,
+        "fontStyle": "normal",
+        "fill": "#222222",
+        "textAlign": "left",
+        "charSpacing": 170,
+        "lineHeight": 1.16,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "subtitle-a",
+          "fontRef": "YACgETiWKS8,0",
+          "textTransform": "",
+          "fontKerning": "",
+          "originalLeading": 0,
+          "fillId": "",
+          "canvaStyle": "subtitle"
+        }
+      }
+    ],
+    "background": "",
+    "_presetMeta": {
+      "source": "canva",
+      "templateId": "LBgcLPsyXMDbgq8d",
+      "schema": "web-2",
+      "canvasSize": {
+        "width": 775,
+        "height": 452
+      },
+      "fonts": [
+        {
+          "id": "YACgEcYqQ-A",
+          "name": "Anton",
+          "variants": [
+            {
+              "style": "REGULAR",
+              "weight": 400
+            },
+            {
+              "style": "ITALICS",
+              "weight": 400
+            }
+          ]
+        },
+        {
+          "id": "YACgEYG4kG4",
+          "name": "Yellowtail",
+          "variants": [
+            {
+              "style": "REGULAR",
+              "weight": 400
+            }
+          ]
+        },
+        {
+          "id": "YACgETiWKS8",
+          "name": "Glacial Indifference",
+          "variants": [
+            {
+              "style": "REGULAR",
+              "weight": 400
+            },
+            {
+              "style": "ITALICS",
+              "weight": 400
+            },
+            {
+              "style": "BOLD",
+              "weight": 700
+            },
+            {
+              "style": "BOLD_ITALICS",
+              "weight": 700
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "version": "5.3.0",
+    "objects": [
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 0,
+        "top": 0,
+        "width": 403,
+        "height": 102,
+        "angle": 0,
+        "text": "Hipster",
+        "fontFamily": "Vintage Goods",
+        "fontSize": 334.481,
+        "fontWeight": 400,
+        "fontStyle": "normal",
+        "fill": "#000000",
+        "textAlign": "center",
+        "charSpacing": 0,
+        "lineHeight": 0.55,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "title",
+          "fontRef": "YAEu9voQp0E,0",
+          "textTransform": "",
+          "fontKerning": "normal",
+          "originalLeading": 550,
+          "fillId": "",
+          "canvaStyle": ""
+        }
+      },
+      {
+        "type": "textbox",
+        "version": "5.3.0",
+        "originX": "left",
+        "originY": "top",
+        "left": 64,
+        "top": 77,
+        "width": 266,
+        "height": 27,
+        "angle": 0,
+        "text": "brand",
+        "fontFamily": "Sackers Gothic",
+        "fontSize": 23.1064,
+        "fontWeight": 850,
+        "fontStyle": "normal",
+        "fill": "#000000",
+        "textAlign": "center",
+        "charSpacing": 0,
+        "lineHeight": 0.85,
+        "underline": false,
+        "linethrough": false,
+        "_canvaMeta": {
+          "role": "subtitle",
+          "fontRef": "YAFcf7IH13k,0",
+          "textTransform": "",
+          "fontKerning": "normal",
+          "originalLeading": 850,
+          "fillId": "none",
+          "canvaStyle": ""
+        }
+      }
+    ],
+    "background": "",
+    "_presetMeta": {
+      "source": "canva",
+      "templateId": "LBXC40Gx2g0BFfSW",
+      "schema": "web-2",
+      "canvasSize": {
+        "width": 1580,
+        "height": 400
+      },
+      "fonts": [
+        {
+          "id": "YAEu9voQp0E",
+          "name": "Vintage Goods",
+          "variants": [
+            {
+              "style": "REGULAR",
+              "weight": 400
+            }
+          ]
+        },
+        {
+          "id": "YAFcf7IH13k",
+          "name": "Sackers Gothic",
+          "variants": [
+            {
+              "style": "HEAVY",
+              "weight": 850
+            },
+            {
+              "style": "MEDIUM",
+              "weight": 500
+            },
+            {
+              "style": "LIGHT",
+              "weight": 300
+            }
+          ]
+        }
+      ]
+    }
+  }
+]

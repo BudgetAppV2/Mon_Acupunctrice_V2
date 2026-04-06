@@ -60,11 +60,11 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
       {pendingToast && (
-        <div className="fixed top-4 left-4 right-4 z-50 bg-sage text-white text-sm font-medium px-4 py-2.5 rounded-xl text-center shadow-lg animate-fade-in">
+        <div className="fixed left-4 right-4 z-50 bg-sage text-white text-sm font-medium px-4 py-2.5 rounded-xl text-center shadow-lg animate-fade-in" style={{ top: 'calc(16px + env(safe-area-inset-top, 0px))' }}>
           {pendingToast.label}
         </div>
       )}
-      <div className={isEditor ? '' : 'pb-[calc(49px+env(safe-area-inset-bottom))]'}>
+      <div className={isEditor ? '' : 'pt-[env(safe-area-inset-top)] pb-[calc(49px+env(safe-area-inset-bottom))]'}>
         {children}
       </div>
 

@@ -1,0 +1,115 @@
+[
+  {
+    "name": "Le Lab Bas-Carbone",
+    "sourcePage": 1,
+    "fonts": [
+      {
+        "family": "Placard Next Wide",
+        "styleName": "Wide Bold",
+        "fontWeight": 700,
+        "fontStyle": "normal",
+        "pro": true
+      },
+      {
+        "family": "Knockout Sumo",
+        "styleName": "34",
+        "fontWeight": 400,
+        "fontStyle": "normal",
+        "pro": true
+      }
+    ]
+  },
+  {
+    "name": "Le Passé Vous Va Si Bien",
+    "sourcePage": 1,
+    "fonts": [
+      {
+        "family": "Bright Sight Script",
+        "styleName": "Italic",
+        "fontWeight": 400,
+        "fontStyle": "italic",
+        "pro": true
+      },
+      {
+        "family": "Lucy Rose",
+        "styleName": "Regular",
+        "fontWeight": 400,
+        "fontStyle": "normal",
+        "pro": true
+      }
+    ]
+  },
+  {
+    "name": "ÉCOlogique",
+    "sourcePage": 1,
+    "fonts": [
+      {
+        "family": "TAN St. Canard",
+        "styleName": "Heavy",
+        "fontWeight": 850,
+        "fontStyle": "normal",
+        "pro": true
+      },
+      {
+        "family": "Ahsing",
+        "styleName": "Regular",
+        "fontWeight": 400,
+        "fontStyle": "normal",
+        "pro": false
+      }
+    ]
+  },
+  {
+    "name": "Le cercle végétal",
+    "sourcePage": 1,
+    "fonts": [
+      {
+        "family": "Radnika Next Condensed",
+        "styleName": "Bold Condensed",
+        "fontWeight": 700,
+        "fontStyle": "normal",
+        "pro": true
+      },
+      {
+        "family": "Calps Sans",
+        "styleName": "Regular Italic",
+        "fontWeight": 400,
+        "fontStyle": "italic",
+        "pro": true
+      }
+    ]
+  },
+  {
+    "name": "Expression Libre",
+    "sourcePage": 1,
+    "fonts": [
+      {
+        "family": "Cooperative",
+        "styleName": "Regular",
+        "fontWeight": 400,
+        "fontStyle": "normal",
+        "pro": true
+      },
+      {
+        "family": "Posey Textured",
+        "styleName": "Italic",
+        "fontWeight": 400,
+        "fontStyle": "italic",
+        "pro": true
+      }
+    ]
+  },
+  {
+    "name": "Valence",
+    "sourcePage": 17,
+    "fonts": [
+      {
+        "family": "Libre Baskerville",
+        "styleName": "Regular",
+        "fontWeight": 400,
+        "fontStyle": "normal",
+        "pro": false
+      }
+    ]
+  }
+]

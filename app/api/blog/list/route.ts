@@ -15,7 +15,8 @@ interface WixPost {
 /** GET /api/blog/list — List Wix blog posts */
 export async function GET() {
   if (!WIX_API_KEY || !WIX_SITE_ID) {
-    return NextResponse.json({ error: 'WIX_API_KEY ou WIX_SITE_ID manquant' }, { status: 500 });
+    // Return empty list when env vars are not configured (preview deployments)
+    return NextResponse.json({ posts: [] });
   }
 
   try {

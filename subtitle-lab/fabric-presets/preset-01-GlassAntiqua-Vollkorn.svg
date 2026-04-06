@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 758 389" width="758" height="389" data-preset-index="0" data-fonts="Glass Antiqua, Vollkorn">
+  <defs>
+    <style type="text/css">
+      @import url('https://fonts.googleapis.com/css2?family=Glass+Antiqua:wght@100;200;300;400;500;600;700;800;900&family=Vollkorn:wght@100;200;300;400;500;600;700;800;900&display=swap');
+    </style>
+  </defs>
+  <rect width="100%" height="100%" fill="white"/>
+
+  <text x="33" y="128" font-family="'Glass Antiqua', sans-serif" font-size="128" font-weight="400" font-style="normal" fill="#222222" text-anchor="start" letter-spacing="0.030em" data-role="title-a">
+    <tspan x="33" dy="0">RAPHAËL </tspan>
+    <tspan x="33" dy="119.0">LEBLANC</tspan>
+  </text>
+  <text x="0" y="28" font-family="'Vollkorn', sans-serif" font-size="28" font-weight="400" font-style="normal" fill="#222222" text-anchor="start" letter-spacing="0.040em" data-role="pretitle-a">
+    <tspan x="0" dy="0">CRÉE POUR</tspan>
+  </text>
+  <text x="316" y="28" font-family="'Glass Antiqua', sans-serif" font-size="28" font-weight="400" font-style="normal" fill="#222222" text-anchor="start" letter-spacing="0.050em" data-role="subtitle-a">
+    <tspan x="316" dy="0">Directeur exécutif, Construction Polaris</tspan>
+    <tspan x="316" dy="32.5">Paris Vème</tspan>
+  </text>
+</svg>
