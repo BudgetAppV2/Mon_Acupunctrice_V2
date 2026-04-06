@@ -27,8 +27,18 @@ function useIsMobile() {
   return m;
 }
 
+function useReturnTo() {
+  const [returnTo, setReturnTo] = useState<string | null>(null);
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    setReturnTo(params.get('returnTo'));
+  }, []);
+  return returnTo;
+}
+
 export default function ImageEditorLayout() {
   const [canvas, setCanvas] = useState<Canvas | null>(null);
+  const returnTo = useReturnTo();
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const [palette, setPalette] = useState<string[]>([]);
   const [playing, setPlaying] = useState(false);
@@ -175,16 +185,27 @@ export default function ImageEditorLayout() {
     canvas.discardActiveObject(); canvas.renderAll();
     try {
       const sd = canvas.toDataURL({ format: 'png', multiplier: 1 });
-      dl(sd, 'design-story-1080x1920.png');
+
+      // Generate blog cover (1200x675 crop)
       const im = document.createElement('img'); im.src = sd;
       await new Promise<void>((r) => { im.onload = () => r(); });
       const c = document.createElement('canvas'); c.width = 1200; c.height = 675;
       const cx = c.getContext('2d')!;
       const ch = im.width * (675 / 1200);
       cx.drawImage(im, 0, (im.height - ch) / 2, im.width, ch, 0, 0, 1200, 675);
-      dl(c.toDataURL('image/png'), 'design-blog-1200x675.png');
+      const blogDataUrl = c.toDataURL('image/png');
+
+      if (returnTo === 'blog') {
+        // Send blog cover back to BlogEditor via localStorage bridge
+        localStorage.setItem('editor-export-blog', blogDataUrl);
+        window.close();
+      } else {
+        // Standard export — download both files
+        dl(sd, 'design-story-1080x1920.png');
+        dl(blogDataUrl, 'design-blog-1200x675.png');
+      }
     } catch { /* tainted canvas */ }
-  }, [canvas]);
+  }, [canvas, returnTo]);
 
   const hasSelection = selectedType !== null;
 
@@ -218,8 +239,9 @@ export default function ImageEditorLayout() {
             <span className="hidden sm:inline">{playing ? 'Arreter' : 'Jouer'}</span>
           </button>
           <button onClick={doExport}
-            className="flex items-center gap-1 px-2 py-1.5 text-[10px] font-medium text-white bg-teal-600 rounded-lg hover:bg-teal-500">
-            <ArrowDownTrayIcon className="w-3.5 h-3.5" /><span className="hidden sm:inline">Exporter</span>
+            className={`flex items-center gap-1 px-2 py-1.5 text-[10px] font-medium text-white rounded-lg ${returnTo === 'blog' ? 'bg-sage hover:bg-sage/90' : 'bg-teal-600 hover:bg-teal-500'}`}>
+            <ArrowDownTrayIcon className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">{returnTo === 'blog' ? 'Utiliser dans le blog' : 'Exporter'}</span>
           </button>
         </div>
       </header>

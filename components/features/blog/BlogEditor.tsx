@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { ArrowLeftIcon, EyeIcon, PencilIcon, SparklesIcon, PhotoIcon, ArrowTopRightOnSquareIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
@@ -55,6 +55,17 @@ export default function BlogEditor({ onPublish, onCancel, publishing }: Props) {
   const fileRef = useRef<HTMLInputElement>(null);
 
   const canPublish = title.trim().length > 0 && htmlContent.trim().length > 0;
+
+  // Listen for image export from the image editor via localStorage bridge
+  useEffect(() => {
+    const handler = (e: StorageEvent) => {
+      if (e.key !== 'editor-export-blog' || !e.newValue) return;
+      setCoverImageUrl(e.newValue);
+      localStorage.removeItem('editor-export-blog');
+    };
+    window.addEventListener('storage', handler);
+    return () => window.removeEventListener('storage', handler);
+  }, []);
 
   const generateFaq = async () => {
     if (!title.trim()) return;
@@ -123,12 +134,12 @@ export default function BlogEditor({ onPublish, onCancel, publishing }: Props) {
                       className="flex-1 flex items-center justify-center gap-1.5 py-3 border border-gray-200 rounded-xl text-xs text-gray-600 active:bg-gray-50">
                       <PhotoIcon className="w-4 h-4" /> {uploading ? 'Upload...' : 'Importer'}
                     </button>
-                    <button onClick={() => window.open('/editeur-image', '_blank')}
-                      className="flex-1 flex items-center justify-center gap-1.5 py-3 border border-gray-200 rounded-xl text-xs text-gray-600 active:bg-gray-50">
+                    <button onClick={() => window.open('/editeur-image?returnTo=blog', '_blank')}
+                      className="flex-1 flex items-center justify-center gap-1.5 py-3 border border-sage/30 rounded-xl text-xs text-sage font-medium active:bg-sage/5">
                       <ArrowTopRightOnSquareIcon className="w-4 h-4" /> Creer l&apos;image
                     </button>
                   </div>
-                  <p className="text-[10px] text-gray-400 text-center">Cree ton design, telecharge-le, puis importe-le ici</p>
+                  <p className="text-[10px] text-gray-400 text-center">Cree ton design — l&apos;image revient automatiquement ici</p>
                 </div>
               )}
               <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
