@@ -42,8 +42,9 @@ export default function ColorPanel({ canvas }: Props) {
     const obj = canvas.getActiveObject();
     if (!obj) return;
     const dir = GRADIENT_DIRS.find((d) => d.id === (dirId ?? gDir)) ?? GRADIENT_DIRS[0];
-    const w = (obj.width ?? 100) * (obj.scaleX ?? 1);
-    const h = (obj.height ?? 100) * (obj.scaleY ?? 1);
+    // Use object's local width/height (before scale) — Fabric applies scale at render time
+    const w = obj.width ?? 100;
+    const h = obj.height ?? 100;
     obj.set('fill', new Gradient({ type: dir.type, coords: dir.coords(w, h), colorStops: stops }));
     canvas.renderAll();
   }, [canvas, gDir]);

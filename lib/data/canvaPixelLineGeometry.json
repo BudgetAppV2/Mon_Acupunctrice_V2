@@ -1,0 +1,2066 @@
+{
+  "5": {
+    "bundleKey": "preset-29-PlayfairDisplay-Montserrat.svg",
+    "targetLineCount": 3,
+    "points": 44,
+    "sourceWidth": 810,
+    "sourceHeight": 1439.999935,
+    "lines": [
+      {
+        "minX": 292.218259,
+        "maxX": 507.115097,
+        "minY": 652.574443,
+        "maxY": 652.574443,
+        "baselineY": 652.5744429999997,
+        "count": 17
+      },
+      {
+        "minX": 228.67004,
+        "maxX": 539.140442,
+        "minY": 738.736788,
+        "maxY": 738.736788,
+        "baselineY": 738.736788,
+        "count": 7
+      },
+      {
+        "minX": 272.014932,
+        "maxX": 527.581442,
+        "minY": 795.769591,
+        "maxY": 795.769591,
+        "baselineY": 795.7695910000001,
+        "count": 20
+      }
+    ]
+  },
+  "6": {
+    "bundleKey": "preset-04-RacingSansOne-Arimo.svg",
+    "targetLineCount": 8,
+    "points": 72,
+    "sourceWidth": 810,
+    "sourceHeight": 1439.999935,
+    "lines": [
+      {
+        "minX": 116.92719,
+        "maxX": 116.92719,
+        "minY": 688.57492,
+        "maxY": 688.57492,
+        "baselineY": 688.57492,
+        "count": 1
+      },
+      {
+        "minX": 150.079531,
+        "maxX": 150.079531,
+        "minY": 688.57492,
+        "maxY": 688.57492,
+        "baselineY": 688.57492,
+        "count": 1
+      },
+      {
+        "minX": 184.962584,
+        "maxX": 184.962584,
+        "minY": 688.57492,
+        "maxY": 688.57492,
+        "baselineY": 688.57492,
+        "count": 1
+      },
+      {
+        "minX": 215.478252,
+        "maxX": 215.478252,
+        "minY": 688.57492,
+        "maxY": 688.57492,
+        "baselineY": 688.57492,
+        "count": 1
+      },
+      {
+        "minX": 233.171709,
+        "maxX": 594.771047,
+        "minY": 688.57492,
+        "maxY": 688.57492,
+        "baselineY": 688.57492,
+        "count": 8
+      },
+      {
+        "minX": 114.225083,
+        "maxX": 537.747338,
+        "minY": 731.474917,
+        "maxY": 731.474917,
+        "baselineY": 731.4749169999998,
+        "count": 20
+      },
+      {
+        "minX": 114.225083,
+        "maxX": 537.744054,
+        "minY": 764.474914,
+        "maxY": 764.474914,
+        "baselineY": 764.4749140000002,
+        "count": 20
+      },
+      {
+        "minX": 114.225083,
+        "maxX": 537.744054,
+        "minY": 797.474911,
+        "maxY": 797.474911,
+        "baselineY": 797.4749109999998,
+        "count": 20
+      }
+    ]
+  },
+  "7": {
+    "bundleKey": "preset-02-PTSans.svg",
+    "targetLineCount": 4,
+    "points": 45,
+    "sourceWidth": 810,
+    "sourceHeight": 1439.999935,
+    "lines": [
+      {
+        "minX": 121.08794,
+        "maxX": 475.52727,
+        "minY": 641.2361,
+        "maxY": 641.2361,
+        "baselineY": 641.2361,
+        "count": 9
+      },
+      {
+        "minX": 121.08794,
+        "maxX": 454.975949,
+        "minY": 735.736092,
+        "maxY": 735.736092,
+        "baselineY": 735.736092,
+        "count": 8
+      },
+      {
+        "minX": 121.08794,
+        "maxX": 562.303964,
+        "minY": 830.236084,
+        "maxY": 830.236084,
+        "baselineY": 830.236084,
+        "count": 11
+      },
+      {
+        "minX": 121.08794,
+        "maxX": 334.28721,
+        "minY": 886.393727,
+        "maxY": 886.393727,
+        "baselineY": 886.3937270000001,
+        "count": 17
+      }
+    ]
+  },
+  "8": {
+    "bundleKey": "preset-03-Lora-GlacialIndifference.svg",
+    "targetLineCount": 3,
+    "points": 43,
+    "sourceWidth": 810,
+    "sourceHeight": 1439.999935,
+    "lines": [
+      {
+        "minX": 366.508463,
+        "maxX": 411.731119,
+        "minY": 632.096181,
+        "maxY": 632.096181,
+        "baselineY": 632.096181,
+        "count": 2
+      },
+      {
+        "minX": 162.789424,
+        "maxX": 633.803255,
+        "minY": 710.846174,
+        "maxY": 781.595768,
+        "baselineY": 758.0125699999995,
+        "count": 30
+      },
+      {
+        "minX": 190.335082,
+        "maxX": 577.531681,
+        "minY": 862.693969,
+        "maxY": 862.693969,
+        "baselineY": 862.693969,
+        "count": 11
+      }
+    ]
+  },
+  "9": {
+    "bundleKey": "preset-01-GlassAntiqua-Vollkorn.svg",
+    "targetLineCount": 5,
+    "points": 74,
+    "sourceWidth": 810,
+    "sourceHeight": 1439.999935,
+    "lines": [
+      {
+        "minX": 120.936387,
+        "maxX": 223.48439,
+        "minY": 591.661801,
+        "maxY": 591.661801,
+        "baselineY": 591.6618010000001,
+        "count": 9
+      },
+      {
+        "minX": 121.239493,
+        "maxX": 476.633997,
+        "minY": 687.271792,
+        "maxY": 687.271792,
+        "baselineY": 687.271792,
+        "count": 8
+      },
+      {
+        "minX": 121.239493,
+        "maxX": 414.039487,
+        "minY": 776.521785,
+        "maxY": 776.521785,
+        "baselineY": 776.521785,
+        "count": 7
+      },
+      {
+        "minX": 121.226045,
+        "maxX": 457.50008,
+        "minY": 830.338036,
+        "maxY": 830.338036,
+        "baselineY": 830.3380360000003,
+        "count": 40
+      },
+      {
+        "minX": 121.226045,
+        "maxX": 207.116305,
+        "minY": 859.588033,
+        "maxY": 859.588033,
+        "baselineY": 859.588033,
+        "count": 10
+      }
+    ]
+  },
+  "10": {
+    "bundleKey": "preset-05-Quicksand-LondrinaShadow.svg",
+    "targetLineCount": 3,
+    "points": 91,
+    "sourceWidth": 810,
+    "sourceHeight": 1439.999935,
+    "lines": [
+      {
+        "minX": 302.126846,
+        "maxX": 467.636484,
+        "minY": 635.009925,
+        "maxY": 635.009925,
+        "baselineY": 635.0099250000001,
+        "count": 13
+      },
+      {
+        "minX": 110.839521,
+        "maxX": 701.241817,
+        "minY": 729.389437,
+        "maxY": 729.389437,
+        "baselineY": 729.3894369999999,
+        "count": 15
+      },
+      {
+        "minX": 115.854522,
+        "maxX": 655.433837,
+        "minY": 789.989911,
+        "maxY": 822.989909,
+        "baselineY": 803.0851483015887,
+        "count": 63
+      }
+    ]
+  },
+  "11": {
+    "bundleKey": "preset-06-Limelight-Yellowtail-Raleway.svg",
+    "targetLineCount": 5,
+    "points": 74,
+    "sourceWidth": 810,
+    "sourceHeight": 1439.999935,
+    "lines": [
+      {
+        "minX": 208.801783,
+        "maxX": 591.660609,
+        "minY": 591.623378,
+        "maxY": 647.925622,
+        "baselineY": 619.0359046250001,
+        "count": 16
+      },
+      {
+        "minX": 240.860762,
+        "maxX": 551.864645,
+        "minY": 751.641947,
+        "maxY": 751.641947,
+        "baselineY": 751.641947,
+        "count": 7
+      },
+      {
+        "minX": 211.024827,
+        "maxX": 557.342538,
+        "minY": 840.891939,
+        "maxY": 840.891939,
+        "baselineY": 840.891939,
+        "count": 7
+      },
+      {
+        "minX": 322.102206,
+        "maxX": 465.211477,
+        "minY": 903.557542,
+        "maxY": 903.557542,
+        "baselineY": 903.5575420000004,
+        "count": 14
+      },
+      {
+        "minX": 228.399089,
+        "maxX": 558.989759,
+        "minY": 925.30754,
+        "maxY": 925.30754,
+        "baselineY": 925.3075400000006,
+        "count": 30
+      }
+    ]
+  },
+  "12": {
+    "bundleKey": "preset-07-Roboto-Glegoo.svg",
+    "targetLineCount": 5,
+    "points": 80,
+    "sourceWidth": 810,
+    "sourceHeight": 1439.999935,
+    "lines": [
+      {
+        "minX": 176.369314,
+        "maxX": 273.220964,
+        "minY": 643.941956,
+        "maxY": 643.941956,
+        "baselineY": 643.941956,
+        "count": 9
+      },
+      {
+        "minX": 176.702873,
+        "maxX": 587.314014,
+        "minY": 714.339518,
+        "maxY": 714.339518,
+        "baselineY": 714.339518,
+        "count": 13
+      },
+      {
+        "minX": 176.369314,
+        "maxX": 419.453385,
+        "minY": 757.807882,
+        "maxY": 757.807882,
+        "baselineY": 757.807882,
+        "count": 28
+      },
+      {
+        "minX": 176.369314,
+        "maxX": 400.394258,
+        "minY": 782.55788,
+        "maxY": 782.55788,
+        "baselineY": 782.5578800000002,
+        "count": 25
+      },
+      {
+        "minX": 176.369314,
+        "maxX": 210.854754,
+        "minY": 807.307878,
+        "maxY": 807.307878,
+        "baselineY": 807.307878,
+        "count": 5
+      }
+    ]
+  },
+  "13": {
+    "bundleKey": "preset-08-Anton-Yellowtail-GlacialIndifference.svg",
+    "targetLineCount": 4,
+    "points": 161,
+    "sourceWidth": 810,
+    "sourceHeight": 1439.999935,
+    "lines": [
+      {
+        "minX": 114.225083,
+        "maxX": 546.11958,
+        "minY": 638.618373,
+        "maxY": 638.618373,
+        "baselineY": 638.6183730000001,
+        "count": 12
+      },
+      {
+        "minX": 114.225083,
+        "maxX": 455.034548,
+        "minY": 725.618365,
+        "maxY": 725.618365,
+        "baselineY": 725.6183650000002,
+        "count": 9
+      },
+      {
+        "minX": 114.225083,
+        "maxX": 169.54441,
+        "minY": 790.548199,
+        "maxY": 790.548199,
+        "baselineY": 790.548199,
+        "count": 6
+      },
+      {
+        "minX": 127.950814,
+        "maxX": 672.656943,
+        "minY": 841.471323,
+        "maxY": 884.971319,
+        "baselineY": 858.1896050447774,
+        "count": 134
+      }
+    ]
+  },
+  "14": {
+    "bundleKey": "preset-09-GreatVibes-Lora.svg",
+    "targetLineCount": 7,
+    "points": 141,
+    "sourceWidth": 810,
+    "sourceHeight": 1439.999935,
+    "lines": [
+      {
+        "minX": 279.087141,
+        "maxX": 517.256661,
+        "minY": 550.006804,
+        "maxY": 550.006804,
+        "baselineY": 550.0068039999999,
+        "count": 16
+      },
+      {
+        "minX": 245.946515,
+        "maxX": 551.938295,
+        "minY": 579.256802,
+        "maxY": 579.256802,
+        "baselineY": 579.256802,
+        "count": 25
+      },
+      {
+        "minX": 202.533245,
+        "maxX": 586.983444,
+        "minY": 660.193051,
+        "maxY": 660.193051,
+        "baselineY": 660.1930510000001,
+        "count": 15
+      },
+      {
+        "minX": 226.134806,
+        "maxX": 563.142589,
+        "minY": 734.443044,
+        "maxY": 734.443044,
+        "baselineY": 734.4430439999998,
+        "count": 17
+      },
+      {
+        "minX": 211.568401,
+        "maxX": 577.932794,
+        "minY": 808.693038,
+        "maxY": 808.693038,
+        "baselineY": 808.6930379999998,
+        "count": 19
+      },
+      {
+        "minX": 303.565279,
+        "maxX": 492.50359,
+        "minY": 855.943034,
+        "maxY": 855.943034,
+        "baselineY": 855.9430340000001,
+        "count": 21
+      },
+      {
+        "minX": 312.987153,
+        "maxX": 492.27229,
+        "minY": 880.693032,
+        "maxY": 905.443029,
+        "baselineY": 890.4162451071433,
+        "count": 28
+      }
+    ]
+  },
+  "15": {
+    "bundleKey": "preset-10-Raleway.svg",
+    "targetLineCount": 4,
+    "points": 240,
+    "sourceWidth": 810,
+    "sourceHeight": 1439.999935,
+    "lines": [
+      {
+        "minX": 121.08794,
+        "maxX": 563.541026,
+        "minY": 633.178053,
+        "maxY": 633.178053,
+        "baselineY": 633.1780529999999,
+        "count": 12
+      },
+      {
+        "minX": 121.08794,
+        "maxX": 468.232625,
+        "minY": 730.678045,
+        "maxY": 730.678045,
+        "baselineY": 730.6780449999999,
+        "count": 9
+      },
+      {
+        "minX": 121.08794,
+        "maxX": 583.09765,
+        "minY": 786.01304,
+        "maxY": 786.01304,
+        "baselineY": 786.0130400000006,
+        "count": 34
+      },
+      {
+        "minX": 121.08794,
+        "maxX": 673.434052,
+        "minY": 835.831779,
+        "maxY": 885.331775,
+        "baselineY": 861.5182634108102,
+        "count": 185
+      }
+    ]
+  },
+  "16": {
+    "bundleKey": "preset-12-Fredoka-Quicksand.svg",
+    "targetLineCount": 3,
+    "points": 282,
+    "sourceWidth": 810,
+    "sourceHeight": 1439.999935,
+    "lines": [
+      {
+        "minX": 330.877024,
+        "maxX": 465.504243,
+        "minY": 606.395783,
+        "maxY": 606.395783,
+        "baselineY": 606.395783,
+        "count": 11
+      },
+      {
+        "minX": 202.63703,
+        "maxX": 558.265951,
+        "minY": 682.712609,
+        "maxY": 682.712609,
+        "baselineY": 682.712609,
+        "count": 11
+      },
+      {
+        "minX": 126.106334,
+        "maxX": 674.765756,
+        "minY": 745.712603,
+        "maxY": 852.304058,
+        "baselineY": 811.9152248769224,
+        "count": 260
+      }
+    ]
+  },
+  "17": {
+    "bundleKey": "preset-11-Ubuntu.svg",
+    "targetLineCount": 4,
+    "points": 94,
+    "sourceWidth": 810,
+    "sourceHeight": 1439.999935,
+    "lines": [
+      {
+        "minX": 120.904059,
+        "maxX": 240.927486,
+        "minY": 608.741639,
+        "maxY": 608.741639,
+        "baselineY": 608.741639,
+        "count": 8
+      },
+      {
+        "minX": 121.271821,
+        "maxX": 549.287408,
+        "minY": 698.561175,
+        "maxY": 698.561175,
+        "baselineY": 698.5611749999999,
+        "count": 11
+      },
+      {
+        "minX": 121.271821,
+        "maxX": 441.40147,
+        "minY": 787.811168,
+        "maxY": 787.811168,
+        "baselineY": 787.8111680000001,
+        "count": 8
+      },
+      {
+        "minX": 121.258373,
+        "maxX": 607.82344,
+        "minY": 831.558412,
+        "maxY": 853.30841,
+        "baselineY": 838.7002023880585,
+        "count": 67
+      }
+    ]
+  },
+  "18": {
+    "bundleKey": "preset-13-AlfaSlabOne-SourceSansPro.svg",
+    "targetLineCount": 5,
+    "points": 51,
+    "sourceWidth": 810,
+    "sourceHeight": 1439.999935,
+    "lines": [
+      {
+        "minX": 121.08794,
+        "maxX": 241.287148,
+        "minY": 643.102652,
+        "maxY": 643.102652,
+        "baselineY": 643.102652,
+        "count": 4
+      },
+      {
+        "minX": 121.08794,
+        "maxX": 351.026,
+        "minY": 704.602647,
+        "maxY": 704.602647,
+        "baselineY": 704.602647,
+        "count": 6
+      },
+      {
+        "minX": 121.08794,
+        "maxX": 414.318184,
+        "minY": 766.102641,
+        "maxY": 766.102641,
+        "baselineY": 766.1026410000001,
+        "count": 7
+      },
+      {
+        "minX": 121.08794,
+        "maxX": 310.486361,
+        "minY": 817.907261,
+        "maxY": 817.907261,
+        "baselineY": 817.9072610000002,
+        "count": 19
+      },
+      {
+        "minX": 121.08794,
+        "maxX": 292.95217,
+        "minY": 850.907258,
+        "maxY": 850.907258,
+        "baselineY": 850.9072579999997,
+        "count": 15
+      }
+    ]
+  },
+  "19": {
+    "bundleKey": "preset-14-AbrilFatface-Montserrat.svg",
+    "targetLineCount": 2,
+    "points": 84,
+    "sourceWidth": 810,
+    "sourceHeight": 1439.999935,
+    "lines": [
+      {
+        "minX": 121.08794,
+        "maxX": 633.647985,
+        "minY": 636.660405,
+        "maxY": 636.660405,
+        "baselineY": 636.6604050000001,
+        "count": 21
+      },
+      {
+        "minX": 121.08794,
+        "maxX": 586.160317,
+        "minY": 691.4104,
+        "maxY": 851.219906,
+        "baselineY": 764.2926677619042,
+        "count": 63
+      }
+    ]
+  },
+  "20": {
+    "bundleKey": "preset-16-DMSans-GreatVibes.svg",
+    "targetLineCount": 3,
+    "points": 14,
+    "sourceWidth": 810,
+    "sourceHeight": 1439.999935,
+    "lines": [
+      {
+        "minX": 77.993887,
+        "maxX": 131.880008,
+        "minY": 77.639329,
+        "maxY": 77.639329,
+        "baselineY": 77.639329,
+        "count": 3
+      },
+      {
+        "minX": 15.021029,
+        "maxX": 232.644548,
+        "minY": 157.419962,
+        "maxY": 157.419962,
+        "baselineY": 157.419962,
+        "count": 4
+      },
+      {
+        "minX": 2.126376,
+        "maxX": 405.118533,
+        "minY": 264.746006,
+        "maxY": 264.746006,
+        "baselineY": 264.746006,
+        "count": 7
+      }
+    ]
+  },
+  "21": {
+    "bundleKey": "preset-15-Montserrat.svg",
+    "targetLineCount": 5,
+    "points": 93,
+    "sourceWidth": 810,
+    "sourceHeight": 1439.999935,
+    "lines": [
+      {
+        "minX": 119.491604,
+        "maxX": 357.079167,
+        "minY": 624.935254,
+        "maxY": 624.935254,
+        "baselineY": 624.935254,
+        "count": 20
+      },
+      {
+        "minX": 109.276922,
+        "maxX": 686.179219,
+        "minY": 689.263816,
+        "maxY": 689.263816,
+        "baselineY": 689.263816,
+        "count": 16
+      },
+      {
+        "minX": 109.276922,
+        "maxX": 351.580734,
+        "minY": 756.01381,
+        "maxY": 756.01381,
+        "baselineY": 756.0138100000001,
+        "count": 8
+      },
+      {
+        "minX": 119.491604,
+        "maxX": 311.723628,
+        "minY": 805.20447,
+        "maxY": 805.20447,
+        "baselineY": 805.2044700000002,
+        "count": 25
+      },
+      {
+        "minX": 119.491604,
+        "maxX": 306.105151,
+        "minY": 823.954468,
+        "maxY": 823.954468,
+        "baselineY": 823.954468,
+        "count": 24
+      }
+    ]
+  },
+  "22": {
+    "bundleKey": "preset-17-AmaticSC-Sacramento-GlacialIndifference.svg",
+    "targetLineCount": 3,
+    "points": 321,
+    "sourceWidth": 810,
+    "sourceHeight": 1439.999935,
+    "lines": [
+      {
+        "minX": 127.950814,
+        "maxX": 687.939016,
+        "minY": 519.988303,
+        "maxY": 652.738291,
+        "baselineY": 570.5207058395063,
+        "count": 162
+      },
+      {
+        "minX": 114.225083,
+        "maxX": 540.39286,
+        "minY": 735.788364,
+        "maxY": 735.788364,
+        "baselineY": 735.788364,
+        "count": 20
+      },
+      {
+        "minX": 114.225083,
+        "maxX": 659.657317,
+        "minY": 804.038358,
+        "maxY": 941.461314,
+        "baselineY": 903.4014412949643,
+        "count": 139
+      }
+    ]
+  },
+  "23": {
+    "bundleKey": "preset-18-Raleway-Exo2.svg",
+    "targetLineCount": 4,
+    "points": 115,
+    "sourceWidth": 810,
+    "sourceHeight": 1439.999935,
+    "lines": [
+      {
+        "minX": 192.915484,
+        "maxX": 600.329511,
+        "minY": 611.112119,
+        "maxY": 611.112119,
+        "baselineY": 611.1121190000001,
+        "count": 34
+      },
+      {
+        "minX": 238.908162,
+        "maxX": 537.935617,
+        "minY": 695.413288,
+        "maxY": 695.413288,
+        "baselineY": 695.4132879999999,
+        "count": 9
+      },
+      {
+        "minX": 275.048784,
+        "maxX": 526.122985,
+        "minY": 761.413282,
+        "maxY": 761.413282,
+        "baselineY": 761.413282,
+        "count": 8
+      },
+      {
+        "minX": 199.381993,
+        "maxX": 613.182742,
+        "minY": 811.187478,
+        "maxY": 840.437475,
+        "baselineY": 822.6132580781245,
+        "count": 64
+      }
+    ]
+  },
+  "24": {
+    "bundleKey": "preset-19-Raleway-LibreBaskerville.svg",
+    "targetLineCount": 3,
+    "points": 57,
+    "sourceWidth": 810,
+    "sourceHeight": 1439.999935,
+    "lines": [
+      {
+        "minX": 226.800907,
+        "maxX": 575.840091,
+        "minY": 654.695539,
+        "maxY": 654.695539,
+        "baselineY": 654.6955390000002,
+        "count": 25
+      },
+      {
+        "minX": 171.681068,
+        "maxX": 595.040878,
+        "minY": 740.66898,
+        "maxY": 740.66898,
+        "baselineY": 740.6689800000003,
+        "count": 11
+      },
+      {
+        "minX": 242.499343,
+        "maxX": 554.861456,
+        "minY": 805.603974,
+        "maxY": 805.603974,
+        "baselineY": 805.6039739999998,
+        "count": 21
+      }
+    ]
+  },
+  "25": {
+    "bundleKey": "preset-20-SourceSansPro-SourceSerifPro.svg",
+    "targetLineCount": 3,
+    "points": 160,
+    "sourceWidth": 810,
+    "sourceHeight": 1439.999935,
+    "lines": [
+      {
+        "minX": 286.288023,
+        "maxX": 493.604415,
+        "minY": 630.025701,
+        "maxY": 630.025701,
+        "baselineY": 630.0257010000003,
+        "count": 16
+      },
+      {
+        "minX": 115.014273,
+        "maxX": 674.469226,
+        "minY": 713.455238,
+        "maxY": 713.455238,
+        "baselineY": 713.4552380000002,
+        "count": 19
+      },
+      {
+        "minX": 128.276374,
+        "maxX": 647.25811,
+        "minY": 778.624592,
+        "maxY": 828.124588,
+        "baselineY": 795.6525906240021,
+        "count": 125
+      }
+    ]
+  },
+  "26": {
+    "bundleKey": "preset-22-PlayfairDisplay.svg",
+    "targetLineCount": 4,
+    "points": 121,
+    "sourceWidth": 810,
+    "sourceHeight": 1439.999935,
+    "lines": [
+      {
+        "minX": 257.813287,
+        "maxX": 546.188266,
+        "minY": 592.789921,
+        "maxY": 592.789921,
+        "baselineY": 592.7899209999997,
+        "count": 26
+      },
+      {
+        "minX": 196.870534,
+        "maxX": 590.843156,
+        "minY": 696.990807,
+        "maxY": 696.990807,
+        "baselineY": 696.990807,
+        "count": 11
+      },
+      {
+        "minX": 202.823659,
+        "maxX": 584.022844,
+        "minY": 780.9908,
+        "maxY": 780.9908,
+        "baselineY": 780.9907999999999,
+        "count": 11
+      },
+      {
+        "minX": 139.005342,
+        "maxX": 661.581118,
+        "minY": 836.409915,
+        "maxY": 865.659913,
+        "baselineY": 844.0229281780823,
+        "count": 73
+      }
+    ]
+  },
+  "27": {
+    "bundleKey": "preset-23-JosefinSans-Lora.svg",
+    "targetLineCount": 4,
+    "points": 59,
+    "sourceWidth": 810,
+    "sourceHeight": 1439.999935,
+    "lines": [
+      {
+        "minX": 293.320745,
+        "maxX": 396.340271,
+        "minY": 745.065035,
+        "maxY": 745.065035,
+        "baselineY": 745.065035,
+        "count": 2
+      },
+      {
+        "minX": 231.210899,
+        "maxX": 565.499936,
+        "minY": 805.469214,
+        "maxY": 805.469214,
+        "baselineY": 805.469214,
+        "count": 14
+      },
+      {
+        "minX": 197.320277,
+        "maxX": 577.462258,
+        "minY": 845.969211,
+        "maxY": 845.969211,
+        "baselineY": 845.9692109999997,
+        "count": 17
+      },
+      {
+        "minX": 290.779024,
+        "maxX": 505.195281,
+        "minY": 904.584741,
+        "maxY": 904.584741,
+        "baselineY": 904.5847409999998,
+        "count": 26
+      }
+    ]
+  },
+  "28": {
+    "bundleKey": "preset-24-PlayfairDisplay.svg",
+    "targetLineCount": 3,
+    "points": 61,
+    "sourceWidth": 810,
+    "sourceHeight": 1439.999935,
+    "lines": [
+      {
+        "minX": 247.418903,
+        "maxX": 556.658469,
+        "minY": 583.321345,
+        "maxY": 583.321345,
+        "baselineY": 583.3213450000002,
+        "count": 30
+      },
+      {
+        "minX": 220.322827,
+        "maxX": 516.138041,
+        "minY": 702.939519,
+        "maxY": 702.939519,
+        "baselineY": 702.939519,
+        "count": 5
+      },
+      {
+        "minX": 219.303296,
+        "maxX": 523.522706,
+        "minY": 810.18951,
+        "maxY": 873.930144,
+        "baselineY": 861.6723297692313,
+        "count": 26
+      }
+    ]
+  },
+  "29": {
+    "bundleKey": "preset-25-LibreBaskerville.svg",
+    "targetLineCount": 3,
+    "points": 42,
+    "sourceWidth": 810,
+    "sourceHeight": 1439.999935,
+    "lines": [
+      {
+        "minX": 0.781627,
+        "maxX": 206.616373,
+        "minY": 13.295314,
+        "maxY": 13.295314,
+        "baselineY": 13.295314,
+        "count": 14
+      },
+      {
+        "minX": 0.832413,
+        "maxX": 311.569532,
+        "minY": 13.704989,
+        "maxY": 13.704989,
+        "baselineY": 13.704989000000007,
+        "count": 21
+      },
+      {
+        "minX": 0.925857,
+        "maxX": 391.20808,
+        "minY": 68.192083,
+        "maxY": 68.192083,
+        "baselineY": 68.19208300000001,
+        "count": 7
+      }
+    ]
+  },
+  "30": {
+    "bundleKey": "preset-03-Lora-GlacialIndifference.svg",
+    "targetLineCount": 3,
+    "points": 30,
+    "sourceWidth": 810,
+    "sourceHeight": 1439.999935,
+    "lines": [
+      {
+        "minX": 173.947825,
+        "maxX": 173.947825,
+        "minY": 683.872433,
+        "maxY": 683.872433,
+        "baselineY": 683.872433,
+        "count": 1
+      },
+      {
+        "minX": 186.853784,
+        "maxX": 395.47315,
+        "minY": 683.872433,
+        "maxY": 683.872433,
+        "baselineY": 683.8724330000002,
+        "count": 19
+      },
+      {
+        "minX": 173.947825,
+        "maxX": 507.247494,
+        "minY": 755.796946,
+        "maxY": 755.796946,
+        "baselineY": 755.7969460000002,
+        "count": 10
+      }
+    ]
+  },
+  "31": {
+    "bundleKey": "preset-27-GlacialIndifference.svg",
+    "targetLineCount": 2,
+    "points": 19,
+    "sourceWidth": 810,
+    "sourceHeight": 1439.999935,
+    "lines": [
+      {
+        "minX": 1.469355,
+        "maxX": 382.114967,
+        "minY": 44.648939,
+        "maxY": 44.648939,
+        "baselineY": 44.648939,
+        "count": 13
+      },
+      {
+        "minX": 0.225603,
+        "maxX": 335.627573,
+        "minY": 81.746449,
+        "maxY": 81.746449,
+        "baselineY": 81.746449,
+        "count": 6
+      }
+    ]
+  },
+  "32": {
+    "bundleKey": "preset-28-GlacialIndifference.svg",
+    "targetLineCount": 8,
+    "points": 103,
+    "sourceWidth": 810,
+    "sourceHeight": 1439.999935,
+    "lines": [
+      {
+        "minX": 0.245501,
+        "maxX": 0.245501,
+        "minY": 24.291589,
+        "maxY": 24.291589,
+        "baselineY": 24.291589,
+        "count": 1
+      },
+      {
+        "minX": 15.977104,
+        "maxX": 15.977104,
+        "minY": 24.291589,
+        "maxY": 24.291589,
+        "baselineY": 24.291589,
+        "count": 1
+      },
+      {
+        "minX": 32.055314,
+        "maxX": 32.055314,
+        "minY": 24.291589,
+        "maxY": 24.291589,
+        "baselineY": 24.291589,
+        "count": 1
+      },
+      {
+        "minX": 40.641463,
+        "maxX": 61.838813,
+        "minY": 24.291589,
+        "maxY": 24.291589,
+        "baselineY": 24.291589,
+        "count": 2
+      },
+      {
+        "minX": 0.245501,
+        "maxX": 290.394103,
+        "minY": 24.712359,
+        "maxY": 24.712359,
+        "baselineY": 24.712358999999996,
+        "count": 34
+      },
+      {
+        "minX": 0.800378,
+        "maxX": 40.489435,
+        "minY": 26.079062,
+        "maxY": 26.079062,
+        "baselineY": 26.079062,
+        "count": 4
+      },
+      {
+        "minX": 0.245501,
+        "maxX": 234.413643,
+        "minY": 59.212356,
+        "maxY": 59.212356,
+        "baselineY": 59.212356,
+        "count": 29
+      },
+      {
+        "minX": 0.245501,
+        "maxX": 256.737856,
+        "minY": 93.712353,
+        "maxY": 93.712353,
+        "baselineY": 93.71235299999994,
+        "count": 31
+      }
+    ]
+  },
+  "33": {
+    "bundleKey": "preset-31-Arimo.svg",
+    "targetLineCount": 2,
+    "points": 16,
+    "sourceWidth": 810,
+    "sourceHeight": 1439.999935,
+    "lines": [
+      {
+        "minX": 8.230527,
+        "maxX": 567.244716,
+        "minY": 240.200536,
+        "maxY": 240.200536,
+        "baselineY": 240.20053600000003,
+        "count": 6
+      },
+      {
+        "minX": 8.230527,
+        "maxX": 567.244716,
+        "minY": 464.50717,
+        "maxY": 688.813803,
+        "baselineY": 576.6604864999999,
+        "count": 10
+      }
+    ]
+  },
+  "34": {
+    "bundleKey": "preset-29-PlayfairDisplay-Montserrat.svg",
+    "targetLineCount": 3,
+    "points": 27,
+    "sourceWidth": 810,
+    "sourceHeight": 1439.999935,
+    "lines": [
+      {
+        "minX": 371.024283,
+        "maxX": 438.96959,
+        "minY": 631.878213,
+        "maxY": 631.878213,
+        "baselineY": 631.878213,
+        "count": 3
+      },
+      {
+        "minX": 227.891483,
+        "maxX": 532.990119,
+        "minY": 713.336174,
+        "maxY": 713.336174,
+        "baselineY": 713.336174,
+        "count": 7
+      },
+      {
+        "minX": 250.12195,
+        "maxX": 559.860204,
+        "minY": 794.336167,
+        "maxY": 844.496619,
+        "baselineY": 820.8917004117645,
+        "count": 17
+      }
+    ]
+  },
+  "35": {
+    "bundleKey": "preset-30-LibreBaskerville-WorkSans.svg",
+    "targetLineCount": 2,
+    "points": 13,
+    "sourceWidth": 810,
+    "sourceHeight": 1439.999935,
+    "lines": [
+      {
+        "minX": 9.559081,
+        "maxX": 108.180721,
+        "minY": 25.222779,
+        "maxY": 25.222779,
+        "baselineY": 25.222779,
+        "count": 8
+      },
+      {
+        "minX": 3.776444,
+        "maxX": 216.794524,
+        "minY": 107.270826,
+        "maxY": 107.270826,
+        "baselineY": 107.27082599999999,
+        "count": 5
+      }
+    ]
+  },
+  "36": {
+    "bundleKey": "preset-31-Arimo.svg",
+    "targetLineCount": 2,
+    "points": 9,
+    "sourceWidth": 810,
+    "sourceHeight": 1439.999935,
+    "lines": [
+      {
+        "minX": 11.000011,
+        "maxX": 143.51138,
+        "minY": 99.271381,
+        "maxY": 99.271381,
+        "baselineY": 99.271381,
+        "count": 4
+      },
+      {
+        "minX": 11.000011,
+        "maxX": 276.340522,
+        "minY": 183.736314,
+        "maxY": 183.736314,
+        "baselineY": 183.736314,
+        "count": 5
+      }
+    ]
+  },
+  "37": {
+    "bundleKey": "preset-33-Lato.svg",
+    "targetLineCount": 3,
+    "points": 21,
+    "sourceWidth": 810,
+    "sourceHeight": 1439.999935,
+    "lines": [
+      {
+        "minX": 1.184662,
+        "maxX": 140.821319,
+        "minY": 35.9417,
+        "maxY": 35.9417,
+        "baselineY": 35.9417,
+        "count": 9
+      },
+      {
+        "minX": 0.383166,
+        "maxX": 188.628867,
+        "minY": 48.411198,
+        "maxY": 48.411198,
+        "baselineY": 48.411198000000006,
+        "count": 7
+      },
+      {
+        "minX": 1.109186,
+        "maxX": 176.062188,
+        "minY": 120.386234,
+        "maxY": 120.386234,
+        "baselineY": 120.38623400000002,
+        "count": 5
+      }
+    ]
+  },
+  "38": {
+    "bundleKey": "preset-32-PlayfairDisplay.svg",
+    "targetLineCount": 3,
+    "points": 160,
+    "sourceWidth": 810,
+    "sourceHeight": 1439.999935,
+    "lines": [
+      {
+        "minX": 182.748841,
+        "maxX": 619.829339,
+        "minY": 531.311886,
+        "maxY": 556.811884,
+        "baselineY": 542.3072979816523,
+        "count": 109
+      },
+      {
+        "minX": 276.242895,
+        "maxX": 490.082644,
+        "minY": 667.805082,
+        "maxY": 667.805082,
+        "baselineY": 667.805082,
+        "count": 5
+      },
+      {
+        "minX": 229.965555,
+        "maxX": 560.455843,
+        "minY": 763.055074,
+        "maxY": 920.673884,
+        "baselineY": 886.4826975869571,
+        "count": 46
+      }
+    ]
+  },
+  "39": {
+    "bundleKey": "preset-34-Lato.svg",
+    "targetLineCount": 2,
+    "points": 16,
+    "sourceWidth": 810,
+    "sourceHeight": 1439.999935,
+    "lines": [
+      {
+        "minX": 1.184662,
+        "maxX": 140.821319,
+        "minY": 36.333876,
+        "maxY": 36.333876,
+        "baselineY": 36.333876,
+        "count": 9
+      },
+      {
+        "minX": 0.383166,
+        "maxX": 188.628867,
+        "minY": 48.803373,
+        "maxY": 48.803373,
+        "baselineY": 48.80337300000001,
+        "count": 7
+      }
+    ]
+  },
+  "40": {
+    "bundleKey": "preset-35-GlassAntiqua-JosefinSans.svg",
+    "targetLineCount": 3,
+    "points": 102,
+    "sourceWidth": 810,
+    "sourceHeight": 1439.999935,
+    "lines": [
+      {
+        "minX": 0.956546,
+        "maxX": 542.271984,
+        "minY": 14.709281,
+        "maxY": 41.426816,
+        "baselineY": 31.76302674468084,
+        "count": 47
+      },
+      {
+        "minX": 1.683108,
+        "maxX": 529.101166,
+        "minY": 105.176807,
+        "maxY": 105.176807,
+        "baselineY": 105.17680699999997,
+        "count": 28
+      },
+      {
+        "minX": 6.53467,
+        "maxX": 536.702284,
+        "minY": 168.926797,
+        "maxY": 168.926797,
+        "baselineY": 168.92679700000005,
+        "count": 27
+      }
+    ]
+  },
+  "41": {
+    "bundleKey": "preset-40-Montserrat.svg",
+    "targetLineCount": 2,
+    "points": 16,
+    "sourceWidth": 810,
+    "sourceHeight": 1439.999935,
+    "lines": [
+      {
+        "minX": 38.742424,
+        "maxX": 378.685627,
+        "minY": 109.241313,
+        "maxY": 109.241313,
+        "baselineY": 109.241313,
+        "count": 8
+      },
+      {
+        "minX": 38.742424,
+        "maxX": 378.672295,
+        "minY": 184.440248,
+        "maxY": 184.440248,
+        "baselineY": 184.440248,
+        "count": 8
+      }
+    ]
+  },
+  "42": {
+    "bundleKey": "preset-36-Lora-Montserrat.svg",
+    "targetLineCount": 2,
+    "points": 112,
+    "sourceWidth": 810,
+    "sourceHeight": 1439.999935,
+    "lines": [
+      {
+        "minX": 172.111892,
+        "maxX": 556.656109,
+        "minY": 649.667492,
+        "maxY": 649.667492,
+        "baselineY": 649.6674920000003,
+        "count": 16
+      },
+      {
+        "minX": 172.111892,
+        "maxX": 518.274536,
+        "minY": 726.917485,
+        "maxY": 847.587338,
+        "baselineY": 802.4411092708323,
+        "count": 96
+      }
+    ]
+  },
+  "43": {
+    "bundleKey": "preset-35-GlassAntiqua-JosefinSans.svg",
+    "targetLineCount": 3,
+    "points": 55,
+    "sourceWidth": 810,
+    "sourceHeight": 1439.999935,
+    "lines": [
+      {
+        "minX": 352.725955,
+        "maxX": 453.755075,
+        "minY": 514.374775,
+        "maxY": 514.374775,
+        "baselineY": 514.3747750000001,
+        "count": 8
+      },
+      {
+        "minX": 298.865939,
+        "maxX": 474.215755,
+        "minY": 601.773912,
+        "maxY": 601.773912,
+        "baselineY": 601.773912,
+        "count": 7
+      },
+      {
+        "minX": 283.08143,
+        "maxX": 523.40642,
+        "minY": 679.773905,
+        "maxY": 934.369579,
+        "baselineY": 843.8024040999995,
+        "count": 40
+      }
+    ]
+  },
+  "44": {
+    "bundleKey": "preset-38-Lato-LibreBaskerville.svg",
+    "targetLineCount": 3,
+    "points": 241,
+    "sourceWidth": 810,
+    "sourceHeight": 1439.999935,
+    "lines": [
+      {
+        "minX": 0.0890431,
+        "maxX": 374.453588,
+        "minY": 17.104717,
+        "maxY": 50.299763,
+        "baselineY": 29.574824266129028,
+        "count": 124
+      },
+      {
+        "minX": 0.0890431,
+        "maxX": 378.422029,
+        "minY": 79.163616,
+        "maxY": 136.891322,
+        "baselineY": 105.37940909174291,
+        "count": 109
+      },
+      {
+        "minX": 0.0890431,
+        "maxX": 87.125364,
+        "minY": 165.755176,
+        "maxY": 165.755176,
+        "baselineY": 165.755176,
+        "count": 8
+      }
+    ]
+  },
+  "45": {
+    "bundleKey": "preset-39-Oswald-GlacialIndifference.svg",
+    "targetLineCount": 3,
+    "points": 31,
+    "sourceWidth": 810,
+    "sourceHeight": 1439.999935,
+    "lines": [
+      {
+        "minX": 327.951055,
+        "maxX": 430.200481,
+        "minY": 715.124918,
+        "maxY": 715.124918,
+        "baselineY": 715.1249179999998,
+        "count": 13
+      },
+      {
+        "minX": 261.664273,
+        "maxX": 286.565001,
+        "minY": 737.249916,
+        "maxY": 737.249916,
+        "baselineY": 737.249916,
+        "count": 2
+      },
+      {
+        "minX": 327.951055,
+        "maxX": 470.310623,
+        "minY": 739.124916,
+        "maxY": 739.124916,
+        "baselineY": 739.1249160000001,
+        "count": 16
+      }
+    ]
+  },
+  "46": {
+    "bundleKey": "preset-37-LibreBaskerville.svg",
+    "targetLineCount": 3,
+    "points": 106,
+    "sourceWidth": 810,
+    "sourceHeight": 1439.999935,
+    "lines": [
+      {
+        "minX": 199.167731,
+        "maxX": 587.420732,
+        "minY": 667.309842,
+        "maxY": 667.309842,
+        "baselineY": 667.309842,
+        "count": 15
+      },
+      {
+        "minX": 199.167731,
+        "maxX": 408.230853,
+        "minY": 721.393165,
+        "maxY": 721.393165,
+        "baselineY": 721.3931649999998,
+        "count": 11
+      },
+      {
+        "minX": 199.167731,
+        "maxX": 556.758031,
+        "minY": 789.152431,
+        "maxY": 813.902429,
+        "baselineY": 800.9086800500005,
+        "count": 80
+      }
+    ]
+  },
+  "47": {
+    "bundleKey": "preset-29-PlayfairDisplay-Montserrat.svg",
+    "targetLineCount": 3,
+    "points": 99,
+    "sourceWidth": 810,
+    "sourceHeight": 1439.999935,
+    "lines": [
+      {
+        "minX": 287.735092,
+        "maxX": 495.792393,
+        "minY": 659.196715,
+        "maxY": 659.196715,
+        "baselineY": 659.196715,
+        "count": 9
+      },
+      {
+        "minX": 306.918688,
+        "maxX": 484.578505,
+        "minY": 722.196709,
+        "maxY": 722.196709,
+        "baselineY": 722.1967089999999,
+        "count": 7
+      },
+      {
+        "minX": 176.440257,
+        "maxX": 623.574755,
+        "minY": 765.201946,
+        "maxY": 830.827876,
+        "baselineY": 806.8187291084333,
+        "count": 83
+      }
+    ]
+  },
+  "48": {
+    "bundleKey": "preset-40-Montserrat.svg",
+    "targetLineCount": 2,
+    "points": 11,
+    "sourceWidth": 810,
+    "sourceHeight": 1439.999935,
+    "lines": [
+      {
+        "minX": 1.750945,
+        "maxX": 235.372315,
+        "minY": 58.267678,
+        "maxY": 58.267678,
+        "baselineY": 58.267678,
+        "count": 8
+      },
+      {
+        "minX": 30.6506,
+        "maxX": 155.428036,
+        "minY": 88.874726,
+        "maxY": 88.874726,
+        "baselineY": 88.874726,
+        "count": 3
+      }
+    ]
+  },
+  "49": {
+    "bundleKey": "preset-18-Raleway-Exo2.svg",
+    "targetLineCount": 4,
+    "points": 169,
+    "sourceWidth": 810,
+    "sourceHeight": 1439.999935,
+    "lines": [
+      {
+        "minX": 0.53783,
+        "maxX": 306.833088,
+        "minY": 12.113284,
+        "maxY": 26.972588,
+        "baselineY": 18.96010540350881,
+        "count": 114
+      },
+      {
+        "minX": 0.53783,
+        "maxX": 230.243659,
+        "minY": 41.831892,
+        "maxY": 41.831892,
+        "baselineY": 41.83189199999998,
+        "count": 38
+      },
+      {
+        "minX": 0.53783,
+        "maxX": 270.179661,
+        "minY": 75.670355,
+        "maxY": 75.670355,
+        "baselineY": 75.67035499999999,
+        "count": 9
+      },
+      {
+        "minX": 0.53783,
+        "maxX": 243.485459,
+        "minY": 142.146187,
+        "maxY": 142.146187,
+        "baselineY": 142.14618700000003,
+        "count": 8
+      }
+    ]
+  },
+  "50": {
+    "bundleKey": "preset-29-PlayfairDisplay-Montserrat.svg",
+    "targetLineCount": 3,
+    "points": 197,
+    "sourceWidth": 810,
+    "sourceHeight": 1439.999935,
+    "lines": [
+      {
+        "minX": 279.871855,
+        "maxX": 522.196678,
+        "minY": 576.385706,
+        "maxY": 596.635704,
+        "baselineY": 587.3544549166669,
+        "count": 48
+      },
+      {
+        "minX": 220.649808,
+        "maxX": 572.516166,
+        "minY": 661.262731,
+        "maxY": 780.51272,
+        "baselineY": 719.0388884534884,
+        "count": 86
+      },
+      {
+        "minX": 285.887778,
+        "maxX": 513.197474,
+        "minY": 833.463652,
+        "maxY": 873.963648,
+        "baselineY": 851.785078761904,
+        "count": 63
+      }
+    ]
+  },
+  "51": {
+    "bundleKey": "preset-15-Montserrat.svg",
+    "targetLineCount": 5,
+    "points": 61,
+    "sourceWidth": 810,
+    "sourceHeight": 1439.999935,
+    "lines": [
+      {
+        "minX": 1.272437,
+        "maxX": 102.167002,
+        "minY": 18.262169,
+        "maxY": 18.262169,
+        "baselineY": 18.262169,
+        "count": 7
+      },
+      {
+        "minX": 6.401107,
+        "maxX": 293.184781,
+        "minY": 22.348605,
+        "maxY": 22.348605,
+        "baselineY": 22.348605000000003,
+        "count": 16
+      },
+      {
+        "minX": 0.964136,
+        "maxX": 293.029028,
+        "minY": 53.458159,
+        "maxY": 53.458159,
+        "baselineY": 53.458159000000016,
+        "count": 15
+      },
+      {
+        "minX": 9.515663,
+        "maxX": 292.213101,
+        "minY": 84.567713,
+        "maxY": 84.567713,
+        "baselineY": 84.567713,
+        "count": 16
+      },
+      {
+        "minX": 155.86379,
+        "maxX": 294.354305,
+        "minY": 115.677267,
+        "maxY": 115.677267,
+        "baselineY": 115.67726700000001,
+        "count": 7
+      }
+    ]
+  },
+  "52": {
+    "bundleKey": "preset-34-Lato.svg",
+    "targetLineCount": 2,
+    "points": 138,
+    "sourceWidth": 810,
+    "sourceHeight": 1439.999935,
+    "lines": [
+      {
+        "minX": 0.0683083,
+        "maxX": 423.463665,
+        "minY": 15.097958,
+        "maxY": 30.282531,
+        "baselineY": 19.76879496330277,
+        "count": 109
+      },
+      {
+        "minX": 0.0683083,
+        "maxX": 385.911257,
+        "minY": 67.466456,
+        "maxY": 67.466456,
+        "baselineY": 67.46645600000005,
+        "count": 29
+      }
+    ]
+  },
+  "53": {
+    "bundleKey": "preset-24-PlayfairDisplay.svg",
+    "targetLineCount": 3,
+    "points": 28,
+    "sourceWidth": 810,
+    "sourceHeight": 1439.999935,
+    "lines": [
+      {
+        "minX": 51.928131,
+        "maxX": 578.071838,
+        "minY": 125.399921,
+        "maxY": 125.399921,
+        "baselineY": 125.39992099999996,
+        "count": 11
+      },
+      {
+        "minX": 5.26876,
+        "maxX": 624.721834,
+        "minY": 215.399913,
+        "maxY": 215.399913,
+        "baselineY": 215.39991300000005,
+        "count": 12
+      },
+      {
+        "minX": 179.381245,
+        "maxX": 450.618721,
+        "minY": 305.399906,
+        "maxY": 305.399906,
+        "baselineY": 305.399906,
+        "count": 5
+      }
+    ]
+  },
+  "54": {
+    "bundleKey": "preset-22-PlayfairDisplay.svg",
+    "targetLineCount": 4,
+    "points": 194,
+    "sourceWidth": 810,
+    "sourceHeight": 1439.999935,
+    "lines": [
+      {
+        "minX": 309.137863,
+        "maxX": 492.952667,
+        "minY": 610.061639,
+        "maxY": 610.061639,
+        "baselineY": 610.0616389999997,
+        "count": 26
+      },
+      {
+        "minX": 279.060288,
+        "maxX": 510.934412,
+        "minY": 665.880402,
+        "maxY": 665.880402,
+        "baselineY": 665.8804019999999,
+        "count": 11
+      },
+      {
+        "minX": 263.884508,
+        "maxX": 519.235086,
+        "minY": 714.630398,
+        "maxY": 714.630398,
+        "baselineY": 714.6303980000001,
+        "count": 12
+      },
+      {
+        "minX": 229.63787,
+        "maxX": 573.021661,
+        "minY": 761.388202,
+        "maxY": 842.388195,
+        "baselineY": 798.2571643379313,
+        "count": 145
+      }
+    ]
+  },
+  "55": {
+    "bundleKey": "preset-36-Lora-Montserrat.svg",
+    "targetLineCount": 2,
+    "points": 248,
+    "sourceWidth": 810,
+    "sourceHeight": 1439.999935,
+    "lines": [
+      {
+        "minX": 0.864809,
+        "maxX": 454.504253,
+        "minY": 15.134425,
+        "maxY": 34.646734,
+        "baselineY": 24.498479687499955,
+        "count": 160
+      },
+      {
+        "minX": 0.519665,
+        "maxX": 442.585655,
+        "minY": 48.579676,
+        "maxY": 54.159043,
+        "baselineY": 52.95440694318184,
+        "count": 88
+      }
+    ]
+  },
+  "56": {
+    "bundleKey": "preset-16-DMSans-GreatVibes.svg",
+    "targetLineCount": 3,
+    "points": 29,
+    "sourceWidth": 810,
+    "sourceHeight": 1439.999935,
+    "lines": [
+      {
+        "minX": 176.032445,
+        "maxX": 176.032445,
+        "minY": 722.485453,
+        "maxY": 722.485453,
+        "baselineY": 722.485453,
+        "count": 1
+      },
+      {
+        "minX": 207.773043,
+        "maxX": 633.966003,
+        "minY": 722.485453,
+        "maxY": 722.485453,
+        "baselineY": 722.4854530000001,
+        "count": 12
+      },
+      {
+        "minX": 289.06116,
+        "maxX": 509.596527,
+        "minY": 815.511773,
+        "maxY": 815.511773,
+        "baselineY": 815.5117730000001,
+        "count": 16
+      }
+    ]
+  },
+  "57": {
+    "bundleKey": "preset-09-GreatVibes-Lora.svg",
+    "targetLineCount": 7,
+    "points": 33,
+    "sourceWidth": 810,
+    "sourceHeight": 1439.999935,
+    "lines": [
+      {
+        "minX": 1.482985,
+        "maxX": 1.482985,
+        "minY": 19.657017,
+        "maxY": 19.657017,
+        "baselineY": 19.657017,
+        "count": 1
+      },
+      {
+        "minX": 13.064504,
+        "maxX": 13.064504,
+        "minY": 19.657017,
+        "maxY": 19.657017,
+        "baselineY": 19.657017,
+        "count": 1
+      },
+      {
+        "minX": 20.673589,
+        "maxX": 20.673589,
+        "minY": 19.657017,
+        "maxY": 19.657017,
+        "baselineY": 19.657017,
+        "count": 1
+      },
+      {
+        "minX": 45.662067,
+        "maxX": 45.662067,
+        "minY": 19.657017,
+        "maxY": 19.657017,
+        "baselineY": 19.657017,
+        "count": 1
+      },
+      {
+        "minX": 54.701229,
+        "maxX": 263.73237,
+        "minY": 19.657017,
+        "maxY": 19.657017,
+        "baselineY": 19.657017,
+        "count": 13
+      },
+      {
+        "minX": 68.295604,
+        "maxX": 483.686987,
+        "minY": 153.598305,
+        "maxY": 153.598305,
+        "baselineY": 153.598305,
+        "count": 6
+      },
+      {
+        "minX": 0.549612,
+        "maxX": 551.444264,
+        "minY": 303.1067,
+        "maxY": 303.1067,
+        "baselineY": 303.10669999999993,
+        "count": 10
+      }
+    ]
+  },
+  "58": {
+    "bundleKey": "preset-32-PlayfairDisplay.svg",
+    "targetLineCount": 3,
+    "points": 24,
+    "sourceWidth": 810,
+    "sourceHeight": 1439.999935,
+    "lines": [
+      {
+        "minX": 1.117657,
+        "maxX": 1.117657,
+        "minY": 22.630649,
+        "maxY": 22.630649,
+        "baselineY": 22.630649,
+        "count": 1
+      },
+      {
+        "minX": 23.951362,
+        "maxX": 210.350509,
+        "minY": 22.630649,
+        "maxY": 22.630649,
+        "baselineY": 22.630649000000002,
+        "count": 13
+      },
+      {
+        "minX": 2.538565,
+        "maxX": 429.955726,
+        "minY": 106.967081,
+        "maxY": 106.967081,
+        "baselineY": 106.96708099999998,
+        "count": 10
+      }
+    ]
+  },
+  "59": {
+    "bundleKey": "preset-12-Fredoka-Quicksand.svg",
+    "targetLineCount": 3,
+    "points": 27,
+    "sourceWidth": 810,
+    "sourceHeight": 1439.999935,
+    "lines": [
+      {
+        "minX": 167.271273,
+        "maxX": 480.831395,
+        "minY": 698.264919,
+        "maxY": 698.264919,
+        "baselineY": 698.2649190000001,
+        "count": 6
+      },
+      {
+        "minX": 167.271273,
+        "maxX": 457.311363,
+        "minY": 803.26491,
+        "maxY": 803.26491,
+        "baselineY": 803.26491,
+        "count": 6
+      },
+      {
+        "minX": 167.271273,
+        "maxX": 447.519614,
+        "minY": 852.074906,
+        "maxY": 852.074906,
+        "baselineY": 852.0749059999999,
+        "count": 15
+      }
+    ]
+  },
+  "60": {
+    "bundleKey": "preset-14-AbrilFatface-Montserrat.svg",
+    "targetLineCount": 2,
+    "points": 157,
+    "sourceWidth": 810,
+    "sourceHeight": 1439.999935,
+    "lines": [
+      {
+        "minX": 143.556599,
+        "maxX": 585.774896,
+        "minY": 600.109152,
+        "maxY": 665.359146,
+        "baselineY": 632.2874756078429,
+        "count": 51
+      },
+      {
+        "minX": 143.556599,
+        "maxX": 610.861408,
+        "minY": 742.499916,
+        "maxY": 832.499908,
+        "baselineY": 806.5713814716964,
+        "count": 106
+      }
+    ]
+  }
+}

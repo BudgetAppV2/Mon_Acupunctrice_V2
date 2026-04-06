@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import type { Canvas, Textbox as TTextbox } from 'fabric';
-import { Textbox, Rect, Group, type FabricObject } from 'fabric';
+import { ActiveSelection, Group, Textbox, Rect, Circle, Path, loadSVGFromString, type FabricObject } from 'fabric';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { PALETTE } from '@/lib/data/imageEditorTemplates';
 import {
@@ -10,75 +10,154 @@ import {
   buildPreviewUrl, loadFont, type FontCategory,
 } from '@/lib/image-editor/fontList';
 import { TEXT_STYLE_PRESETS, presetFonts, type TextStylePreset, type PresetElement } from '@/lib/data/textStylePresets';
-import { SVG_PRESETS, extractFontsFromSvg, parseSvgTexts, type SvgPreset } from '@/lib/data/canvaTextPresets';
+import { CANVA_TEXT_PRESETS, type SvgPreset } from '@/lib/data/canvaTextPresets';
 
 interface Props { canvas: Canvas | null; extractedPalette: string[] }
 
 const CW = 1080;
 const CH = 1920;
 
-/** Scale + center elements onto canvas as a Group (degroupable) */
 function scaleAndPlace(
   canvas: Canvas,
   elements: PresetElement[],
   srcW?: number, srcH?: number,
 ) {
+  console.log('[CanvaPreset] scaleAndPlace:start', {
+    count: elements.length,
+    srcW,
+    srcH,
+  });
+
+  if (elements.length === 0) {
+    console.log('[CanvaPreset] scaleAndPlace:empty');
+    return 0;
+  }
+
   let minX = Infinity, minY = Infinity, maxX = 0, maxY = 0;
   for (const el of elements) {
     const l = el.left ?? 0, t = el.top ?? 0;
-    const w = el.width ?? 200, h = el.height ?? (el.fontSize ?? 32) * 1.4;
+    const r = el.radius ?? 0;
+    const w = el.width ?? (r > 0 ? r * 2 : 200);
+    const h = el.height ?? (r > 0 ? r * 2 : (el.fontSize ?? 32) * 1.4);
     minX = Math.min(minX, l); minY = Math.min(minY, t);
     maxX = Math.max(maxX, l + w); maxY = Math.max(maxY, t + h);
   }
-  const pw = srcW ?? (maxX - minX), ph = srcH ?? (maxY - minY);
+  const referenceX = srcW != null ? 0 : minX;
+  const referenceY = srcH != null ? 0 : minY;
+  const pw = Math.max(srcW ?? (maxX - minX), 1);
+  const ph = Math.max(srcH ?? (maxY - minY), 1);
   const scale = Math.min((CW * 0.65) / pw, (CH * 0.25) / ph, 3);
+  const offsetX = (CW - pw * scale) / 2;
+  const offsetY = (CH - ph * scale) / 2;
 
   const fabricObjs: FabricObject[] = [];
+  canvas.discardActiveObject();
+
   for (const el of elements) {
+    const isDecor = el.selectable === false;
     const opts: Record<string, unknown> = {
-      left: ((el.left ?? 0) - minX) * scale,
-      top: ((el.top ?? 0) - minY) * scale,
-      selectable: true, evented: true,
+      left: offsetX + ((el.left ?? 0) - referenceX) * scale,
+      top: offsetY + ((el.top ?? 0) - referenceY) * scale,
+      selectable: !isDecor, evented: !isDecor,
     };
+    // Scale-dependent props
     if (el.width) opts.width = el.width * scale;
     if (el.height) opts.height = el.height * scale;
     if (el.fontSize) opts.fontSize = el.fontSize * scale;
-    if ('rx' in el && el.rx) opts.rx = (el.rx as number) * scale;
-    if ('ry' in el && el.ry) opts.ry = (el.ry as number) * scale;
-    if ('strokeWidth' in el && el.strokeWidth) opts.strokeWidth = (el.strokeWidth as number) * scale;
+    if (el.rx) opts.rx = el.rx * scale;
+    if (el.ry) opts.ry = el.ry * scale;
+    if (el.strokeWidth) opts.strokeWidth = el.strokeWidth * scale;
+    if (el.radius) opts.radius = el.radius * scale;
+    // Pass-through props
     if (el.fontFamily) opts.fontFamily = el.fontFamily;
     if (el.fontWeight != null) opts.fontWeight = el.fontWeight;
     if (el.fontStyle && el.fontStyle !== 'normal') opts.fontStyle = el.fontStyle;
-    if (el.fill) opts.fill = el.fill;
+    if (el.fill != null) opts.fill = el.fill;
     if (el.textAlign && el.textAlign !== 'left') opts.textAlign = el.textAlign;
     if (el.charSpacing) opts.charSpacing = el.charSpacing;
     if (el.lineHeight) opts.lineHeight = el.lineHeight;
     if (el.angle) opts.angle = el.angle;
-    if ('originX' in el && el.originX) opts.originX = el.originX;
-    if ('originY' in el && el.originY) opts.originY = el.originY;
-    if ('stroke' in el && el.stroke) opts.stroke = el.stroke;
+    if (el.originX) opts.originX = el.originX;
+    if (el.originY) opts.originY = el.originY;
+    if (el.stroke) opts.stroke = el.stroke;
+    if (el.opacity != null) opts.opacity = el.opacity;
+    if (el.scaleX) opts.scaleX = el.scaleX;
+    if (el.scaleY) opts.scaleY = el.scaleY;
     if (el.underline) opts.underline = true;
     if (el.linethrough) opts.linethrough = true;
 
     let txt = el.text ?? '';
-    if ('textTransform' in el && el.textTransform === 'uppercase') txt = txt.toUpperCase();
+    if (el.textTransform === 'uppercase') txt = txt.toUpperCase();
 
-    if (el.type === 'textbox') fabricObjs.push(new Textbox(txt, opts));
-    else if (el.type === 'rect') fabricObjs.push(new Rect(opts));
+    if (el.type === 'textbox') {
+      fabricObjs.push(new Textbox(txt, { ...opts, editable: true }));
+    } else if (el.type === 'rect') {
+      fabricObjs.push(new Rect(opts));
+    } else if (el.type === 'circle') {
+      fabricObjs.push(new Circle(opts));
+    } else if (el.type === 'path' && el.path) {
+      fabricObjs.push(new Path(el.path, opts));
+    }
   }
 
-  if (fabricObjs.length === 0) return;
+  if (fabricObjs.length === 0) {
+    console.log('[CanvaPreset] scaleAndPlace:no-fabric-objects');
+    return 0;
+  }
 
-  // Create group centered on canvas
-  const group = new Group(fabricObjs, {
-    left: (CW - pw * scale) / 2,
-    top: (CH - ph * scale) / 2,
-    selectable: true, evented: true,
-    subTargetCheck: true, // Allow clicking sub-objects inside group
+  fabricObjs.forEach((obj) => {
+    canvas.add(obj);
+    obj.setCoords();
   });
-  canvas.add(group);
-  canvas.setActiveObject(group);
-  canvas.renderAll();
+
+  const selection = new ActiveSelection(fabricObjs, { canvas });
+  canvas.setActiveObject(selection);
+  canvas.requestRenderAll();
+
+  console.log('[CanvaPreset] scaleAndPlace:added', {
+    added: fabricObjs.length,
+    scale,
+    bounds: { minX, minY, maxX, maxY },
+  });
+
+  return fabricObjs.length;
+}
+
+function scaleAndPlaceGroup(
+  canvas: Canvas,
+  object: FabricObject,
+  srcW?: number,
+  srcH?: number,
+) {
+  const pw = Math.max(srcW ?? object.width ?? 1, 1);
+  const ph = Math.max(srcH ?? object.height ?? 1, 1);
+  const scale = Math.min((CW * 0.65) / pw, (CH * 0.25) / ph, 3);
+  const offsetX = (CW - pw * scale) / 2;
+  const offsetY = (CH - ph * scale) / 2;
+
+  canvas.discardActiveObject();
+  object.set({
+    left: offsetX,
+    top: offsetY,
+    originX: 'left',
+    originY: 'top',
+    scaleX: scale,
+    scaleY: scale,
+    selectable: true,
+    evented: true,
+  });
+  canvas.add(object);
+  object.setCoords();
+  canvas.setActiveObject(object);
+  canvas.requestRenderAll();
+
+  console.log('[CanvaPreset] scaleAndPlaceGroup:added', {
+    scale,
+    sourceWidth: pw,
+    sourceHeight: ph,
+  });
+
+  return 1;
 }
 
 export default function TextPanel({ canvas, extractedPalette }: Props) {
@@ -102,27 +181,78 @@ export default function TextPanel({ canvas, extractedPalette }: Props) {
 
   const addSvgPreset = async (p: SvgPreset) => {
     if (!canvas) return;
-    const fonts = extractFontsFromSvg(p.svg);
-    await Promise.all(fonts.map((f) => loadFont(f)));
-    const { elements, vw, vh } = parseSvgTexts(p.svg);
-    // Convert parsed elements to PresetElement format for scaleAndPlace
-    const asPreset: PresetElement[] = elements.map((e) => ({
-      type: 'textbox' as const,
-      text: e.text,
-      fontFamily: e.fontFamily,
-      fontSize: e.fontSize,
-      fontWeight: e.fontWeight,
-      fontStyle: e.fontStyle,
-      fill: e.fill,
-      left: e.left,
-      top: e.top,
-      width: e.width,
-      textAlign: e.textAlign,
-      charSpacing: e.charSpacing,
-      lineHeight: e.lineHeight,
-      angle: e.angle,
+    console.log('[CanvaPreset] addSvgPreset:start', {
+      id: p.id,
+      name: p.name,
+      pageNumber: p.pageNumber,
+      fonts: p.fonts,
+      renderMode: p.renderMode,
+    });
+
+    if (p.renderMode === 'vector') {
+      const response = await fetch(p.sourceSvgUrl);
+      const svgMarkup = await response.text();
+      const parsed = await loadSVGFromString(svgMarkup);
+      const vectorObjects = parsed.objects.filter((obj): obj is FabricObject => {
+        if (!obj) return false;
+        const width = obj.width ?? 0;
+        const height = obj.height ?? 0;
+        const fill = typeof obj.fill === 'string' ? obj.fill.toLowerCase() : '';
+        const isBackground = obj.type === 'rect'
+          && (fill === '#ffffff' || fill === 'white' || fill === 'rgb(255,255,255)')
+          && width >= p.sourceWidth * 0.9
+          && height >= p.sourceHeight * 0.9;
+        return !isBackground;
+      });
+
+      const anchor = new Rect({
+        left: 0,
+        top: 0,
+        width: p.sourceWidth,
+        height: p.sourceHeight,
+        fill: 'rgba(0,0,0,0)',
+        strokeWidth: 0,
+        selectable: false,
+        evented: false,
+      });
+
+      const group = new Group([anchor, ...vectorObjects], {
+        left: 0,
+        top: 0,
+        originX: 'left',
+        originY: 'top',
+        selectable: true,
+        evented: true,
+      });
+
+      const added = scaleAndPlaceGroup(canvas, group, p.sourceWidth, p.sourceHeight);
+      console.log('[CanvaPreset] addSvgPreset:done', { added });
+      return;
+    }
+
+    const fontVariants = Array.from(new Map(
+      p.fabricData.map((el) => [
+        `${el.fontFamily}:${el.fontWeight}:${el.fontStyle}`,
+        { family: el.fontFamily, weight: Number(el.fontWeight) || 400, style: el.fontStyle ?? 'normal' as 'normal' | 'italic' },
+      ]),
+    ).values());
+
+    await Promise.all(fontVariants.map(({ family, weight, style }) => loadFont(family, weight, style)));
+    await Promise.all(fontVariants.map(async ({ family, weight, style }) => {
+      try {
+        await document.fonts.load(`${style} ${weight} 16px "${family}"`);
+      } catch {
+        /* ignore font load failures */
+      }
     }));
-    scaleAndPlace(canvas, asPreset, vw, vh);
+
+    console.log('[CanvaPreset] addSvgPreset:parsed', {
+      elements: p.fabricData.length,
+      fontVariants: fontVariants.length,
+    });
+
+    const added = scaleAndPlace(canvas, p.fabricData, p.sourceWidth, p.sourceHeight);
+    console.log('[CanvaPreset] addSvgPreset:done', { added });
   };
 
   const addPreset = async (p: TextStylePreset) => {
@@ -191,12 +321,17 @@ export default function TextPanel({ canvas, extractedPalette }: Props) {
 
       {section === 'canva' ? (
         <div className="grid grid-cols-2 gap-2">
-          {SVG_PRESETS.map((p) => (
+          {CANVA_TEXT_PRESETS.map((p) => (
             <button key={p.id} onClick={() => addSvgPreset(p)}
-              className="rounded-lg border border-gray-200 hover:border-teal-400 transition-colors overflow-hidden bg-white p-1">
-              {/* SVG thumbnail — fonts loaded via @import in SVG defs */}
-              <div className="w-full" style={{ maxHeight: 80 }}
-                dangerouslySetInnerHTML={{ __html: p.svg.replace(/<\?xml[^?]*\?>/, '').replace(/width="\d+"/, 'width="100%"').replace(/height="\d+"/, 'height="auto"') }} />
+              className="rounded-lg border border-gray-200 bg-white p-2 text-left transition-colors hover:border-teal-400">
+              <img
+                src={p.thumbnail}
+                alt={p.name}
+                loading="lazy"
+                className="h-[140px] w-full overflow-hidden rounded-lg bg-white object-contain shadow-sm"
+              />
+              <div className="mt-2 truncate text-[9px] font-medium text-gray-700">{p.name}</div>
+              <div className="truncate text-[8px] text-gray-400">{p.fonts.join(' / ')}</div>
             </button>
           ))}
         </div>
@@ -205,20 +340,7 @@ export default function TextPanel({ canvas, extractedPalette }: Props) {
           {TEXT_STYLE_PRESETS.map((p) => (
             <button key={p.id} onClick={() => addPreset(p)}
               className="rounded-lg border border-gray-200 hover:border-teal-400 transition-colors overflow-hidden bg-white">
-              <div className="p-2 h-20 flex flex-col justify-center">
-                {p.elements.filter((e) => e.type === 'textbox').slice(0, 3).map((el, i) => (
-                  <div key={i} className="truncate leading-tight" style={{
-                    fontFamily: `"${el.fontFamily}", sans-serif`,
-                    fontSize: Math.max(Math.min((el.fontSize ?? 16) * 0.3, 16), 8),
-                    fontWeight: Number(el.fontWeight) || 400,
-                    fontStyle: el.fontStyle ?? 'normal',
-                    color: el.fill ?? '#222',
-                    textAlign: (el.textAlign ?? 'left') as React.CSSProperties['textAlign'],
-                  }}>
-                    {(el.text ?? '').split('\n')[0]}
-                  </div>
-                ))}
-              </div>
+              <PresetCard preset={p} />
               <div className="text-[7px] text-gray-400 px-2 pb-1">{p.name}</div>
             </button>
           ))}
@@ -309,6 +431,56 @@ function Sl({ label, min, max, val, fn, suf }: { label: string; min: number; max
       <span className="text-[9px] text-white/40 w-12">{label}</span>
       <input type="range" min={min} max={max} value={val} onChange={(e) => fn(Number(e.target.value))} className="flex-1 h-1 accent-teal-500" />
       {suf && <span className="text-[9px] text-white/50 w-8 text-right">{val}{suf}</span>}
+    </div>
+  );
+}
+
+/** Preset card with decorative elements rendered as SVG + text as HTML */
+function PresetCard({ preset }: { preset: TextStylePreset }) {
+  // Bounding box for scaling the preview
+  let minX = Infinity, minY = Infinity, maxX = 0, maxY = 0;
+  for (const el of preset.elements) {
+    const l = el.left ?? 0, t = el.top ?? 0;
+    const w = el.width ?? (el.radius ? el.radius * 2 : 50);
+    const h = el.height ?? (el.radius ? el.radius * 2 : (el.fontSize ?? 16) * 1.2);
+    minX = Math.min(minX, l); minY = Math.min(minY, t);
+    maxX = Math.max(maxX, l + w); maxY = Math.max(maxY, t + h);
+  }
+  const pw = maxX - minX || 1, ph = maxY - minY || 1;
+  const s = Math.min(120 / pw, 90 / ph, 1);
+
+  const decor = preset.elements.filter((e) => e.type !== 'textbox');
+  const texts = preset.elements.filter((e) => e.type === 'textbox');
+
+  return (
+    <div className="relative p-1" style={{ height: 100, overflow: 'hidden' }}>
+      {/* Decorative SVG layer */}
+      {decor.length > 0 && (
+        <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox={`${minX} ${minY} ${pw} ${ph}`} preserveAspectRatio="xMidYMid meet">
+          {decor.map((el, i) => {
+            if (el.type === 'circle') return <circle key={i} cx={(el.left ?? 0) + (el.radius ?? 0)} cy={(el.top ?? 0) + (el.radius ?? 0)} r={el.radius ?? 0} fill={el.fill || 'none'} opacity={el.opacity ?? 1} />;
+            if (el.type === 'path' && el.path) return <path key={i} d={el.path} fill={el.fill || 'none'} stroke={el.stroke || 'none'} strokeWidth={el.strokeWidth || 0} opacity={el.opacity ?? 1} transform={`translate(${el.left ?? 0},${el.top ?? 0})${el.angle ? ` rotate(${el.angle})` : ''}`} />;
+            if (el.type === 'rect') return <rect key={i} x={el.left ?? 0} y={el.top ?? 0} width={el.width ?? 0} height={el.height ?? 0} rx={el.rx ?? 0} fill={el.fill || 'none'} opacity={el.opacity ?? 1} />;
+            return null;
+          })}
+        </svg>
+      )}
+      {/* Text layer */}
+      <div className="relative z-10 flex flex-col justify-center h-full">
+        {texts.slice(0, 3).map((el, i) => (
+          <div key={i} className="truncate leading-tight" style={{
+            fontFamily: `"${el.fontFamily}", sans-serif`,
+            fontSize: Math.max(Math.min((el.fontSize ?? 16) * s, 16), 7),
+            fontWeight: Number(el.fontWeight) || 400,
+            fontStyle: el.fontStyle ?? 'normal',
+            color: el.fill ?? '#222',
+            textAlign: (el.textAlign ?? 'left') as React.CSSProperties['textAlign'],
+            transform: el.angle ? `rotate(${el.angle}deg)` : undefined,
+          }}>
+            {(el.text ?? '').split('\n')[0]}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

@@ -67,16 +67,19 @@ export default function ImageEditorCanvas({ onCanvasReady }: Props) {
     });
     fabricRef.current = canvas;
 
-    // Global selection styling — turquoise theme
-    canvas.selectionColor = 'rgba(126, 190, 197, 0.15)';
+    // Global selection styling — turquoise theme (Canva-like)
+    canvas.selectionColor = 'rgba(126, 190, 197, 0.1)';
     canvas.selectionBorderColor = '#7EBEC5';
     canvas.selectionLineWidth = 2;
     FabricObject.ownDefaults.borderColor = '#7EBEC5';
     FabricObject.ownDefaults.borderScaleFactor = 2.5;
     FabricObject.ownDefaults.cornerColor = '#7EBEC5';
+    FabricObject.ownDefaults.cornerStrokeColor = '#FFFFFF';
     FabricObject.ownDefaults.cornerSize = 14;
     FabricObject.ownDefaults.cornerStyle = 'circle';
     FabricObject.ownDefaults.transparentCorners = false;
+    FabricObject.ownDefaults.padding = 8;
+    FabricObject.ownDefaults.selectionBackgroundColor = 'rgba(126, 190, 197, 0.05)';
 
     // Scale to fit container via CSS-only dimensions.
     // Keeps internal resolution at 1080x1920 (crisp export)

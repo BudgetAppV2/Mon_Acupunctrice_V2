@@ -10,8 +10,9 @@
  */
 
 export interface PresetElement {
-  type: 'textbox' | 'rect' | 'path';
+  type: 'textbox' | 'rect' | 'path' | 'circle';
   text?: string;
+  path?: string;
   fontFamily?: string;
   fontSize?: number;
   fontWeight?: number | string;
@@ -35,6 +36,11 @@ export interface PresetElement {
   underline?: boolean;
   linethrough?: boolean;
   textTransform?: string;
+  opacity?: number;
+  scaleX?: number;
+  scaleY?: number;
+  radius?: number;
+  selectable?: boolean;
 }
 
 export interface TextStylePreset {
@@ -168,7 +174,85 @@ const WELLNESS_PRESETS: TextStylePreset[] = [
   },
 ];
 
-export const TEXT_STYLE_PRESETS: TextStylePreset[] = [...CODEX_PRESETS, ...WELLNESS_PRESETS];
+// ---------------------------------------------------------------------------
+// 6 ChatGPT wellness presets — from chatgpt-wellness-presets.json
+// Positions are absolute (from a 2x3 grid) — scaleAndPlace normalizes them
+// ---------------------------------------------------------------------------
+
+const CHATGPT_WELLNESS: TextStylePreset[] = [
+  {
+    id: 'art-de-guerir',
+    name: "L'Art de Guerir",
+    elements: [
+      // Decorative elements (behind text)
+      { type: 'path', path: 'M 0 50 Q 25 0 50 50 Q 25 100 0 50', fill: '#C4A35A', opacity: 0.4, left: 120, top: 180, scaleX: 1.2, scaleY: 1.2, angle: -15, selectable: false },
+      { type: 'path', path: 'M 0 0 Q 20 -10 40 0 Q 60 10 80 0', stroke: '#C4A35A', strokeWidth: 2, fill: '', opacity: 0.4, left: 140, top: 330, selectable: false },
+      { type: 'circle', radius: 90, fill: '#E8E1D3', opacity: 0.3, left: 150, top: 200, selectable: false },
+      // Text elements
+      { type: 'textbox', text: "L'ART\nDE GUERIR", fontFamily: 'DM Serif Display', fontSize: 66, fontWeight: 400, fill: '#2B2B2B', left: 90, top: 110, width: 380, textAlign: 'center', lineHeight: 0.9 },
+      { type: 'textbox', text: 'naturellement', fontFamily: 'Great Vibes', fontSize: 58, fontWeight: 400, fill: '#E08B72', left: 70, top: 285, width: 420, textAlign: 'center', angle: -2 },
+    ],
+  },
+  {
+    id: 'bien-etre-priorite',
+    name: 'Bien-Etre Priorite',
+    elements: [
+      { type: 'path', path: 'M 10 0 L 12 8 L 20 10 L 12 12 L 10 20 L 8 12 L 0 10 L 8 8 Z', fill: '#7EBEC5', opacity: 0.25, left: 760, top: 330, selectable: false },
+      { type: 'circle', radius: 110, fill: '#7EBEC5', opacity: 0.18, left: 690, top: 200, selectable: false },
+      { type: 'rect', width: 200, height: 60, fill: '#E8E1D3', opacity: 0.3, left: 660, top: 260, rx: 20, ry: 20, selectable: false },
+      { type: 'textbox', text: 'Votre', fontFamily: 'Playfair Display', fontSize: 58, fontWeight: 700, fontStyle: 'italic', fill: '#243E5C', left: 610, top: 110, width: 300, textAlign: 'center', charSpacing: -10 },
+      { type: 'textbox', text: 'BIEN-ETRE', fontFamily: 'Anton', fontSize: 86, fontWeight: 400, fill: '#243E5C', left: 545, top: 185, width: 430, textAlign: 'center', lineHeight: 0.95 },
+      { type: 'textbox', text: 'EST NOTRE PRIORITE', fontFamily: 'Montserrat', fontSize: 29, fontWeight: 500, fill: '#E08B72', left: 560, top: 310, width: 400, textAlign: 'center', charSpacing: 140 },
+    ],
+  },
+  {
+    id: 'prenez-soin',
+    name: 'Prenez Soin',
+    elements: [
+      { type: 'circle', radius: 120, fill: '#5C7A5F', opacity: 0.15, left: 140, top: 780, selectable: false },
+      { type: 'path', path: 'M 0 50 Q 25 0 50 50 Q 25 100 0 50', fill: '#5C7A5F', opacity: 0.2, left: 110, top: 860, selectable: false },
+      { type: 'path', path: 'M 0 0 Q 20 -10 40 0 Q 60 10 80 0', stroke: '#5C7A5F', strokeWidth: 2, fill: '', opacity: 0.2, left: 160, top: 940, selectable: false },
+      { type: 'textbox', text: 'Prenez\nsoin', fontFamily: 'Great Vibes', fontSize: 80, fontWeight: 400, fill: '#5F745B', left: 70, top: 720, width: 400, textAlign: 'center', lineHeight: 0.84, angle: -3 },
+      { type: 'textbox', text: 'DE VOUS', fontFamily: 'Abril Fatface', fontSize: 56, fontWeight: 400, fill: '#E57A52', left: 95, top: 930, width: 350, textAlign: 'center', charSpacing: 20 },
+    ],
+  },
+  {
+    id: 'acupuncture-harmonie',
+    name: 'Acupuncture Harmonie',
+    elements: [
+      { type: 'circle', radius: 140, fill: '#7EBEC5', opacity: 0.2, left: 650, top: 780, selectable: false },
+      { type: 'path', path: 'M 10 0 L 12 8 L 20 10 L 12 12 L 10 20 L 8 12 L 0 10 L 8 8 Z', fill: '#C4A35A', opacity: 0.4, left: 780, top: 800, selectable: false },
+      { type: 'textbox', text: 'Acupuncture', fontFamily: 'DM Serif Display', fontSize: 68, fontWeight: 400, fill: '#0D3B5B', left: 580, top: 760, width: 370, textAlign: 'center', charSpacing: -10 },
+      { type: 'textbox', text: '& harmonie', fontFamily: 'Dancing Script', fontSize: 52, fontWeight: 400, fill: '#5C7A5F', left: 655, top: 870, width: 230, textAlign: 'center', angle: 2 },
+    ],
+  },
+  {
+    id: 'pouvoir-nature',
+    name: 'Pouvoir de la Nature',
+    elements: [
+      { type: 'rect', width: 360, height: 120, fill: '#E8E1D3', opacity: 0.3, left: 80, top: 1430, rx: 40, ry: 40, selectable: false },
+      { type: 'path', path: 'M 0 50 Q 25 0 50 50 Q 25 100 0 50', fill: '#5C7A5F', opacity: 0.2, left: 90, top: 1500, selectable: false },
+      { type: 'path', path: 'M 10 0 L 12 8 L 20 10 L 12 12 L 10 20 L 8 12 L 0 10 L 8 8 Z', fill: '#C4A35A', opacity: 0.4, left: 110, top: 1320, selectable: false },
+      { type: 'textbox', text: 'LE POUVOIR', fontFamily: 'Oswald', fontSize: 50, fontWeight: 700, fill: '#5F745B', left: 95, top: 1310, width: 350, textAlign: 'center', charSpacing: 40 },
+      { type: 'textbox', text: 'DE LA', fontFamily: 'Oswald', fontSize: 42, fontWeight: 600, fill: '#5F745B', left: 170, top: 1395, width: 200, textAlign: 'center', charSpacing: 30 },
+      { type: 'textbox', text: 'NATURE', fontFamily: 'Anton', fontSize: 74, fontWeight: 400, fill: '#E57A52', left: 100, top: 1472, width: 310, textAlign: 'center' },
+    ],
+  },
+  {
+    id: 'sante-naturel',
+    name: 'Sante au Naturel',
+    elements: [
+      { type: 'path', path: 'M 0 0 Q 20 -10 40 0 Q 60 10 80 0', stroke: '#C4A35A', strokeWidth: 2, fill: '', opacity: 0.4, left: 650, top: 1470, selectable: false },
+      { type: 'circle', radius: 110, fill: '#E8E1D3', opacity: 0.3, left: 660, top: 1350, selectable: false },
+      { type: 'path', path: 'M 10 0 L 12 8 L 20 10 L 12 12 L 10 20 L 8 12 L 0 10 L 8 8 Z', fill: '#C4A35A', opacity: 0.4, left: 780, top: 1340, selectable: false },
+      { type: 'textbox', text: 'SANTE', fontFamily: 'Raleway', fontSize: 58, fontWeight: 300, fill: '#5F745B', left: 610, top: 1295, width: 300, textAlign: 'center', charSpacing: 240 },
+      { type: 'textbox', text: '& BIEN-ETRE', fontFamily: 'Cormorant Garamond', fontSize: 60, fontWeight: 500, fill: '#5F745B', left: 560, top: 1380, width: 400, textAlign: 'center', charSpacing: 40 },
+      { type: 'textbox', text: 'au naturel', fontFamily: 'Dancing Script', fontSize: 56, fontWeight: 400, fill: '#E08B72', left: 615, top: 1495, width: 290, textAlign: 'center', angle: -2 },
+    ],
+  },
+];
+
+export const TEXT_STYLE_PRESETS: TextStylePreset[] = [...CODEX_PRESETS, ...WELLNESS_PRESETS, ...CHATGPT_WELLNESS];
 
 /** Collect unique font families from a preset */
 export function presetFonts(preset: TextStylePreset): string[] {

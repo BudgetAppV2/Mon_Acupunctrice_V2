@@ -5,6 +5,7 @@ import type { Canvas } from 'fabric';
 import { Path, Group, FabricImage } from 'fabric';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { ORGANIC_SHAPES, type OrganicShape } from '@/lib/data/organicShapes';
+import { DECORATIVE_ELEMENTS, DECORATIVE_CATEGORIES, type DecorativeElement } from '@/lib/data/decorativeElements';
 
 interface Props { canvas: Canvas | null }
 
@@ -66,6 +67,18 @@ async function addSvgToCanvas(canvas: Canvas, iconName: string) {
   } catch { /* SVG fetch/parse failed */ }
 }
 
+function addDecorative(canvas: Canvas, el: DecorativeElement) {
+  const p = new Path(el.svgPath, {
+    fill: el.defaultFill || '#212121',
+    left: 340, top: 760,
+    scaleX: 4, scaleY: 4,
+    selectable: true, evented: true,
+  });
+  canvas.add(p);
+  canvas.setActiveObject(p);
+  canvas.renderAll();
+}
+
 function addOrganic(canvas: Canvas, shape: OrganicShape) {
   const p = new Path(shape.pathData, {
     fill: shape.defaultFill, left: 340, top: 760,
@@ -125,6 +138,26 @@ export default function IconSearchPanel({ canvas }: Props) {
           </button>
         ))}
       </div>
+      {/* Decorative elements — 4 sub-categories */}
+      {DECORATIVE_CATEGORIES.map((cat) => {
+        const items = DECORATIVE_ELEMENTS.filter((e) => e.category === cat.id);
+        return (
+          <div key={cat.id} className="mb-3">
+            <h4 className="text-[10px] font-semibold text-white/50 uppercase mb-2">{cat.label}</h4>
+            <div className="grid grid-cols-4 gap-2">
+              {items.map((el, i) => (
+                <button key={i} onClick={() => canvas && addDecorative(canvas, el)}
+                  className="aspect-square rounded-lg bg-white/5 hover:bg-white/10 transition-colors flex items-center justify-center p-1.5" title={el.name}>
+                  <svg viewBox={el.viewBox} className="w-8 h-8">
+                    <path d={el.svgPath} fill={el.defaultFill} stroke={el.defaultFill} strokeWidth={0.5} />
+                  </svg>
+                </button>
+              ))}
+            </div>
+          </div>
+        );
+      })}
+
       {/* Organic shapes */}
       <h4 className="text-[10px] font-semibold text-white/50 uppercase mb-2 mt-3">Formes organiques</h4>
       <div className="grid grid-cols-3 gap-2 mb-4">

@@ -48,6 +48,7 @@ export const GOOGLE_FONTS: GoogleFont[] = [
   { name: 'Antic Slab', category: 'serif', weights: [400] },
   { name: 'PT Serif', category: 'serif', weights: [400, 700] },
   { name: 'Libre Baskerville', category: 'serif', weights: [400, 700] },
+  { name: 'Cinzel', category: 'serif', weights: [400, 500, 600, 700] },
   { name: 'Crimson Text', category: 'serif', weights: [400, 600, 700] },
   { name: 'EB Garamond', category: 'serif', weights: [400, 500, 600, 700] },
   { name: 'Cormorant Garamond', category: 'serif', weights: [300, 400, 500, 600, 700] },
@@ -113,22 +114,27 @@ export function buildPreviewUrl(): string {
 }
 
 /** Build the full Google Fonts URL for a specific font + weights */
-export function buildFontUrl(name: string, weights: number[]): string {
-  return `https://fonts.googleapis.com/css2?family=${name.replace(/ /g, '+')}:wght@${weights.join(';')}&display=swap`;
+export function buildFontUrl(name: string, weights: number[], style: 'normal' | 'italic' = 'normal'): string {
+  const family = name.replace(/ /g, '+');
+  if (style === 'italic') {
+    const variants = weights.map((weight) => `0,${weight};1,${weight}`).join(';');
+    return `https://fonts.googleapis.com/css2?family=${family}:ital,wght@${variants}&display=swap`;
+  }
+  return `https://fonts.googleapis.com/css2?family=${family}:wght@${weights.join(';')}&display=swap`;
 }
 
 const injected = new Set<string>();
 
 /** Inject a Google Font link and wait for it to load */
-export async function loadFont(name: string, weight: number = 400): Promise<void> {
-  const key = `${name}:${weight}`;
+export async function loadFont(name: string, weight: number = 400, style: 'normal' | 'italic' = 'normal'): Promise<void> {
+  const key = `${name}:${weight}:${style}`;
   if (injected.has(key)) return;
   injected.add(key);
 
   const link = document.createElement('link');
   link.rel = 'stylesheet';
-  link.href = buildFontUrl(name, [weight]);
+  link.href = buildFontUrl(name, [weight], style);
   document.head.appendChild(link);
 
-  try { await document.fonts.load(`${weight} 16px "${name}"`); } catch { /* font load failed */ }
+  try { await document.fonts.load(`${style} ${weight} 16px "${name}"`); } catch { /* font load failed */ }
 }

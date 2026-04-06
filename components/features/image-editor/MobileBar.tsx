@@ -9,6 +9,7 @@ import {
   PhotoIcon,
   SparklesIcon,
   SwatchIcon,
+  ListBulletIcon,
 } from '@heroicons/react/24/outline';
 import BottomSheet from './BottomSheet';
 import TemplatesPanel from './panels/TemplatesPanel';
@@ -17,8 +18,9 @@ import IconSearchPanel from './panels/IconSearchPanel';
 import PhotosPanel from './panels/PhotosPanel';
 import ColorPanel from './panels/ColorPanel';
 import AnimatePanel from './panels/AnimatePanel';
+import LayersPanel from './panels/LayersPanel';
 
-type Tab = 'templates' | 'text' | 'icons' | 'photos' | 'colors' | 'animate';
+type Tab = 'templates' | 'text' | 'icons' | 'photos' | 'colors' | 'layers' | 'animate';
 
 const TABS: { id: Tab; icon: typeof Squares2X2Icon }[] = [
   { id: 'templates', icon: Squares2X2Icon },
@@ -26,6 +28,7 @@ const TABS: { id: Tab; icon: typeof Squares2X2Icon }[] = [
   { id: 'icons', icon: PuzzlePieceIcon },
   { id: 'photos', icon: PhotoIcon },
   { id: 'colors', icon: SwatchIcon },
+  { id: 'layers', icon: ListBulletIcon },
   { id: 'animate', icon: SparklesIcon },
 ];
 
@@ -49,6 +52,7 @@ export default function MobileBar({ canvas, selectedType, extractedPalette }: Pr
         {activeTab === 'icons' && <IconSearchPanel canvas={canvas} />}
         {activeTab === 'photos' && <PhotosPanel canvas={canvas} />}
         {activeTab === 'colors' && <ColorPanel canvas={canvas} />}
+        {activeTab === 'layers' && <LayersPanel canvas={canvas} />}
         {activeTab === 'animate' && <AnimatePanel canvas={canvas} selectedType={selectedType} />}
       </BottomSheet>
 
