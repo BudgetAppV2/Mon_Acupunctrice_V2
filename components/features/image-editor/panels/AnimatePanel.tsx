@@ -1,5 +1,6 @@
 'use client';
 
+import { useRef, useEffect } from 'react';
 import type { Canvas, FabricObject } from 'fabric';
 import {
   TEXT_PRESETS,
@@ -7,6 +8,7 @@ import {
   CONTINUOUS_PRESETS,
   type AnimPreset,
 } from '@/lib/image-editor/animationPresets';
+import { previewSingleObject, type PlaybackHandle } from '@/lib/image-editor/animationEngine';
 
 interface Props {
   canvas: Canvas | null;
@@ -23,16 +25,32 @@ export default function AnimatePanel({ canvas, selectedType }: Props) {
   const active = canvas?.getActiveObject();
   const currentAnimId = getAnimationId(active);
   const isText = selectedType === 'textbox' || selectedType === 'i-text';
+  const previewRef = useRef<PlaybackHandle | null>(null);
+
+  // Stop any running preview when panel unmounts or selection changes
+  useEffect(() => {
+    return () => { previewRef.current?.stop(); previewRef.current = null; };
+  }, [active]);
 
   const assign = (preset: AnimPreset) => {
     if (!canvas || !active) return;
+    // Stop previous preview
+    previewRef.current?.stop();
+    previewRef.current = null;
+
+    // Assign animation ID
     const existing = ((active as unknown as Record<string, unknown>).data as Record<string, unknown>) ?? {};
     (active as unknown as Record<string, unknown>).data = { ...existing, animationId: preset.id };
     canvas.renderAll();
+
+    // Immediately preview this animation on the selected object
+    previewRef.current = previewSingleObject(canvas, active, preset.id);
   };
 
   const remove = () => {
     if (!canvas || !active) return;
+    previewRef.current?.stop();
+    previewRef.current = null;
     const existing = ((active as unknown as Record<string, unknown>).data as Record<string, unknown>) ?? {};
     delete existing.animationId;
     (active as unknown as Record<string, unknown>).data = { ...existing };
@@ -59,11 +77,7 @@ export default function AnimatePanel({ canvas, selectedType }: Props) {
         </button>
       )}
 
-      {/* Text animations — only if selected object is text */}
-      {isText && (
-        <Section title="Textes" presets={TEXT_PRESETS} currentId={currentAnimId} onPick={assign} />
-      )}
-
+      {isText && <Section title="Textes" presets={TEXT_PRESETS} currentId={currentAnimId} onPick={assign} />}
       <Section title="General" presets={GENERAL_PRESETS} currentId={currentAnimId} onPick={assign} />
       <Section title="Effets continus" presets={CONTINUOUS_PRESETS} currentId={currentAnimId} onPick={assign} />
     </div>
@@ -71,10 +85,7 @@ export default function AnimatePanel({ canvas, selectedType }: Props) {
 }
 
 function Section({ title, presets, currentId, onPick }: {
-  title: string;
-  presets: AnimPreset[];
-  currentId: string | undefined;
-  onPick: (p: AnimPreset) => void;
+  title: string; presets: AnimPreset[]; currentId: string | undefined; onPick: (p: AnimPreset) => void;
 }) {
   return (
     <div className="mb-4">
@@ -83,9 +94,7 @@ function Section({ title, presets, currentId, onPick }: {
         {presets.map((p) => (
           <button key={p.id} onClick={() => onPick(p)}
             className={`px-2 py-1.5 rounded-lg text-[10px] text-left transition-colors ${
-              currentId === p.id
-                ? 'bg-teal-500/30 text-teal-300 ring-1 ring-teal-400'
-                : 'bg-white/5 text-white/60 hover:bg-white/10'
+              currentId === p.id ? 'bg-teal-500/30 text-teal-300 ring-1 ring-teal-400' : 'bg-white/5 text-white/60 hover:bg-white/10'
             }`}>
             {p.name}
           </button>

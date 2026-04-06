@@ -5,15 +5,25 @@ import type { Canvas, FabricObject } from 'fabric';
 import Link from 'next/link';
 import {
   ArrowLeftIcon, ArrowDownTrayIcon, PlayIcon, StopIcon,
-  ArrowUturnLeftIcon, ArrowUturnRightIcon, ScissorsIcon,
+  ArrowUturnLeftIcon, ArrowUturnRightIcon, ScissorsIcon, TrashIcon,
 } from '@heroicons/react/24/outline';
 import ImageEditorCanvas from './ImageEditorCanvas';
 import Sidebar from './Sidebar';
+import MobileBar from './MobileBar';
 import { playPreview, type PlaybackHandle } from '@/lib/image-editor/animationEngine';
 import { HistoryManager } from '@/lib/image-editor/historyManager';
 
-const hex = (r: number, g: number, b: number) =>
-  '#' + [r, g, b].map((c) => c.toString(16).padStart(2, '0')).join('');
+function useIsMobile() {
+  const [m, setM] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 768px)');
+    setM(mq.matches);
+    const fn = (e: MediaQueryListEvent) => setM(e.matches);
+    mq.addEventListener('change', fn);
+    return () => mq.removeEventListener('change', fn);
+  }, []);
+  return m;
+}
 
 export default function ImageEditorLayout() {
   const [canvas, setCanvas] = useState<Canvas | null>(null);
@@ -24,6 +34,7 @@ export default function ImageEditorLayout() {
   const [hist, setHist] = useState({ u: false, r: false });
   const pbRef = useRef<PlaybackHandle | null>(null);
   const hmRef = useRef(new HistoryManager());
+  const isMobile = useIsMobile();
 
   // Canvas event wiring
   useEffect(() => {
@@ -38,7 +49,6 @@ export default function ImageEditorLayout() {
     const onRm = () => { hm.push(canvas); sync(); };
     const onSel = (e: { selected?: FabricObject[] }) => setSelectedType(e.selected?.[0]?.type ?? null);
     const onClr = () => setSelectedType(null);
-
     canvas.on('object:modified', onMod);
     canvas.on('object:added', onAdd);
     canvas.on('object:removed', onRm);
@@ -64,14 +74,22 @@ export default function ImageEditorLayout() {
     };
   }, [canvas]);
 
-  // Keyboard shortcuts
+  // Keyboard shortcuts — Delete + Undo/Redo
   useEffect(() => {
     const fn = (e: KeyboardEvent) => {
       if (!canvas) return;
+      // Don't intercept delete/backspace when editing text or typing in an input
+      const tag = (e.target as HTMLElement)?.tagName;
+      const isInput = tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT';
+
       const mod = e.ctrlKey || e.metaKey;
       if (mod && e.key === 'z' && !e.shiftKey) { e.preventDefault(); doUndo(); }
-      if (mod && (e.key === 'Z' || (e.key === 'z' && e.shiftKey)) ) { e.preventDefault(); doRedo(); }
+      if (mod && (e.key === 'Z' || (e.key === 'z' && e.shiftKey))) { e.preventDefault(); doRedo(); }
       if (mod && e.key === 'y') { e.preventDefault(); doRedo(); }
+      if ((e.key === 'Delete' || e.key === 'Backspace') && !isInput && !(canvas.getActiveObject() as unknown as { isEditing?: boolean })?.isEditing) {
+        e.preventDefault();
+        deleteSelected();
+      }
     };
     window.addEventListener('keydown', fn);
     return () => window.removeEventListener('keydown', fn);
@@ -79,6 +97,15 @@ export default function ImageEditorLayout() {
 
   const doUndo = async () => { if (canvas) { await hmRef.current.undo(canvas); setHist({ u: hmRef.current.canUndo, r: hmRef.current.canRedo }); } };
   const doRedo = async () => { if (canvas) { await hmRef.current.redo(canvas); setHist({ u: hmRef.current.canUndo, r: hmRef.current.canRedo }); } };
+
+  const deleteSelected = useCallback(() => {
+    if (!canvas) return;
+    const obj = canvas.getActiveObject();
+    if (!obj) return;
+    canvas.remove(obj);
+    canvas.discardActiveObject();
+    canvas.renderAll();
+  }, [canvas]);
 
   const togglePlay = () => {
     if (!canvas) return;
@@ -121,43 +148,55 @@ export default function ImageEditorLayout() {
     } catch { /* tainted canvas */ }
   }, [canvas]);
 
+  const hasSelection = selectedType !== null;
+
   return (
     <div className="h-[100dvh] flex flex-col bg-gray-900">
-      <header className="flex items-center justify-between px-4 py-2 bg-gray-900 border-b border-white/10 shrink-0">
+      {/* Header */}
+      <header className="flex items-center justify-between px-3 py-2 bg-gray-900 border-b border-white/10 shrink-0">
         <div className="flex items-center gap-2">
           <Link href="/idees" className="text-white/60 hover:text-white"><ArrowLeftIcon className="w-5 h-5" /></Link>
-          <span className="text-sm font-semibold text-white/80">Editeur d&apos;images</span>
+          <span className="text-sm font-semibold text-white/80 hidden sm:inline">Editeur d&apos;images</span>
         </div>
-        <div className="flex items-center gap-1.5">
-          <Btn icon={ArrowUturnLeftIcon} onClick={doUndo} disabled={!hist.u} title="Undo (Ctrl+Z)" />
-          <Btn icon={ArrowUturnRightIcon} onClick={doRedo} disabled={!hist.r} title="Redo (Ctrl+Shift+Z)" />
-          <div className="w-px h-5 bg-white/10 mx-1" />
+        <div className="flex items-center gap-1">
+          <HBtn icon={ArrowUturnLeftIcon} onClick={doUndo} disabled={!hist.u} title="Undo" />
+          <HBtn icon={ArrowUturnRightIcon} onClick={doRedo} disabled={!hist.r} title="Redo" />
+          {hasSelection && (
+            <HBtn icon={TrashIcon} onClick={deleteSelected} title="Supprimer" />
+          )}
+          <div className="w-px h-5 bg-white/10 mx-0.5" />
           {selectedType === 'image' && (
             <button onClick={removeBg} disabled={removing}
-              className="flex items-center gap-1 px-2 py-1.5 text-[10px] font-medium text-white bg-purple-600 rounded-lg hover:bg-purple-500 disabled:opacity-50">
-              <ScissorsIcon className="w-3.5 h-3.5" />{removing ? 'Detourage...' : 'Detourer'}
+              className="hidden sm:flex items-center gap-1 px-2 py-1.5 text-[10px] font-medium text-white bg-purple-600 rounded-lg hover:bg-purple-500 disabled:opacity-50">
+              <ScissorsIcon className="w-3.5 h-3.5" />{removing ? '...' : 'Detourer'}
             </button>
           )}
           <button onClick={togglePlay}
             className={`flex items-center gap-1 px-2 py-1.5 text-[10px] font-medium rounded-lg ${playing ? 'text-white bg-red-600 hover:bg-red-500' : 'text-white bg-indigo-600 hover:bg-indigo-500'}`}>
             {playing ? <StopIcon className="w-3.5 h-3.5" /> : <PlayIcon className="w-3.5 h-3.5" />}
-            {playing ? 'Arreter' : 'Jouer'}
+            <span className="hidden sm:inline">{playing ? 'Arreter' : 'Jouer'}</span>
           </button>
           <button onClick={doExport}
             className="flex items-center gap-1 px-2 py-1.5 text-[10px] font-medium text-white bg-teal-600 rounded-lg hover:bg-teal-500">
-            <ArrowDownTrayIcon className="w-3.5 h-3.5" />Exporter
+            <ArrowDownTrayIcon className="w-3.5 h-3.5" /><span className="hidden sm:inline">Exporter</span>
           </button>
         </div>
       </header>
-      <div className="flex flex-1 overflow-hidden">
-        <Sidebar canvas={canvas} selectedType={selectedType} extractedPalette={palette} />
+
+      {/* Main area */}
+      <div className="flex flex-1 overflow-hidden relative">
+        {/* Desktop: sidebar */}
+        {!isMobile && <Sidebar canvas={canvas} selectedType={selectedType} extractedPalette={palette} />}
+        {/* Canvas */}
         <ImageEditorCanvas onCanvasReady={setCanvas} />
+        {/* Mobile: bottom bar + sheet */}
+        {isMobile && <MobileBar canvas={canvas} selectedType={selectedType} extractedPalette={palette} />}
       </div>
     </div>
   );
 }
 
-function Btn({ icon: I, onClick, disabled, title }: { icon: React.ComponentType<{ className?: string }>; onClick: () => void; disabled?: boolean; title?: string }) {
+function HBtn({ icon: I, onClick, disabled, title }: { icon: React.ComponentType<{ className?: string }>; onClick: () => void; disabled?: boolean; title?: string }) {
   return (
     <button onClick={onClick} disabled={disabled} title={title}
       className="p-1.5 rounded-lg text-white/50 hover:text-white hover:bg-white/10 disabled:opacity-25 disabled:pointer-events-none">

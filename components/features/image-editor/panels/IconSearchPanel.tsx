@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useCallback, useRef } from 'react';
-import { Icon } from '@iconify/react';
 import type { Canvas } from 'fabric';
 import { Path, Group, FabricImage } from 'fabric';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
@@ -17,71 +16,85 @@ const CATEGORIES = [
   { id: 'deco', label: 'Decoratif', query: 'ornament sparkle frame border decoration' },
 ];
 
+const FALLBACK: Record<string, string[]> = {
+  zen: ['mdi:leaf', 'mdi:flower-outline', 'mdi:spa-outline', 'mdi:yin-yang', 'mdi:nature', 'mdi:sprout-outline'],
+  nature: ['mdi:tree-outline', 'mdi:flower', 'mdi:weather-sunny', 'mdi:waves', 'mdi:water-outline', 'mdi:earth'],
+  sante: ['mdi:heart-outline', 'mdi:medical-bag', 'mdi:pulse', 'mdi:pill', 'mdi:stethoscope', 'mdi:hospital-box-outline'],
+  formes: ['mdi:circle-outline', 'mdi:square-outline', 'mdi:triangle-outline', 'mdi:star-outline', 'mdi:hexagon-outline', 'mdi:diamond-outline'],
+  fleches: ['mdi:arrow-right', 'mdi:arrow-left', 'mdi:arrow-up', 'mdi:arrow-down', 'mdi:chevron-right', 'mdi:chevron-double-right'],
+  deco: ['mdi:creation', 'mdi:crown-outline', 'mdi:shimmer', 'mdi:ribbon', 'mdi:star-four-points-outline', 'mdi:flare'],
+};
+const DEFAULT_FALLBACK = [...FALLBACK.zen, ...FALLBACK.formes, ...FALLBACK.sante];
+
+/** Convert "mdi:leaf" → "mdi/leaf" for the SVG API URL */
+function iconSvgUrl(icon: string) {
+  return `https://api.iconify.design/${icon.replace(':', '/')}.svg?height=120`;
+}
+
 async function addSvgToCanvas(canvas: Canvas, iconName: string) {
-  const [prefix, name] = iconName.split(':');
-  const res = await fetch(`https://api.iconify.design/${prefix}/${name}.svg?height=120`);
-  const svgStr = await res.text();
-
-  // Try extracting paths for vector rendering
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(svgStr, 'image/svg+xml');
-  const fabricPaths: Path[] = [];
-  doc.querySelectorAll('path').forEach((p) => {
-    const d = p.getAttribute('d');
-    if (!d) return;
-    const fill = p.getAttribute('fill');
-    fabricPaths.push(new Path(d, {
-      fill: (!fill || fill === 'currentColor') ? '#212121' : fill === 'none' ? 'transparent' : fill,
-      stroke: (p.getAttribute('stroke') && p.getAttribute('stroke') !== 'none') ? p.getAttribute('stroke')! : undefined,
-      strokeWidth: parseFloat(p.getAttribute('stroke-width') || '0') || 0,
-    }));
-  });
-
-  let obj: InstanceType<typeof Path> | InstanceType<typeof Group> | InstanceType<typeof FabricImage>;
-  if (fabricPaths.length > 0) {
-    obj = fabricPaths.length === 1 ? fabricPaths[0] : new Group(fabricPaths);
-  } else {
-    // Fallback: render SVG as image
-    const blob = new Blob([svgStr], { type: 'image/svg+xml' });
-    const url = URL.createObjectURL(blob);
-    obj = await FabricImage.fromURL(url);
-    URL.revokeObjectURL(url);
-  }
-  obj.set({ left: 440, top: 840, scaleX: 4, scaleY: 4, selectable: true, evented: true });
-  canvas.add(obj);
-  canvas.setActiveObject(obj);
-  canvas.renderAll();
+  try {
+    const res = await fetch(iconSvgUrl(iconName));
+    if (!res.ok) throw new Error('fetch failed');
+    const svgStr = await res.text();
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(svgStr, 'image/svg+xml');
+    const fabricPaths: Path[] = [];
+    doc.querySelectorAll('path').forEach((p) => {
+      const d = p.getAttribute('d');
+      if (!d) return;
+      const fill = p.getAttribute('fill');
+      fabricPaths.push(new Path(d, {
+        fill: (!fill || fill === 'currentColor') ? '#212121' : fill === 'none' ? 'transparent' : fill,
+        stroke: (p.getAttribute('stroke') && p.getAttribute('stroke') !== 'none') ? p.getAttribute('stroke')! : undefined,
+        strokeWidth: parseFloat(p.getAttribute('stroke-width') || '0') || 0,
+      }));
+    });
+    let obj: InstanceType<typeof Path> | InstanceType<typeof Group> | InstanceType<typeof FabricImage>;
+    if (fabricPaths.length > 0) {
+      obj = fabricPaths.length === 1 ? fabricPaths[0] : new Group(fabricPaths);
+    } else {
+      const blob = new Blob([svgStr], { type: 'image/svg+xml' });
+      const url = URL.createObjectURL(blob);
+      obj = await FabricImage.fromURL(url);
+      URL.revokeObjectURL(url);
+    }
+    obj.set({ left: 440, top: 840, scaleX: 4, scaleY: 4, selectable: true, evented: true });
+    canvas.add(obj);
+    canvas.setActiveObject(obj);
+    canvas.renderAll();
+  } catch { /* SVG fetch/parse failed */ }
 }
 
 export default function IconSearchPanel({ canvas }: Props) {
   const [query, setQuery] = useState('');
-  const [icons, setIcons] = useState<string[]>([]);
+  const [icons, setIcons] = useState<string[]>(DEFAULT_FALLBACK);
   const [loading, setLoading] = useState(false);
   const [activeCat, setActiveCat] = useState<string | null>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const search = useCallback(async (q: string) => {
-    if (!q.trim()) { setIcons([]); return; }
+  const search = useCallback(async (q: string, catId?: string) => {
+    if (!q.trim()) { setIcons(DEFAULT_FALLBACK); return; }
     setLoading(true);
     try {
       const res = await fetch(`https://api.iconify.design/search?query=${encodeURIComponent(q)}&limit=24`);
+      if (!res.ok) throw new Error('API error');
       const data = await res.json();
-      setIcons(data.icons ?? []);
-    } catch { setIcons([]); }
+      const results = data.icons ?? [];
+      setIcons(results.length > 0 ? results : (catId && FALLBACK[catId] ? FALLBACK[catId] : DEFAULT_FALLBACK));
+    } catch {
+      setIcons(catId && FALLBACK[catId] ? FALLBACK[catId] : DEFAULT_FALLBACK);
+    }
     setLoading(false);
   }, []);
 
   const handleInput = (val: string) => {
-    setQuery(val);
-    setActiveCat(null);
+    setQuery(val); setActiveCat(null);
     if (timerRef.current) clearTimeout(timerRef.current);
     timerRef.current = setTimeout(() => search(val), 300);
   };
 
   const pickCategory = (cat: typeof CATEGORIES[number]) => {
-    setActiveCat(cat.id);
-    setQuery(cat.query);
-    search(cat.query);
+    setActiveCat(cat.id); setQuery(cat.query); search(cat.query, cat.id);
   };
 
   return (
@@ -106,7 +119,10 @@ export default function IconSearchPanel({ canvas }: Props) {
         {icons.map((icon) => (
           <button key={icon} onClick={() => canvas && addSvgToCanvas(canvas, icon)}
             className="aspect-square rounded-lg bg-white/5 hover:bg-white/10 transition-colors flex items-center justify-center" title={icon}>
-            <Icon icon={icon} width={24} className="text-white/70" />
+            {/* Use direct SVG img instead of @iconify/react — more reliable, no JS runtime needed */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={iconSvgUrl(icon)} alt={icon.split(':')[1]} width={24} height={24}
+              className="w-6 h-6 invert opacity-70" loading="lazy" />
           </button>
         ))}
       </div>

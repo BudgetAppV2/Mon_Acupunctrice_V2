@@ -18,7 +18,7 @@ export const PALETTE = {
   white: '#FFFFFF',
 };
 
-export const LOGO_URL = 'https://lasourceensoi.com/wp-content/uploads/2022/08/logo-la-source-en-soi-1.png';
+export const LOGO_URL = '/images/logo-la-source-en-soi.png';
 
 const W = 1080;
 const H = 1920;
