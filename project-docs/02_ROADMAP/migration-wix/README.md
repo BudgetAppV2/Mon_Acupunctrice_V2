@@ -13,7 +13,7 @@
 
 29 milestones MW-XX identifiés pour le MVP, répartis en 7 vagues d'exécution avec parallélisation maximale. 4 milestones post-MVP documentés pour la Phase 6.
 
-**Dernière action** : MW-B3 complété (commit `0022b72`). 13 composants design system dans `app/(public)/_components/` + `globals-public.css`. Tous < 150 lignes (max SiteFooter 117). SiteHeader est le seul Client Component, MobileMenu Server Component pur (état dans SiteHeader). Prochain : MW-A1a (inventaire Wix) ou découpage MW-A1 selon `NOTES_PREPA.md`.
+**Dernière action** : MW-B3 complété (commit `0022b72`). 13 composants design system + refactor MW-A1 → MW-A1a/A1b. Prochain : MW-A1a (inventaire Wix pur, débloque B4/D1).
 
 ---
 
@@ -39,7 +39,7 @@ La migration est découpée en **7 vagues** qui peuvent largement se chevaucher.
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │ VAGUE 0 — Prep (parallèle, zéro code)                           │
-│ MW-A1 Inventaire Wix · MW-A2 Mots-clés · MW-A4 Audit GEO        │
+│ MW-A1a Inventaire Wix · MW-A2 Mots-clés · MW-A4 Audit GEO       │
 └─────────────────────────────────────────────────────────────────┘
           ↓ (peuvent commencer en même temps)
 ┌─────────────────────────────────────────────────────────────────┐
@@ -90,7 +90,8 @@ La migration est découpée en **7 vagues** qui peuvent largement se chevaucher.
 
 | ID | Nom | Type | Temps CC | Deps | Status |
 |----|-----|------|----------|------|--------|
-| MW-A1 | Inventaire Wix complet + rapatriement assets v4 | 📋 Prep | 3-4h | — | 🔴 |
+| MW-A1a | Inventaire Wix complet + export contenu éditorial (Ricos JSON, pages, FAQ) | 📋 Prep | 2-3h | — | 🔴 |
+| MW-A1b | Rapatriement + optimisation assets v4 (photos, SVG, textures) | 📋📦 Prep + Content | 3-5h | MW-B3 | 🔴 |
 | MW-A2 | Recherche mots-clés Ubersuggest Pro | 📋 Prep | Manuel 2h | — | 🔴 |
 | MW-A4 | Audit GEO + plan d'action clinique La Source en Soi | 📋 Prep | 2-3h | — | 🔴 |
 
@@ -107,7 +108,7 @@ La migration est découpée en **7 vagues** qui peuvent largement se chevaucher.
 
 | ID | Nom | Type | Temps CC | Deps | Status |
 |----|-----|------|----------|------|--------|
-| MW-B4 | Parser Ricos JSON + endpoint `/api/blog/import/[postId]` + script migration Wix → Firestore avec images | 🏗️ Infra | 3-4h | MW-B2, MW-A1 | 🔴 |
+| MW-B4 | Parser Ricos JSON + endpoint `/api/blog/import/[postId]` + script migration Wix → Firestore avec images | 🏗️ Infra | 3-4h | MW-B2, MW-A1a | 🔴 |
 
 ### Vague 3 — Pages statiques & funnel (parallèle après B1+B3)
 
@@ -158,9 +159,9 @@ La migration est découpée en **7 vagues** qui peuvent largement se chevaucher.
 
 ---
 
-## Total MVP : 29 milestones (MW-A1 à MW-G2)
+## Total MVP : 30 milestones (MW-A1a/A1b à MW-G2)
 
-**Répartition** : A×4 (Prep) + B×4 (Infra) + C×6 (Pages statiques) + D×6 (Contenu) + E×4 (Admin) + F×3 (Automation) + G×2 (Lancement) = **29**
+**Répartition** : A×5 (Prep : A1a, A1b, A2, A3, A4) + B×4 (Infra) + C×6 (Pages statiques) + D×6 (Contenu) + E×4 (Admin) + F×3 (Automation) + G×2 (Lancement) = **30**
 
 **Estimation temps Claude Code cumulé** : ~65-95 heures d'exécution (hors supervision Benoit)
 
@@ -187,7 +188,7 @@ Mapping entre les 9 missions de haut niveau du plan éditorial et les milestones
 
 | Mission (plan v0.3) | Milestones MW correspondants |
 |---|---|
-| Mission 1 — Inventaire Wix + extraction | MW-A1, MW-B4, MW-D1 |
+| Mission 1 — Inventaire Wix + extraction | MW-A1a, MW-A1b, MW-B4, MW-D1 |
 | Mission 2 — Recherche mots-clés Ubersuggest | MW-A2 |
 | Mission 3 — Guide de ton | MW-A3 |
 | Mission 4 — Audit GEO + plan clinique | MW-A4 |
@@ -220,7 +221,7 @@ Les milestones manuels (MW-A2 Ubersuggest, MW-G2 DNS switch) n'ont pas de `PROMP
 Pour Benoit qui veut lancer les milestones un par un sur Claude Code, voici l'ordre pragmatique qui minimise les blocages :
 
 ### Semaine 1 — Démarrage
-1. **MW-A1** (inventaire Wix) — débloque MW-B4 et MW-D1
+1. **MW-A1a** (inventaire Wix pur) — débloque MW-B4 et MW-D1
 2. **MW-B1** (route group) — en parallèle, débloque toute la vague 3
 3. **MW-B2** (Firestore) — en parallèle, débloque B4/D3/E*
 
@@ -231,8 +232,9 @@ Pour Benoit qui veut lancer les milestones un par un sur Claude Code, voici l'or
 
 ### Semaine 3 — Import technique
 7. **MW-B4** (parser Ricos + script import) — bloqueur pour D1
-8. **MW-A3** (guide de ton) — quand Judith est dispo pour l'entretien
-9. **MW-D3** (import FAQ existantes) — quick win, du contenu déjà dans Firestore
+8. **MW-A1b** (assets v4) — après MW-B3 pour valider les wrappers SVG avec `BotanicalDeco`
+9. **MW-A3** (guide de ton) — quand Judith est dispo pour l'entretien
+10. **MW-D3** (import FAQ existantes) — quick win, du contenu déjà dans Firestore
 
 ### Semaine 4-5 — Pages statiques
 10. **MW-C1** (homepage) — vitrine visible rapidement, motivation
@@ -258,6 +260,7 @@ Pour Benoit qui veut lancer les milestones un par un sur Claude Code, voici l'or
 
 | Date | Décision | Raison |
 |------|----------|--------|
+| 2026-04-14 | **Découpage MW-A1 → MW-A1a + MW-A1b** (29 → 30 milestones) | L'inventaire Wix (prep analytique pure, zéro dep) et le rapatriement des assets v4 (implémentation touchant `public/` et `components/`, dep MW-B3 pour tester les wrappers SVG) ont des scopes et des dépendances différents. MW-A1a peut démarrer tout de suite, MW-A1b attend MW-B3. Détail dans `MW-A1a_inventaire-wix/NOTES_PREPA.md`. |
 | 2026-04-14 | Milestones dans `project-docs/02_ROADMAP/migration-wix/`, plan stratégique reste dans `docs/migration-wix/` | Cohérence avec pattern existant du repo, CLAUDE.md racine pointe déjà vers `02_ROADMAP/` |
 | 2026-04-14 | Naming `MW-XX` pour tous les milestones migration avec lettre de vague (MW-A1, MW-B2, etc.) | Préfixe explicite, évite confusion avec futurs milestones Hub ; lettre = vague pour lecture rapide |
 | 2026-04-14 | Un dossier par milestone (pas un fichier unique) | Extensible pour artefacts, notes, journal |
