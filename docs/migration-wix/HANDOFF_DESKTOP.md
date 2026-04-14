@@ -103,7 +103,7 @@ Le site public est indexé mobile-first par Google. Toute page ou composant qui 
 
 ## État des milestones au 14 avril 2026 (fin de session)
 
-**Complétés** (4/30) :
+**Complétés** (5/30) :
 
 | ID | Commit | Ce qui est en place |
 |---|---|---|
@@ -111,9 +111,11 @@ Le site public est indexé mobile-first par Google. Toute page ou composant qui 
 | 🟢 MW-B2 | `b89f0c0` | 5 types TS dans `lib/types/` (faq, ressource, public-blog, service-page, site-config), `Ressource` avec 8 sections riches + `faqEntries` + `citations`, `PublicationStatus` unique avec `'rejected'`, firestore.rules avec allowlist emails, 4 indexes composites, DATA_MODEL.md |
 | 🟢 MW-B3 | `0022b72` | 13 composants dans `app/(public)/_components/` (header, footer, CTA, cards, héading, décoratifs, MobileMenu), `globals-public.css`, max 117 lignes (SiteFooter), SiteHeader seul Client Component |
 | 🟢 MW-A1a | `c959162` | Script `scripts/export-wix-blog.mjs`, 11 Ricos JSON + metadata + 8 pages statiques + 6 FAQ vérifiées + 22 redirections 301 + 40 images downloaded (hors git via `.gitignore` ciblé), 3 gotchas MW-B4 documentés dans NOTES.md |
+| 🟢 MW-B4 | `ec38a1a` | `scripts/ricos-to-markdown.mjs` (parser 9 noeuds + 3 decorations), `scripts/migrate-wix-blog.mjs` (idempotent, dry-run), 11 articles dans `publicBlog` Firestore, 40 images dans Firebase Storage `public/blog/{slug}/`, `storage.rules` mis à jour avec `match /public/**`, 7/11 articles co-auteurs Claire Thomas détectés. **TODO déploiement manuel** : `firebase deploy --only storage` pour activer les rules en prod |
 
 **Débloqués et prêts à attaquer** :
-- **MW-B4** — parser Ricos → Firestore + Firebase Storage (dep MW-B2 ✅ + MW-A1a ✅) — **prochain attendu**
+- **MW-D1** — pages blog `/blog` (liste) et `/blog/[slug]` (article) — dep MW-B3 ✅ + MW-B4 ✅ — **prochain attendu** (rend visible le travail de MW-B4)
+- **MW-D3** — import 6 FAQ + 5 ressources depuis `scripts/seo-geo/` vers Firestore — dep MW-B2 ✅ — quick win
 - **MW-A1b** — rapatriement assets v4 (photos Eric Bates, SVG, textures) — dep MW-B3 ✅ — voir `NOTES_PREPA.md` pour le scope
 - **MW-C1 à MW-C6** — 6 pages statiques publiques — dep MW-B1 ✅ + MW-B3 ✅ — toute la Vague 3 est libre
 - **MW-E1 à MW-E4** — admin Hub pour CRUD FAQ/ressources — dep MW-B2 ✅
@@ -196,4 +198,4 @@ Benoit est un excellent partenaire de travail : il donne des infos précises, tr
 
 ---
 
-*Dernière mise à jour : 14 avril 2026, fin de session "4 milestones en une soirée". Prochain milestone attendu : MW-B4 (parser Ricos + script import Firestore/Storage).*
+*Dernière mise à jour : 14 avril 2026, fin de session "5 milestones en une soirée" (MW-B1, MW-B2, MW-B3, MW-A1a, MW-B4). Prochain milestone attendu : MW-D1 (pages blog `/blog` + `/blog/[slug]` pour afficher les 11 articles migrés par MW-B4).*

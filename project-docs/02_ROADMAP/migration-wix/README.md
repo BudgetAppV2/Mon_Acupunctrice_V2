@@ -9,11 +9,11 @@
 
 ## Statut global
 
-🟡 **En cours — MW-B1, MW-B2, MW-B3, MW-A1a complétés le 14 avril 2026**
+🟡 **En cours — MW-B1, MW-B2, MW-B3, MW-A1a, MW-B4 complétés le 14 avril 2026**
 
 29 milestones MW-XX identifiés pour le MVP, répartis en 7 vagues d'exécution avec parallélisation maximale. 4 milestones post-MVP documentés pour la Phase 6.
 
-**Dernière action** : MW-A1a complété (commit `c959162`). 11 articles Ricos JSON + 8 pages statiques markdown + 6 FAQ vérifiées + 22 redirections 301 + 40 images téléchargées localement (hors git via `.gitignore`). 3 gotchas documentés pour MW-B4 dans le NOTES.md. Prochain : MW-B4 (parser Ricos + import Firestore) — toutes les deps sont satisfaites.
+**Dernière action** : MW-B4 complété (commit `ec38a1a`). Parser Ricos + script migration `.mjs` standalone. 11 articles dans `publicBlog` Firestore avec `status: 'published'`, 40 images dans Firebase Storage sous `public/blog/{slug}/`, storage.rules mis à jour avec `match /public/{allPaths=**}`. **TODO Benoit** : `firebase deploy --only storage` pour activer les rules en prod. Prochain : MW-D1 (pages blog `/blog` + `/blog/[slug]`) — les données migrées deviennent visibles.
 
 ---
 
@@ -108,7 +108,7 @@ La migration est découpée en **7 vagues** qui peuvent largement se chevaucher.
 
 | ID | Nom | Type | Temps CC | Deps | Status |
 |----|-----|------|----------|------|--------|
-| MW-B4 | Parser Ricos JSON + endpoint `/api/blog/import/[postId]` + script migration Wix → Firestore avec images | 🏗️ Infra | 3-4h | MW-B2, MW-A1a | 🔴 |
+| MW-B4 | Parser Ricos JSON + endpoint `/api/blog/import/[postId]` + script migration Wix → Firestore avec images | 🏗️ Infra | 3-4h | MW-B2, MW-A1a | 🟢 |
 
 ### Vague 3 — Pages statiques & funnel (parallèle après B1+B3)
 
