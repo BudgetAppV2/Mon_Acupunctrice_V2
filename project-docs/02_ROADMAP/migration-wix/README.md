@@ -9,11 +9,11 @@
 
 ## Statut global
 
-🟡 **En cours — reverse planning complété le 14 avril 2026**
+🟡 **En cours — MW-B1 complété le 14 avril 2026**
 
 29 milestones MW-XX identifiés pour le MVP, répartis en 7 vagues d'exécution avec parallélisation maximale. 4 milestones post-MVP documentés pour la Phase 6.
 
-Prochaine action : Claude Code génère les `MILESTONE.md` détaillés en batch (voir méta-prompt dédié).
+**Dernière action** : MW-B1 complété (commit `61b7a38`). Route group `(public)/` + layout + fonts + tokens v4 en place. Prochain : MW-B2 (Firestore schemas) ou MW-B3 (composants base) selon la stratégie de parallélisation.
 
 ---
 
@@ -98,7 +98,7 @@ La migration est découpée en **7 vagues** qui peuvent largement se chevaucher.
 
 | ID | Nom | Type | Temps CC | Deps | Status |
 |----|-----|------|----------|------|--------|
-| MW-B1 | Route group `(public)/` + layout public + fonts + tokens v4 | 🏗️ Infra | 2-3h | — | 🔴 |
+| MW-B1 | Route group `(public)/` + layout public + fonts + tokens v4 | 🏗️ Infra | 2-3h | — | 🟢 |
 | MW-B2 | Schémas Firestore (FAQ/ressources/publicBlog/servicePages/siteConfig) + rules `status` + indexes | 🏗️ Infra | 2-3h | — | 🔴 |
 | MW-B3 | Composants partagés de base (`SiteHeader`, `SiteFooter`, `CtaButton`, `ClinicBadge`, `SectionHeading`, `PilierCard`, `TestimonialCard`, textures) | 🏗️ Infra | 4-6h | MW-B1 | 🔴 |
 | MW-A3 | Guide de ton (analyse corpus + entretien Judith) | 📋 Prep | 2-3h | — | 🔴 |
