@@ -285,7 +285,7 @@ import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 - **Ne pas** ajouter de dropdown Services (piliers) dans ce milestone — liens simples. Le dropdown viendra en itération post-lancement.
 - Breakpoint nav : `md:` (768px) — correspond au seuil 800px de la v4, arrondi au breakpoint Tailwind le plus proche
 
-**Contrainte 150 lignes** : ce composant risque d'approcher la limite. Si le menu overlay mobile est trop verbeux, extraire un `<MobileMenu />` dans le même fichier ou dans un fichier séparé `_components/MobileMenu.tsx`. **Voir section Questions stratégiques.**
+**Contrainte 150 lignes — décision prise en review Desktop** : **extraire `MobileMenu.tsx` dès le départ**, pas conditionnellement. SiteHeader vise < 100 lignes, MobileMenu vise < 100 lignes. Pas de "si ça dépasse" — on décompose proactivement. Le SiteHeader importe `import MobileMenu from './MobileMenu'` et passe `isOpen` + `onClose` en props. MobileMenu est Client Component (il a sa propre logique d'animation/focus) ou simple Server Component qui reçoit ses props — à Claude Code de trancher selon si une animation Framer Motion est ajoutée (sinon pas besoin de 'use client').
 
 ### `SiteFooter.tsx`
 
@@ -331,8 +331,8 @@ Ajouter l'import du CSS et des composants, puis intégrer header + footer :
 
 ```typescript
 import './globals-public.css';
-import { SiteHeader } from './_components/SiteHeader';
-import { SiteFooter } from './_components/SiteFooter';
+import SiteHeader from './_components/SiteHeader';
+import SiteFooter from './_components/SiteFooter';
 ```
 
 Modifier le JSX du wrapper `<div>` :
@@ -356,11 +356,12 @@ className={`... min-h-screen flex flex-col`}
 Remplacer le contenu placeholder par une vitrine des composants :
 
 ```tsx
-import { SectionHeading } from './_components/SectionHeading';
-import { SectionNumber } from './_components/SectionNumber';
-import { CtaButton } from './_components/CtaButton';
-import { ClinicBadge } from './_components/ClinicBadge';
-import { TestimonialCard } from './_components/TestimonialCard';
+import SectionHeading from './_components/SectionHeading';
+import SectionNumber from './_components/SectionNumber';
+import CtaButton from './_components/CtaButton';
+import ClinicBadge from './_components/ClinicBadge';
+import TestimonialCard from './_components/TestimonialCard';
+import PilierCard from './_components/PilierCard';
 ```
 
 Afficher dans le `<main>` :
@@ -418,10 +419,12 @@ Les mêmes règles que MW-B1 s'appliquent. Rappel :
 Chaque item doit être vérifiable en < 30 secondes.
 
 - [ ] `npm run build` passe sans erreur ni warning nouveau
-- [ ] 12 fichiers créés dans `app/(public)/_components/` + 1 `globals-public.css`
+- [ ] **13 fichiers créés** dans `app/(public)/_components/` (12 composants + MobileMenu extrait) + 1 `globals-public.css`
+- [ ] Tous les composants utilisent **`export default`** (cohérent avec le Hub existant)
 - [ ] `app/(public)/layout.tsx` importe SiteHeader + SiteFooter + globals-public.css
-- [ ] `localhost:3000/` affiche : header sticky + vitrine composants + footer fond sombre
+- [ ] `localhost:3000/` affiche : header sticky + vitrine composants (SectionNumber + SectionHeading + CtaButton ×2 + ClinicBadge ×2 + TestimonialCard + 2 PilierCards en grille) + footer fond sombre
 - [ ] `localhost:3000/services/fertilite` affiche : header + placeholder + footer (hérité du layout)
+- [ ] **Régression Hub** : `localhost:3000/calendrier` fonctionne sans erreur ET **n'affiche NI le SiteHeader NI le SiteFooter publics** (le Hub a sa propre nav via `(app)/layout.tsx`)
 - [ ] Header : logo "Judith Dufour-Savard" + "ACUPUNCTRICE" visibles en serif/sans
 - [ ] Header : liens nav visibles sur desktop (md:), cachés sur mobile
 - [ ] Header : hamburger visible sur mobile (< md:), ouvre un overlay avec les liens
@@ -437,7 +440,7 @@ Chaque item doit être vérifiable en < 30 secondes.
 - [ ] **Mobile 375px** : aucun scroll horizontal sur `/`
 - [ ] **Mobile 375px** : hamburger → overlay → close fonctionne
 - [ ] `localhost:3000/calendrier` fonctionne sans régression (Hub admin)
-- [ ] Aucun composant ne dépasse 150 lignes (ou un sous-composant a été extrait)
+- [ ] Aucun composant ne dépasse **150 lignes** (SiteHeader < 100, MobileMenu < 100, les autres < 80 en général)
 - [ ] `git diff` ne montre **aucune ligne modifiée** dans `app/layout.tsx`, `app/(app)/`, `app/(auth)/`, `tailwind.config.ts`
 - [ ] `NOTES.md` créé avec : date, résumé, points bloquants, line-count de chaque composant
 
@@ -448,7 +451,7 @@ Chaque item doit être vérifiable en < 30 secondes.
 - **Ordre recommandé** : L1 (globals-public.css) → L2 (4 décoratifs) → L3 (6 structurels, commencer par SectionHeading et CtaButton qui sont les plus simples) → L4 (layout + homepage) → build → dev → tests DoD
 - **SiteHeader est le composant le plus complexe** — il a du state (hamburger), du responsive, un overlay, des liens. L'écrire en dernier après avoir calibré son style avec les autres composants.
 - **Pour les composants décoratifs** : PaperTexture et GrainOverlay ne seront utilisés que dans MW-C1 (homepage) mais on les crée maintenant pour avoir le design system complet. La page vitrine (L4) n'a pas besoin de tous les afficher — juste header/footer/heading/cta/badge/testimonial.
-- **Export nommé** : utiliser `export function SiteHeader()` (pas `export default`) pour permettre les imports nommés `import { SiteHeader } from './_components/SiteHeader'`. Pattern cohérent avec les composants features du Hub qui utilisent `export default`, mais les _components publics sont préfixés et plus lisibles en export nommé.
+- **Export default obligatoire** : utiliser `export default function SiteHeader() { ... }` pour **tous** les composants du milestone. C'est le pattern du Hub existant (`components/features/calendar/*.tsx`, `components/features/publish/*.tsx`) — vérifié par Claude Desktop en review. Les imports dans le layout sont donc `import SiteHeader from './_components/SiteHeader'` (pas d'accolades).
 - **Si le SiteHeader dépasse 150 lignes** : extraire `MobileMenu.tsx` comme Client Component séparé dans le même dossier. Le SiteHeader importe `<MobileMenu isOpen={menuOpen} onClose={() => setMenuOpen(false)} />`. Flag dans NOTES.md.
 
 ---
@@ -481,27 +484,42 @@ Message de commit détaillé :
 
 ---
 
-## Questions stratégiques pour review Desktop
+## Questions stratégiques — review Desktop (toutes résolues ✅)
 
-### QS1 — SiteHeader et la limite 150 lignes
+### QS1 — SiteHeader et la limite 150 lignes (✅ RÉSOLUE en review Desktop)
 
-**Contexte** : le SiteHeader inclut logo, nav desktop (5 liens), CTA, hamburger mobile, overlay menu avec animation. C'est le composant le plus dense du milestone. Estimation : 100-160 lignes selon le niveau d'inline vs extraction.
+**Décision finale** : `MobileMenu.tsx` est **extrait dès le départ** comme composant séparé dans `app/(public)/_components/MobileMenu.tsx`. SiteHeader vise < 100 lignes, MobileMenu vise < 100 lignes. Pas de "si conditionnel" — la décomposition est proactive, c'est la meilleure pratique pour un header responsive avec overlay.
 
-**Options** :
-- **(a)** Garder en un seul fichier si ≤ 150 lignes — le plus simple, vérifie la règle
-- **(b)** Extraire `MobileMenu.tsx` si > 150 lignes — Client Component séparé, SiteHeader reste sous 100 lignes
-- **(c)** Assouplir la règle à 180 lignes pour ce composant uniquement — justifié par la complexité du responsive header
+**Structure résultante** :
+- `SiteHeader.tsx` — Client Component, gère `const [menuOpen, setMenuOpen] = useState(false)`, rend le logo + nav desktop + CTA + hamburger + `<MobileMenu isOpen={menuOpen} onClose={() => setMenuOpen(false)} />`
+- `MobileMenu.tsx` — rend le panneau overlay avec les liens en colonne + bouton close. Peut rester Server Component si aucune animation stateful n'est nécessaire (le parent gère l'ouverture/fermeture via conditional rendering ou classe CSS).
 
-**Reco par défaut** : option (b) — extraire MobileMenu si nécessaire. Ça garde la règle 150 lignes sans exception, et le MobileMenu est une unité logique autonome (il gère son propre rendu et ses animations).
+**Count total header** : 12 + 1 = **13 composants** dans `_components/` au lieu de 12. À refléter dans la DoD.
 
-### QS2 — PilierCard : images placeholder ou pas ?
+### QS2 — PilierCard : images placeholder ou pas ? (✅ RÉSOLUE en review Desktop)
 
-**Contexte** : PilierCard a une prop `image?: string` pour `next/image`. Les images réelles (photos Eric Bates) ne sont pas encore dans le repo (MW-A1). Pour la vitrine L4, on peut soit :
-- **(a)** Ne pas afficher de PilierCard dans la vitrine (pas d'image = laid)
-- **(b)** Afficher une PilierCard avec le fallback `bg-public-beige-dark` (pas d'image, juste le fond placeholder)
-- **(c)** Afficher une PilierCard avec un placeholder gradient ou SVG décoratif
+**Décision finale** : afficher **2 PilierCards en grille 2 colonnes** dans la vitrine homepage L4, avec le fallback `bg-public-beige-dark` (pas d'image, prop `image` non passée). Les 2 cartes : "Fertilité" et "Grossesse" (les 2 piliers les plus stratégiques SEO). Ça valide visuellement :
+1. Le composant PilierCard standalone
+2. Le responsive grid (1 colonne < md, 2 colonnes md+)
+3. Le fallback visuel quand pas d'image
+4. Le hover effect (lift + border color)
 
-**Reco par défaut** : option (b) — afficher le fallback fond beige-dark. Ça valide le composant sans dépendre d'images manquantes. Pas de PilierCard dans la vitrine homepage L4 si ça alourdit la page — on peut la tester en important directement dans un fichier de test temporaire.
+**Props à utiliser pour la vitrine** :
+```tsx
+<PilierCard
+  title="Fertilité"
+  description="Accompagnement doux pour la conception, soutien pendant les traitements de fertilité."
+  href="/services/fertilite"
+  featured
+/>
+<PilierCard
+  title="Grossesse & périnatalité"
+  description="Accompagnement pendant la grossesse et après la naissance."
+  href="/services/grossesse"
+/>
+```
+
+MW-A1 ajoutera les images Eric Bates plus tard, MW-C1 refera la homepage complète — cette vitrine est temporaire.
 
 ---
 
