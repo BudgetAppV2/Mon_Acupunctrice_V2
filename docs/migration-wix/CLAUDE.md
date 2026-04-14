@@ -23,6 +23,8 @@ Tu dois lire ces 3 documents **avant** toute session de travail sur la migration
 
 Si quelque chose n'est pas clair dans le milestone, réfère-toi au plan éditorial. Si le plan est ambigu, arrête et demande à Benoit avant de coder.
 
+**Si tu es un Claude Desktop qui reprend le projet après une conversation précédente** : lis **`docs/migration-wix/HANDOFF_DESKTOP.md`** en premier. Il contient l'état d'avancement, les décisions prises, les pièges connus, et comment faire les reviews de PROMPT.md. Ça te permet de reprendre en 5 minutes au lieu de demander 20 questions à Benoit.
+
 
 ---
 
