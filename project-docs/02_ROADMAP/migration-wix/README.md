@@ -9,11 +9,11 @@
 
 ## Statut global
 
-🟡 **En cours — MW-B1, MW-B2, MW-B3 complétés le 14 avril 2026**
+🟡 **En cours — MW-B1, MW-B2, MW-B3, MW-A1a complétés le 14 avril 2026**
 
 29 milestones MW-XX identifiés pour le MVP, répartis en 7 vagues d'exécution avec parallélisation maximale. 4 milestones post-MVP documentés pour la Phase 6.
 
-**Dernière action** : MW-B3 complété (commit `0022b72`). 13 composants design system + refactor MW-A1 → MW-A1a/A1b. Prochain : MW-A1a (inventaire Wix pur, débloque B4/D1).
+**Dernière action** : MW-A1a complété (commit `c959162`). 11 articles Ricos JSON + 8 pages statiques markdown + 6 FAQ vérifiées + 22 redirections 301 + 40 images téléchargées localement (hors git via `.gitignore`). 3 gotchas documentés pour MW-B4 dans le NOTES.md. Prochain : MW-B4 (parser Ricos + import Firestore) — toutes les deps sont satisfaites.
 
 ---
 
@@ -90,7 +90,7 @@ La migration est découpée en **7 vagues** qui peuvent largement se chevaucher.
 
 | ID | Nom | Type | Temps CC | Deps | Status |
 |----|-----|------|----------|------|--------|
-| MW-A1a | Inventaire Wix complet + export contenu éditorial (Ricos JSON, pages, FAQ) | 📋 Prep | 2-3h | — | 🔴 |
+| MW-A1a | Inventaire Wix complet + export contenu éditorial (Ricos JSON, pages, FAQ) | 📋 Prep | 2-3h | — | 🟢 |
 | MW-A1b | Rapatriement + optimisation assets v4 (photos, SVG, textures) | 📋📦 Prep + Content | 3-5h | MW-B3 | 🔴 |
 | MW-A2 | Recherche mots-clés Ubersuggest Pro | 📋 Prep | Manuel 2h | — | 🔴 |
 | MW-A4 | Audit GEO + plan d'action clinique La Source en Soi | 📋 Prep | 2-3h | — | 🔴 |
