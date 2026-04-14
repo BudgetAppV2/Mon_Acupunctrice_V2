@@ -138,6 +138,166 @@ interface User {
 
 ---
 
+## Collection : faqs (Migration Wix — MW-B2)
+
+```typescript
+type FaqCategory = 'fertilite' | 'grossesse' | 'pediatrie' | 'acupuncture-sociale' | 'seance';
+type PublicationStatus = 'draft' | 'pending' | 'published' | 'rejected';
+
+interface FAQ {
+  id: string;
+  question: string;
+  reponse: string;               // markdown
+  category: FaqCategory;
+  order: number;
+  status: PublicationStatus;
+  ctaVariant: 'reserver' | 'contact' | 'tarifs';
+  relatedServices: string[];     // slugs pages services
+  relatedArticles: string[];     // slugs articles publicBlog
+  relatedFaqs: string[];         // IDs d'autres documents faqs
+  publishedAt: Timestamp | null;
+  updatedAt: Timestamp;
+  createdAt: Timestamp;
+  rejectionReason?: string;      // Q11 — raison du rejet
+  rejectedAt?: Timestamp;
+  rejectedBy?: string;
+}
+```
+
+Lecture publique conditionnelle : `status == 'published'` uniquement.
+Pages : `/faq`, `/faq/[category]`. Admin : `(app)/site-public/faqs/` (MW-E1).
+Import initial : 6 FAQ depuis `scripts/seo-geo/source/` (MW-D3).
+
+---
+
+## Collection : ressources (Migration Wix — MW-B2)
+
+```typescript
+interface Ressource {
+  id: string;
+  title: string;
+  slug: string;
+  type: 'guide' | 'checklist' | 'article-fond' | 'infographie';
+  pilier: 'fertilite' | 'grossesse' | 'pediatrie' | 'acupuncture-sociale' | 'transversal';
+  status: PublicationStatus;
+
+  // Meta SEO
+  metaTitle: string;
+  metaDescription: string;
+  heroImageUrl?: string;
+  heroImageAlt: string;
+
+  // Sections riches (markdown)
+  shortAnswer: string;
+  introSection: string;
+  scienceSection: string;
+  mechanismSection: string;
+  judithApproach: string;
+  whatToExpect: string;
+  protocolSection: string;
+  testimonial: string;
+
+  // FAQ embarquée (schema.org FAQPage)
+  faqEntries: { question: string; answer: string }[];
+
+  // Citations scientifiques
+  citations: { authors: string; title: string; journal: string; year: number; url?: string }[];
+
+  // Relations (maillage)
+  relatedServices: string[];
+  relatedFaqs: string[];
+  relatedArticles: string[];
+  relatedResources: string[];
+
+  authorName: string;
+  publishedAt: Timestamp | null;
+  updatedAt: Timestamp;
+  createdAt: Timestamp;
+  rejectionReason?: string;
+  rejectedAt?: Timestamp;
+  rejectedBy?: string;
+}
+```
+
+Lecture publique conditionnelle : `status == 'published'`.
+Pages : `/ressources`, `/ressources/[slug]`. Admin : `(app)/site-public/ressources/` (MW-E2).
+Import initial : 5 ressources depuis `scripts/seo-geo/source-resources/` (MW-D3).
+Les pages services (`/services/*`) extraient des sections de la ressource correspondante (hub-and-spoke).
+
+---
+
+## Collection : publicBlog (Migration Wix — MW-B2)
+
+```typescript
+interface PublicBlogPost {
+  id: string;
+  title: string;
+  slug: string;
+  content: string;               // markdown (converti depuis Ricos)
+  excerpt: string;
+  coverImage: string;
+  author: string;                // "Judith Dufour-Savard" ou co-auteur Claire Thomas
+  category: string;
+  tags: string[];
+  status: PublicationStatus;
+  relatedServices: string[];
+  relatedFaqs: string[];
+  relatedArticles: string[];
+  wixPostId?: string;            // double publication Wix/Firestore (amendement A3)
+  publishedAt: Timestamp | null;
+  updatedAt: Timestamp;
+  createdAt: Timestamp;
+  rejectionReason?: string;
+  rejectedAt?: Timestamp;
+  rejectedBy?: string;
+}
+```
+
+Lecture publique conditionnelle : `status == 'published'`.
+Pages : `/blog`, `/blog/[slug]`. Import : 11 articles Wix via parser Ricos (MW-B4 + MW-D1).
+
+---
+
+## Collection : servicePages (Migration Wix — MW-B2)
+
+```typescript
+interface ServicePage {
+  id: string;
+  slug: 'fertilite' | 'grossesse' | 'pediatrie' | 'acupuncture-sociale';
+  title: string;
+  metaTitle: string;
+  metaDescription: string;
+  heroTitle: string;
+  heroSubtitle: string;
+  content: string;               // markdown — contenu court du hub
+  status: PublicationStatus;
+  updatedAt: Timestamp;
+}
+```
+
+Lecture publique conditionnelle : `status == 'published'`.
+Pages : `/services/[slug]`. Seulement 4 documents (un par pilier).
+Le contenu court est extrait de la ressource correspondante.
+
+---
+
+## Collection : siteConfig (Migration Wix — MW-B2)
+
+```typescript
+// ATTENTION : lecture publique sans authentification.
+// Ne JAMAIS stocker de données sensibles.
+interface SiteConfig {
+  id: string;        // 'general', 'nap', 'social', 'testimonials', 'contentRefresh'
+  data: Record<string, unknown>;
+  updatedAt: Timestamp;
+}
+```
+
+Lecture publique sans condition (pas de filtre status).
+Contient des données non sensibles : NAP clinique, liens sociaux, textes de footer, timestamps crons.
+
+---
+
 ## Règles de validation
 
 ```
@@ -199,6 +359,12 @@ service cloud.firestore {
         && request.auth.uid == userId;
       allow write: if false;  // Cloud Functions only
     }
+
+    // --- Site public (MW-B2) ---
+    // Voir firestore.rules pour l'implémentation complète.
+    // isAdmin() = allowlist emails vérifiés (Benoit + Judith)
+    // faqs, ressources, publicBlog, servicePages : read si status=='published', write si isAdmin()
+    // siteConfig : read public sans condition, write si isAdmin()
   }
 }
 ```
@@ -231,4 +397,10 @@ contentItems: userId ASC + distributionStatus ASC + scheduledAt ASC
 
 // Index ajoutés (M12 — pour fetchInsights)
 contentItems: userId ASC + distributionStatus ASC + publishedAt DESC
+
+// Index ajoutés (MW-B2 — site public)
+faqs: status ASC + category ASC + order ASC
+ressources: status ASC + pilier ASC + publishedAt DESC
+publicBlog: status ASC + publishedAt DESC
+publicBlog: status ASC + category ASC + publishedAt DESC
 ```
