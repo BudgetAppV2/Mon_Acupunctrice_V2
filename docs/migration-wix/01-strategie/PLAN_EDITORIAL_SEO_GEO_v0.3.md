@@ -473,6 +473,144 @@ Le plan Hobby supporte jusqu'à 100 crons par projet (depuis janvier 2026), avec
 
 Pas d'upgrade Pro nécessaire au lancement. Économie de ~20 $/mois maintenue.
 
+### 4.6 UI Guidelines & Design System
+
+> **Source canonique** : `~/Documents/Judith_SEO_GEO/05_maquettes/nouveau-site/homepage-v4.html` est la **maquette de référence officielle** du site. Elle contient le système de design complet (tokens CSS, composants, typographie, photos, décorations SVG) et doit servir de base à toute l'implémentation Next.js/React de la Phase 2.
+
+Cette section synthétise les décisions de design déjà prises dans la v4 pour qu'elles soient versionnées dans le plan et servent de contrat entre les sessions.
+
+#### 4.6.1 Philosophie visuelle
+
+Le site de Judith adopte une esthétique **chaleureuse, artisanale, botanique**, à l'opposé des sites cliniques/médicaux aseptisés. Principes directeurs :
+
+- **Matérialité** : textures papier japonais en overlay (`multiply`, opacity 0.40), grain papier SVG subtil (noise filter), transparence qui évoque le tactile plutôt que le numérique
+- **Asymétrie volontaire** : les cartes piliers sont décalées verticalement (`translateY` 24px et 48px), les témoignages utilisent un grid irrégulier, pour éviter l'effet "template SaaS"
+- **Décoration botanique & zen** : SVG Freepik intégrés comme éléments d'identité (femme enceinte dessinée, mains+lotus, pierres zen, branche botanique), pas comme stickers mais comme watermarks en arrière-plan avec `mix-blend-mode: multiply`
+- **Typographie héroïque** : mots serif géants en filigrane (font-size jusqu'à 260px, opacity 0.04-0.18, italique)
+- **Numéros de section manuscrits** : serif italique XL (140px desktop, 80px mobile), opacity 0.18, en terracotta
+- **Photos Eric Bates Images** : 8 portraits professionnels de Judith, à utiliser comme actif central (hero, services, à propos, approche)
+
+L'objectif : un site qui **se sent écrit à la main par quelqu'un qui respire la nature et la douceur**, pas généré par un builder.
+
+#### 4.6.2 Design tokens (extraits de la v4 — à porter dans `tailwind.config.ts`)
+
+**Palette** :
+
+| Token | Hex | Usage |
+|---|---|---|
+| `--beige-bg` | `#F5F0E8` | Fond principal sections chaudes |
+| `--beige-light` | `#FAF6EF` | Fond clair, cartes |
+| `--beige-dark` | `#EDE4D3` | Placeholder images |
+| `--beige-warm` | `#E8DFD0` | Fond section témoignages |
+| `--taupe-section` | `#D5CDBF` | Fond section alternatif |
+| `--text-dark` | `#2C2A26` | Texte principal (titres, body fort) |
+| `--text-medium` | `#5C5852` | Texte secondaire (paragraphes) |
+| `--text-light` | `#8A857C` | Métadonnées, captions |
+| `--accent-taupe` | `#8A9A7B` | **Accent primaire** (boutons, liens hover, CTA) |
+| `--accent-taupe-dark` | `#6F8566` | Hover sur accent primaire |
+| `--accent-taupe-light` | `#A8B59C` | Avatars, badges soft |
+| `--accent-warm` | `#B8694A` | **Accent secondaire terracotta** (soulignés italiques hero, numéros de section, citations) |
+| `--accent-warm-soft` | `#C47A58` | Variante plus douce |
+| `--border-subtle` | `#E5DFD2` | Bordures cartes, separators |
+
+**Note sur l'intégration Hub V2** : le `tailwind.config.ts` existant a déjà `sage: '#5C7A5F'` et `sand: '#F5F1E9'` pour le Hub admin. Ces couleurs sont **différentes** de celles de la v4 publique. Décision : garder les couleurs Hub intactes pour l'admin, ajouter un namespace `public-*` ou `judith-*` dans Tailwind pour les tokens de la v4. Les deux systèmes cohabiteront sans interférence.
+
+**Typographie** :
+
+- **Serif** : `'Cormorant Garamond'` (titres, H1/H2/H3, numéros de section, citations, logo)
+- **Sans** : `'Inter'` (body, navigation, boutons, UI)
+- **Échelles** :
+  - H1 hero : 74px desktop / 48px mobile, weight 500, letter-spacing -1.5px
+  - Section title : 46px desktop / 34px mobile, weight 500
+  - H3 carte pilier : 28px, weight 600
+  - Body : 17-18px, line-height 1.65-1.75, color `--text-medium`
+  - Kicker : 11px, letter-spacing 2.5px, uppercase, weight 600
+
+**Espacements & rayons** :
+
+- Radius : `--radius-sm: 6px`, `--radius-md: 10px`, `--radius-lg: 14px`, `--radius-xl: 20px`
+- Section padding : `104px 32px` desktop, `68px 20px` mobile
+- Max-width container : `1280px`
+- Gaps standard : 24px, 32px, 72px
+
+**Ombres** (toutes teintées chaud, pas de gris pur) :
+
+- `--shadow-sm: 0 1px 3px rgba(44, 42, 38, 0.05)`
+- `--shadow-md: 0 4px 12px rgba(44, 42, 38, 0.08)`
+- `--shadow-lg: 0 12px 40px rgba(44, 42, 38, 0.12)`
+- `--shadow-photo: 0 20px 60px rgba(44, 42, 38, 0.15)` (pour photos hero et approche)
+
+**Transitions** : `0.2s ease` par défaut, `0.35s cubic-bezier(.22,.61,.36,1)` pour les cartes avec hover lift.
+
+#### 4.6.3 Composants à porter en React
+
+La v4 définit 6 composants nommés qui deviennent des fichiers React dans `app/(public)/_components/` :
+
+| Composant v4 | Fichier React | Rôle |
+|---|---|---|
+| `judith-header` | `<SiteHeader />` | Header sticky avec logo serif, nav, CTA Réserver |
+| `judith-footer` | `<SiteFooter />` | Footer 4 colonnes + mention "En partenariat avec La Source en Soi ★ 4,9/5" |
+| `judith-cta-button` | `<CtaButton />` | Bouton Réserver avec variantes (primary, secondary, lg, sticky mobile) |
+| `judith-pilier-card` | `<PilierCard />` | Carte pilier avec image, titre, description, lien, état featured |
+| `judith-testimonial` | `<TestimonialCard />` | Carte témoignage avec citation serif italique + avatar |
+| `judith-section-heading` | `<SectionHeading />` | Kicker + titre + subtitle, version center/left |
+
+Composants additionnels identifiés (à créer en Phase 2) :
+
+- `<ClinicBadge />` — affichage "★ 4,9/5 · 1 200+ avis Google" avec lien vers Google Maps La Source en Soi
+- `<SectionNumber />` — numéro manuscrit XL en watermark
+- `<WatermarkText />` — mot serif géant en filigrane
+- `<PaperTexture />` — wrapper qui applique textures papier japonais en overlay
+- `<GrainOverlay />` — SVG noise filter pour effet papier
+- `<BotanicalDeco />` — wrapper pour positionner les SVG Freepik décoratifs avec blend mode
+- `<RelatedContent />` (section 4.4) — maillage interne
+- `<ContextualLink />` (section 4.4) — liens internes avec ancres SEO-friendly
+
+#### 4.6.4 Assets à migrer
+
+Les assets de la v4 sont dans `~/Documents/Judith_SEO_GEO/05_maquettes/nouveau-site/assets/` :
+
+- **Photos Eric Bates Images** (`assets/photos_Judith/Croped/`) : 8 portraits haute résolution à migrer vers Firebase Storage sous `/public/site/judith/`
+- **SVG Freepik** (`assets/svg/`) : ~5 SVG décoratifs (femme enceinte, mains+lotus, pierres zen, branche botanique, lune+étoiles) à copier dans `public/site/decorations/`
+- **Textures papier** (`assets/textures/`) : 2 images de papier japonais à copier dans `public/site/textures/`
+
+**Action Mission 1** : ajouter au livrable de Mission 1 (inventaire Wix) le **rapatriement des assets de la v4** dans la structure du repo Hub V2. Les photos Eric Bates en particulier sont un actif visuel central qui ne doit surtout pas être perdu.
+
+#### 4.6.5 Responsive breakpoints
+
+La v4 utilise une approche mobile-first avec un seul breakpoint majeur à **900px** :
+
+- `< 900px` : mobile/tablet, grilles en colonne simple, typographie réduite, décorations SVG cachées
+- `≥ 900px` : desktop, grilles multi-colonnes, typographie full, décorations visibles
+
+Breakpoint secondaire à **800px** pour le header (cacher la nav, garder le CTA).
+
+À porter dans Tailwind : utiliser les breakpoints par défaut (`md: 768px`, `lg: 1024px`) et adapter les utilities pour matcher les seuils de la v4. Pas besoin de custom breakpoints.
+
+#### 4.6.6 Règles d'implémentation
+
+- **La v4 est la source de vérité visuelle** — toute divergence doit être justifiée et documentée
+- **Pas de framework UI external** (pas de Material, pas de shadcn, pas de Chakra) — les composants sont construits from scratch sur Tailwind, avec les tokens de la v4
+- **Les classes Tailwind réutilisables** sont extraites en `@apply` dans `globals.css` pour les patterns récurrents (ex. `.btn-reserver`, `.section-kicker`, `.section-title`)
+- **Les décorations SVG et textures** sont chargées via `next/image` avec `priority={false}` et `loading="lazy"` pour ne pas pénaliser le LCP
+- **Les photos Eric Bates** sont servies via `next/image` avec sizes appropriés et format AVIF/WebP automatique
+- **Accessibilité** : contraste WCAG AA minimum sur tous les textes, focus states visibles, navigation clavier, alt text sur toutes les images, `prefers-reduced-motion` respecté pour les hover effects
+- **Performance** : objectif Lighthouse 95+ sur Performance, Accessibility, Best Practices, SEO
+
+#### 4.6.7 Ce qui reste à créer (non présent dans la v4)
+
+La v4 est une maquette de homepage uniquement. Les pages suivantes devront être conçues dans le même langage visuel en Phase 2 :
+
+- Page `/a-propos` (bloc "Ma clinique" avec badge 4,9/5 · 1 215 avis)
+- 4 pages services (fertilité, grossesse, pédiatrie, acupuncture sociale) avec structure hub SEO
+- Page `/tarifs` (échelle solidaire expliquée avec douceur)
+- Page `/reserver` (landing de confiance — voir section 9.1)
+- Pages `/faq`, `/faq/[category]`, `/ressources`, `/ressources/[slug]`
+- Page blog `/blog` et article individuel `/blog/[slug]` (cohérent avec le carrousel déjà présent sur la homepage v4)
+- Page `/contact`
+
+Chaque page doit réutiliser les composants définis en 4.6.3, les tokens de 4.6.2, et respecter la philosophie visuelle de 4.6.1.
+
 ---
 
 ## 5. Plan FAQ
@@ -1207,7 +1345,7 @@ Les décisions prises en v0.3 sont notées ✅. Les points restants sont à rés
 |---------|------|--------|-------------|
 | 0.1 | 13 avril 2026 | Benoit + Claude | Draft initial |
 | 0.2 | 13 avril 2026 | Benoit + Claude | Ajout section 2.1b (Ancrage clinique), ajout section 4.4 (Maillage interne hub-and-spoke), réécriture section 8 (stratégie GEO capitalisant sur La Source en Soi, schema Person+MedicalClinic au lieu de LocalBusiness autonome), réécriture section 9.1 (page /reserver comme landing de confiance qui transforme la friction en signal), réécriture section 9.3 (paramètres Go Rendez-Vous), extension Mission 4 (audit GBP clinique + avis Lumino Health) |
-| 0.3 | 13 avril 2026 | Benoit + Claude (post-scouting) | Intégration des 7 rapports de scouting Claude Code. Passage de 3 à **4 piliers** (ajout Acupuncture pédiatrique). Section 1.1 enrichie avec données réelles (27 URLs, 11 articles, CSR Wix Thunderbolt). Section 1.2 avec GBP La Source en Soi confirmé à **4,9/5 · 1 215 avis**, backlink `lasourceensoi.com/equipe/judith-dufour-savard/` identifié comme actif à préserver, DNS confirmé chez Wix, contenu `scripts/seo-geo/` validé. Section 3 réécrite en 4 piliers avec positionnement concurrentiel par pilier. Section 3.2 mots-clés enrichie avec données scouting + catégories pédiatrique et "combien coûte". Section 4.1 arborescence avec `/services/pediatrie` et `/faq/pediatrie`, décision sur `/bienfaits` (démantèlement). **Nouvelle section 4.5** : Architecture technique cohabitation Hub V2 (route group `(public)`, schéma Firestore sans conflit, design tokens, crons Hobby 100×/jour suffisants, stratégie rendu SSG+ISR). Section 5.3 volume FAQ à 65-85. **Section 5.4 réécrite** : guide de ton avec 3 voix identifiées, décision vouvoiement + "je" signature. Section 8 amplifiée (1 215 avis comme levier central). **Nouvelle section 8.1b** : stratégie d'affichage des 1 215 avis sur homepage, services, À propos, /reserver, footer. Section 8.2 GBP avec données réelles, Lumino désinvesti. **Section 10 réécrite** en 9 missions de build concrètes (inventaire Wix, mots-clés Ubersuggest, guide de ton, audit GEO+plan clinique, transfert DNS Cloudflare, architecture Firestore+routes, build pages statiques, build contenu dynamique, lancement). **Section 11 réécrite** en 6 phases d'exécution avec Phase 0 infra (durée estimée 10-14 semaines). Section 12 mise à jour avec 14 décisions tranchées et 4 points restants. |
+| 0.3 | 13 avril 2026 | Benoit + Claude (post-scouting) | Intégration des 7 rapports de scouting Claude Code. Passage de 3 à **4 piliers** (ajout Acupuncture pédiatrique). Section 1.1 enrichie avec données réelles (27 URLs, 11 articles, CSR Wix Thunderbolt). Section 1.2 avec GBP La Source en Soi confirmé à **4,9/5 · 1 215 avis**, backlink `lasourceensoi.com/equipe/judith-dufour-savard/` identifié comme actif à préserver, DNS confirmé chez Wix, contenu `scripts/seo-geo/` validé. Section 3 réécrite en 4 piliers avec positionnement concurrentiel par pilier. Section 3.2 mots-clés enrichie avec données scouting + catégories pédiatrique et "combien coûte". Section 4.1 arborescence avec `/services/pediatrie` et `/faq/pediatrie`, décision sur `/bienfaits` (démantèlement). **Nouvelle section 4.5** : Architecture technique cohabitation Hub V2 (route group `(public)`, schéma Firestore sans conflit, design tokens, crons Hobby 100×/jour suffisants, stratégie rendu SSG+ISR). **Nouvelle section 4.6** : UI Guidelines & Design System référençant `homepage-v4.html` comme source canonique (philosophie visuelle, palette complète, typographie, composants à porter en React, assets à migrer, règles d'implémentation). Section 5.3 volume FAQ à 65-85. **Section 5.4 réécrite** : guide de ton avec 3 voix identifiées, décision vouvoiement + "je" signature. Section 8 amplifiée (1 215 avis comme levier central). **Nouvelle section 8.1b** : stratégie d'affichage des 1 215 avis sur homepage, services, À propos, /reserver, footer. Section 8.2 GBP avec données réelles, Lumino désinvesti. **Section 10 réécrite** en 9 missions de build concrètes (inventaire Wix, mots-clés Ubersuggest, guide de ton, audit GEO+plan clinique, transfert DNS Cloudflare, architecture Firestore+routes, build pages statiques, build contenu dynamique, lancement). **Section 11 réécrite** en 6 phases d'exécution avec Phase 0 infra (durée estimée 10-14 semaines). Section 12 mise à jour avec 14 décisions tranchées et 4 points restants. |
 
 ---
 
