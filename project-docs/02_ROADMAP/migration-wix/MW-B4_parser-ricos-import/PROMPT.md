@@ -6,9 +6,9 @@
 
 ## Contexte
 
-MW-A1a a exporte les 11 articles de blog Wix en Ricos JSON brut (dans `artefacts/blog-ricos/`) et telecharge 40 images (11 covers + 29 inline dans `artefacts/images/blog/`). MW-B2 a defini le schema `PublicBlogPost` dans Firestore. Ce milestone fait le pont : ecrire un parser Ricos → markdown, un script de migration qui pousse le tout dans Firestore avec images re-uploadees vers Firebase Storage. Script en `.mjs`, coherent avec `scripts/export-wix-blog.mjs` et `scripts/seo-geo/*.mjs`.
+MW-A1a a exporte les 11 articles de blog Wix en Ricos JSON brut (dans `artefacts/blog-ricos/`) et telecharge 40 images (11 covers + 29 inline dans `artefacts/images/blog/`). MW-B2 a defini le schema `PublicBlogPost` dans Firestore. Ce milestone fait le pont : **4 livrables** — un parser Ricos → markdown, un script de migration qui pousse le tout dans Firestore avec images re-uploadees vers Firebase Storage, une mise à jour des Storage rules pour la lecture publique des images sous `public/**`, et un rapport de migration. Script en `.mjs`, coherent avec `scripts/export-wix-blog.mjs` et `scripts/seo-geo/*.mjs`.
 
-Apres ce milestone : les 11 articles sont dans `publicBlog` Firestore avec `status: 'published'`, le markdown est lisible, et les images pointent vers Firebase Storage.
+Apres ce milestone : les 11 articles sont dans `publicBlog` Firestore avec `status: 'published'`, le markdown est lisible, les images pointent vers Firebase Storage et sont accessibles publiquement.
 
 ---
 
@@ -264,26 +264,52 @@ const bucket = getStorage(app).bucket();  // bucket par defaut du projet
 **Upload image vers Firebase Storage** :
 
 ```javascript
+import { readFileSync } from 'node:fs';
+import { extname } from 'node:path';
+
+function getMimeType(filePath) {
+  const ext = extname(filePath).toLowerCase();
+  const map = {
+    '.jpg': 'image/jpeg',
+    '.jpeg': 'image/jpeg',
+    '.png': 'image/png',
+    '.webp': 'image/webp',
+    '.gif': 'image/gif',
+  };
+  return map[ext] || 'application/octet-stream';
+}
+
 async function uploadToStorage(localPath, storagePath) {
   const file = bucket.file(storagePath);
   await file.save(readFileSync(localPath), {
     metadata: { contentType: getMimeType(localPath) },
-    public: true,  // rendre accessible sans auth
+    // NE PAS passer { public: true } — cette option est instable avec
+    // Uniform Bucket-Level Access (UBLA) qui est activé par défaut sur
+    // les buckets Firebase modernes. La lecture publique est gérée par
+    // les Storage rules (Livrable 3) qui autorisent read: if true sous public/**
   });
-  // URL publique du bucket
-  return `https://storage.googleapis.com/${bucket.name}/${storagePath}`;
+  // URL publique via le chemin bucket (fonctionne avec les storage.rules du L3)
+  return `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(storagePath)}?alt=media`;
 }
 ```
 
+**Note sur l'URL** : on utilise le format `firebasestorage.googleapis.com/v0/b/.../o/{encodedPath}?alt=media` qui **respecte les Storage rules**. L'alternative `storage.googleapis.com/{bucket}/{path}` ne respecte PAS les rules (accès direct GCS) et ne fonctionnera que si le bucket a été configuré avec UBLA désactivé — ce qu'on ne peut pas supposer.
+
 **Remplacement des URLs dans le markdown** :
 
-Apres parsing, le markdown contient des `![alt](https://static.wixstatic.com/media/hash~mv2.ext)`. Le script :
-1. Liste les fichiers dans `artefacts/images/blog/{slug}/`
-2. Mappe chaque image locale a son URL Wix d'origine (via le nom de fichier ou l'ordre)
-3. Uploade chaque image et construit un mapping `wixUrl → storageUrl`
-4. Remplace dans le markdown via `string.replace()`
+Apres parsing, le markdown contient des `![alt](https://static.wixstatic.com/media/hash~mv2.ext)` pour les images **inline** uniquement (pas la cover — voir ci-dessous).
 
-**Gotcha mapping images** : le script MW-A1a nomme les images `cover.{ext}`, `inline-1.{ext}`, `inline-2.{ext}`, etc. L'ordre correspond a l'ordre d'apparition dans le Ricos JSON. Pour reconstruire le mapping, parser a nouveau le Ricos JSON pour extraire les URLs dans l'ordre, puis associer chaque `inline-N` a sa position.
+**IMPORTANT — 2 chemins distincts pour les images** :
+
+1. **Cover image** : la cover N'EST PAS dans le Ricos JSON (gotcha documenté dans MW-A1a NOTES.md). Elle est dans `blog-metadata.json.coverImageUrl` et physiquement sur disque sous `artefacts/images/blog/{slug}/cover.{ext}`. Le script uploade cette cover séparément vers `public/blog/{slug}/cover.{ext}` et assigne l'URL Storage au champ `coverImage` du document `PublicBlogPost`. **La cover ne se retrouve jamais dans le markdown `content`**.
+
+2. **Images inline** : elles sont dans le Ricos JSON sous forme de noeuds `IMAGE`, et physiquement sur disque sous `artefacts/images/blog/{slug}/inline-1.{ext}`, `inline-2.{ext}`, etc. (numérotées par `scripts/export-wix-blog.mjs` dans l'ordre d'apparition dans le Ricos). Le script :
+   1. Parse le Ricos JSON avec `ricosToMarkdown()` → le markdown contient les URLs Wix originales
+   2. Re-parse le Ricos JSON pour extraire les URLs Wix dans l'ordre (même ordre que l'export)
+   3. Pour chaque URL Wix dans l'ordre : uploade le fichier local correspondant (`inline-N.{ext}`) vers `public/blog/{slug}/inline-N.{ext}`
+   4. Remplace l'URL Wix dans le markdown par l'URL Storage via `string.replace()`
+
+**Vérification de l'ordre des images inline** : `scripts/export-wix-blog.mjs` nomme les inline `inline-${j + 1}` où `j` est l'index dans la liste des URLs extraites du Ricos. Ton script doit re-parser le Ricos de la **même manière** pour garantir le mapping `inline-N → URL Wix correspondante`. Recommandé : extraire une fonction `extractImageUrlsFromRicos(richContent)` commune et la réutiliser dans `ricos-to-markdown.mjs` et `migrate-wix-blog.mjs`.
 
 **Mode `--dry-run`** : flag qui :
 - Parse le markdown (toujours)
@@ -295,7 +321,34 @@ Apres parsing, le markdown contient des `![alt](https://static.wixstatic.com/med
 
 ---
 
-## Livrable 3 — Rapport de migration
+## Livrable 3 — Mise à jour de `storage.rules` (CRITIQUE)
+
+**Objectif** : le fichier `storage.rules` actuel **n'autorise PAS la lecture publique** pour le chemin `public/**`. Le catch-all en bas du fichier dit `allow read, write: if request.auth != null` — donc les images uploadées sous `public/blog/` seraient invisibles sans authentification. Inacceptable pour un site public qui sert les images aux visiteurs anonymes.
+
+**Fichier à modifier** : `storage.rules`
+
+**Ajouter ce bloc** avant le catch-all `match /{allPaths=**}` (juste après le bloc `match /temp/...`) :
+
+```
+    // Site public (migration Wix → Vercel) — lecture publique, ecriture via
+    // Admin SDK uniquement (qui bypass les rules). MW-B4, MW-A1b, etc.
+    match /public/{allPaths=**} {
+      allow read: if true;
+      allow write: if false;
+    }
+```
+
+**Points clés** :
+- `allow read: if true` → tout visiteur peut afficher les images (c'est un site public)
+- `allow write: if false` → aucune écriture depuis le client. Seul le Firebase Admin SDK peut écrire (il bypass toutes les rules) — donc les scripts de migration fonctionnent.
+- Les rules existantes (`videos`, `covers`, `temp`, catch-all) ne sont **pas modifiées**
+- Une fois modifié, Benoit devra déployer : `firebase deploy --only storage` (ou noter dans NOTES.md que les rules seront déployées manuellement)
+
+**Test de validation** : après déploiement, vérifier qu'une URL type `https://storage.googleapis.com/{bucket}/public/blog/test.jpg` est accessible en navigation anonyme (sans cookies/session Firebase).
+
+---
+
+## Livrable 4 — Rapport de migration
 
 **Fichier genere par le script** : `project-docs/02_ROADMAP/migration-wix/MW-B4_parser-ricos-import/artefacts/migration-report.md`
 
@@ -329,6 +382,7 @@ Apres parsing, le markdown contient des `![alt](https://static.wixstatic.com/med
 - **Ne pas** creer de route API pour ca — script standalone `.mjs`
 - **Ne pas** modifier les Ricos JSON source dans `artefacts/` — lecture seule
 - **Ne pas** toucher a `firestore.rules` ni `firestore.indexes.json` — deja fait en MW-B2
+- **Le mode réel DOIT être idempotent** : relancer le script sur les mêmes 11 articles doit écraser proprement les documents existants (même document ID = slug) **sans créer de doublons**. Utiliser `db.collection('publicBlog').doc(slug).set(data)` (pas `.add()` qui génère un ID aléatoire). Même chose pour les images : `file.save()` écrase le fichier au même chemin.
 - Le parser doit **gerer gracieusement** les types Ricos non reconnus (log warning, skip le noeud) — pas de crash
 - **Pas d'emojis** dans les commentaires ou l'output du script
 
@@ -347,7 +401,11 @@ Chaque item doit etre verifiable en < 30 secondes.
 - [ ] En mode reel : 11 documents dans `publicBlog` Firestore avec `status: 'published'`
 - [ ] Les images sont uploadees dans Firebase Storage sous `public/blog/{slug}/`
 - [ ] Les URLs dans le markdown Firestore pointent vers Firebase Storage (pas `static.wixstatic.com`)
-- [ ] La cover image de chaque article est dans le champ `coverImage` du document Firestore
+- [ ] La cover image de chaque article est dans le champ `coverImage` du document Firestore (URL Storage, pas URL Wix)
+- [ ] Les covers sont uploadées sous `public/blog/{slug}/cover.{ext}` et les inline sous `public/blog/{slug}/inline-N.{ext}`
+- [ ] **Idempotence** : relancer le script une seconde fois sur les 11 articles ne crée pas de doublons dans Firestore (même slug = même document ID = écrasement propre)
+- [ ] **Storage rules** : `storage.rules` contient une règle `match /public/{allPaths=**} { allow read: if true; allow write: if false; }` — vérifiable avec `grep "public" storage.rules`
+- [ ] **Test public** : une URL Storage type `https://firebasestorage.googleapis.com/v0/b/.../o/public%2Fblog%2F...?alt=media` est accessible en navigation anonyme **après déploiement des rules** (ou marqué TODO dans NOTES.md si Benoit déploie manuellement)
 - [ ] Le rapport de migration est genere dans `artefacts/migration-report.md`
 - [ ] `git diff` ne montre **aucune modification** dans `app/`, `tailwind.config.ts`, `firestore.rules`
 - [ ] `NOTES.md` cree avec : date, resume, types Ricos rencontres, qualite du markdown genere, warnings
@@ -388,26 +446,19 @@ Message detaille :
 
 ---
 
-## Questions strategiques pour review Desktop
+## Questions stratégiques — review Desktop (toutes résolues ✅)
 
-### QS1 — Faut-il modifier `lib/firebase-admin.ts` pour exporter Storage ?
+### QS1 — Modifier `lib/firebase-admin.ts` pour exporter Storage ? (✅ RÉSOLUE)
 
-**Contexte** : le fichier actuel exporte uniquement `getAdminFirestore()`. Le script `.mjs` a besoin de Storage en plus. Deux options :
+**Décision finale** : **option (a)** — le script `.mjs` initialise Firebase Admin lui-même, **ne pas modifier** `lib/firebase-admin.ts`. Raisons : le setup est 5 lignes, la "duplication" est minimale, ça respecte l'invariant "zero modification du Hub admin", et ça évite le problème d'un script `.mjs` qui tenterait d'importer un fichier `.ts`. Le snippet fourni dans L2 est directement utilisable.
 
-- **(a)** Ne PAS modifier `lib/firebase-admin.ts` — le script `.mjs` initialise Firebase Admin lui-meme (duplique 5 lignes de setup). Avantage : zero modification du code existant. Inconvenient : duplication.
-- **(b)** Ajouter `getAdminStorage()` dans `lib/firebase-admin.ts`. Avantage : DRY. Inconvenient : modifie un fichier existant du Hub + le script `.mjs` ne peut pas importer du `.ts` directement.
+### QS2 — Categories : résoudre les IDs Wix en noms lisibles ? (✅ RÉSOLUE)
 
-**Reco par defaut** : option (a) — le script initialise Firebase Admin lui-meme. Le setup est 5 lignes, la duplication est minimale, et ca evite de modifier le code du Hub. Le `lib/firebase-admin.ts` sera enrichi plus tard si d'autres routes API en ont besoin.
+**Décision finale** : **option (a)** — fetch des catégories via l'API Wix `/blog/v3/categories` au début du script de migration. Le pattern est déjà dans `scripts/seo-geo/list-blog-posts.mjs` — reproduire. Construire un map `{ categoryId → categoryName }` et l'utiliser pour remplir le champ `category` du document `PublicBlogPost`. Le champ reste un `string` libre (pas un enum) pour laisser de la flexibilité si Judith ajoute des catégories plus tard.
 
-### QS2 — Categories : resoudre les IDs Wix en noms lisibles ?
+### QS3 — Storage rules pour lecture publique (✅ RÉSOLUE en review Desktop)
 
-**Contexte** : `blog-metadata.json` contient des `categoryIds` (ex: `d96bd601-040c-40da-99e4-8444972d044a`) mais pas les noms. Le script `list-blog-posts.mjs` fetche les categories via l'API (`/blog/v3/categories`) pour les resoudre. Le champ `category` de `PublicBlogPost` est un `string` libre.
-
-- **(a)** Resoudre via l'API Wix dans le script de migration (comme `list-blog-posts.mjs`) → noms lisibles dans Firestore
-- **(b)** Stocker l'ID brut → inutile pour l'affichage
-- **(c)** Mapper manuellement les 6 categories connues (Fertilite, Grossesse, Post-partum, Enfant, Acupuncture pour tous, Sante generale) dans un objet hardcode dans le script
-
-**Reco par defaut** : option (a) — fetch des categories via l'API pour etre fidele. C'est 1 appel API supplementaire et le pattern est deja dans `list-blog-posts.mjs`.
+**Ajouté par Claude Desktop lors du review** : le fichier `storage.rules` actuel (vérifié par Desktop) n'a pas de règle pour `public/**`. Le catch-all impose `auth != null`, ce qui bloquerait l'affichage des images sur le site public. **Livrable 3 ajouté** au milestone pour modifier `storage.rules` et autoriser `read: if true` sous `public/**`. Voir section Livrable 3 pour le bloc exact à ajouter. Ce livrable est **non-négociable** — sans ça, le site public ne peut pas afficher les images des articles.
 
 ---
 
