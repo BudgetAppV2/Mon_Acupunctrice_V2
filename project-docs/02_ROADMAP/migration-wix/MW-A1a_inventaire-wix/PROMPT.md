@@ -14,13 +14,13 @@ Ce milestone debloque MW-B4 (parser Ricos → markdown), MW-D1 (import blog dans
 
 ## Stack
 
-Node.js (scripts locaux via `npx tsx`), API Wix Blog v3 (credentials dans `.env.local`), fetch natif. Pas de nouvelle dependance npm.
+Node.js (scripts locaux `.mjs` executes via `node scripts/export-wix-blog.mjs`), API Wix Blog v3 (credentials deja dans `.env.local`), fetch natif Node 20+. **Pas de TypeScript, pas de tsx** — le repo utilise le pattern `.mjs` pour tous les scripts (`scripts/seo-geo/publish-all-resources.mjs`, `scripts/seo-geo/publish-all-faq.mjs`, etc.). Reproduire ce pattern. Pas de nouvelle dependance npm.
 
 ---
 
 ## Fichiers a lire AVANT de commencer
 
-Dans cet ordre exact. Ne commence a executer qu'apres avoir lu les 6.
+Dans cet ordre exact. Ne commence a executer qu'apres avoir lu les 8.
 
 1. **`app/api/blog/list/route.ts`** → pattern d'auth Wix existant. **Points cles** :
    - Env vars : `WIX_API_KEY` (header `Authorization`), `WIX_SITE_ID` (header `wix-site-id`)
@@ -33,19 +33,25 @@ Dans cet ordre exact. Ne commence a executer qu'apres avoir lu les 6.
 
 3. **`app/api/blog/publish/route.ts`** → montre l'existence de `WIX_MEMBER_ID` en env var et le format Ricos JSON (`richContent` field). L'interface `RicosNode` dans `lib/utils/ricosConverter.ts` montre la structure des noeuds.
 
-4. **`docs/migration-wix/02-recherche/scouting/scout-wix-actuel.md`** → inventaire prealable du site Wix avec les 8 pages statiques, les 11 articles, les 6 FAQ, les URLs exactes. **Gotcha critique** : les slugs Wix sont du type `/post/acupuncture-et-nausees-de-grossesse` — les slugs Next.js seront `/blog/acupuncture-nausees-grossesse`. La matrice de redirections doit mapper les deux.
+4. **`scripts/seo-geo/list-blog-posts.mjs`** → **pattern de référence critique** pour ton script `.mjs` : comment charger `.env.local`, comment construire les headers Wix, comment paginer l'API, comment écrire les rapports. Reproduire ce style et ces fonctions utilitaires plutôt que de réinventer.
 
-5. **`docs/migration-wix/CLAUDE.md`** → invariants. Section "Contenu existant a reutiliser" : les 6 FAQ + 5 ressources dans `scripts/seo-geo/` sont **hors scope de MW-A1a** (c'est MW-D3 qui les importe). MW-A1a se concentre sur le contenu Wix.
+5. **`scripts/seo-geo/publish-all-resources.mjs`** → deuxième référence `.mjs` : gestion d'erreurs robuste, parsing de markdown, écriture de rapports. Copier le style (console.error pour les erreurs, process.exit(1) sur les check de préreqs, etc.).
 
-6. **`project-docs/02_ROADMAP/migration-wix/MW-A1a_inventaire-wix/MILESTONE.md`** → livrables, DoD, contraintes. Le scope exclut explicitement les assets v4 (photos Eric Bates, SVG, textures) — c'est MW-A1b.
+6. **`docs/migration-wix/02-recherche/scouting/scout-wix-actuel.md`** → inventaire prealable du site Wix avec les 8 pages statiques, les 11 articles, les 6 FAQ, les URLs exactes. **Gotcha critique** : les slugs Wix sont du type `/post/acupuncture-et-nausees-de-grossesse` — les slugs Next.js seront `/blog/acupuncture-nausees-grossesse`. La matrice de redirections doit mapper les deux.
+
+7. **`docs/migration-wix/CLAUDE.md`** → invariants. Section "Contenu existant a reutiliser" : les 6 FAQ + 5 ressources dans `scripts/seo-geo/` sont **hors scope de MW-A1a** (c'est MW-D3 qui les importe). MW-A1a se concentre sur le contenu Wix.
+
+8. **`project-docs/02_ROADMAP/migration-wix/MW-A1a_inventaire-wix/MILESTONE.md`** → livrables, DoD, contraintes. Le scope exclut explicitement les assets v4 (photos Eric Bates, SVG, textures) — c'est MW-A1b.
 
 ---
 
-## Livrable 1 — Script d'export blog Wix (`scripts/export-wix-blog.ts`)
+## Livrable 1 — Script d'export blog Wix (`scripts/export-wix-blog.mjs`)
 
 **Objectif** : script one-shot qui recupere les 11 articles via l'API Wix Blog v3, sauvegarde le Ricos JSON brut, extrait les metadonnees, et telecharge les images.
 
-**Fichier a creer** : `scripts/export-wix-blog.ts` (execute via `npx tsx scripts/export-wix-blog.ts`)
+**Fichier a creer** : `scripts/export-wix-blog.mjs` (execute via `node scripts/export-wix-blog.mjs`)
+
+**Pattern de reference** : `scripts/seo-geo/publish-all-resources.mjs` et `scripts/seo-geo/list-blog-posts.mjs` — tu dois **lire ces deux fichiers** avant d'ecrire le tien pour reproduire le meme style (loadEnv, headers Wix, erreur handling, output format).
 
 **Algorithme** :
 
@@ -69,16 +75,16 @@ Dans cet ordre exact. Ne commence a executer qu'apres avoir lu les 6.
    - Eventuelles erreurs ou warnings
 ```
 
-**Chargement des env vars** — pattern a reproduire depuis `publish-all-resources.mjs` :
+**Chargement des env vars** — pattern a reproduire depuis `publish-all-resources.mjs` (pas de types TypeScript, JavaScript moderne uniquement) :
 
-```typescript
+```javascript
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
-function loadEnv(): Record<string, string> {
+function loadEnv() {
   const envPath = resolve(process.cwd(), '.env.local');
   const content = readFileSync(envPath, 'utf-8');
-  const env: Record<string, string> = {};
+  const env = {};
   for (const line of content.split('\n')) {
     const trimmed = line.trim();
     if (!trimmed || trimmed.startsWith('#')) continue;
@@ -88,12 +94,21 @@ function loadEnv(): Record<string, string> {
   }
   return env;
 }
+
+// Check preable des credentials au demarrage — fail fast
+function assertCredentials(env) {
+  const missing = ['WIX_API_KEY', 'WIX_SITE_ID'].filter((k) => !env[k]);
+  if (missing.length > 0) {
+    console.error(`Missing env vars in .env.local: ${missing.join(', ')}`);
+    process.exit(1);
+  }
+}
 ```
 
 **Headers Wix** :
 
-```typescript
-function wixHeaders(env: Record<string, string>): Record<string, string> {
+```javascript
+function wixHeaders(env) {
   return {
     'Authorization': env.WIX_API_KEY,
     'wix-site-id': env.WIX_SITE_ID,
@@ -104,19 +119,17 @@ function wixHeaders(env: Record<string, string>): Record<string, string> {
 
 **Extraction des images Ricos** — parcourir recursivement les noeuds du Ricos JSON et chercher les noeuds de type `IMAGE` qui contiennent une URL `static.wixstatic.com` :
 
-```typescript
-function extractImageUrls(nodes: unknown[]): string[] {
-  const urls: string[] = [];
+```javascript
+function extractImageUrls(nodes) {
+  const urls = [];
   for (const node of nodes) {
-    // Chercher imageData.image.src ou imageData.src
-    // Le format exact sera visible dans les JSON exportes — adapter si necessaire
     if (typeof node === 'object' && node !== null) {
-      const n = node as Record<string, unknown>;
-      if (n.type === 'IMAGE' && n.imageData) {
-        // Extraire l'URL de l'image
+      if (node.type === 'IMAGE' && node.imageData) {
+        // Extraire l'URL de l'image — le format exact sera visible dans les JSON
+        // exportes. Chercher : imageData.image.src, imageData.src, ou similaire
       }
-      if (Array.isArray(n.nodes)) {
-        urls.push(...extractImageUrls(n.nodes));
+      if (Array.isArray(node.nodes)) {
+        urls.push(...extractImageUrls(node.nodes));
       }
     }
   }
@@ -126,8 +139,8 @@ function extractImageUrls(nodes: unknown[]): string[] {
 
 **Telecharger une image** — retirer les parametres de transformation Wix pour obtenir l'original :
 
-```typescript
-function cleanWixImageUrl(url: string): string {
+```javascript
+function cleanWixImageUrl(url) {
   // Les URLs Wix ressemblent a :
   // https://static.wixstatic.com/media/hash.jpg/v1/fill/w_740,h_493.../image.jpg
   // L'original est : https://static.wixstatic.com/media/hash.jpg
@@ -284,7 +297,11 @@ Ce livrable est integre dans le script L1. Le script telecharge les images des a
 - **Ne pas** toucher aux 6 FAQ + 5 ressources dans `scripts/seo-geo/` — c'est MW-D3
 - **Ne pas** installer de nouvelle dependance npm — utiliser `fetch` natif Node.js et `fs`
 - **Ne pas** modifier le site Wix en production
-- **Ne pas** commiter les images binaires dans git (ajouter `artefacts/images/` au `.gitignore` ou ne commiter que l'index markdown)
+- **Ne pas** commiter les images binaires dans git — ajouter au `.gitignore` racine le path spécifique suivant (et pas juste `artefacts/images/` qui matcherait tous les dossiers du repo) :
+  ```
+  project-docs/02_ROADMAP/migration-wix/MW-A1a_inventaire-wix/artefacts/images/
+  ```
+  Les images restent sur le disque local (utiles pour MW-B4/MW-D1 qui les uploaderont vers Firebase Storage) mais ne polluent pas le repo git. Seul `artefacts/images/index.md` est commité.
 - **Pas de `console.log`** dans le script final (utiliser `process.stdout.write` ou un logger minimal)
 
 ---
@@ -293,16 +310,19 @@ Ce livrable est integre dans le script L1. Le script telecharge les images des a
 
 Chaque item doit etre verifiable en < 30 secondes.
 
-- [ ] Le script `scripts/export-wix-blog.ts` s'execute sans erreur via `npx tsx scripts/export-wix-blog.ts`
+- [ ] Le script `scripts/export-wix-blog.mjs` s'execute sans erreur via `node scripts/export-wix-blog.mjs`
+- [ ] Le script check la presence de `WIX_API_KEY` et `WIX_SITE_ID` au demarrage et exit avec un message explicite si manquants (testable : renommer temporairement `.env.local` et relancer → exit 1 clair)
 - [ ] 11 fichiers JSON dans `artefacts/blog-ricos/` — chacun contient le Ricos JSON avec des noeuds `PARAGRAPH`, `HEADING`, `IMAGE`, etc.
 - [ ] `artefacts/blog-metadata.json` contient les 11 articles avec id, title, slug, date, coverImageUrl
 - [ ] `artefacts/blog-export-report.md` resume l'export (nombre d'articles, d'images, erreurs)
-- [ ] Les images cover des 11 articles sont telechargees dans `artefacts/images/blog/`
-- [ ] Au moins 3 images inline (non-cover) sont telechargees et s'ouvrent correctement
+- [ ] Les images cover des 11 articles sont telechargees dans `artefacts/images/blog/` (verifiable : `ls -lh artefacts/images/blog/*/cover*` montre des fichiers > 10 KB chacun)
+- [ ] Au moins 3 images inline (non-cover) sont telechargees — verifier qu'elles pesent > 10 KB chacune (si < 5 KB c'est probablement un 404 HTML deguise en fichier)
 - [ ] 8 fichiers markdown dans `artefacts/pages-statiques/` — chacun contient du texte lisible (pas du HTML brut)
 - [ ] `artefacts/faq-wix/faq-verification.md` existe et documente la correspondance FAQ Wix ↔ fichiers source
 - [ ] `artefacts/redirections-301.md` couvre toutes les URLs du scouting (8 pages + 11 articles + 2-3 pages secondaires)
 - [ ] `artefacts/images/index.md` documente le nombre d'images par article
+- [ ] `.gitignore` racine contient la ligne `project-docs/02_ROADMAP/migration-wix/MW-A1a_inventaire-wix/artefacts/images/`
+- [ ] `git status` ne montre aucun fichier binaire dans `artefacts/images/` comme untracked (preuve que le gitignore marche)
 - [ ] `git diff` ne montre **aucune modification** dans `app/`, `components/`, `lib/`, `public/`
 - [ ] `NOTES.md` cree avec : date, resume, articles les plus interessants, difficultes rencontrees (surtout export pages statiques)
 
