@@ -42,3 +42,6 @@ next-env.d.ts
 /public/workbox-*.js
 /public/workbox-*.js.map
 /public/swe-worker-*.js
+
+# MW-A1a — images Wix telechargees (binaires trop lourds pour git)
+project-docs/02_ROADMAP/migration-wix/MW-A1a_inventaire-wix/artefacts/images/
