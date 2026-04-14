@@ -29,9 +29,8 @@ Dans cet ordre exact. Ne commence à coder qu'après avoir lu les 8.
 
 2. **`firestore.rules`** → rules existantes. **Gotcha critique** :
    - Le fichier **ne définit PAS** de fonction `isAdmin()`. Les rules existantes utilisent `request.auth.uid == resource.data.userId` car chaque document Hub appartient à un user.
-   - Les collections publiques n'ont pas de `userId` — elles sont gérées par l'admin (Judith) uniquement.
-   - **Tu dois définir `isAdmin()`** comme fonction helper en haut du bloc `match /databases/{database}/documents` : `function isAdmin() { return request.auth != null && request.auth.uid == 'JUDITH_UID'; }`
-   - **Pour trouver le UID de Judith** : lis `lib/firebase.ts` ou cherche dans le code un UID hardcodé. Si introuvable, utilise `request.auth != null` comme fallback et flag dans NOTES.md que le UID devra être ajouté. Le Hub est single-user donc `request.auth != null` est suffisamment sécurisé (seule Judith peut se connecter via Google Sign-In configuré dans Firebase Console).
+   - Les collections publiques n'ont pas de `userId` — elles sont gérées par les admins (Judith + Benoit) uniquement.
+   - **Tu dois définir `isAdmin()`** comme fonction helper en haut du bloc `match /databases/{database}/documents`, avec le snippet exact fourni en Livrable 2 : allowlist d'emails vérifiés (`barchambault@grandsballets.com` + `jdufourdsavard@gmail.com`). **Ne pas improviser** — copie-colle le snippet L2 tel quel.
 
 3. **`firestore.indexes.json`** → format des indexes existants. **Gotcha** :
    - Format JSON avec `collectionGroup`, `queryScope: "COLLECTION"`, et `fields` array
@@ -135,7 +134,8 @@ export interface Ressource {
   // Champs meta SEO
   metaTitle: string;
   metaDescription: string;
-  heroImageAlt: string;
+  heroImageUrl?: string; // URL Firebase Storage, optionnel au lancement
+  heroImageAlt: string;  // obligatoire pour SEO/accessibilité
 
   // Sections riches (markdown) — structure alignée sur source-resources/*.md
   shortAnswer: string;
@@ -161,7 +161,6 @@ export interface Ressource {
 
   // Meta
   authorName: string;
-  coverImage?: string;
   publishedAt: Timestamp | null;
   updatedAt: Timestamp;
   createdAt: Timestamp;
@@ -259,9 +258,24 @@ export interface SiteConfig {
 ```
     // --- Site public (migration Wix → Vercel) ---
 
-    // Helper : l'app est single-user, seule Judith est authentifiée
+    // Helper admin pour les collections publiques.
+    //
+    // Mécanisme : allowlist d'emails vérifiés. Les deux admins sont
+    // Benoit (Directeur Technique qui opère le Hub) et Judith
+    // (acupunctrice, autrice du contenu). Pour ajouter un admin,
+    // ajouter son email dans la liste ci-dessous et redéployer les
+    // rules avec `firebase deploy --only firestore:rules`.
+    //
+    // Prérequis : l'admin doit s'être connecté au moins une fois via
+    // Google Sign-In avec un compte dont l'email est vérifié (automatique
+    // pour les comptes Google).
     function isAdmin() {
-      return request.auth != null;
+      return request.auth != null
+        && request.auth.token.email_verified == true
+        && request.auth.token.email in [
+          'barchambault@grandsballets.com',
+          'jdufourdsavard@gmail.com'
+        ];
     }
 
     match /faqs/{faqId} {
@@ -287,7 +301,8 @@ export interface SiteConfig {
 ```
 
 **Points clés** :
-- `isAdmin()` utilise `request.auth != null` — suffisant car le Hub est single-user (seule Judith peut se connecter via Google Sign-In). Si on ajoute d'autres utilisateurs un jour, il faudra hardcoder le UID ou utiliser custom claims.
+- `isAdmin()` utilise une **allowlist d'emails vérifiés** — seuls `barchambault@grandsballets.com` et `jdufourdsavard@gmail.com` peuvent écrire dans les collections publiques. Pour ajouter un admin, modifier la liste dans `firestore.rules` et redéployer.
+- L'email doit être `email_verified == true` — c'est automatiquement vrai pour les comptes Google Sign-In, mais la vérification protège contre un éventuel provider non vérifié
 - Les 4 collections avec `status` bloquent la lecture si `status != 'published'` — les brouillons et contenus rejetés ne sont pas exposés au site public
 - `siteConfig` est public en lecture sans condition — elle contient des données non sensibles (NAP, liens sociaux)
 - Le commentaire `--- Site public ---` sépare visuellement les rules Hub des rules public pour maintenabilité
@@ -384,6 +399,7 @@ Ajouter à la section "Firestore Security Rules" les nouvelles rules (ou une ré
 - **Ne pas** créer de sous-collections — tout est flat (`faqs/{id}`, `ressources/{id}`, etc.)
 - **Ne pas** stocker les citations comme sous-collection — c'est un array dans le document `Ressource`
 - **Ne pas** dupliquer `PublicationStatus` dans chaque fichier — l'importer depuis `./faq`
+- **Ne JAMAIS stocker de données sensibles dans `siteConfig`** (pas de tokens, pas d'UIDs, pas d'emails privés, pas de clés API) — la collection est en lecture publique sans authentification. Uniquement des données non sensibles : NAP, liens sociaux, textes de footer, last run timestamps des crons. Ajouter un commentaire JSDoc au-dessus de l'interface `SiteConfig` pour rappeler cette règle.
 - **Pas de `console.log`** dans le code livré
 - **Pas d'emojis** dans l'UI (règle générale du repo)
 
@@ -395,7 +411,7 @@ Chaque item doit être vérifiable en < 30 secondes.
 
 - [ ] `npm run build` passe sans erreur ni warning nouveau
 - [ ] 5 fichiers créés dans `lib/types/` : `faq.ts`, `ressource.ts`, `public-blog.ts`, `service-page.ts`, `site-config.ts`
-- [ ] Chaque fichier compile sans erreur TypeScript en isolation (`npx tsc --noEmit lib/types/faq.ts` etc. ou validation via le build global)
+- [ ] `npm run build` compile tous les nouveaux types sans erreur (le build TypeScript valide toute la chaîne, pas besoin de `tsc --noEmit` par fichier)
 - [ ] `PublicationStatus` est exporté de `faq.ts` et importé (pas dupliqué) dans `ressource.ts`, `public-blog.ts`, `service-page.ts`
 - [ ] `Ressource` contient les 8 champs rich text (`shortAnswer`, `introSection`, `scienceSection`, `mechanismSection`, `judithApproach`, `whatToExpect`, `protocolSection`, `testimonial`) — pas un simple `content: string`
 - [ ] `Ressource` contient `faqEntries: FaqEntry[]` (array typé, pas string JSON)
@@ -446,19 +462,29 @@ Message de commit détaillé (optionnel mais apprécié) :
 
 ---
 
-## Questions stratégiques pour review Desktop
+## Questions stratégiques — review Desktop (toutes résolues ✅)
 
-### QS1 — Type `Ressource` : champs structurés vs `content: string`
+### QS1 — Type `Ressource` : champs structurés vs `content: string` (✅ RÉSOLUE lors du review Desktop)
 
-**Contexte** : le MILESTONE.md original (écrit avant la découverte des 5 ressources existantes) définit `Ressource` avec `content: string // markdown`. Mais les fichiers `source-resources/*.md` ont 8 sections riches distinctes (`shortAnswer`, `introSection`, `scienceSection`, etc.), et MW-D3 mis à jour demande explicitement que ces champs soient dans Firestore.
+**Décision finale** : **champs structurés conservés** (8 sections riches + `faqEntries: FaqEntry[]` + `citations: Citation[]`). C'est ce que le draft propose et ce qui est aligné sur `DECISIONS_Q1-Q16.md` + le MW-D3 mis à jour. Le MILESTONE.md original qui disait `content: string` est dépassé sur ce point — ne pas le suivre.
 
-**Décision prise dans ce draft** : champs structurés riches (8 sections + `faqEntries` + `citations`), alignés sur `DECISIONS_Q1-Q16.md` et le MW-D3 mis à jour. Le MILESTONE.md original est dépassé sur ce point.
+---
 
-**Ce que ça change** : MW-D3 importe les sections structurées plutôt qu'un blob markdown. MW-D5 peut rendre chaque section avec un style différent. MW-C3 peut extraire seulement `introSection` + `judithApproach` pour le hub court. Plus flexible, plus propre.
+### QS2 — Mécanisme d'admin auth pour les rules (✅ RÉSOLUE lors du review Desktop)
 
-**Risque** : si une future ressource n'a pas toutes les sections (ex. une checklist), les champs seront vides. Mitigation : rendre la plupart des sections optionnelles si nécessaire. Pour l'instant, les 5 ressources existantes ont toutes les sections.
+**Décision finale** : allowlist d'emails vérifiés (Option B) encodée directement dans les rules. Les deux admins sont `barchambault@grandsballets.com` (Benoit) et `jdufourdsavard@gmail.com` (Judith). Le snippet Livrable 2 a été mis à jour pour refléter ce choix — Claude Code doit le copier-coller tel quel.
 
-**Reco** : garder les champs structurés (c'est ce que le draft propose). Demande de validation.
+**Pourquoi Option B plutôt qu'UIDs hardcodés ou custom claims** :
+- Emails plus lisibles en code review qu'un UID opaque
+- Email stable dans le temps (l'UID Firebase l'est aussi mais demande un lookup Firebase Console)
+- Custom claims auraient demandé un script one-off de setup (`admin.auth().setCustomUserClaims()`) et un relogin — trop de friction pour le gain
+- Google Sign-In garantit `email_verified == true` automatiquement pour les comptes Google
+
+**Prérequis côté Firebase Console** (à vérifier par Benoit avant MW-E1, pas maintenant) :
+- Judith doit s'être connectée au moins une fois via Google Sign-In avec `jdufourdsavard@gmail.com` pour que son compte Auth existe dans le projet Firebase
+- Benoit est déjà connecté avec son compte Grands Ballets (pattern existant du Hub)
+
+**Pour ajouter un admin plus tard** : éditer la liste dans `firestore.rules`, commiter, et `firebase deploy --only firestore:rules`. Pas de migration Firestore nécessaire.
 
 ---
 
