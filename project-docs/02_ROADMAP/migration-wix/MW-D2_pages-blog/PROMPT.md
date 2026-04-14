@@ -42,7 +42,7 @@ Dans cet ordre exact. Ne commence a coder qu'apres avoir lu les 9.
 
 ---
 
-## Livrable 0 — Installation `react-markdown` + `remark-gfm`
+## Livrable 0a — Installation `react-markdown` + `remark-gfm`
 
 **Commande** :
 
@@ -53,6 +53,43 @@ npm install react-markdown remark-gfm
 **Justification** : `react-markdown` est le standard React pour rendre du markdown en JSX. ~45 KB gzip, zero dependance lourde. `remark-gfm` ajoute le support des tables et strikethrough (GitHub Flavored Markdown) — 3 KB supplementaires. Pas besoin de `rehype-raw` ni `rehype-sanitize` car le markdown genere par notre parser (MW-B4) est propre et ne contient pas de HTML inline arbitraire.
 
 **Alternative rejetee** : `marked` + `DOMPurify` demande `dangerouslySetInnerHTML` cote React — incompatible avec Server Components (qui ne supportent pas les refs DOM pour DOMPurify).
+
+---
+
+## Livrable 0b — Modification de `next.config.mjs` (ajouté en review Desktop)
+
+**Objectif** : autoriser `next/image` à optimiser les images Firebase Storage. Sans ce livrable, les pages blog crashent au rendu avec `Error: Invalid src prop on next/image, hostname "firebasestorage.googleapis.com" is not configured`.
+
+**Fichier à modifier** : `next.config.mjs` (note : `.mjs`, pas `.ts`)
+
+**Structure actuelle** (vérifiée par Desktop) : utilise `withPWAInit` en wrapper, l'objet `nextConfig` a une section `async headers()` pour COOP/COEP sur `/editeur/*`. **Pas de section `images`** — à créer.
+
+**Modification exacte** : ajouter la section `images` dans l'objet `nextConfig`, **avant** `async headers()` :
+
+```javascript
+const nextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'firebasestorage.googleapis.com',
+        pathname: '/v0/b/**',
+      },
+    ],
+  },
+  async headers() {
+    // ... existant inchangé
+  },
+}
+```
+
+**Points clés** :
+- **Ne pas toucher** à `withPWAInit` en haut du fichier ni à `runtimeCaching`
+- **Ne pas toucher** à la section `async headers()` existante (COOP/COEP pour `/editeur/*`)
+- Le `pathname: '/v0/b/**'` restreint l'autorisation au pattern d'URL Firebase Storage — pas de wildcard sur tout le hostname
+- `remotePatterns` est la nouvelle API Next.js 13+, pas `domains` (deprecated)
+
+**Test** : après modification, `npm run build` doit passer sans warning nouveau.
 
 ---
 
@@ -88,30 +125,27 @@ interface MarkdownRendererProps {
 | `em` | `italic` | Italic |
 | `img` | Composant `next/image` | Voir ci-dessous |
 
-**Images markdown** : les `![alt](url)` dans le markdown contiennent des URLs Firebase Storage (`firebasestorage.googleapis.com/...`). Pour les rendre avec `next/image`, utiliser un composant custom :
+**Images markdown** : les `![alt](url)` dans le markdown contiennent des URLs Firebase Storage (`firebasestorage.googleapis.com/...`). On utilise `next/image` avec le `remotePatterns` configuré en L0b. Les images markdown n'ont pas de `width`/`height` natif — on utilise `fill` avec un container à ratio fixe :
 
 ```typescript
 // Dans la map components de ReactMarkdown
 img: ({ src, alt }) => {
-  if (!src) return null;
+  if (!src || typeof src !== 'string') return null;
   return (
-    <span className="block my-8">
-      <img
+    <span className="block relative w-full aspect-[16/9] my-8 rounded-xl overflow-hidden">
+      <Image
         src={src}
         alt={alt || ''}
-        className="w-full rounded-xl"
-        loading="lazy"
+        fill
+        sizes="(max-width: 768px) 100vw, 768px"
+        className="object-cover"
       />
     </span>
   );
 },
 ```
 
-**Note** : on utilise `<img>` natif (pas `next/image`) pour les images Firebase Storage car :
-- Les URLs Firebase Storage sont dynamiques (contiennent des tokens)
-- `next/image` requiert des domains configures dans `next.config.ts` — qu'on ne veut pas modifier
-- Le lazy loading natif HTML est suffisant pour des articles de blog
-- Si Benoit veut passer a `next/image` plus tard, ajouter le domain Firebase Storage dans `next.config.ts` et swapper
+**Pourquoi `fill` + container à ratio** : les images markdown n'ont pas de dimensions dans la source. `next/image` exige soit `width`/`height`, soit `fill` + un parent positionné. Le ratio `16/9` est un compromis raisonnable pour des images de blog (ajustable si besoin via CSS dans la prop `className` du container). L'`object-cover` gère le cas où l'image originale n'est pas exactement 16:9.
 
 **Le composant doit rester < 80 lignes** — c'est principalement une map de composants React passee a `<ReactMarkdown>`.
 
@@ -140,7 +174,18 @@ img: ({ src, alt }) => {
 - `<SectionHeading kicker="BLOG" title="Articles" subtitle="..." />`
 - Grille : `grid grid-cols-1 md:grid-cols-2 gap-8`
 - Chaque card est un `<Link href={/blog/${post.slug}}>` avec :
-  - Cover image : `<img src={post.coverImage} className="aspect-video object-cover rounded-t-[14px]" loading="lazy" />`
+  - Cover image : `<Image>` dans un container à ratio vidéo :
+    ```tsx
+    <div className="relative aspect-video w-full overflow-hidden rounded-t-[14px]">
+      <Image
+        src={post.coverImage}
+        alt={post.title}
+        fill
+        sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 600px"
+        className="object-cover group-hover:scale-105 transition-transform duration-500"
+      />
+    </div>
+    ```
   - Titre : `font-public-serif text-xl font-semibold text-public-text-dark leading-tight`
   - Category badge : `text-[11px] font-semibold tracking-[1.5px] uppercase text-public-accent-taupe-dark`
   - Extrait : `text-[15px] text-public-text-medium leading-relaxed line-clamp-3`
@@ -190,7 +235,22 @@ export const metadata: Metadata = {
 
 **Layout de la page article** :
 
-1. **Cover image** pleine largeur : `<img src={post.coverImage} className="w-full aspect-[16/9] object-cover rounded-xl" />` dans un container `max-w-4xl mx-auto px-5 md:px-8 pt-8`
+1. **Cover image** pleine largeur avec `next/image` + `priority` pour optimiser le LCP :
+   ```tsx
+   <div className="max-w-4xl mx-auto px-5 md:px-8 pt-8">
+     <div className="relative w-full aspect-[16/9] rounded-xl overflow-hidden">
+       <Image
+         src={post.coverImage}
+         alt={post.title}
+         fill
+         sizes="(max-width: 896px) 100vw, 896px"
+         priority
+         className="object-cover"
+       />
+     </div>
+   </div>
+   ```
+   Le flag `priority` demande à Next.js de précharger cette image (hint LCP) — c'est l'image principale above-the-fold de l'article.
 2. **Meta bloc** sous la cover :
    - Category badge
    - H1 titre : `font-public-serif text-[34px] md:text-[46px] font-medium leading-[1.15] text-public-text-dark`
@@ -281,7 +341,7 @@ export default function BlogNotFound() {
 ## Contraintes (ce qu'on ne fait PAS)
 
 - **Ne pas modifier** `app/layout.tsx`, `app/(app)/`, `app/(auth)/`, `tailwind.config.ts`
-- **Ne pas modifier** `next.config.ts` (pas d'ajout de domains pour `next/image` — utiliser `<img>` natif pour les images Firebase Storage)
+- **Ne modifier `next.config.mjs` QUE** pour l'ajout du bloc `images.remotePatterns` documenté en L0b — zéro autre modification (pas toucher à `withPWAInit`, `runtimeCaching`, ou `async headers()`)
 - **Ne pas modifier** `lib/firebase-admin.ts` — l'importer tel quel
 - **Ne pas** ajouter de section "Articles lies" — c'est MW-D6 (maillage interne)
 - **Ne pas** ajouter de breadcrumb visible — c'est MW-D6 aussi (ou un milestone ulterieur)
@@ -321,7 +381,11 @@ Chaque item doit etre verifiable en < 30 secondes.
 - [ ] `localhost:3000/blog/acupuncture-nausees-grossesse` affiche l'article complet avec : cover image, titre H1 en Cormorant Garamond, auteur "Judith Dufour-Savard et Claire Thomas", date, markdown rendu (headings, paragraphes, listes, images, liens, blockquotes)
 - [ ] `localhost:3000/blog/slug-inexistant` affiche la page 404 "Article non trouve"
 - [ ] Le markdown contient des headings en `font-public-serif` et du body en `font-public-sans` (herite)
-- [ ] Les images inline dans le markdown s'affichent (ou au moins le `<img>` est present dans le DOM — si les storage rules ne sont pas encore deployees, les images retourneront 403, c'est attendu)
+- [ ] Les images inline dans le markdown sont rendues via `<Image>` de `next/image` (vérifier dans le DOM : présence de `<img srcset="..." sizes="..." />` généré par Next). Si les storage rules ne sont pas encore déployées, les URLs retourneront 403 — c'est attendu, le code doit être correct quand même
+- [ ] La cover image de la page article utilise `priority` pour le LCP
+- [ ] `next.config.mjs` contient la section `images.remotePatterns` avec `firebasestorage.googleapis.com` (vérifiable avec `grep -A 5 remotePatterns next.config.mjs`)
+- [ ] `git diff next.config.mjs` montre **uniquement** l'ajout du bloc `images` — pas d'autre modification
+- [ ] `git diff` ne montre **aucune modification** dans `app/layout.tsx`, `app/(app)/`, `app/(auth)/`, `tailwind.config.ts`
 - [ ] Le H1 de l'article n'est PAS dans le markdown `content` — c'est un element JSX separe au-dessus
 - [ ] La page article a un CTA "Reserver une seance" en fin d'article
 - [ ] Les articles co-ecrits affichent "Par Judith Dufour-Savard et Claire Thomas"
@@ -330,7 +394,7 @@ Chaque item doit etre verifiable en < 30 secondes.
 - [ ] Schema.org `BlogPosting` present dans le HTML source de la page article (verifiable via View Source)
 - [ ] **Mobile 375px** : aucun scroll horizontal sur `/blog` et `/blog/acupuncture-nausees-grossesse`
 - [ ] `localhost:3000/calendrier` fonctionne sans regression (Hub admin)
-- [ ] `git diff` ne montre **aucune modification** dans `app/layout.tsx`, `app/(app)/`, `app/(auth)/`, `tailwind.config.ts`, `next.config.ts`
+- [ ] `git diff` ne montre **aucune modification** dans `app/layout.tsx`, `app/(app)/`, `app/(auth)/`, `tailwind.config.ts` (`next.config.mjs` est autorisé UNIQUEMENT pour l'ajout documenté en L0b)
 - [ ] ISR configure : `export const revalidate = 3600` present dans les 2 pages
 - [ ] `NOTES.md` cree avec : date, resume, qualite du rendu markdown, gotchas rencontres
 
@@ -374,15 +438,31 @@ Message detaille :
 
 ## Questions strategiques pour review Desktop
 
-### QS1 — `next/image` vs `<img>` natif pour les images Firebase Storage
+### QS1 — `next/image` vs `<img>` natif (✅ RÉSOLUE — INVERSÉE en review Desktop)
 
-**Contexte** : les URLs Firebase Storage sont de la forme `https://firebasestorage.googleapis.com/v0/b/.../o/public%2Fblog%2F...?alt=media`. Pour utiliser `next/image`, il faudrait ajouter `firebasestorage.googleapis.com` dans `next.config.ts > images.remotePatterns`. Ca modifie un fichier du Hub — pas ideal selon les contraintes.
+**Décision finale** : **utiliser `next/image`** + ajouter le `remotePatterns` dans `next.config.mjs`. Le draft initial proposait l'inverse (`<img>` natif) — cette reco a été inversée en review Desktop.
 
-**Options** :
-- **(a)** `<img>` natif avec `loading="lazy"` — zero config, fonctionne immediatement, pas d'optimisation automatique
-- **(b)** `next/image` avec ajout du domain dans `next.config.ts` — optimisation automatique (WebP, resize), mais modifie un fichier du Hub
+**Raisons** :
+1. Le site public est **SEO-critique**. `next/image` fournit responsive srcset, lazy loading, conversion WebP/AVIF, CLS prevention, LCP priority — tous impactent Core Web Vitals et le ranking Google.
+2. La "contrainte" de ne pas toucher `next.config.mjs` est un **faux compromis** — 5 lignes dans la section `images`, zéro impact Hub admin.
+3. **Firebase Storage est déjà référencé** dans `next.config.mjs` via PWA `runtimeCaching`. Ajouter `remotePatterns` pour le même hostname est cohérent.
+4. `next.config.mjs` n'a **pas encore** de section `images` (vérifié par Desktop).
 
-**Reco par defaut** : option (a) pour ce milestone. `next/image` peut etre ajoute plus tard en modifiant `next.config.ts` (1 ligne). L'optimisation d'images est un nice-to-have, pas un bloquant pour le lancement.
+**Snippet exact à ajouter** dans `next.config.mjs`, dans l'objet `nextConfig`, avant `async headers()` :
+
+```javascript
+images: {
+  remotePatterns: [
+    {
+      protocol: 'https',
+      hostname: 'firebasestorage.googleapis.com',
+      pathname: '/v0/b/**',
+    },
+  ],
+},
+```
+
+**Ce devient le Livrable 0b** (voir section Livrable 0b ci-dessous). Tous les `<img>` du PROMPT initial ont été remplacés par `<Image>` de `next/image` avec `fill` + container à ratio (pour les images markdown sans dimensions) ou `width`/`height` explicites.
 
 ### QS2 — Le H1 de la page `/blog` est-il un heading ou un composant SectionHeading ?
 
