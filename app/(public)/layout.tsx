@@ -1,5 +1,8 @@
 import type { Metadata, Viewport } from 'next';
 import { Cormorant_Garamond, Inter } from 'next/font/google';
+import './globals-public.css';
+import SiteHeader from './_components/SiteHeader';
+import SiteFooter from './_components/SiteFooter';
 
 // CSS variables consommées par tailwind.config.ts
 // (fontFamily['public-serif'] et fontFamily['public-sans'])
@@ -42,9 +45,11 @@ export default function PublicLayout({
 }) {
   return (
     <div
-      className={`${cormorant.variable} ${inter.variable} bg-public-beige-bg text-public-text-dark font-public-sans min-h-screen`}
+      className={`${cormorant.variable} ${inter.variable} bg-public-beige-bg text-public-text-dark font-public-sans min-h-screen flex flex-col`}
     >
-      {children}
+      <SiteHeader />
+      <div className="flex-1">{children}</div>
+      <SiteFooter />
     </div>
   );
 }

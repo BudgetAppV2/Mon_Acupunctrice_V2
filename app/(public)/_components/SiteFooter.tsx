@@ -1,0 +1,117 @@
+import Link from 'next/link';
+
+const SERVICES = [
+  { href: '/services/fertilite', label: 'Fertilite' },
+  { href: '/services/grossesse', label: 'Grossesse' },
+  { href: '/services/pediatrie', label: 'Pediatrie' },
+  { href: '/services/acupuncture-sociale', label: 'Acupuncture sociale' },
+] as const;
+
+const CONTENU = [
+  { href: '/blog', label: 'Blog' },
+  { href: '/faq', label: 'FAQ' },
+  { href: '/ressources', label: 'Ressources' },
+] as const;
+
+export default function SiteFooter() {
+  return (
+    <footer className="bg-public-text-dark text-public-beige-light">
+      <div className="max-w-[1280px] mx-auto px-5 pt-16 pb-8 md:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr_1fr] gap-12 pb-12 border-b border-white/10">
+          {/* Brand */}
+          <div>
+            <h3 className="font-public-serif text-2xl font-semibold mb-2">
+              Judith Dufour-Savard
+            </h3>
+            <p className="text-[13px] leading-relaxed opacity-70 max-w-[320px]">
+              Acupunctrice a Rosemont, specialisee en fertilite, grossesse
+              et acupuncture sociale. Clinique La Source en Soi.
+            </p>
+          </div>
+
+          {/* Services */}
+          <div>
+            <h4 className="text-[11px] font-semibold tracking-[1.5px] uppercase opacity-60 mb-4">
+              Services
+            </h4>
+            <ul className="flex flex-col gap-2.5">
+              {SERVICES.map(({ href, label }) => (
+                <li key={href}>
+                  <Link
+                    href={href}
+                    className="text-[13px] opacity-85 hover:opacity-100 transition-opacity"
+                  >
+                    {label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Contenu */}
+          <div>
+            <h4 className="text-[11px] font-semibold tracking-[1.5px] uppercase opacity-60 mb-4">
+              Contenu
+            </h4>
+            <ul className="flex flex-col gap-2.5">
+              {CONTENU.map(({ href, label }) => (
+                <li key={href}>
+                  <Link
+                    href={href}
+                    className="text-[13px] opacity-85 hover:opacity-100 transition-opacity"
+                  >
+                    {label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Contact */}
+          <div>
+            <h4 className="text-[11px] font-semibold tracking-[1.5px] uppercase opacity-60 mb-4">
+              Contact
+            </h4>
+            <ul className="flex flex-col gap-2.5 text-[13px] opacity-85">
+              <li>Clinique La Source en Soi</li>
+              <li>Rosemont, Montreal</li>
+              <li className="flex gap-4 mt-2">
+                <a
+                  href="https://www.instagram.com/mon_acupunctrice/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:opacity-100 transition-opacity"
+                >
+                  Instagram
+                </a>
+                <a
+                  href="https://www.facebook.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:opacity-100 transition-opacity"
+                >
+                  Facebook
+                </a>
+                <a
+                  href="https://www.youtube.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:opacity-100 transition-opacity"
+                >
+                  YouTube
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Bottom bar */}
+        <p className="text-center text-xs opacity-60 mt-8">
+          En partenariat avec Clinique La Source en Soi — 4,9/5 sur Google
+          {' · '}
+          &copy; 2026 Judith Dufour-Savard
+        </p>
+      </div>
+    </footer>
+  );
+}
