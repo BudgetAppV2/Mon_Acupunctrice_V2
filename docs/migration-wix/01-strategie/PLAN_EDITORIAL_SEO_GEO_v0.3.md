@@ -2,9 +2,101 @@
 
 **Projet** : Migration Wix → Vercel / Next.js (Mon Acupunctrice Hub V2)
 **Phase** : 1 — Stratégie éditoriale
-**Version** : 0.3 (post-scouting — 4 piliers, intégration des découvertes terrain, Phase 0 infra, architecture technique validée)
-**Date** : 13 avril 2026
+**Version** : 0.3.1 (amendements post-session de reverse planning du 14 avril matin)
+**Date** : 14 avril 2026
 **Auteur** : Benoit + Claude (session de planification)
+
+---
+
+## À lire en priorité : Amendements du 14 avril 2026
+
+Cette section est ajoutée en tête du plan v0.3 pour documenter 5 nouvelles exigences discutées le 14 avril 2026 sans réécrire l'ensemble du document. Le corps du plan ci-dessous reste valide, sous réserve des précisions suivantes. Une v0.4 complète sera produite après la première vague de milestones si nécessaire.
+
+### Amendement A1 — Visibilité progressive FAQ & Ressources
+
+**Précision sur la section 4.1 et 4.2** : au lancement, les liens `/faq` et `/ressources` seront **discrets** dans la navigation principale (petits liens dans le footer, pas dans le header mega-menu), tout en gardant leur rôle de funnel vers Go Rendez-Vous. L'idée est d'avoir un site public clean et professionnel avec une section de contenu SEO accessible mais non intrusive.
+
+**Évolution post-lancement** : si l'esthétique des pages FAQ/Ressources est respectée (fidélité à la homepage-v4), on pourra les remonter dans le header principal dans une itération future. La décision sera prise après review visuelle de l'implem.
+
+**Rôle double des FAQ/Ressources** :
+1. **Silo SEO dense** — architecture profonde avec maillage interne fort vers les articles de blog et entre les entrées, citations scientifiques avec sources externes (PubMed, études), objectif de ranker sur les long-tail et PAA
+2. **Funnel de conversion secondaire** — chaque entrée FAQ et chaque ressource contient un CTA contextuel vers la page service ou directement vers `/reserver`, ce qui permet de capturer le trafic SEO et le convertir
+
+**Impact sur le contenu** : les ressources doivent inclure explicitement des **citations scientifiques avec sources externes** (PubMed links, auteurs, journaux, années) pour renforcer l'autorité. Le plan éditorial de section 6 est à enrichir en conséquence.
+
+### Amendement A2 — Publication programmatique & workflow draft/pending/published
+
+**Nouvelle exigence** : Judith (ou le système via cron) doit pouvoir créer et publier du contenu de manière programmatique pour rafraîchir régulièrement les FAQ et les ressources, sans re-déploiement.
+
+**Schéma Firestore mis à jour** : toutes les collections publiques (`faqs`, `ressources`, `publicBlog`, `servicePages`) gagnent un champ :
+
+```
+status: 'draft' | 'pending' | 'published'
+```
+
+**Firestore rules révisées** : la lecture publique est conditionnelle au statut :
+
+```
+match /faqs/{faqId} { 
+  allow read: if resource.data.status == 'published'; 
+  allow write: if isAdmin(); 
+}
+```
+
+Idem pour les autres collections publiques. Les brouillons et le contenu en review ne sont pas exposés au site public.
+
+**Nouveau workflow admin dans le Hub** : `app/(app)/site-public/` (nom provisoire) avec trois vues principales :
+- **Brouillons** (`status='draft'`) — contenu généré par Claude via cron, en attente de review
+- **En review** (`status='pending'`) — contenu vu par Judith, prochain état publié
+- **Publié** (`status='published'`) — visible sur le site public
+
+Judith peut éditer, valider, publier ou rejeter depuis cette vue.
+
+**Nouveau cron** `/api/cron/refresh-content` (1×/jour) :
+- Lit `siteConfig/contentRefresh` (dernière exécution, contenu produit)
+- Appelle l'API Claude pour générer N nouvelles FAQ / ressources selon des prompts stockés
+- Écrit en `draft` dans Firestore pour review Judith
+- Optionnellement, revalide l'ISR des pages publiées
+
+**Impact sur la Mission 6 du plan** : la Mission 6 (Architecture Firestore + Routes publiques) doit inclure ces extensions du schéma et du système d'auth/admin. Un milestone dédié sera probablement nécessaire pour la UI admin du Hub.
+
+### Amendement A3 — Publication du blog depuis le Hub vers Firestore
+
+**Extension de l'existant** : le Hub a déjà `app/api/blog/publish/` qui pousse vers Wix. On étend cette route pour que **chaque publication crée aussi une entrée dans `publicBlog` Firestore** avec `status='published'`.
+
+**Bénéfice immédiat** : pendant la phase de transition, chaque nouvel article publié par Judith apparaît à la fois sur le Wix existant ET sur le futur site Vercel (dès qu'il est déployé en staging). Double publication qui sécurise la migration.
+
+**Post-lancement** : on peut désactiver le push Wix dans la même route API une fois le switch DNS fait. Le code reste, on flip juste un flag.
+
+**Impact sur le plan** : à intégrer dans la phase de build Bloc C (voir reverse planning en cours).
+
+### Amendement A4 — Cards social media dynamiques sur le site public
+
+**Remplacement de la card Instagram statique** de la homepage-v4 par un composant **dynamique** qui affiche automatiquement les 3-5 derniers posts publiés via le Hub, tous canaux confondus (Reels Instagram, posts Facebook, Shorts YouTube).
+
+**Source de données** : la collection `contentItems` existante du Hub, filtrée sur `distributionStatus === 'published'`, triée par `publishedAt` DESC.
+
+**Architecture recommandée** : Server Component qui query Firestore directement, revalidation via le cron ISR quotidien. Simple et suffisant, pas besoin d'une copie dédiée dans `siteConfig`.
+
+**Nouveau composant** : `<RecentPosts />` à ajouter dans la liste de la section 4.6.3 du plan. À implémenter en Bloc C.
+
+### Amendement A5 — Dashboard stats SEO dans le Hub (post-MVP)
+
+**Vision future** : une section du Hub admin qui agrège les métriques de performance du site public :
+- **Plausible Analytics** — sessions, pages vues, taux de rebond, top pages (via Plausible API, token simple)
+- **Google Search Console** — positions moyennes, impressions, clics, CTR par requête (via OAuth Google, flow similaire à YouTube existant)
+- **Firestore events** — clics sur CTA Réserver, conversions mesurées côté site
+- **Rankings tracking** — positions sur mots-clés prioritaires dans le temps
+
+**Statut** : **post-MVP, Phase 6**. Pas bloquant pour le lancement. Documenté ici pour ne pas oublier.
+
+**Estimation grossière** : 2-3 milestones séparés (intégration Plausible, intégration GSC OAuth, UI dashboard avec recharts). À planifier quand le site aura 2-3 mois de trafic à analyser.
+
+---
+
+## Fin des amendements du 14 avril
+
+Le contenu qui suit est la version 0.3 d'origine. Lire avec les amendements A1-A5 en tête comme correctifs.
 
 ---
 
@@ -1346,7 +1438,8 @@ Les décisions prises en v0.3 sont notées ✅. Les points restants sont à rés
 | 0.1 | 13 avril 2026 | Benoit + Claude | Draft initial |
 | 0.2 | 13 avril 2026 | Benoit + Claude | Ajout section 2.1b (Ancrage clinique), ajout section 4.4 (Maillage interne hub-and-spoke), réécriture section 8 (stratégie GEO capitalisant sur La Source en Soi, schema Person+MedicalClinic au lieu de LocalBusiness autonome), réécriture section 9.1 (page /reserver comme landing de confiance qui transforme la friction en signal), réécriture section 9.3 (paramètres Go Rendez-Vous), extension Mission 4 (audit GBP clinique + avis Lumino Health) |
 | 0.3 | 13 avril 2026 | Benoit + Claude (post-scouting) | Intégration des 7 rapports de scouting Claude Code. Passage de 3 à **4 piliers** (ajout Acupuncture pédiatrique). Section 1.1 enrichie avec données réelles (27 URLs, 11 articles, CSR Wix Thunderbolt). Section 1.2 avec GBP La Source en Soi confirmé à **4,9/5 · 1 215 avis**, backlink `lasourceensoi.com/equipe/judith-dufour-savard/` identifié comme actif à préserver, DNS confirmé chez Wix, contenu `scripts/seo-geo/` validé. Section 3 réécrite en 4 piliers avec positionnement concurrentiel par pilier. Section 3.2 mots-clés enrichie avec données scouting + catégories pédiatrique et "combien coûte". Section 4.1 arborescence avec `/services/pediatrie` et `/faq/pediatrie`, décision sur `/bienfaits` (démantèlement). **Nouvelle section 4.5** : Architecture technique cohabitation Hub V2 (route group `(public)`, schéma Firestore sans conflit, design tokens, crons Hobby 100×/jour suffisants, stratégie rendu SSG+ISR). **Nouvelle section 4.6** : UI Guidelines & Design System référençant `homepage-v4.html` comme source canonique (philosophie visuelle, palette complète, typographie, composants à porter en React, assets à migrer, règles d'implémentation). Section 5.3 volume FAQ à 65-85. **Section 5.4 réécrite** : guide de ton avec 3 voix identifiées, décision vouvoiement + "je" signature. Section 8 amplifiée (1 215 avis comme levier central). **Nouvelle section 8.1b** : stratégie d'affichage des 1 215 avis sur homepage, services, À propos, /reserver, footer. Section 8.2 GBP avec données réelles, Lumino désinvesti. **Section 10 réécrite** en 9 missions de build concrètes (inventaire Wix, mots-clés Ubersuggest, guide de ton, audit GEO+plan clinique, transfert DNS Cloudflare, architecture Firestore+routes, build pages statiques, build contenu dynamique, lancement). **Section 11 réécrite** en 6 phases d'exécution avec Phase 0 infra (durée estimée 10-14 semaines). Section 12 mise à jour avec 14 décisions tranchées et 4 points restants. |
+| 0.3.1 | 14 avril 2026 | Benoit + Claude (session reverse planning) | Ajout en tête du document d'une section **Amendements du 14 avril 2026** (A1-A5) qui documente 5 nouvelles exigences sans réécrire le corps du plan : **A1** visibilité progressive FAQ/Ressources (discrets au lancement dans le footer, rôle double silo SEO + funnel de conversion secondaire, citations scientifiques explicites) — **A2** publication programmatique avec workflow `status: draft/pending/published`, nouveau cron `/api/cron/refresh-content`, nouvelle section admin `app/(app)/site-public/` dans le Hub, Firestore rules conditionnelles au statut — **A3** extension de `app/api/blog/publish/` pour double push Wix + `publicBlog` Firestore pendant transition — **A4** composant `<RecentPosts />` dynamique qui remplace la card Instagram statique de la homepage-v4 en queryant `contentItems` — **A5** dashboard stats SEO dans le Hub (Plausible API + GSC OAuth + events Firestore) documenté comme post-MVP Phase 6. Une v0.4 complète sera produite après la première vague de milestones si nécessaire. |
 
 ---
 
-*Fin du document version 0.3*
+*Fin du document version 0.3.1*
