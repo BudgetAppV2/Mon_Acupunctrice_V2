@@ -9,11 +9,15 @@
 
 ## Statut global
 
-🟡 **En cours — MW-B1, MW-B2, MW-B3, MW-A1a, MW-B4 complétés le 14 avril 2026**
+🟡 **En cours — 8 milestones complétés : MW-B1, MW-B2, MW-B3, MW-A1a, MW-B4, MW-D1, MW-D2, MW-D3**
 
 29 milestones MW-XX identifiés pour le MVP, répartis en 7 vagues d'exécution avec parallélisation maximale. 4 milestones post-MVP documentés pour la Phase 6.
 
-**Dernière action** : MW-B4 complété (commit `ec38a1a`). Parser Ricos + script migration `.mjs` standalone. 11 articles dans `publicBlog` Firestore avec `status: 'published'`, 40 images dans Firebase Storage sous `public/blog/{slug}/`, storage.rules mis à jour avec `match /public/{allPaths=**}`. **TODO Benoit** : `firebase deploy --only storage` pour activer les rules en prod. Prochain : MW-D1 (pages blog `/blog` + `/blog/[slug]`) — les données migrées deviennent visibles.
+**Dernière action** : MW-D3 complété (commit `3d18fa9`). Script `scripts/import-seo-geo-content.mjs` (.mjs standalone, idempotent, dry-run). 6 FAQ dans `faqs` Firestore (toutes `status: 'published'`, categories hardcodées `seance` ×1 + `fertilite` ×3 + `grossesse` ×2). 5 ressources dans `ressources` Firestore — **toutes en `status: 'draft'`** car les 5 fichiers source contiennent des témoignages fictifs flagués dans leurs notes de validation. `testimonial: ''` pour les 5 (zéro risque de fuite publique). 8 `faqEntries` parsées pour la ressource fertilité, 0 pour les 4 autres (seule ressource avec un champ `faqJson`).
+
+**TODO Benoit/Judith** (non-bloquant mais important) : décider quoi faire du blocage `testimonial fictif` qui maintient les 5 ressources en `draft`. Trois options : (a) Judith fournit 5 vrais témoignages anonymisés avec consentement cette semaine → unlock total ; (b) Judith confirme la suppression définitive des blocs témoignages → le script MW-D3 peut re-tourner avec un mode `--allow-empty-testimonial` pour passer les 5 en `published` ; (c) MW-D5 rend la section témoignage conditionnelle (`{testimonial && <TestimonialBlock />}`) et les 5 ressources passent en `published` avec `testimonial: ''` — les pages ressources s'affichent sans bloc témoignage. L'option (c) est la plus pragmatique pour ne pas bloquer le lancement.
+
+**Prochain attendu** : MW-A1b (rapatriement assets v4 — photos Eric Bates + SVG botaniques + textures) avant d'attaquer la Vague 3 (pages statiques MW-C1 à MW-C6 qui auront besoin de ces assets).
 
 ---
 
@@ -125,9 +129,9 @@ La migration est découpée en **7 vagues** qui peuvent largement se chevaucher.
 
 | ID | Nom | Type | Temps CC | Deps | Status |
 |----|-----|------|----------|------|--------|
-| MW-D1 | Import des 11 articles blog Wix → `publicBlog` Firestore + Firebase Storage | 📦 Content | 1-2h | MW-B4 | 🔴 |
-| MW-D2 | Pages `/blog` (liste) + `/blog/[slug]` (article individuel) | 🎨 UI | 2-4h | MW-B3, MW-D1 | 🔴 |
-| MW-D3 | Import des 6 FAQ existantes + 5 pages piliers depuis `scripts/seo-geo/` → Firestore | 📦 Content | 1-2h | MW-B2 | 🔴 |
+| MW-D1 | Import des 11 articles blog Wix → `publicBlog` Firestore + Firebase Storage | 📦 Content | 1-2h | MW-B4 | 🟢 |
+| MW-D2 | Pages `/blog` (liste) + `/blog/[slug]` (article individuel) | 🎨 UI | 2-4h | MW-B3, MW-D1 | 🟢 |
+| MW-D3 | Import des 6 FAQ existantes + 5 ressources depuis `scripts/seo-geo/` → Firestore | 📦 Content | 1-2h | MW-B2 | 🟢 |
 | MW-D4 | Pages `/faq` + `/faq/[category]` (layout discret, footer link) | 🎨 UI | 3-4h | MW-B3, MW-D3 | 🔴 |
 | MW-D5 | Pages `/ressources` + `/ressources/[slug]` avec citations scientifiques externes | 🎨 UI | 3-4h | MW-B3 | 🔴 |
 | MW-D6 | Maillage interne : composant `<RelatedContent />` + liens contextuels dans articles/FAQ/services | 🔧 Admin | 2-3h | MW-D2, MW-D4, MW-D5 | 🔴 |
