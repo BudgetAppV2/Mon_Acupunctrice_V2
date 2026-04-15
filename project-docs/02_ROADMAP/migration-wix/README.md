@@ -9,15 +9,17 @@
 
 ## Statut global
 
-🟡 **En cours — 9 milestones complétés : MW-B1, MW-B2, MW-B3, MW-A1a, MW-B4, MW-D1, MW-D2, MW-D3, MW-A1b**
+🟡 **En cours — 10 milestones complétés : MW-B1, MW-B2, MW-B3, MW-A1a, MW-B4, MW-D1, MW-D2, MW-D3, MW-A1b, MW-C1**
 
 29 milestones MW-XX identifiés pour le MVP, répartis en 7 vagues d'exécution avec parallélisation maximale. 4 milestones post-MVP documentés pour la Phase 6.
 
-**Dernière action** : MW-D3 résolu (commit `17b1cd1`). Les 5 ressources SEO/GEO passent de `status: 'draft'` à `status: 'published'` dans Firestore. 3 témoignages remplacés par de vrais avis Google Business de la clinique La Source en Soi (Ingrid M. pour grossesse, Parent d'un enfant de 6 ans pour pédiatrie, Alexandra P. pour santé mentale). 2 ressources restent avec testimonial vide (fertilité et acupuncture sociale — aucun avis public ne mentionne spécifiquement ces angles), MW-D5 devra rendre le bloc testimonial conditionnellement pour elles. Vérification Firestore : 5/5 en `published`, testimonials à 0/917/400/1020/0 chars comme attendu.
+**Dernière action** : MW-C1 complété (commit `234a5da`). Homepage publique portée de `homepage-v4.html` en 8 sections React Server Components dans `app/(public)/_sections/` (HeroSection 102 lignes, BlogPreviewSection 79, CtaFinalSection 78, SocialSection 76, AboutSection 74, ApprocheSection 58, PiliersSection 53, TemoignagesSection 40 — toutes sous la limite 150) + `page.tsx` assemblage avec Schema.org Person + MedicalClinic en JSON-LD. Helper Firestore `lib/firestore/public-blog.ts` créé avec `getRecentBlogPosts(limit)`, consommé par BlogPreviewSection (DRY pour MW-F1). Fix critique `PilierCard.tsx` : ajout de `unoptimized` au `<Image>` (1 ligne, exception documentée a la regle "no modifying _components") pour eviter le re-encodage des fichiers déjà optimisés par MW-A1b. **3 vrais avis Google** dans la section temoignages (Alexandra P. en featured, Ingrid M., Parent d'un enfant de 6 ans) — PAS les placeholders fictifs de la v4, en cohérence avec Workstream A. CTA final avec déco botanique inline (mixBlendMode screen + scale 2.2 + mirror) plutôt que BotanicalDeco. PaperTexture variant="real" exactement 2 fois (piliers + temoignages). `npm run build` passe : 71/71 pages, homepage en static (SSG) avec ISR 1h.
 
-**Commit précédent** (MW-A1b, `f0bd37f` + cleanup `77f31bd`) : script `optimize-assets.mjs`, 8 photos AVIF+WebP, 4 SVG optimisés (plant en WebP raster), texture en 3 formats, PaperTexture refactoré avec prop `variant`, preload AVIF dans le layout public. Total économisé : 32.5 MB. 2 warnings mineurs pour MW-C1 (photo-07 oversized, texture high-entropy).
+**Sanity check Desktop runtime confirme** : HTTP 200 sur `/`, hero `<picture>` avec source AVIF rendu, Schema.org JSON-LD présent dans le HTML, 3 vrais avis Google rendus, 0 occurrence des noms fictifs. Build 0 warning lié a MW-C1.
 
-**Prochain attendu** : démarrage de la Vague 3 avec MW-C1 (homepage portée de v4). Tous les pré-requis sont débloqués : route group `app/(public)/` (MW-B1), composants partages (MW-B3), assets optimisés (MW-A1b), blog + FAQ + ressources en Firestore (MW-B4, MW-D1, MW-D2, MW-D3). Workflow attendu : draft CC → review Desktop → exec CC.
+**1 dette technique mineure decouverte** : le `ReactDOM.preload('/site/textures/paper-japan.avif', ...)` dans `app/(public)/layout.tsx` (mis en place en MW-A1b) n'apparait PAS dans le HTML rendu en dev. Probable bug d'API React 19 + Next.js 15 App Router. Impact faible (la texture est utilisée en CSS background, retard LCP ~200-400ms sur 4G mais pas critique — le vrai LCP est la photo hero qui a `fetchPriority="high"` correctement applique). A investiguer en MW-G1 pre-flight, pas bloquant pour MW-C2/C3.
+
+**Prochain attendu** : 2 options. **(A) Mini-audit préventif des 12 autres composants MW-B3** (~30 min Desktop, pas de CC) pour chasser d'autres bugs latents similaires a PilierCard (composants utilisant `next/image` sans `unoptimized` sur nos fichiers pré-optimisés, etc.). Evite que MW-C2/C3/C4 découvrent chacun un bug bloquant en cours d'exécution. **(B) Demarrage MW-C2 (a-propos) ou MW-C3 (4 pages services)**. MW-C2 est plus simple et rapide ; MW-C3 reutilise massivement le PilierCard fix + helper public-blog + patterns MW-C1. Recommandation Desktop : faire (A) puis (B) avec MW-C2 d'abord pour rester sur du quick win avant d'attaquer le gros morceau MW-C3.
 
 ---
 
@@ -118,7 +120,7 @@ La migration est découpée en **7 vagues** qui peuvent largement se chevaucher.
 
 | ID | Nom | Type | Temps CC | Deps | Status |
 |----|-----|------|----------|------|--------|
-| MW-C1 | Homepage portée de `homepage-v4.html` → React/Next.js (statique) | 🎨 UI | 3-5h | MW-B1, MW-B3 | 🔴 |
+| MW-C1 | Homepage portée de `homepage-v4.html` → React/Next.js (statique) | 🎨 UI | 3-5h | MW-B1, MW-B3 | 🟢 |
 | MW-C2 | Page `/a-propos` avec bloc "Ma clinique" + badge 4,9/5 | 🎨 UI | 2-3h | MW-B1, MW-B3 | 🔴 |
 | MW-C3 | 4 pages services (`fertilite`, `grossesse`, `pediatrie`, `acupuncture-sociale`) — hub SEO | 🎨 UI | 4-6h | MW-B1, MW-B3 | 🔴 |
 | MW-C4 | Page `/tarifs` optimisée SEO ("combien coûte l'acupuncture Montréal") | 🎨 UI | 2-3h | MW-B1, MW-B3 | 🔴 |
