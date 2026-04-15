@@ -27,7 +27,7 @@ Script `optimize-assets.mjs` cree et execute. 8 photos optimisees en AVIF + WebP
 | EricBates-9 | 2308 KB | 307 KB | 476 KB | Les deux depassent — image tres detaillee |
 | EricBates-12 | 1767 KB | 42 KB | 64 KB | OK |
 
-**Photo 07 (EricBates-9)** : significativement plus lourde que les autres (307 KB AVIF, 476 KB WebP). C'est probablement la photo la plus detaillee/haute resolution. Si utilisee en hero, envisager un resize supplementaire a 1200px width ou une quality AVIF 50.
+**Photo 07 (EricBates-9)** : significativement plus lourde que les autres (307 KB AVIF, 476 KB WebP). C'est la photo "pierre zen avec aiguilles d'acupuncture" qui sert de card image pour le pilier Fertilite dans la v4 (section `.pilier-card` pour /fertilite). **Warning MW-C1** : ne JAMAIS utiliser portrait-07 comme hero/LCP element — au-dessus de 300 KB AVIF c'est marginal sur 4G et ca eviterait inutilement le budget LCP. Toujours utiliser portrait-07 dans des contextes de card (~400-500px rendu) ou avec lazy loading. Si le besoin d'un hero fertilite emerge plus tard, envisager une nouvelle photo ou re-optimiser portrait-07 avec `quality: 50` et `width: 1200`.
 
 **Photo 06 (EricBates-8)** : depasse legerement les cibles (107 KB AVIF, 191 KB WebP). Acceptable.
 
@@ -40,7 +40,9 @@ Script `optimize-assets.mjs` cree et execute. 8 photos optimisees en AVIF + WebP
 | reproductive-flowers.svg | 82 KB | 60 KB | -27% |
 | hands-lotus.svg | 94 KB | 67 KB | -29% |
 
-**plant.svg** : reste a 715 KB post-svgo (vectoriel pur, tres complexe). Fallback WebP cree a 113 KB. MW-C1 devra choisir : servir le SVG (fidelite vectorielle mais 715 KB) ou le WebP (113 KB mais raster). Recommandation : utiliser le WebP via `<img src="/site/svg/plant.webp">` car a opacity 0.12 + multiply dans BotanicalDeco, la difference vectoriel/raster est invisible.
+**plant.svg** : reste a 715 KB post-svgo (vectoriel pur, tres complexe). Fallback WebP cree a 113 KB. **`plant.svg` a ete supprime du repo par Desktop apres review** (commit cleanup) — a opacity 0.12 + multiply dans `BotanicalDeco`, la difference vectoriel/raster est invisible et garder les deux fichiers etait 715 KB de bloat git pour rien. MW-C1 utilise `<img src="/site/svg/plant.webp" alt="" aria-hidden="true" />` (raster, 113 KB).
+
+**Si MW-C1 avait besoin du vectoriel** (besoin fictif mais possible à documenter) : relancer `node scripts/optimize-assets.mjs` avec une modification ponctuelle du seuil `> 500 * 1024` dans le script (par exemple `> 1024 * 1024` pour garder tout SVG < 1 MB), ou exporter une version simplifiee via un editeur SVG (Inkscape peut reduire significativement avec "Clean Up Document").
 
 ### Texture
 

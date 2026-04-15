@@ -9,15 +9,17 @@
 
 ## Statut global
 
-🟡 **En cours — 8 milestones complétés : MW-B1, MW-B2, MW-B3, MW-A1a, MW-B4, MW-D1, MW-D2, MW-D3**
+🟡 **En cours — 9 milestones complétés : MW-B1, MW-B2, MW-B3, MW-A1a, MW-B4, MW-D1, MW-D2, MW-D3, MW-A1b**
 
 29 milestones MW-XX identifiés pour le MVP, répartis en 7 vagues d'exécution avec parallélisation maximale. 4 milestones post-MVP documentés pour la Phase 6.
 
-**Dernière action** : MW-D3 complété (commit `3d18fa9`). Script `scripts/import-seo-geo-content.mjs` (.mjs standalone, idempotent, dry-run). 6 FAQ dans `faqs` Firestore (toutes `status: 'published'`, categories hardcodées `seance` ×1 + `fertilite` ×3 + `grossesse` ×2). 5 ressources dans `ressources` Firestore — **toutes en `status: 'draft'`** car les 5 fichiers source contiennent des témoignages fictifs flagués dans leurs notes de validation. `testimonial: ''` pour les 5 (zéro risque de fuite publique). 8 `faqEntries` parsées pour la ressource fertilité, 0 pour les 4 autres (seule ressource avec un champ `faqJson`).
+**Dernière action** : MW-A1b complété (commit `f0bd37f` + cleanup Desktop). Script `scripts/optimize-assets.mjs` créé et exécuté. 8 photos Judith en AVIF + WebP dans `public/site/judith/` (+ manifest.json), 4 SVG optimisés dans `public/site/svg/` (yoga3, reproductive-flowers, hands-lotus en vectoriel + plant en WebP raster car le svgo n'a pas pu descendre sous 500 KB), 1 texture papier japonais en 3 formats (AVIF/WebP/JPEG) dans `public/site/textures/`. `PaperTexture.tsx` refactoré avec prop `variant: 'synthetic' | 'real'` (emission CSS `image-set()` avec les 3 formats en mode `'real'`). Layout public preload la texture AVIF via `ReactDOM.preload` (API React 19) pour éviter le retard LCP classique des backgrounds CSS. Total économisé : 32.5 MB (34 MB sources → 3.3 MB). Cleanup Desktop : suppression de `plant.svg` (715 KB) car `plant.webp` fait le job a opacity 0.12.
 
-**TODO Benoit/Judith** (non-bloquant mais important) : décider quoi faire du blocage `testimonial fictif` qui maintient les 5 ressources en `draft`. Trois options : (a) Judith fournit 5 vrais témoignages anonymisés avec consentement cette semaine → unlock total ; (b) Judith confirme la suppression définitive des blocs témoignages → le script MW-D3 peut re-tourner avec un mode `--allow-empty-testimonial` pour passer les 5 en `published` ; (c) MW-D5 rend la section témoignage conditionnelle (`{testimonial && <TestimonialBlock />}`) et les 5 ressources passent en `published` avec `testimonial: ''` — les pages ressources s'affichent sans bloc témoignage. L'option (c) est la plus pragmatique pour ne pas bloquer le lancement.
+**2 warnings mineurs pour MW-C1** : (a) `photo-07` (pierre zen + aiguilles, card image fertilite) est significativement plus lourde que les autres (307 KB AVIF, 476 KB WebP) car haute en detail — ne JAMAIS l'utiliser comme hero/LCP element, toujours la réserver aux contextes de card avec lazy loading ; (b) la texture paper-japan dépasse les cibles initiales (95/112/127 KB vs cibles 30/50/120 KB) car un motif de fibres papier est high-entropy et compresse mal en AVIF/WebP — acceptable puisque c'est une réduction de 99.6% depuis le 22 MB source et que le fichier est caché côté browser sur 3 sections de la homepage.
 
-**Prochain attendu** : MW-A1b (rapatriement assets v4 — photos Eric Bates + SVG botaniques + textures) avant d'attaquer la Vague 3 (pages statiques MW-C1 à MW-C6 qui auront besoin de ces assets).
+**Note forward-looking MW-C1** consignée dans `MW-A1b_assets-v4/NOTES.md` : comme `next.config.mjs` n'a pas `images.formats` configuré, MW-C1 doit consommer les assets pré-optimisés via `<img>` natif (décoratifs) ou `<picture>` avec 3 sources (LCP hero), **pas** via `<Image>` sans `unoptimized` (sinon re-encodage inutile).
+
+**Prochain attendu** : 2 workstreams possibles en parallèle. **(A)** Correction MW-D3 avec les 3 vrais témoignages Google trouvés (Ingrid M./grossesse, Petit Potame/pédiatrie, Alexandra P./santé mentale), débloque 3 des 5 ressources en `status: 'published'`, quick win 30 min. **(B)** Démarrage de la Vague 3 avec MW-C1 (homepage portée de v4). A1b a débloqué toute cette vague en fournissant les photos, SVG et texture.
 
 ---
 
@@ -95,7 +97,7 @@ La migration est découpée en **7 vagues** qui peuvent largement se chevaucher.
 | ID | Nom | Type | Temps CC | Deps | Status |
 |----|-----|------|----------|------|--------|
 | MW-A1a | Inventaire Wix complet + export contenu éditorial (Ricos JSON, pages, FAQ) | 📋 Prep | 2-3h | — | 🟢 |
-| MW-A1b | Rapatriement + optimisation assets v4 (photos, SVG, textures) | 📋📦 Prep + Content | 3-5h | MW-B3 | 🔴 |
+| MW-A1b | Rapatriement + optimisation assets v4 (photos, SVG, textures) | 📋📦 Prep + Content | 3-5h | MW-B3 | 🟢 |
 | MW-A2 | Recherche mots-clés Ubersuggest Pro | 📋 Prep | Manuel 2h | — | 🔴 |
 | MW-A4 | Audit GEO + plan d'action clinique La Source en Soi | 📋 Prep | 2-3h | — | 🔴 |
 
