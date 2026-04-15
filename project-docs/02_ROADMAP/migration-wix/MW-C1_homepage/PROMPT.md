@@ -77,12 +77,18 @@ Tous Server Components, `export default`, pas de `'use client'`.
 
       <!-- Gauche : contenu -->
       <div>
-        Kicker badge : "ACUPUNCTRICE · MEMBRE OAQ · ROSEMONT"
-        H1 : "Venez comme vous etes." (74px serif, "etes" en italic + underline warm)
-        Subtitle : "Acupunctrice a Rosemont, j'accompagne..."
-        2 CTAs : <CtaButton variant="primary" size="lg">Prendre rendez-vous</CtaButton>
-                 <CtaButton variant="secondary">Decouvrir mon parcours</CtaButton>
-        Hero meta : 3 lignes (coeur + "Mere de 3 enfants", etc.)
+        Kicker : "Acupunctrice · Membre OAQ · Rosemont"
+        H1 : "Venez comme vous <em>etes</em>." (74px serif, "etes" en italic, soulignement warm accent)
+        Subtitle (texte EXACT de la v4, copier verbatim) :
+          "Acupunctrice a Rosemont, j'accompagne les femmes et les familles
+           dans leur parcours de fertilite, de grossesse, et au-dela.
+           Avec douceur, ecoute et l'envie sincere de vous aider."
+        2 CTAs : <CtaButton variant="primary" size="lg" href="https://www.gorendezvous.com/lasourceensoi?companyId=104074">Prendre rendez-vous</CtaButton>
+                 <CtaButton variant="secondary" href="/a-propos">Decouvrir mon parcours</CtaButton>
+        Hero meta (3 lignes EXACTES de la v4, chacune avec icone SVG inline) :
+          - icone coeur + "Mere de 3 enfants"
+          - icone bouclier-check + "Ex-maison de naissance"
+          - icone map-pin + "2554 Beaubien Est"
       </div>
 
       <!-- Droite : photo hero -->
@@ -91,7 +97,7 @@ Tous Server Components, `export default`, pas de `'use client'`.
           <source srcSet="/site/judith/judith-portrait-01.avif" type="image/avif" />
           <source srcSet="/site/judith/judith-portrait-01.webp" type="image/webp" />
           <img src="/site/judith/judith-portrait-01.webp"
-               alt="Judith Dufour-Savard, acupunctrice a Rosemont"
+               alt="Judith Dufour Savard, acupunctrice, dans son cabinet a La Source en Soi a Rosemont"
                width="1600" height="2400"
                fetchPriority="high"
                className="w-full aspect-[4/5] object-cover object-[center_15%] rounded-[20px] shadow-public-photo" />
@@ -105,9 +111,49 @@ Tous Server Components, `export default`, pas de `'use client'`.
 </section>
 ```
 
-**Photo hero** : `portrait-01` via `<picture>` avec `fetchPriority="high"` (Option B du NOTES MW-A1b). C'est le seul element avec fetchPriority="high" sur la page.
+**Photo hero** : `portrait-01` via `<picture>` avec `fetchPriority="high"` (Option B du NOTES MW-A1b). C'est le seul element avec fetchPriority="high" sur la page. Alt text EXACT de la v4 (plus detaille que la version generique, meilleur pour SEO).
 
-**Decoratifs** : `<WatermarkText>` "Soin" en bas a droite. Pas de SVG deco dans le hero pour le MVP (le SVG "femme enceinte" de la v4 n'a pas ete migre en MW-A1b — ce n'est pas un des 4 SVG selectionnes).
+**Decoratifs** : `<WatermarkText>` "Soin" en bas a droite. Pas de SVG deco dans le hero pour le MVP — la v4 a un SVG `hand-drawn-pregnant-woman-drawing-illustration/9049796.svg` qui n'a pas ete migre en MW-A1b (different de `yoga3.svg` qui est deja utilise dans la section piliers). Skip proprement.
+
+**Vouvoiement** : la v4 est **integralement en vouvoiement** dans le hero ("Venez comme vous etes", "l'envie sincere de vous aider"). Pas de conversion tu→vous a faire ici. L'invariant vouvoiement s'applique a toutes les sections sans exception (verifier chaque texte copie de la v4).
+
+---
+
+## Livrable 1b — Fix PilierCard (1 ligne, exception a la regle _components)
+
+**Probleme detecte par la review Desktop** : `app/(public)/_components/PilierCard.tsx` utilise actuellement `<Image>` de `next/image` **sans `unoptimized`** (ligne 27, prop `fill`). Concretement, quand on passera `image="/site/judith/judith-portrait-07.webp"` a PilierCard, Next.js va faire passer notre fichier **deja optimise** par MW-A1b dans son pipeline d'optimisation et le re-encoder (perte de qualite + CPU serveur gaspille). C'est exactement l'Option C anti-pattern documente dans MW-A1b NOTES.md.
+
+**Fix** : ajouter `unoptimized` au `<Image>` dans PilierCard.tsx. 1 seule ligne modifiee.
+
+```tsx
+// Avant (ligne ~28-34 dans PilierCard.tsx actuel)
+<Image
+  src={image}
+  alt={title}
+  fill
+  className="object-cover transition-transform duration-[400ms] ease-out group-hover:scale-[1.04]"
+  sizes="(max-width: 768px) 100vw, 50vw"
+/>
+
+// Apres
+<Image
+  src={image}
+  alt={title}
+  fill
+  unoptimized
+  className="object-cover transition-transform duration-[400ms] ease-out group-hover:scale-[1.04]"
+  sizes="(max-width: 768px) 100vw, 50vw"
+/>
+```
+
+**Pourquoi c'est une exception justifiee a la regle "ne pas modifier _components"** :
+- C'est un bug bloquant : sans ce fix, photo-07 (307 KB AVIF pre-optimise) devient ~400 KB WebP re-encode par Next.js. L'investissement MW-A1b est annule pour les 3 photos piliers.
+- Le changement est **100% backward-compatible** : aucun caller n'a besoin de changer. Tous les PilierCard existants (il n'y en a pas encore en dehors de MW-C1) gardent leur comportement.
+- `unoptimized` est un prop officiel de `next/image` qui indique "sers le fichier tel quel, ne le re-encode pas". Exactement ce qu'on veut pour nos fichiers pre-optimises.
+- Le `sizes` prop devient un hint pour le navigateur mais ne genere pas de srcset multi-tailles (Next.js ne peut pas generer ce qu'il n'optimise pas). C'est acceptable : on sert une seule taille 1600px et le navigateur downscale cote client au rendu reel (~500px pour les cards). La meme situation qu'on a deja accepte dans MW-A1b.
+- Test de non-regression : `npm run build` doit passer sans erreur, et le typage TypeScript accepte `unoptimized` comme prop valide de `<Image>`.
+
+**Documenter dans NOTES.md** : mentionner ce fix PilierCard avec reference au commit MW-A1b pour que MW-C3 (qui utilisera aussi PilierCard pour les pages /services/*) beneficie directement du fix.
 
 ---
 
@@ -188,26 +234,44 @@ Tous Server Components, `export default`, pas de `'use client'`.
 
 ## Livrable 4 — TemoignagesSection.tsx
 
-```
+**CRITIQUE — NE PAS UTILISER LES NOMS DE LA V4** : les temoignages "Sarah 36 ans / Marie-Eve 32 ans / Noemie 24 ans" de la v4 sont des **placeholders fictifs** qui ont deja ete purges de la collection `ressources` Firestore en Workstream A (commit `17b1cd1`). Les utiliser dans le homepage annulerait directement cette correction et reintroduirait du contenu fictif sur le site public. **Ne pas copier verbatim de la v4 pour cette section**.
+
+**A la place** : utiliser les 3 vrais avis Google publics de la clinique La Source en Soi, deja stockes dans Firestore sous `ressources/{slug}.testimonial`. Ces 3 avis ont ete valides par Benoit, sont publics (Google Business La Source en Soi), et sont attribues aux auteurs originaux.
+
+**Les 3 temoignages a hardcoder** (versions tronquees ~120 caracteres chacune pour le format card homepage, pointant vers la page ressource pour la version complete) :
+
+```tsx
 <PaperTexture variant="real" className="bg-public-beige-warm py-[68px] md:py-[104px] px-5 md:px-8">
-  <div max-w-[1280px] mx-auto>
+  <div className="max-w-[1280px] mx-auto">
     <SectionNumber number="03" />
     <SectionHeading
       kicker="CE QU'ELLES EN DISENT"
       title="Des parcours reels"
-      subtitle="Temoignages anonymises, partages avec leur accord."
+      subtitle="Avis Google publics de la clinique La Source en Soi, ou Judith pratique. 4,9/5 sur 1215 avis."
     />
 
     <div className="grid grid-cols-1 md:grid-cols-[1.3fr_1fr] md:grid-rows-2 gap-6 mt-12">
-      <TestimonialCard featured
-        quote="Ce qui m'a le plus frappee, c'est son ecoute..."
-        name="Sarah, 36 ans" detail="Parcours FIV · Rosemont" />
+      {/* Featured (grande card) : Alexandra P., sante mentale — le plus riche et emotionnel */}
       <TestimonialCard
-        quote="Des la deuxieme seance, j'ai senti une vraie difference..."
-        name="Marie-Eve, 32 ans" detail="Grossesse · Rosemont" />
+        featured
+        quote="Judith a su tout de suite me mettre a l'aise et etant autiste, c'etait pas gagne d'avance, mais la douceur de cette petite fee de l'acupuncture m'a ensorcele de par sa gentillesse et son savoir faire."
+        name="Alexandra P."
+        detail="Avis Google · La Source en Soi"
+      />
+
+      {/* Card 2 : Ingrid M., grossesse */}
       <TestimonialCard
-        quote="Je suis etudiante et je n'avais jamais les moyens..."
-        name="Noemie, 24 ans" detail="Acupuncture sociale · Rosemont" />
+        quote="J'ai consulte Judith pendant ma grossesse, et cela a fait une enorme difference. Elle m'a beaucoup aidee a diminuer les douleurs au dos et aux hanches."
+        name="Ingrid M."
+        detail="Avis Google · La Source en Soi"
+      />
+
+      {/* Card 3 : Parent anonymise, pediatrie */}
+      <TestimonialCard
+        quote="Mon enfant de 6 ans ne voulait pas des aiguilles, elle a trouve d'autres facons de le traiter avec des aimants. Il a beaucoup apprecie la seance."
+        name="Parent d'un enfant de 6 ans"
+        detail="Avis Google · La Source en Soi"
+      />
     </div>
   </div>
 </PaperTexture>
@@ -215,7 +279,15 @@ Tous Server Components, `export default`, pas de `'use client'`.
 
 **Texture** : 2eme utilisation de `<PaperTexture variant="real">`.
 
-**Temoignages** : hardcodes pour le MVP. Les prenoms/ages sont ceux de la v4.
+**Choix editoriaux** :
+- **Alexandra P. en featured** (grande card a gauche) : temoignage le plus emotionnel et complet, qui porte le message d'accueil bienveillant (mention autisme gardee intacte comme choix de l'auteure, validee par Benoit)
+- **Ingrid M.** : couvre le pilier grossesse/perinatalite
+- **"Parent d'un enfant de 6 ans"** : couvre le pilier pediatrie (le pseudo Google "Petit Potame" a ete reformule en description factuelle pour coherence avec le ton professionnel du site, decision deja prise et documentee dans `scripts/seo-geo/source-resources/03-*.md`)
+- **Pas de temoignages pour fertilite ni acupuncture sociale** : les 2 ressources orphelines de Workstream A n'ont pas de match dans les avis Google. Les 3 piliers autres sont couverts, la section reste equilibree visuellement avec 1 featured + 2 small.
+
+**Attribution legale** : ces avis sont publics sur Google Business La Source en Soi, attribues par l'auteure publiquement, donc aucun consentement additionnel n'est requis pour les citer avec attribution. Mention "Avis Google · La Source en Soi" = transparence totale sur la source.
+
+**Avatars** : `TestimonialCard` accepte un `avatarUrl` optionnel. Ne PAS passer cet avatar pour ces 3 cards — le fallback automatique "initiale dans un cercle" gere le cas (A, I, P). On ne telecharge pas les photos Google des auteurs (privacy).
 
 ---
 
@@ -418,7 +490,10 @@ const SCHEMA_ORG = { ... Person + MedicalClinic ... };
 - [ ] Photo hero en `<picture>` avec `fetchPriority="high"` (portrait-01 AVIF + WebP)
 - [ ] Photos piliers/approche/about en `<img>` natif avec `loading="lazy"`
 - [ ] SVG deco via `<BotanicalDeco>` avec `<img src="/site/svg/...">` en children
-- [ ] `<PaperTexture variant="real">` utilise max 2-3 fois
+- [ ] `<PaperTexture variant="real">` utilise **exactement 2 fois** (PiliersSection + TemoignagesSection) — verifier avec `grep -rc 'variant="real"' app/(public)/_sections/` qui doit retourner 2
+- [ ] `lib/firestore/public-blog.ts` cree avec `getRecentBlogPosts(limit)` (livrable QS2), utilise dans BlogPreviewSection
+- [ ] `app/(public)/_components/PilierCard.tsx` modifie : `unoptimized` ajoute au `<Image>` (livrable 1b, exception documentee)
+- [ ] `TemoignagesSection.tsx` n'utilise PAS les noms "Sarah 36 ans / Marie-Eve 32 ans / Noemie 24 ans" (verifier avec `grep -l 'Sarah, 36\|Marie-Eve, 32\|Noemie, 24' app/(public)/_sections/*.tsx` qui doit retourner vide)
 - [ ] Schema.org `Person + MedicalClinic` en JSON-LD dans le HTML source
 - [ ] **Mobile 375px** : aucun scroll horizontal, H1 rentre, photos responsive
 - [ ] `localhost:3000/calendrier` fonctionne sans regression
@@ -463,24 +538,121 @@ Message detaille :
 
 ## Questions strategiques pour review Desktop
 
-### QS1 — BotanicalDeco mix-blend-mode pour la section CTA
+### QS1 — BotanicalDeco mix-blend-mode pour la section CTA → TRANCHE : option (b) inline
 
-**Contexte** : `BotanicalDeco.tsx` (MW-B3) applique `mixBlendMode: 'multiply'` en inline style. La section CTA de la v4 utilise `blend-mode: screen` pour les SVG botaniques (fond sombre). Deux options :
+**Contexte** : `BotanicalDeco.tsx` (MW-B3) applique `mixBlendMode: 'multiply'` en inline style. La section CTA de la v4 utilise un visual beaucoup plus complexe que BotanicalDeco ne le supporte :
 
-- **(a)** Ajouter un prop `blendMode?: 'multiply' | 'screen'` a `BotanicalDeco.tsx` — modification d'un composant MW-B3 (~2 lignes)
-- **(b)** Ne pas utiliser `BotanicalDeco` pour le CTA — positionner le `<img>` manuellement avec un `<div>` absolu et `style={{ mixBlendMode: 'screen' }}`
-- **(c)** Passer un `style` override via la prop `className` de BotanicalDeco — ne fonctionne pas car `mixBlendMode` est en style inline (priorite sur les classes)
+```css
+.cta-deco-botanical {
+  position: absolute; top: -40px; width: 32%;
+  left: -80px; /* ou right: -80px pour le miroir */
+  transform: scaleX(-1); /* miroir droite */
+}
+.cta-deco-botanical img {
+  object-fit: cover; object-position: center center;
+  mix-blend-mode: screen;
+  transform: scale(2.2);
+  transform-origin: center center;
+}
+```
 
-**Reco** : option (a) — 2 lignes de modif, propre, reutilisable. Mais ca touche a `_components/` ce qui est interdit par les contraintes. Alternative : option (b) pour le MVP.
+5 differences fondamentales avec BotanicalDeco : (1) blend-mode `screen` vs `multiply`, (2) scale interne 2.2x, (3) mirror horizontal sur l'IMG, (4) offsets `top: -40px` et `left/right: -80px`, (5) width `32%` relative au container au lieu d'une taille fixe en px.
 
-### QS2 — Blog preview : hardcode ou query Firestore ?
+**Decision Desktop review** : l'option (b) est la bonne — inliner un `<div absolute ...>` avec `<img>` et `style={{ mixBlendMode: 'screen', transform: 'scale(2.2)' }}` directement dans `CtaFinalSection.tsx`. C'est la seule option qui preserve la fidelite visuelle v4 sans bloater l'API de BotanicalDeco avec 5 nouveaux props qui ne serviraient qu'une seule fois. Options (a) et (c) ecartees.
 
-**Contexte** : la section blog peut soit hardcoder les 6 articles (comme la v4), soit querier `publicBlog` Firestore pour avoir les vrais titres/excerpts/images.
+**Implementation** :
 
-- **(a)** Hardcode 6 articles (fidele a la v4, zero dep Firestore dans la homepage)
-- **(b)** Query Firestore (toujours a jour, mais ajoute une dep serveur a la page d'accueil)
+```tsx
+{/* Deco botanique gauche — inline, pas BotanicalDeco */}
+<div
+  className="absolute top-[-40px] left-[-80px] w-[32%] h-full pointer-events-none z-0 hidden md:block overflow-hidden"
+  aria-hidden="true"
+>
+  <img
+    src="/site/svg/plant.webp"
+    alt=""
+    loading="lazy"
+    className="w-full h-full object-cover object-center"
+    style={{ mixBlendMode: 'screen', transform: 'scale(2.2)', transformOrigin: 'center center' }}
+  />
+</div>
 
-**Reco** : option (b) — la homepage est deja SSG + ISR, querier Firestore ajoute juste 1 appel au build. Les donnees sont fraiches et les images sont deja dans Storage. MW-F1 (`RecentPosts`) fera la meme chose — autant commencer maintenant.
+{/* Deco botanique droite — miroir horizontal */}
+<div
+  className="absolute top-[-40px] right-[-80px] w-[32%] h-full pointer-events-none z-0 hidden md:block overflow-hidden"
+  aria-hidden="true"
+  style={{ transform: 'scaleX(-1)' }}
+>
+  <img
+    src="/site/svg/plant.webp"
+    alt=""
+    loading="lazy"
+    className="w-full h-full object-cover object-center"
+    style={{ mixBlendMode: 'screen', transform: 'scale(2.2)', transformOrigin: 'center center' }}
+  />
+</div>
+```
+
+Pas de modification de `BotanicalDeco.tsx`.
+
+### QS2 — Blog preview : helper Firestore partage → TRANCHE : creer `lib/firestore/public-blog.ts`
+
+**Contexte** : la section BlogPreview a besoin de 6 articles recents. 3 strategies possibles :
+
+- **(a)** Hardcode 6 articles dans le JSX (fidele a la v4, zero dep Firestore)
+- **(b)** Query Firestore directement dans `page.tsx` avec le meme pattern que `app/(public)/blog/page.tsx` (query inline `getAdminFirestore().collection('publicBlog')...`)
+- **(c)** Creer un helper partage `lib/firestore/public-blog.ts` exportant `getRecentBlogPosts(limit: number)` et l'utiliser dans le homepage
+
+**Decision Desktop review** : option **(c)** — creer le helper partage. Raisons :
+- DRY : MW-F1 va creer le composant dynamique `<RecentPosts />` qui aura besoin exactement du meme helper
+- Testabilite : le helper peut etre mocké/teste independamment
+- Clean architecture : matches le pattern `lib/` comme data layer
+- Cout marginal : 1 seul nouveau fichier, ~40 lignes, pas de refactor de l'existant
+
+**Livrable a ajouter** : **`lib/firestore/public-blog.ts`**
+
+```typescript
+import { getAdminFirestore } from '@/lib/firebase-admin';
+import type { PublicBlogPost } from '@/lib/types/public-blog';
+
+/**
+ * Recupere les N derniers articles publics publies, tries par date decroissante.
+ * Utilise cote Server Component uniquement (firebase-admin).
+ *
+ * @param limit Nombre maximum d'articles a retourner (defaut : 6)
+ * @returns Array d'articles (slug, title, excerpt, coverImage, publishedAt, category, readingTime)
+ */
+export async function getRecentBlogPosts(limit = 6): Promise<PublicBlogPost[]> {
+  const db = getAdminFirestore();
+  const snap = await db
+    .collection('publicBlog')
+    .where('status', '==', 'published')
+    .orderBy('publishedAt', 'desc')
+    .limit(limit)
+    .get();
+  return snap.docs.map((doc) => ({
+    slug: doc.id,
+    ...(doc.data() as Omit<PublicBlogPost, 'slug'>),
+  }));
+}
+```
+
+**Important** : **NE PAS refactorer** `app/(public)/blog/page.tsx` pour utiliser ce nouveau helper (hors scope MW-C1). Laisser le pattern inline actuel de MW-D2 tel quel — MW-F1 pourra faire la migration quand il integrera le composant `<RecentPosts />`. Scope creep evite.
+
+**Consommation dans `BlogPreviewSection.tsx`** :
+
+```tsx
+import { getRecentBlogPosts } from '@/lib/firestore/public-blog';
+
+export default async function BlogPreviewSection() {
+  const posts = await getRecentBlogPosts(6);
+  // ... render posts ...
+}
+```
+
+C'est une async Server Component, Next.js gere nativement le fetch pendant le SSR/SSG. Pas de `'use client'`, pas de `useEffect`.
+
+**Index Firestore** : l'index composite `publicBlog:status+publishedAt` existe deja (cree en MW-B2 puis utilise par MW-D2). Pas de modification `firestore.indexes.json` necessaire.
 
 ---
 
