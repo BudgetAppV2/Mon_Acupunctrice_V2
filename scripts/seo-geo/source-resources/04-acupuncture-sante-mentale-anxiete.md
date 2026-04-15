@@ -187,10 +187,8 @@ Des protocoles spécifiques existent pour le TSPT. L'acupuncture auriculaire (NA
 
 ### CHAMP: testimonial
 
-> « J'ai commencé l'acupuncture après 6 mois de burnout. Je ne dormais plus, j'avais des palpitations, je pleurais pour rien. Ma psychologue m'a encouragée à essayer un complément corporel. Avec Judith, dès la première séance, j'ai dormi 8 heures d'affilée pour la première fois en des mois. Ce n'est pas de la magie — c'est juste que mon corps avait besoin qu'on lui donne la permission de se reposer. Après 8 séances, je me reconnais à nouveau. »
-> — *Stéphanie, 41 ans, Villeray*
-
-*(Témoignage anonymisé avec consentement)*
+> « Je suis entré en contact avec Judith pour m'aider avec différents problèmes médicaux. C'était la première fois pour moi que je faisais de l'acupuncture et cela me faisais un peu peur. Judith à sue tout de suite me mettre à l'aise et étant autiste, c'était pas gagné d'avance, mais la douceur de cette petite fée de acupuncture m'a ensorcelé de par sa gentillesse et son savoir faire. Depuis que je consulte avec elle, je me sens plus connecté avec moi-même et mes douleurs chroniques me font moins souffrir de rendez-vous en rendez-vous. Elle m'a également aidé à combattre le psoriasis lier à l'anxiété que j'ai depuis toujours et après quelque ls rendez-vous; PLUS UNE SEULE PLAQUE!! Je recommande fortement de prendre rendez-vous avec Judith, c'est un vrai rayon de soleil et son savoir faire est épatant ! Laissez-vous charmé par cette jeune femme aussi douce qu'une fleur et aussi précieuse qu'un rubis, vous ne serez pas déçu, je vous promets. »
+> — *Alexandra P., avis Google sur la clinique La Source en Soi*
 
 ### CHAMP: relatedFaqSlugs
 acupuncture-anxiete
@@ -214,7 +212,7 @@ Judith Dufour Savard
 ## NOTES POUR VALIDATION AVEC JUDITH
 
 **Points à valider:**
-1. Le témoignage "Stéphanie 41 ans" est **fictif** — à remplacer par un vrai témoignage anonymisé
+1. ✅ Ancien placeholder "Stéphanie 41 ans" remplacé le 14 avril 2026 par un vrai avis Google public (Alexandra P., clinique La Source en Soi). L'avis inclut la mention de son autisme — choix de l'auteure, publié publiquement, gardé intact pour préserver l'authenticité et le message d'accueil bienveillant de Judith.
 2. Confirmer les points d'acupuncture mentionnés (HT7, PC6, GV20, Yintang, LR3) — ce sont les plus courants mais vérifier que ça correspond à sa pratique
 3. Confirmer qu'elle utilise le protocole NADA pour le TSPT
 4. Confirmer la fréquence recommandée — correspond-elle à sa pratique ?

@@ -192,10 +192,12 @@ Le protocole le plus étudié utilise principalement le point **PC6 (Neiguan)**,
 
 ### CHAMP: testimonial
 
-> « J'ai commencé à voir Judith au premier trimestre parce que mes nausées étaient invivables — je ne gardais presque rien. Dès la deuxième séance, j'ai senti une vraie différence. On a continué tout au long de ma grossesse et quand mon bébé s'est retourné en siège à 34 semaines, elle m'a proposé la moxibustion. Le bébé s'est retourné après 4 jours de traitement. Je ne peux pas dire avec certitude que c'est grâce à ça, mais ce que je sais, c'est que chaque séance avec Judith m'a fait du bien — physiquement et émotionnellement. »
-> — *Marie-Ève, 32 ans, Rosemont*
-
-*(Témoignage anonymisé avec consentement)*
+> « J'ai consulté Judith pendant ma grossesse, et cela a fait une énorme différence pour moi. Elle m'a beaucoup aidée à diminuer les douleurs au dos et aux hanches. Dès le début, elle a su m'écouter avec attention, me rassurer et me donner de précieux conseils pour mieux vivre ma grossesse.
+>
+> À l'approche de l'accouchement, je la vois plus régulièrement : chaque séance sont profondément apaisante. Judith transmet avec beaucoup de douceur et de passion son amour pour tout ce qui entoure la grossesse et la naissance. Elle partage des conseils très concrets ! Par exemple, les points de pression à utiliser le jour J !
+>
+> Je la recommande sans hésitation : une écoute exceptionnelle, une grande bienveillance et un professionnalisme (elle aime ce qu'elle fait et ça se ressent). Une praticienne précieuse que je suis heureuse d'avoir rencontrée :) »
+> — *Ingrid M., avis Google sur la clinique La Source en Soi*
 
 ### CHAMP: relatedFaqSlugs
 acupuncture-nausees-grossesse, acupuncture-bebe-siege-moxibustion
@@ -219,7 +221,7 @@ Judith Dufour Savard
 ## NOTES POUR VALIDATION AVEC JUDITH
 
 **Points à valider:**
-1. Le témoignage "Marie-Ève 32 ans" est **fictif** — à remplacer par un vrai témoignage anonymisé
+1. ✅ Ancien placeholder "Marie-Ève 32 ans" remplacé le 14 avril 2026 par un vrai avis Google public (Ingrid M., clinique La Source en Soi). Avis public attribué par l'auteure, pas de consentement additionnel requis.
 2. La mention de son expérience en maison de naissance — préciser le lieu si ok
 3. Les protocoles décrits correspondent-ils à sa pratique exacte ?
 4. La fréquence recommandée est-elle correcte ?

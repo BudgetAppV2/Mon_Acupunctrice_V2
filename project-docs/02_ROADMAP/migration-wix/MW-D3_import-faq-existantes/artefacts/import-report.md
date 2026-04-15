@@ -18,18 +18,8 @@
 
 | # | Slug | Titre | Pilier | Sections | FaqEntries | Status |
 |---|------|-------|--------|----------|------------|--------|
-| 1 | acupuncture-fertilite-montreal | Acupuncture et fertilité à Montréal : ce que  | fertilite | 7/7 | 8 | draft |
-| 2 | acupuncture-grossesse-montreal | Acupuncture et grossesse à Montréal : un acco | grossesse | 7/7 | 0 | draft |
-| 3 | acupuncture-pediatrique-enfants-bebes | Acupuncture pour enfants et bébés à Montréal  | pediatrie | 7/7 | 0 | draft |
-| 4 | acupuncture-sante-mentale-anxiete | Acupuncture pour l'anxiété et la santé mental | transversal | 7/7 | 0 | draft |
-| 5 | acupuncture-sociale-montreal | Acupuncture sociale à Rosemont : des soins ac | acupuncture-sociale | 7/7 | 0 | draft |
-
-## Temoignages fictifs detectes → `status: 'draft'`
-
-Pour chacune des ressources listees ici : `testimonial: ''` + `status: 'draft'`. **Action Judith** : fournir un vrai temoignage anonymise avec consentement OU confirmer la suppression definitive du bloc temoignage. Puis Benoit flip `status → 'published'` manuellement.
-
-- **01-acupuncture-fertilite-montreal.md** (slug: acupuncture-fertilite-montreal) : marqueur "Sarah, 36 ans" detecte. Contenu original archive dans le source file.
-- **02-acupuncture-grossesse-montreal.md** (slug: acupuncture-grossesse-montreal) : marqueur "fictif" detecte. Contenu original archive dans le source file.
-- **03-acupuncture-pediatrique-enfants-bebes.md** (slug: acupuncture-pediatrique-enfants-bebes) : marqueur "fictif" detecte. Contenu original archive dans le source file.
-- **04-acupuncture-sante-mentale-anxiete.md** (slug: acupuncture-sante-mentale-anxiete) : marqueur "fictif" detecte. Contenu original archive dans le source file.
-- **05-acupuncture-sociale-montreal.md** (slug: acupuncture-sociale-montreal) : marqueur "fictif" detecte. Contenu original archive dans le source file.
+| 1 | acupuncture-fertilite-montreal | Acupuncture et fertilité à Montréal : ce que  | fertilite | 7/7 | 8 | published |
+| 2 | acupuncture-grossesse-montreal | Acupuncture et grossesse à Montréal : un acco | grossesse | 7/7 | 0 | published |
+| 3 | acupuncture-pediatrique-enfants-bebes | Acupuncture pour enfants et bébés à Montréal  | pediatrie | 7/7 | 0 | published |
+| 4 | acupuncture-sante-mentale-anxiete | Acupuncture pour l'anxiété et la santé mental | transversal | 7/7 | 0 | published |
+| 5 | acupuncture-sociale-montreal | Acupuncture sociale à Rosemont : des soins ac | acupuncture-sociale | 7/7 | 0 | published |

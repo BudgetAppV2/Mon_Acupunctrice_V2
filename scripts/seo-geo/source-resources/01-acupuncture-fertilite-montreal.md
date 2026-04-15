@@ -167,10 +167,7 @@ R : J'accompagne régulièrement des femmes suivies dans toutes les cliniques de
 
 ### CHAMP: testimonial
 
-> « Après deux ans d'essais et deux échecs de FIV, j'étais au bord de tout abandonner. Une amie m'a parlé de Judith. J'ai commencé les séances trois mois avant mon troisième transfert. Ce qui m'a le plus frappée, c'est son écoute — j'avais vraiment l'impression qu'elle prenait le temps de comprendre ce que je vivais, pas juste mon cycle. Je ne peux pas prouver que c'est grâce à l'acupuncture, mais ce troisième transfert a fonctionné. Et peu importe, même si ça n'avait pas marché, ces mois-là avec Judith m'ont donné la force de continuer. »
-> — *Sarah, 36 ans, Rosemont*
 
-*(Témoignage anonymisé avec consentement)*
 
 ### CHAMP: publishedDate
 2026-04-07
@@ -195,7 +192,7 @@ Judith Dufour Savard
 1. ✅ Le positionnement "La Source en Soi — clinique familiale"
 2. ⚠️ **Mention de son expérience en maison de naissance** — confirmé ok?
 3. ⚠️ **Mention qu'elle est mère de 3 enfants** — confirmé ok?
-4. ⚠️ Le témoignage "Sarah 36 ans" est **fictif** — à remplacer par un vrai témoignage anonymisé avec consentement, ou à retirer
+4. ✅ Ancien placeholder "Sarah 36 ans" retiré le 14 avril 2026. Aucun avis Google Business La Source en Soi ne mentionne explicitement le parcours fertilité → bloc testimonial laissé vide, MW-D5 le rendra conditionnellement.
 5. ⚠️ La liste des cliniques de fertilité mentionnées (OVO, McGill, etc.) — vérifier qu'elle travaille vraiment avec leurs patientes
 6. ⚠️ La mention acupuncture sociale "tarif réduit" — OK à mentionner sur cette page?
 7. ⚠️ Les études citées sont toutes réelles et vérifiables — aucun claim médical exagéré

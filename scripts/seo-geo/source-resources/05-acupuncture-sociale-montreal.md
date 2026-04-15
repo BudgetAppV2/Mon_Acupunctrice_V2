@@ -183,10 +183,7 @@ Des études montrent son efficacité dans les contextes communautaires et les pr
 
 ### CHAMP: testimonial
 
-> « Je suis étudiante et je n'avais jamais les moyens de consulter un acupuncteur. Quand j'ai appris que Judith offrait des séances à tarif réduit, j'ai essayé pour mon anxiété. Ça fait 3 mois que je viens une fois par semaine, et c'est devenu mon rituel de santé mentale. L'ambiance en groupe est apaisante, et le tarif fait que je peux maintenir la régularité — c'est ce qui change tout. Judith traite tout le monde avec le même soin, que tu paies plein tarif ou tarif social. Ça se sent. »
-> — *Noémie, 24 ans, étudiante en travail social, Rosemont*
 
-*(Témoignage anonymisé avec consentement)*
 
 ### CHAMP: relatedFaqSlugs
 acupuncture-anxiete
@@ -210,7 +207,7 @@ Judith Dufour Savard
 ## NOTES POUR VALIDATION AVEC JUDITH
 
 **Points à valider:**
-1. Le témoignage "Noémie 24 ans" est **fictif** — à remplacer par un vrai témoignage anonymisé
+1. ✅ Ancien placeholder "Noémie 24 ans" retiré le 14 avril 2026. Aucun avis Google Business La Source en Soi ne mentionne spécifiquement le volet acupuncture sociale → bloc testimonial laissé vide, MW-D5 le rendra conditionnellement.
 2. **Confirmer les tarifs exacts** de l'acupuncture sociale — la fourchette de prix
 3. **Confirmer le format** : fauteuils vs tables ? Combien de personnes en même temps ?
 4. **Confirmer les horaires** : quand sont les séances d'acupuncture sociale ?

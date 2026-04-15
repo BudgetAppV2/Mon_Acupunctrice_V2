@@ -180,10 +180,8 @@ Les frais pour une consultation pédiatrique sont les mêmes que pour un adulte.
 
 ### CHAMP: testimonial
 
-> « Mon fils avait des coliques terribles depuis sa naissance. Il pleurait 4-5 heures par jour, inconsolable. On a tout essayé. Quand mon ostéo m'a parlé de l'acupuncture, j'ai hésité — des aiguilles sur un bébé de 6 semaines? Mais Judith m'a tellement rassurée que j'ai essayé. Une seule aiguille, deux secondes, c'est tout. Après la deuxième séance, les pleurs ont diminué de moitié. Après la quatrième, c'était un autre bébé. Je ne sais pas si c'est la maturation naturelle ou l'acupuncture, mais je sais que chaque séance nous a fait du bien — à lui et à moi. »
-> — *Camille, maman de Léo, 3 mois, Plateau Mont-Royal*
-
-*(Témoignage anonymisé avec consentement)*
+> « Je suis venue voir Judith pour aider mon enfant de 6 ans. Elle a été super ! Il ne voulait pas des aiguilles, elle a trouvé d'autres façons de le traiter (avec des aimants). Il a beaucoup apprécié la séance. J'ai aussi été traitée par Judith à d'autres occasions (santé des femmes) et ça m'a fait beaucoup de bien. »
+> — *Parent d'un enfant de 6 ans, avis Google sur la clinique La Source en Soi*
 
 ### CHAMP: relatedFaqSlugs
 acupuncture-nausees-grossesse
@@ -207,7 +205,7 @@ Judith Dufour Savard
 ## NOTES POUR VALIDATION AVEC JUDITH
 
 **Points à valider:**
-1. Le témoignage "Camille et Léo" est **fictif** — à remplacer par un vrai témoignage anonymisé
+1. ✅ Ancien placeholder "Camille et Léo" remplacé le 14 avril 2026 par un vrai avis Google public (parent d'un enfant de 6 ans, clinique La Source en Soi). Pseudonyme original de l'auteure ("Petit Potame") remplacé par une description factuelle pour cohérence avec le ton professionnel du site.
 2. Confirmer qu'elle fait bien de l'acupuncture minimale (1 aiguille) pour les bébés coliqueux
 3. Confirmer qu'elle utilise le laser comme alternative pour enfants craintifs
 4. Confirmer qu'elle accepte les bébés dès la naissance
