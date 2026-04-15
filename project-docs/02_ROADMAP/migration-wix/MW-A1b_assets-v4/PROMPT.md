@@ -89,14 +89,16 @@ Le `height` est rempli dynamiquement par `sharp.metadata()` apres le resize.
 
 **Source** : `$HOME/Documents/Judith_SEO_GEO/05_maquettes/nouveau-site/assets/svg/`
 
-**Les 4 SVG a migrer** (source de verite — remplace la pre-selection du NOTES_PREPA) :
+**Les 4 SVG a migrer** (source de verite — remplace la pre-selection du NOTES_PREPA). **Chemins exacts verifies Desktop** (a utiliser tels quels dans le script, ne pas grepper) :
 
-| Fichier source | Slug destination | Taille brute | Notes |
+| Chemin source (relatif a `assets/`) | Slug destination | Taille brute | Notes |
 |---|---|---|---|
-| `01-grossesse/.../yoga3.svg` | `yoga3.svg` | ~33 KB | Femme enceinte yoga line-art, utilisee en `.piliers-deco` dans la v4 |
-| `04-botanique/.../plant.svg` | `plant.svg` | ~860 KB | Plantes medicinales, utilisee en `.cta-deco-botanical`. Vectoriel pur (0 `<image>` raster) |
-| `02-fertilite/.../4319418.svg` | `reproductive-flowers.svg` | ~82 KB | Systeme reproductif avec fleurs, bonus couverture pilier fertilite |
-| `05-mains-soins/.../e4cad311-...svg` | `hands-lotus.svg` | ~94 KB | Mains avec lotus, bonus couverture pilier soins |
+| `svg/01-grossesse/pregnant-woman-makes-yoga-meditation-one-line-drawing/yoga3.svg` | `yoga3.svg` | 33 KB | Femme enceinte yoga line-art, utilisee en `.piliers-deco` dans la v4 |
+| `svg/04-botanique/illustration-with-medicinal-plants/plant.svg` | `plant.svg` | 860 KB | Plantes medicinales, utilisee 2× en `.cta-deco-botanical` (gauche + miroir droite) dans la v4. Vectoriel pur (0 `<image>` raster inline) |
+| `svg/02-fertilite/female-reproductive-system-with-flowers/4319418.svg` | `reproductive-flowers.svg` | 82 KB | Systeme reproductif avec fleurs, bonus couverture pilier fertilite (non utilise dans la v4 mais garde pour MW-C3 pages services) |
+| `svg/05-mains-soins/magic-hands-with-lotus-flower-line-art/e4cad311-eb35-4d76-8041-6e5695fe673e.svg` | `hands-lotus.svg` | 94 KB | Mains avec lotus, bonus couverture pilier soins (non utilise dans la v4 mais garde pour MW-C3) |
+
+Hardcoder ces 4 chemins dans un tableau au debut du script, pas de `find` recursif necessaire.
 
 **Pipeline par SVG** :
 1. `npx svgo --multipass -i source -o public/site/svg/{slug}`
@@ -216,6 +218,30 @@ ReactDOM.preload('/site/textures/paper-japan.avif', {
 **Pourquoi** : la texture est utilisee en CSS `background-image` par `PaperTexture`. Sans preload, le navigateur ne decouvre l'image qu'a l'application du CSS → retard LCP de ~400 ms. `ReactDOM.preload` emet un `<link rel="preload">` dans le `<head>` pendant le SSR.
 
 **Gotcha** : `ReactDOM.preload` est une API React 19 (disponible depuis React 19 + Next.js 15). Ne pas utiliser `next/head` ou `<link>` dans le JSX — c'est `ReactDOM.preload()` dans le body de la fonction.
+
+---
+
+## Note pour MW-C1 (documentation forward-looking)
+
+**A consigner dans NOTES.md en fin d'execution**, pour eviter un piege dans le prochain milestone qui consommera ces assets :
+
+**`next.config.mjs` n'a PAS `images.formats` configure** (verifie Desktop). Par defaut, Next.js 15 sert WebP via son pipeline d'optimisation mais **ne genere PAS d'AVIF** automatiquement. Notre script MW-A1b produit des fichiers `.avif` pre-optimises. MW-C1 doit donc choisir sa strategie de consommation des photos :
+
+- **Option A (recommande pour les photos decoratives et les SVG)** : `<img src="/site/judith/judith-portrait-01.webp" alt="..." width="1067" height="1600" loading="lazy" />` — sert notre fichier pre-optimise directement, aucun double-encodage, aucune configuration Next.js requise.
+- **Option B (recommande pour le LCP, ex. photo hero homepage)** : balise `<picture>` avec les 3 sources pour negocier le format optimal :
+  ```tsx
+  <picture>
+    <source srcSet="/site/judith/judith-portrait-01.avif" type="image/avif" />
+    <source srcSet="/site/judith/judith-portrait-01.webp" type="image/webp" />
+    <img src="/site/judith/judith-portrait-01.webp" alt="..." width="1067" height="1600" fetchPriority="high" />
+  </picture>
+  ```
+  AVIF pour les browsers modernes (~93% coverage 2026, gain ~30% vs WebP), WebP fallback, zero re-encodage.
+- **Option C (a eviter)** : `<Image src="/site/judith/...webp" />` sans `unoptimized` — Next.js va faire passer notre WebP deja optimise dans son pipeline, re-encodant le fichier (perte de qualite legere + CPU serveur inutile). Si MW-C1 veut absolument utiliser `<Image>`, ajouter `unoptimized` ou configurer `next.config.mjs` avec `images: { formats: ['image/avif', 'image/webp'] }` ET uploader les images sources en un seul format pour laisser Next faire le fan-out. Plus complexe, pas le chemin recommande ici.
+
+**Pour les SVG** : toujours `<img src="/site/svg/yoga3.svg" alt="" aria-hidden="true" />` passe en children de `<BotanicalDeco>`. Jamais `<Image>` sur un SVG — Next.js refuse d'optimiser les SVG par securite (anti-XSS) et les sert tel quels via un fallback unoptimized, autant sauter l'etape.
+
+**Pour la texture paper-japan** : consommee automatiquement via `<PaperTexture variant="real">` qui emet du CSS `image-set()` — MW-C1 n'a rien a faire de special, juste importer le composant et passer `variant="real"`.
 
 ---
 
