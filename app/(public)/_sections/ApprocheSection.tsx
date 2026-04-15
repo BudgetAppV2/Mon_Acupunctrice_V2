@@ -1,0 +1,58 @@
+import GrainOverlay from '../_components/GrainOverlay';
+import BotanicalDeco from '../_components/BotanicalDeco';
+import SectionNumber from '../_components/SectionNumber';
+import SectionHeading from '../_components/SectionHeading';
+
+export default function ApprocheSection() {
+  return (
+    <GrainOverlay className="bg-public-beige-bg py-[68px] md:py-[104px] px-5 md:px-8 border-t border-b border-public-accent-warm/20">
+      <div className="max-w-[1120px] mx-auto grid grid-cols-1 md:grid-cols-[1.2fr_1fr] gap-12 md:gap-[72px] items-center relative">
+        <BotanicalDeco position="top-right" opacity={0.14} size={500}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/site/svg/hands-lotus.svg" alt="" aria-hidden="true" className="w-full h-full" />
+        </BotanicalDeco>
+
+        {/* Texte */}
+        <div className="order-2 md:order-1">
+          <SectionNumber number="02" align="left" />
+          <SectionHeading
+            kicker="MON APPROCHE"
+            title="Un soin qui prend le temps."
+            align="left"
+          />
+          <div className="mt-6 space-y-6 text-[17px] leading-[1.75] text-public-text-medium">
+            <p>
+              Je crois que chaque personne qui entre dans mon cabinet m&eacute;rite
+              toute mon attention. Pas un protocole standard, mais une &eacute;coute
+              r&eacute;elle de ce que votre corps et votre parcours demandent.
+            </p>
+            <p>
+              Dans mon cabinet, chaque s&eacute;ance dure{' '}
+              <strong className="text-public-text-dark">60 minutes</strong>.
+              J&rsquo;&eacute;coute ce que vous venez d&eacute;poser, j&rsquo;&eacute;value,
+              je traite, et je prends le temps de vous expliquer ce que je fais et pourquoi.
+            </p>
+            <p>
+              Pas de promesses, pas de recettes. Juste une pratique{' '}
+              <strong className="text-public-text-dark">profond&eacute;ment humaine</strong>
+              {' '}&mdash; et adapt&eacute;e &agrave; qui vous &ecirc;tes aujourd&rsquo;hui.
+            </p>
+          </div>
+        </div>
+
+        {/* Photo */}
+        <div className="order-1 md:order-2 max-w-[420px] mx-auto md:max-w-none">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/site/judith/judith-portrait-05.webp"
+            alt="Judith en consultation d'acupuncture"
+            width={1600}
+            height={1067}
+            loading="lazy"
+            className="w-full rounded-[14px] shadow-public-photo aspect-[4/5] object-cover"
+          />
+        </div>
+      </div>
+    </GrainOverlay>
+  );
+}
