@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import ReactDOM from 'react-dom';
 import { Cormorant_Garamond, Inter } from 'next/font/google';
 import './globals-public.css';
 import SiteHeader from './_components/SiteHeader';
@@ -43,6 +44,14 @@ export default function PublicLayout({
 }: {
   children: React.ReactNode;
 }) {
+  // Preload texture papier japonais pour eviter le retard LCP
+  // (decouverte CSS background-image trop tardive sans preload)
+  ReactDOM.preload('/site/textures/paper-japan.avif', {
+    as: 'image',
+    type: 'image/avif',
+    fetchPriority: 'high',
+  });
+
   return (
     <div
       className={`${cormorant.variable} ${inter.variable} bg-public-beige-bg text-public-text-dark font-public-sans min-h-screen flex flex-col`}
