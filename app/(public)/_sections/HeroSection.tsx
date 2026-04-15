@@ -4,11 +4,26 @@ import CtaButton from '../_components/CtaButton';
 
 export default function HeroSection() {
   return (
-    <section className="relative bg-gradient-to-b from-public-beige-bg to-public-beige-light">
+    <section className="relative bg-gradient-to-b from-public-beige-bg to-public-beige-light overflow-hidden">
       <GrainOverlay className="py-12 md:py-[88px] px-5 md:px-8">
         <div className="max-w-[1280px] mx-auto grid grid-cols-1 md:grid-cols-[1.1fr_1fr] gap-12 md:gap-[72px] items-center relative">
+          {/* SVG decoratif femme enceinte — derriere le contenu, gauche, line-art subtil */}
+          <div
+            className="absolute left-[-40px] bottom-[-60px] w-[420px] h-[520px] pointer-events-none z-0 hidden md:block"
+            aria-hidden="true"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/site/svg/pregnant-woman.svg"
+              alt=""
+              loading="lazy"
+              className="w-full h-full object-contain"
+              style={{ opacity: 0.18, mixBlendMode: 'multiply' }}
+            />
+          </div>
+
           {/* Contenu gauche */}
-          <div>
+          <div className="relative z-10">
             <span className="inline-block rounded-full bg-white px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[1.5px] text-public-accent-taupe-dark mb-6 shadow-public-sm">
               Acupunctrice &middot; Membre OAQ &middot; Rosemont
             </span>

@@ -6,7 +6,22 @@ import TestimonialCard from '../_components/TestimonialCard';
 export default function TemoignagesSection() {
   return (
     <PaperTexture variant="real" className="bg-public-beige-warm py-[68px] md:py-[104px] px-5 md:px-8">
-      <div className="max-w-[1280px] mx-auto">
+      <div className="max-w-[1280px] mx-auto relative">
+        {/* SVG zen-stones — decoratif a droite, en filigrane */}
+        <div
+          className="absolute right-[-60px] top-[40px] w-[280px] h-[380px] pointer-events-none z-0 hidden lg:block"
+          aria-hidden="true"
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/site/svg/zen-stones.svg"
+            alt=""
+            loading="lazy"
+            className="w-full h-full object-contain"
+            style={{ opacity: 0.22, mixBlendMode: 'multiply' }}
+          />
+        </div>
+
         <SectionNumber number="03" />
         <SectionHeading
           kicker="CE QU'ELLES EN DISENT"

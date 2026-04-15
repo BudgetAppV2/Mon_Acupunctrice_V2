@@ -1,5 +1,4 @@
 import PaperTexture from '../_components/PaperTexture';
-import BotanicalDeco from '../_components/BotanicalDeco';
 import SectionNumber from '../_components/SectionNumber';
 import SectionHeading from '../_components/SectionHeading';
 import PilierCard from '../_components/PilierCard';
@@ -8,10 +7,20 @@ export default function PiliersSection() {
   return (
     <PaperTexture variant="real" className="py-[68px] md:py-[104px] px-5 md:px-8">
       <div className="max-w-[1280px] mx-auto relative">
-        <BotanicalDeco position="top-left" opacity={0.22} size={520}>
+        {/* SVG yoga — positionne hors container a gauche, plus visible */}
+        <div
+          className="absolute left-[-180px] top-[-20px] w-[360px] h-[520px] pointer-events-none z-0 hidden lg:block"
+          aria-hidden="true"
+        >
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/site/svg/yoga3.svg" alt="" aria-hidden="true" className="w-full h-full" />
-        </BotanicalDeco>
+          <img
+            src="/site/svg/yoga3.svg"
+            alt=""
+            loading="lazy"
+            className="w-full h-full object-contain"
+            style={{ opacity: 0.32, mixBlendMode: 'multiply' }}
+          />
+        </div>
 
         <SectionNumber number="01" />
         <SectionHeading
