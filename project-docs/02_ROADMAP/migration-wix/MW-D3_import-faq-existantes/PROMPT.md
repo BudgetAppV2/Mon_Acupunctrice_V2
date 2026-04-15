@@ -114,7 +114,7 @@ const FAQ_CATEGORY_MAP = {
 | `testimonial` | `testimonial` | **Verifier les temoignages fictifs** (voir contrainte) |
 | `faqJson` | `faqEntries` | **Parser** le markdown Q/R en array `[{ question, answer }]` |
 | — | `citations` | `[]` (les citations sont dans le markdown inline, pas extraites separement) |
-| `relatedGuides` | `relatedResources` | Parser comme array de slugs |
+| `relatedGuides` | `relatedResources` | **Toujours `[]` au lancement** — les guides references pointent vers des ressources qui n'existent pas encore (ex. `/ressources/acupuncture-fiv-transfert-embryon`). MW-D6 reconstruira les relations sur les slugs reellement presents dans Firestore. |
 | — | `relatedServices`, `relatedFaqs`, `relatedArticles` | `[]` (MW-D6) |
 | `authorName` | `authorName` | Direct |
 | `publishedDate` | `publishedAt` | `Timestamp.fromDate(new Date(value))` |
@@ -156,7 +156,8 @@ function parseFaqEntries(faqMarkdown) {
   for (const block of blocks) {
     if (!block.trim()) continue;
     // Separer question (avant **) et reponse (apres R :)
-    const match = block.match(/^(.+?)\*\*\s*\n\s*R\s*:\s*([\s\S]+?)$/);
+    // `[\s\S]+?` (pas `.+?`) pour gerer les questions multi-lignes par securite
+    const match = block.match(/^([\s\S]+?)\*\*\s*\n\s*R\s*:\s*([\s\S]+?)$/);
     if (match) {
       entries.push({
         question: match[1].trim().replace(/\?$/, '?'),
@@ -168,19 +169,21 @@ function parseFaqEntries(faqMarkdown) {
 }
 ```
 
-### Temoignages fictifs
+### Temoignages fictifs — `status: 'draft'` au lieu de placeholder
 
-Le MILESTONE.md et DECISIONS demandent de detecter les temoignages fictifs et de les remplacer. Chercher dans le champ `testimonial` les marqueurs suivants :
-- Le caractere `⚠️`
-- Le mot "fictif" (case insensitive)
-- Des noms comme "Sarah, 36 ans" qui semblent inventes
+**Correction Desktop review vs approche initiale.** Ne PAS remplacer le temoignage fictif par du texte placeholder — risque de fuite publique en MW-D5 si on oublie. A la place, pour toute ressource detectee comme contenant un temoignage fictif :
 
-Si detecte, remplacer le contenu du champ `testimonial` par :
-```
-[Temoignage a fournir par Judith — le contenu original etait marque comme fictif]
-```
+1. Mettre `testimonial: ''` (string vide — le type `Ressource.testimonial: string` exige une string, pas `null`)
+2. Mettre `status: 'draft'` (au lieu de `'published'`)
+3. Ajouter une entree dans le rapport d'import ET dans `NOTES.md` listant la ressource, un resume du contenu fictif original pour traceabilite, et l'action requise (Judith fournit un vrai temoignage anonymise avec consentement, ou confirme la suppression definitive du bloc temoignage, puis Benoit flip `status → 'published'` manuellement via la console Firebase ou en relancant le script apres avoir corrige le source file).
 
-Et ajouter un warning dans le rapport + NOTES.md.
+Marqueurs de detection a chercher dans le champ source `testimonial` :
+- Le caractere `⚠️` (peu probable dans le champ lui-meme mais possible dans les notes de validation en fin de fichier)
+- Le mot `fictif` (case insensitive)
+- La chaine `Sarah, 36 ans` (specifique au fichier 01 confirmee par Desktop review)
+- La mention parenthetique `(Témoignage anonymisé avec consentement)` est **trompeuse** dans le fichier 01 : elle est ecrite comme si le temoignage etait legitime mais les notes de validation en fin de fichier confirment qu'il est fictif. Ne pas se fier a cette mention — se fier uniquement a la presence de `Sarah, 36 ans` ou du mot `fictif`.
+
+**Pourquoi cette approche** : MW-D4 et MW-D5 vont query `where('status', '==', 'published')`. Une ressource avec `status: 'draft'` est automatiquement invisible cote public, sans risque de fuite. Le contenu fictif est entierement efface (pas stocke en Firestore), et la liste des actions Judith est tracee dans le rapport + NOTES.md pour suivi.
 
 ### Mode `--dry-run`
 
@@ -218,8 +221,11 @@ Utiliser `.doc(slug).set(data)` pour les FAQ et les ressources. Relancer ne cree
 | # | Slug | Titre | Pilier | Sections | FaqEntries | Status |
 |---|------|-------|--------|----------|------------|--------|
 
-## Temoignages fictifs detectes
-- {fichier} : {description}
+## Temoignages fictifs detectes → `status: 'draft'`
+
+Pour chacune des ressources listees ici : `testimonial: ''` + `status: 'draft'`. **Action Judith** : fournir un vrai temoignage anonymise avec consentement OU confirmer la suppression definitive du bloc temoignage. Puis Benoit flip `status → 'published'` manuellement (console Firebase ou relance script apres correction du source).
+
+- {fichier} : {marqueur trouve — ex. "Sarah, 36 ans detecte ligne N"} · contenu original archive dans le source file
 
 ## Warnings
 - {messages}
@@ -230,6 +236,7 @@ Utiliser `.doc(slug).set(data)` pour les FAQ et les ressources. Relancer ne cree
 ## Contraintes (ce qu'on ne fait PAS)
 
 - **Ne pas modifier** `app/`, `components/`, `lib/`, `public/`, `tailwind.config.ts`, `next.config.mjs`, `package.json`
+- **Ne pas modifier** `firestore.rules`, `firestore.indexes.json`, `storage.rules` — les rules et indexes sont deja en place depuis MW-B2, ce script ecrit uniquement via Admin SDK (qui bypass les rules)
 - **Ne pas modifier** les fichiers source (`scripts/seo-geo/source/*.md`, `scripts/seo-geo/source-resources/*.md`) — lecture seule
 - **Ne pas** supprimer les fichiers source apres import
 - **Ne pas** convertir le markdown en Ricos ou en HTML — stocker le markdown brut dans Firestore
@@ -251,12 +258,15 @@ Chaque item doit etre verifiable en < 30 secondes.
 - [ ] En mode reel : 6 documents dans `faqs` Firestore avec `status: 'published'`
 - [ ] En mode reel : 5 documents dans `ressources` Firestore avec `status: 'published'`
 - [ ] Chaque FAQ a : `question` non vide, `reponse` non vide (markdown), `category` valide (`FaqCategory`), `order` (1-6)
-- [ ] Chaque ressource a les 8 sections riches non vides : `shortAnswer`, `introSection`, `scienceSection`, `mechanismSection`, `judithApproach`, `whatToExpect`, `protocolSection`, `testimonial`
+- [ ] Chaque ressource a les **7 sections riches obligatoirement non vides** : `shortAnswer`, `introSection`, `scienceSection`, `mechanismSection`, `judithApproach`, `whatToExpect`, `protocolSection`
+- [ ] Pour chaque ressource : soit `testimonial` non vide ET `status: 'published'`, soit `testimonial: ''` ET `status: 'draft'` (cas temoignage fictif detecte)
+- [ ] `relatedResources` est un array vide `[]` pour toutes les 5 ressources (MW-D6 fera le maillage plus tard)
 - [ ] Chaque ressource a `faqEntries` en array d'objets (pas un string) avec au moins 3 entrees
 - [ ] Chaque ressource a `pilier` valide (`RessourcePilier`)
 - [ ] La ressource `04-acupuncture-sante-mentale-anxiete` a `pilier: 'transversal'` (Q10)
 - [ ] La FAQ `01-acupuncture-anxiete` a `category: 'seance'` (pas `'sante-mentale'`)
-- [ ] Les temoignages fictifs sont remplaces par un placeholder dans les documents Firestore (verifiable dans la console Firebase sur la ressource fertilite)
+- [ ] **La ressource `acupuncture-fertilite-montreal` (fichier 01) a `testimonial: ''` ET `status: 'draft'`** — temoignage "Sarah, 36 ans" detecte comme fictif (confirme par les notes de validation en fin du source file, point 4)
+- [ ] Les 4 autres ressources (grossesse, pediatrie, sante-mentale, acupuncture-sociale) sont scannees pour detection de temoignages fictifs — si une autre est flaggee, elle passe aussi en `status: 'draft'`, sinon elles sont toutes en `status: 'published'`
 - [ ] Le rapport `artefacts/import-report.md` documente les temoignages fictifs detectes
 - [ ] `NOTES.md` cree avec : date, resume, flag explicite sur les temoignages fictifs
 - [ ] `git diff` ne montre **aucune modification** dans `app/`, `lib/`, `scripts/seo-geo/source/`, `scripts/seo-geo/source-resources/`
@@ -271,7 +281,8 @@ Chaque item doit etre verifiable en < 30 secondes.
 - **Tester le parser faqJson isolement** : le format `**QN : question** R : reponse` est specifique. Tester sur `01-acupuncture-fertilite-montreal.md` qui a le faqJson le plus long (7+ questions).
 - **Firebase Admin init** : meme pattern que `migrate-wix-blog.mjs` (charger `FIREBASE_SERVICE_ACCOUNT` depuis `.env.local`, `initializeApp({ credential: cert(...) })`). Le storageBucket n'est pas necessaire ici (pas d'upload d'images).
 - **Les FAQ source n'ont pas toutes les memes champs** : le fichier 01 a `category: sante-mentale`, les autres n'ont pas de champ category. Le mapping hardcode gere cette heterogeneite.
-- **`relatedGuides`** dans les ressources est un champ texte avec des slugs separes par des virgules ou des retours a la ligne. Le parser doit les splitre en array de strings.
+- **`relatedGuides`** : ignorer completement au lancement. Le champ source liste des paths vers des ressources qui n'existent pas encore (ex. `/ressources/acupuncture-fiv-transfert-embryon`, `/ressources/acupuncture-cycles-irreguliers-ovulation`). Ecrire `relatedResources: []` pour toutes les 5 ressources. MW-D6 (maillage interne) reconstruira les relations sur les slugs reellement presents dans Firestore.
+- **Scan des temoignages fictifs** : lire le champ `testimonial` de chacune des 5 ressources et chercher les marqueurs listes dans la section "Temoignages fictifs" du Livrable 1. Loguer explicitement "OK" ou "FICTIF DETECTE" pour chacune dans l'output du script, meme en mode reel — Benoit doit pouvoir voir en un coup d'oeil quelles ressources sont passees en `draft`.
 
 ---
 
