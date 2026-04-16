@@ -6,6 +6,7 @@ import AboutPratiqueSection from '../_sections/AboutPratiqueSection';
 import AboutCliniqueSection from '../_sections/AboutCliniqueSection';
 import AboutSpecialitesSection from '../_sections/AboutSpecialitesSection';
 import CtaButton from '../_components/CtaButton';
+import CtaBotanicalDeco from '../_components/CtaBotanicalDeco';
 
 export const metadata: Metadata = {
   title: 'A propos',
@@ -105,8 +106,9 @@ export default function AboutPage() {
       </section>
 
       {/* CTA final */}
-      <section className="bg-gradient-to-b from-public-accent-taupe to-public-accent-taupe-dark text-white py-[68px] md:py-[88px] px-5 md:px-8 text-center">
-        <div className="max-w-[620px] mx-auto">
+      <section className="bg-gradient-to-b from-public-accent-taupe to-public-accent-taupe-dark text-white py-[68px] md:py-[88px] px-5 md:px-8 text-center relative overflow-hidden">
+        <CtaBotanicalDeco />
+        <div className="max-w-[620px] mx-auto relative z-10">
           <h2 className="font-public-serif text-[32px] md:text-[44px] font-medium leading-[1.15] mb-4">
             Envie d&rsquo;en parler?
           </h2>

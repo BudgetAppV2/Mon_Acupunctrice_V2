@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import CtaButton from '../_components/CtaButton';
+import CtaBotanicalDeco from '../_components/CtaBotanicalDeco';
 import SectionHeading from '../_components/SectionHeading';
 
 export const metadata: Metadata = {
@@ -182,8 +183,9 @@ export default function ReserverPage() {
       </section>
 
       {/* CTA final */}
-      <section className="bg-gradient-to-b from-public-accent-taupe to-public-accent-taupe-dark text-white py-[68px] md:py-[88px] px-5 md:px-8 text-center">
-        <div className="max-w-[620px] mx-auto">
+      <section className="bg-gradient-to-b from-public-accent-taupe to-public-accent-taupe-dark text-white py-[68px] md:py-[88px] px-5 md:px-8 text-center relative overflow-hidden">
+        <CtaBotanicalDeco />
+        <div className="max-w-[620px] mx-auto relative z-10">
           <h2 className="font-public-serif text-[28px] md:text-[40px] font-medium mb-4">Pr&ecirc;te ?</h2>
           <div className="flex flex-col sm:flex-row justify-center gap-4 items-center mt-4">
             <CtaButton variant="white" size="lg" href={GRV_URL}>R&eacute;server maintenant</CtaButton>

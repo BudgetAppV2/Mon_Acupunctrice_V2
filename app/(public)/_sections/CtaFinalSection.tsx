@@ -1,38 +1,10 @@
 import CtaButton from '../_components/CtaButton';
+import CtaBotanicalDeco from '../_components/CtaBotanicalDeco';
 
 export default function CtaFinalSection() {
   return (
     <section className="bg-gradient-to-b from-public-accent-taupe to-public-accent-taupe-dark text-white py-[68px] md:py-[108px] px-5 md:px-8 border-t-[3px] border-public-accent-warm relative overflow-hidden">
-      {/* Deco botanique gauche — inline, pas BotanicalDeco (blend-mode screen) */}
-      <div
-        className="absolute top-[-40px] left-[-80px] w-[32%] h-full pointer-events-none z-0 hidden md:block overflow-hidden"
-        aria-hidden="true"
-      >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/site/svg/plant.webp"
-          alt=""
-          loading="lazy"
-          className="w-full h-full object-cover object-center"
-          style={{ mixBlendMode: 'screen', transform: 'scale(2.2)', transformOrigin: 'center center' }}
-        />
-      </div>
-
-      {/* Deco botanique droite — miroir horizontal */}
-      <div
-        className="absolute top-[-40px] right-[-80px] w-[32%] h-full pointer-events-none z-0 hidden md:block overflow-hidden"
-        aria-hidden="true"
-        style={{ transform: 'scaleX(-1)' }}
-      >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/site/svg/plant.webp"
-          alt=""
-          loading="lazy"
-          className="w-full h-full object-cover object-center"
-          style={{ mixBlendMode: 'screen', transform: 'scale(2.2)', transformOrigin: 'center center' }}
-        />
-      </div>
+      <CtaBotanicalDeco />
 
       {/* Contenu */}
       <div className="max-w-[720px] mx-auto text-center relative z-10">

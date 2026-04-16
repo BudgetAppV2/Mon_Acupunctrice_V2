@@ -1,9 +1,11 @@
 import Link from 'next/link';
 import CtaButton from '../_components/CtaButton';
+import CtaBotanicalDeco from '../_components/CtaBotanicalDeco';
 
 export default function ServiceFertiliteCtaSection() {
   return (
     <section className="bg-gradient-to-b from-public-accent-taupe to-public-accent-taupe-dark text-white py-[68px] md:py-[88px] px-5 md:px-8 text-center relative overflow-hidden">
+      <CtaBotanicalDeco />
       <div className="max-w-[620px] mx-auto relative z-10">
         <h2 className="font-public-serif text-[32px] md:text-[44px] font-medium leading-[1.15] mb-4">
           Pr&ecirc;te &agrave; commencer ?

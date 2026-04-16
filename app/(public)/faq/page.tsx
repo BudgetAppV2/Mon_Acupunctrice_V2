@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { getAllPublishedFaqs } from '@/lib/firestore/public-faq';
 import MarkdownRenderer from '../_components/MarkdownRenderer';
 import SectionHeading from '../_components/SectionHeading';
+import CtaBotanicalDeco from '../_components/CtaBotanicalDeco';
 import CtaButton from '../_components/CtaButton';
 import type { FAQ, FaqCategory } from '@/lib/types/faq';
 
@@ -139,8 +140,9 @@ export default async function FaqPage() {
       </section>
 
       {/* CTA final */}
-      <section className="bg-gradient-to-b from-public-accent-taupe to-public-accent-taupe-dark text-white py-[68px] md:py-[88px] px-5 md:px-8 text-center">
-        <div className="max-w-[620px] mx-auto">
+      <section className="bg-gradient-to-b from-public-accent-taupe to-public-accent-taupe-dark text-white py-[68px] md:py-[88px] px-5 md:px-8 text-center relative overflow-hidden">
+        <CtaBotanicalDeco />
+        <div className="max-w-[620px] mx-auto relative z-10">
           <h2 className="font-public-serif text-[28px] md:text-[40px] font-medium mb-4">
             Votre question n&rsquo;est pas ici ?
           </h2>

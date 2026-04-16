@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import CtaButton from '../_components/CtaButton';
+import CtaBotanicalDeco from '../_components/CtaBotanicalDeco';
 import SectionHeading from '../_components/SectionHeading';
 
 export const metadata: Metadata = {
@@ -206,8 +207,9 @@ export default function ContactPage() {
       </section>
 
       {/* CTA final */}
-      <section className="bg-gradient-to-b from-public-accent-taupe to-public-accent-taupe-dark text-white py-[68px] md:py-[88px] px-5 md:px-8 text-center">
-        <div className="max-w-[680px] mx-auto">
+      <section className="bg-gradient-to-b from-public-accent-taupe to-public-accent-taupe-dark text-white py-[68px] md:py-[88px] px-5 md:px-8 text-center relative overflow-hidden">
+        <CtaBotanicalDeco />
+        <div className="max-w-[680px] mx-auto relative z-10">
           <h2 className="font-public-serif text-[28px] md:text-[40px] font-medium mb-6">
             Pr&ecirc;te &agrave; franchir le pas ?
           </h2>
