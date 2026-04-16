@@ -3,22 +3,8 @@ import CtaButton from '../_components/CtaButton';
 
 export default function ServiceFertiliteHeroSection() {
   return (
-    <GrainOverlay className="bg-gradient-to-b from-public-beige-bg to-public-beige-light py-[68px] md:py-[104px] px-5 md:px-8 relative overflow-hidden">
-      {/* SVG decoratif reproductive-flowers en filigrane */}
-      <div
-        className="absolute -right-[120px] -top-10 w-[480px] h-[520px] hidden md:block pointer-events-none z-0"
-        aria-hidden="true"
-        style={{ transform: 'rotate(-8deg)', opacity: 0.12, mixBlendMode: 'multiply' }}
-      >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/site/svg/reproductive-flowers.svg"
-          alt=""
-          className="w-full h-full object-contain"
-        />
-      </div>
-
-      <div className="max-w-[1080px] mx-auto grid grid-cols-1 md:grid-cols-[1.1fr_1fr] gap-12 md:gap-[72px] items-center relative z-10">
+    <GrainOverlay className="bg-gradient-to-b from-public-beige-bg to-public-beige-light py-[68px] md:py-[104px] px-5 md:px-8">
+      <div className="max-w-[1080px] mx-auto grid grid-cols-1 md:grid-cols-[1.1fr_1fr] gap-12 md:gap-[72px] items-center">
         {/* Contenu gauche */}
         <div>
           <span className="inline-block text-[11px] font-semibold uppercase tracking-[2.5px] text-public-accent-taupe-dark mb-4">

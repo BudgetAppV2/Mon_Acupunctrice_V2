@@ -3,8 +3,23 @@ import SectionHeading from '../_components/SectionHeading';
 
 export default function ServiceFertiliteBioSection() {
   return (
-    <section className="bg-white py-[68px] md:py-[104px] px-5 md:px-8">
-      <div className="max-w-[780px] mx-auto">
+    <section className="bg-white py-[68px] md:py-[104px] px-5 md:px-8 relative overflow-hidden">
+      {/* SVG decoratif reproductive-flowers en filigrane a droite */}
+      <div
+        className="absolute -right-[80px] top-[40px] w-[460px] h-[560px] hidden md:block pointer-events-none z-0"
+        aria-hidden="true"
+        style={{ transform: 'rotate(-8deg)', opacity: 0.14, mixBlendMode: 'multiply' }}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/site/svg/reproductive-flowers.svg"
+          alt=""
+          loading="lazy"
+          className="w-full h-full object-contain"
+        />
+      </div>
+
+      <div className="max-w-[780px] mx-auto relative z-10">
         <SectionNumber number="01" align="left" />
         <SectionHeading
           kicker="QUI VOUS ACCOMPAGNE"
