@@ -25,7 +25,7 @@ const config: Config = {
           'taupe-section': '#D5CDBF',
           'text-dark': '#2C2A26',
           'text-medium': '#5C5852',
-          'text-light': '#8A857C',
+          'text-light': '#736E66', // was #8A857C — darkened for WCAG AA contrast (4.5:1 minimum)
           'accent-taupe': '#8A9A7B',
           'accent-taupe-dark': '#6F8566',
           'accent-taupe-light': '#A8B59C',

@@ -52,7 +52,7 @@ export default function PublicLayout({
       className={`${cormorant.variable} ${inter.variable} bg-public-beige-bg text-public-text-dark font-public-sans min-h-screen flex flex-col`}
     >
       <SiteHeader />
-      <div className="flex-1">{children}</div>
+      <main className="flex-1">{children}</main>
       <SiteFooter />
     </div>
     </>
