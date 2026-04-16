@@ -3,8 +3,17 @@ import SectionHeading from '../_components/SectionHeading';
 
 export default function ServicePediatrieBioSection() {
   return (
-    <section className="bg-white py-[68px] md:py-[104px] px-5 md:px-8">
-      <div className="max-w-[780px] mx-auto">
+    <section className="bg-white py-[68px] md:py-[104px] px-5 md:px-8 relative overflow-hidden">
+      {/* SVG sleeping-baby en filigrane droite */}
+      <div
+        className="absolute -right-[60px] top-[40px] w-[320px] h-[400px] pointer-events-none z-0 hidden lg:block"
+        aria-hidden="true"
+        style={{ transform: 'rotate(12deg)', opacity: 0.16, mixBlendMode: 'multiply' }}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/site/svg/sleeping-baby.svg" alt="" loading="lazy" className="w-full h-full object-contain" />
+      </div>
+      <div className="max-w-[780px] mx-auto relative z-10">
         <SectionNumber number="01" align="left" />
         <SectionHeading
           kicker="QUI VOUS ACCOMPAGNE"
