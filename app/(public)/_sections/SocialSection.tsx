@@ -1,7 +1,21 @@
 export default function SocialSection() {
   return (
-    <section className="bg-white border-y border-public-border-subtle py-[68px] md:py-[88px] px-5 md:px-8">
-      <div className="max-w-[1080px] mx-auto grid grid-cols-1 md:grid-cols-[260px_1fr_auto] gap-10 items-center">
+    <section className="relative border-y border-public-border-subtle py-[68px] md:py-[88px] px-5 md:px-8 overflow-hidden">
+      {/* Fond pattern SVG seamless — line-art femmes enceintes + botaniques */}
+      <div
+        className="absolute inset-0 z-0"
+        aria-hidden="true"
+        style={{
+          backgroundImage: 'url("/site/svg/social-pattern.svg")',
+          backgroundSize: '600px',
+          backgroundRepeat: 'repeat',
+          opacity: 0.35,
+        }}
+      />
+      {/* Overlay blanc semi-transparent pour adoucir le pattern */}
+      <div className="absolute inset-0 z-0 bg-white/60" aria-hidden="true" />
+
+      <div className="max-w-[1080px] mx-auto grid grid-cols-1 md:grid-cols-[260px_1fr_auto] gap-10 items-center relative z-10">
         {/* Card Instagram */}
         <div className="relative w-[240px] md:w-[260px] aspect-square mx-auto md:mx-0 rounded-[14px] overflow-hidden">
           {/* eslint-disable-next-line @next/next/no-img-element */}
