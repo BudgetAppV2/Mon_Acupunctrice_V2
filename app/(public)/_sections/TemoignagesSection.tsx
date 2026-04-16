@@ -7,10 +7,11 @@ export default function TemoignagesSection() {
   return (
     <PaperTexture variant="real" className="bg-public-beige-warm py-[68px] md:py-[104px] px-5 md:px-8">
       <div className="max-w-[1280px] mx-auto relative">
-        {/* SVG zen-stones — decoratif a droite, en filigrane */}
+        {/* SVG zen-stones — filigrane decoratif droite, plus gros + plus transparent + leger angle (matcher v4) */}
         <div
-          className="absolute right-[-60px] top-[40px] w-[280px] h-[380px] pointer-events-none z-0 hidden lg:block"
+          className="absolute right-[-160px] top-[-40px] w-[460px] h-[600px] pointer-events-none z-0 hidden lg:block"
           aria-hidden="true"
+          style={{ transform: 'rotate(8deg)', transformOrigin: 'center center' }}
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
@@ -18,7 +19,7 @@ export default function TemoignagesSection() {
             alt=""
             loading="lazy"
             className="w-full h-full object-contain"
-            style={{ opacity: 0.22, mixBlendMode: 'multiply' }}
+            style={{ opacity: 0.14, mixBlendMode: 'multiply' }}
           />
         </div>
 

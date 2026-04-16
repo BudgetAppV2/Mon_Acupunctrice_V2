@@ -7,10 +7,11 @@ export default function PiliersSection() {
   return (
     <PaperTexture variant="real" className="py-[68px] md:py-[104px] px-5 md:px-8">
       <div className="max-w-[1280px] mx-auto relative">
-        {/* SVG yoga — positionne hors container a gauche, plus visible */}
+        {/* SVG yoga — filigrane decoratif gauche, plus gros + plus transparent + leger angle (matcher v4) */}
         <div
-          className="absolute left-[-180px] top-[-20px] w-[360px] h-[520px] pointer-events-none z-0 hidden lg:block"
+          className="absolute left-[-260px] top-[-60px] w-[560px] h-[760px] pointer-events-none z-0 hidden lg:block"
           aria-hidden="true"
+          style={{ transform: 'rotate(-8deg)', transformOrigin: 'center center' }}
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
@@ -18,7 +19,7 @@ export default function PiliersSection() {
             alt=""
             loading="lazy"
             className="w-full h-full object-contain"
-            style={{ opacity: 0.32, mixBlendMode: 'multiply' }}
+            style={{ opacity: 0.18, mixBlendMode: 'multiply' }}
           />
         </div>
 

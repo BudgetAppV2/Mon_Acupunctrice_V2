@@ -7,9 +7,9 @@ export default function HeroSection() {
     <section className="relative bg-gradient-to-b from-public-beige-bg to-public-beige-light overflow-hidden">
       <GrainOverlay className="py-12 md:py-[88px] px-5 md:px-8">
         <div className="max-w-[1280px] mx-auto grid grid-cols-1 md:grid-cols-[1.1fr_1fr] gap-12 md:gap-[72px] items-center relative">
-          {/* SVG decoratif femme enceinte — derriere le contenu, gauche, line-art subtil */}
+          {/* SVG decoratif femme enceinte — derriere le contenu, gauche, line-art en filigrane (plus grand pour matcher v4) */}
           <div
-            className="absolute left-[-40px] bottom-[-60px] w-[420px] h-[520px] pointer-events-none z-0 hidden md:block"
+            className="absolute left-[-80px] bottom-[-120px] w-[680px] h-[820px] pointer-events-none z-0 hidden md:block"
             aria-hidden="true"
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -18,7 +18,7 @@ export default function HeroSection() {
               alt=""
               loading="lazy"
               className="w-full h-full object-contain"
-              style={{ opacity: 0.18, mixBlendMode: 'multiply' }}
+              style={{ opacity: 0.20, mixBlendMode: 'multiply' }}
             />
           </div>
 

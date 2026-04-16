@@ -1,19 +1,29 @@
 import GrainOverlay from '../_components/GrainOverlay';
-import BotanicalDeco from '../_components/BotanicalDeco';
 import SectionNumber from '../_components/SectionNumber';
 import SectionHeading from '../_components/SectionHeading';
 
 export default function ApprocheSection() {
   return (
-    <GrainOverlay className="bg-public-beige-bg py-[68px] md:py-[104px] px-5 md:px-8 border-t border-b border-public-accent-warm/20">
+    <GrainOverlay className="bg-public-beige-bg py-[68px] md:py-[104px] px-5 md:px-8 border-t border-b border-public-accent-warm/20 overflow-hidden">
       <div className="max-w-[1120px] mx-auto grid grid-cols-1 md:grid-cols-[1.2fr_1fr] gap-12 md:gap-[72px] items-center relative">
-        <BotanicalDeco position="top-right" opacity={0.14} size={500}>
+        {/* SVG hands-lotus — fond decoratif centre derriere le texte (matcher v4) */}
+        <div
+          className="absolute left-[10%] top-[-40px] w-[640px] h-[640px] pointer-events-none z-0 hidden md:block"
+          aria-hidden="true"
+          style={{ transform: 'rotate(6deg)', transformOrigin: 'center center' }}
+        >
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/site/svg/hands-lotus.svg" alt="" aria-hidden="true" className="w-full h-full" />
-        </BotanicalDeco>
+          <img
+            src="/site/svg/hands-lotus.svg"
+            alt=""
+            loading="lazy"
+            className="w-full h-full object-contain"
+            style={{ opacity: 0.12, mixBlendMode: 'multiply' }}
+          />
+        </div>
 
         {/* Texte */}
-        <div className="order-2 md:order-1">
+        <div className="order-2 md:order-1 relative z-10">
           <SectionNumber number="02" align="left" />
           <SectionHeading
             kicker="MON APPROCHE"
@@ -41,7 +51,7 @@ export default function ApprocheSection() {
         </div>
 
         {/* Photo */}
-        <div className="order-1 md:order-2 max-w-[420px] mx-auto md:max-w-none">
+        <div className="order-1 md:order-2 max-w-[420px] mx-auto md:max-w-none relative z-10">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/site/judith/judith-portrait-05.webp"
