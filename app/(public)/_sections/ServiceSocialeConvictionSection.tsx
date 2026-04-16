@@ -3,8 +3,17 @@ import SectionHeading from '../_components/SectionHeading';
 
 export default function ServiceSocialeConvictionSection() {
   return (
-    <section className="bg-white py-[68px] md:py-[104px] px-5 md:px-8">
-      <div className="max-w-[780px] mx-auto">
+    <section className="bg-white py-[68px] md:py-[104px] px-5 md:px-8 relative overflow-hidden">
+      {/* SVG yoga3 en filigrane gauche */}
+      <div
+        className="absolute -left-[140px] top-[0px] w-[400px] h-[560px] pointer-events-none z-0 hidden lg:block"
+        aria-hidden="true"
+        style={{ transform: 'rotate(-6deg)', opacity: 0.14, mixBlendMode: 'multiply' }}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/site/svg/yoga3.svg" alt="" loading="lazy" className="w-full h-full object-contain" />
+      </div>
+      <div className="max-w-[780px] mx-auto relative z-10">
         <SectionNumber number="01" align="left" />
         <SectionHeading
           kicker="POURQUOI J'OFFRE CE SERVICE"

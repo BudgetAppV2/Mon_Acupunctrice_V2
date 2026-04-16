@@ -3,8 +3,17 @@ import SectionHeading from '../_components/SectionHeading';
 
 export default function AboutParcoursSection() {
   return (
-    <section className="bg-white py-[68px] md:py-[104px] px-5 md:px-8">
-      <div className="max-w-[780px] mx-auto">
+    <section className="bg-white py-[68px] md:py-[104px] px-5 md:px-8 relative overflow-hidden">
+      {/* SVG hands-lotus en filigrane droite */}
+      <div
+        className="absolute -right-[100px] top-[20px] w-[440px] h-[540px] pointer-events-none z-0 hidden lg:block"
+        aria-hidden="true"
+        style={{ transform: 'rotate(8deg)', opacity: 0.12, mixBlendMode: 'multiply' }}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/site/svg/hands-lotus.svg" alt="" loading="lazy" className="w-full h-full object-contain" />
+      </div>
+      <div className="max-w-[780px] mx-auto relative z-10">
         <SectionNumber number="01" align="left" />
         <SectionHeading
           kicker="MON PARCOURS"

@@ -83,8 +83,13 @@ export default async function FaqPage() {
       />
 
       {/* Hero */}
-      <section className="bg-gradient-to-b from-public-beige-bg to-public-beige-light py-[68px] md:py-[104px] px-5 md:px-8">
-        <div className="max-w-[860px] mx-auto text-center">
+      <section className="bg-gradient-to-b from-public-beige-bg to-public-beige-light py-[68px] md:py-[104px] px-5 md:px-8 relative overflow-hidden">
+        {/* SVG zen-stones filigrane droite */}
+        <div className="absolute -right-[80px] top-[10px] w-[340px] h-[420px] pointer-events-none z-0 hidden lg:block" aria-hidden="true" style={{ transform: 'rotate(8deg)', opacity: 0.12, mixBlendMode: 'multiply' }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/site/svg/zen-stones.svg" alt="" loading="lazy" className="w-full h-full object-contain" />
+        </div>
+        <div className="max-w-[860px] mx-auto text-center relative z-10">
           <SectionHeading
             kicker="FAQ"
             title="Questions fr&eacute;quentes"
