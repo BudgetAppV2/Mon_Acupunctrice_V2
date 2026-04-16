@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import AboutHeroSection from '../_sections/AboutHeroSection';
 import AboutParcoursSection from '../_sections/AboutParcoursSection';
 import AboutPratiqueSection from '../_sections/AboutPratiqueSection';
@@ -77,6 +78,32 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* Pour aller plus loin \u2014 cross-linking SEO */}
+      <section className="bg-public-beige-warm py-12 px-5 md:px-8 border-t border-public-border-subtle">
+        <div className="max-w-[780px] mx-auto">
+          <h3 className="font-public-serif text-[18px] font-semibold mb-4 text-public-text-dark">
+            Pour aller plus loin
+          </h3>
+          <ul className="space-y-2 text-[14px]">
+            <li>
+              <Link href="/services" className="text-public-accent-warm underline underline-offset-4 hover:text-public-accent-warm-soft transition-colors">
+                D&eacute;couvrir mes services &rarr;
+              </Link>
+            </li>
+            <li>
+              <Link href="/ressources/acupuncture-sante-mentale-anxiete" className="text-public-accent-warm underline underline-offset-4 hover:text-public-accent-warm-soft transition-colors">
+                Acupuncture et sant&eacute; mentale : les &eacute;tudes r&eacute;centes &rarr;
+              </Link>
+            </li>
+            <li>
+              <Link href="/faq" className="text-public-accent-warm underline underline-offset-4 hover:text-public-accent-warm-soft transition-colors">
+                Questions fr&eacute;quentes &rarr;
+              </Link>
+            </li>
+          </ul>
+        </div>
+      </section>
+
       {/* CTA final */}
       <section className="bg-gradient-to-b from-public-accent-taupe to-public-accent-taupe-dark text-white py-[68px] md:py-[88px] px-5 md:px-8 text-center">
         <div className="max-w-[620px] mx-auto">
@@ -91,7 +118,7 @@ export default function AboutPage() {
             <CtaButton
               variant="white"
               size="lg"
-              href="https://www.gorendezvous.com/fr/lasourceensoi"
+              href="https://www.gorendezvous.com/lasourceensoi?companyId=104074"
             >
               Prendre rendez-vous en ligne
             </CtaButton>

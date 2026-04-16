@@ -90,7 +90,16 @@ export default function ServiceSocialeNadaSection() {
           ))}
         </ul>
 
-        <div className="mt-10">
+        <div className="mt-8">
+          <Link
+            href="/ressources/acupuncture-sante-mentale-anxiete"
+            className="text-[14px] font-medium text-public-accent-warm underline underline-offset-4 hover:text-public-accent-warm-soft transition-colors"
+          >
+            &Eacute;tudes sur l&rsquo;acupuncture et l&rsquo;anxi&eacute;t&eacute; &rarr;
+          </Link>
+        </div>
+
+        <div className="mt-4">
           <Link
             href="/ressources/acupuncture-sociale-montreal"
             className="text-[14px] font-medium text-public-accent-warm underline underline-offset-4 hover:text-public-accent-warm-soft transition-colors"

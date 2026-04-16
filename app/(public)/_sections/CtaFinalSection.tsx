@@ -49,7 +49,7 @@ export default function CtaFinalSection() {
         <CtaButton
           variant="white"
           size="lg"
-          href="https://www.gorendezvous.com/fr/lasourceensoi"
+          href="https://www.gorendezvous.com/lasourceensoi?companyId=104074"
         >
           Prendre rendez-vous en ligne
         </CtaButton>

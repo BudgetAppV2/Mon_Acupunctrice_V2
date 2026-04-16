@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import CtaButton from '../_components/CtaButton';
 
 export default function ServiceGrossesseCtaSection() {
@@ -19,6 +20,11 @@ export default function ServiceGrossesseCtaSection() {
           <CtaButton variant="secondary" href="/contact" className="text-white/80 hover:text-white">
             Ou &eacute;crivez-moi
           </CtaButton>
+        </div>
+        <div className="mt-6 text-center">
+          <Link href="/faq" className="text-[14px] text-white/70 underline underline-offset-4 hover:text-white transition-colors">
+            Consulter les questions fr&eacute;quentes
+          </Link>
         </div>
       </div>
     </section>
