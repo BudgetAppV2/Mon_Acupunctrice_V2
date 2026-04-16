@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import ReactDOM from 'react-dom';
+// ReactDOM.preload supprimé — ne fonctionne pas dans Next.js 15 App Router Server Components
 import { Cormorant_Garamond, Inter } from 'next/font/google';
 import './globals-public.css';
 import SiteHeader from './_components/SiteHeader';
@@ -44,15 +44,10 @@ export default function PublicLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // Preload texture papier japonais pour eviter le retard LCP
-  // (decouverte CSS background-image trop tardive sans preload)
-  ReactDOM.preload('/site/textures/paper-japan.avif', {
-    as: 'image',
-    type: 'image/avif',
-    fetchPriority: 'high',
-  });
-
   return (
+    <>
+      {/* Preload texture papier — <link> direct car ReactDOM.preload() ne fonctionne pas dans Next.js 15 App Router */}
+      <link rel="preload" href="/site/textures/paper-japan.avif" as="image" type="image/avif" />
     <div
       className={`${cormorant.variable} ${inter.variable} bg-public-beige-bg text-public-text-dark font-public-sans min-h-screen flex flex-col`}
     >
@@ -60,5 +55,6 @@ export default function PublicLayout({
       <div className="flex-1">{children}</div>
       <SiteFooter />
     </div>
+    </>
   );
 }
