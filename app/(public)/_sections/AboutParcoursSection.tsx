@@ -1,0 +1,42 @@
+import SectionNumber from '../_components/SectionNumber';
+import SectionHeading from '../_components/SectionHeading';
+
+export default function AboutParcoursSection() {
+  return (
+    <section className="bg-white py-[68px] md:py-[104px] px-5 md:px-8">
+      <div className="max-w-[780px] mx-auto">
+        <SectionNumber number="01" align="left" />
+        <SectionHeading
+          kicker="MON PARCOURS"
+          title="D&rsquo;une sc&egrave;ne &agrave; l&rsquo;autre."
+          align="left"
+        />
+
+        <div className="mt-8 space-y-6 text-[17px] leading-[1.75] text-public-text-medium">
+          <p>
+            Avant de devenir acupunctrice, j&rsquo;ai eu une premi&egrave;re vie dans le monde
+            du spectacle vivant &mdash; en r&eacute;gie et en &eacute;clairage.
+          </p>
+          <p>
+            Puis il y a eu mes enfants. Et avec eux, la d&eacute;couverte d&rsquo;un autre monde :
+            celui de la naissance, de la p&eacute;rinatalit&eacute;, du lien qui se tisse entre
+            un parent et un b&eacute;b&eacute;.
+          </p>
+          <p>
+            J&rsquo;ai voulu comprendre ce monde de l&rsquo;int&eacute;rieur. J&rsquo;ai compl&eacute;t&eacute;
+            mon DEP en acupuncture au Coll&egrave;ge de Rosemont, et pendant mes &eacute;tudes,
+            j&rsquo;ai travaill&eacute; &agrave; la Maison de naissance C&ocirc;te-des-Neiges o&ugrave;
+            j&rsquo;ai accompagn&eacute; de nombreuses familles dans les d&eacute;buts de la vie.
+          </p>
+          <p>
+            Cette exp&eacute;rience &mdash; les naissances physiologiques, les premiers pas de parents,
+            la fragilit&eacute; et la force qui coexistent dans ces moments-l&agrave; &mdash; m&rsquo;a
+            profond&eacute;ment marqu&eacute;e. C&rsquo;est elle qui a orient&eacute; ma pratique vers
+            ce qu&rsquo;elle est aujourd&rsquo;hui : un soin centr&eacute; sur la femme, la famille,
+            et les transitions de vie.
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}
