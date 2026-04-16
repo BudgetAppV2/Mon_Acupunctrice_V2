@@ -2,24 +2,24 @@ import SectionNumber from '../_components/SectionNumber';
 import SectionHeading from '../_components/SectionHeading';
 
 const PUBLICS = [
-  "Les personnes sans assurance priv\u00e9e",
-  "Les \u00e9tudiant(e)s",
+  "Les personnes sans assurance privée",
+  "Les étudiant(e)s",
   "Les travailleur(se)s autonomes et artistes",
-  "Les personnes \u00e0 faible revenu",
-  "Les a\u00een\u00e9(e)s",
+  "Les personnes à faible revenu",
+  "Les aîné(e)s",
   "Les personnes en recherche d'emploi",
   "Les nouvelles arrivantes",
   "Les personnes vivant avec un handicap ou une condition chronique",
-  "Toute personne qui veut essayer l'acupuncture sans engagement financier d'une s\u00e9ance priv\u00e9e",
+  "Toute personne qui veut essayer l'acupuncture sans engagement financier d'une séance privée",
 ];
 
 const CONDITIONS = [
-  "Stress et anxi\u00e9t\u00e9 (le #1 des motifs en acupuncture sociale)",
+  "Stress et anxiété (le #1 des motifs en acupuncture sociale)",
   "Insomnie et troubles du sommeil",
-  "Douleurs chroniques (dos, cou, \u00e9paules, migraines)",
-  "Fatigue et \u00e9puisement",
-  "Soutien au bien-\u00eatre g\u00e9n\u00e9ral",
-  "Arr\u00eat du tabac et d\u00e9pendances (protocole NADA)",
+  "Douleurs chroniques (dos, cou, épaules, migraines)",
+  "Fatigue et épuisement",
+  "Soutien au bien-être général",
+  "Arrêt du tabac et dépendances (protocole NADA)",
 ];
 
 export default function ServiceSocialePublicSection() {

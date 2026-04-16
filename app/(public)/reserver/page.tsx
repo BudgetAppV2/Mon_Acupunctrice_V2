@@ -5,41 +5,41 @@ import CtaBotanicalDeco from '../_components/CtaBotanicalDeco';
 import SectionHeading from '../_components/SectionHeading';
 
 export const metadata: Metadata = {
-  title: 'Prendre rendez-vous \u2014 Acupuncture Rosemont, Montreal',
+  title: 'Prendre rendez-vous — Acupuncture Rosemont, Montreal',
   description:
-    'Reservez votre seance d\u2019acupuncture a Rosemont en ligne, par telephone ou par courriel. Disponibilites en temps reel via Go Rendez-Vous. Clinique La Source en Soi.',
+    'Reservez votre seance d’acupuncture a Rosemont en ligne, par telephone ou par courriel. Disponibilites en temps reel via Go Rendez-Vous. Clinique La Source en Soi.',
 };
 
 const GRV_URL = 'https://www.gorendezvous.com/lasourceensoi?companyId=104074';
 
 const CONTACT_MODES = [
   {
-    title: 'Par t\u00e9l\u00e9phone',
-    text: '514 750-3735 \u2014 Appelez La Source en Soi et demandez Judith Dufour-Savard. Message vocal disponible si je suis en s\u00e9ance.',
+    title: 'Par téléphone',
+    text: '514 750-3735 — Appelez La Source en Soi et demandez Judith Dufour-Savard. Message vocal disponible si je suis en séance.',
   },
   {
     // TODO Judith: email a completer (placeholder suggere info@acupuncturejudith.ca)
     title: 'Par courriel',
-    text: '[\u00e0 compl\u00e9ter] \u2014 Pour les questions pr\u00e9alables \u00e0 la prise de rendez-vous ou les situations particuli\u00e8res.',
+    text: '[à compléter] — Pour les questions préalables à la prise de rendez-vous ou les situations particulières.',
   },
   {
     title: 'En clinique',
-    text: '2554 rue Beaubien Est, Montr\u00e9al, QC H1Y 1G3 (Rosemont, m\u00e9tro Beaubien).',
+    text: '2554 rue Beaubien Est, Montréal, QC H1Y 1G3 (Rosemont, métro Beaubien).',
   },
 ];
 
 const EXPECT = [
   {
-    title: 'Dur\u00e9e',
-    text: '60 minutes (consultation priv\u00e9e) / 30 \u00e0 45 minutes (acupuncture sociale)',
+    title: 'Durée',
+    text: '60 minutes (consultation privée) / 30 à 45 minutes (acupuncture sociale)',
   },
   {
     title: 'Tenue',
-    text: 'Portez des v\u00eatements confortables qui se retroussent au niveau des coudes et des genoux. Vous n\u2019aurez pas \u00e0 vous d\u00e9v\u00eatir.',
+    text: 'Portez des vêtements confortables qui se retroussent au niveau des coudes et des genoux. Vous n’aurez pas à vous dévêtir.',
   },
   {
-    title: '\u00c0 apporter',
-    text: 'Si vous avez des r\u00e9sultats d\u2019examens m\u00e9dicaux r\u00e9cents (bilans sanguins, imagerie, suivi de fertilit\u00e9), apportez-les. Sinon, rien de particulier.',
+    title: 'À apporter',
+    text: 'Si vous avez des résultats d’examens médicaux récents (bilans sanguins, imagerie, suivi de fertilité), apportez-les. Sinon, rien de particulier.',
   },
 ];
 
@@ -53,12 +53,12 @@ const JSON_LD = [
   {
     '@context': 'https://schema.org',
     '@type': 'MedicalBusiness',
-    name: 'Judith Dufour-Savard \u2014 Acupuncture',
+    name: 'Judith Dufour-Savard — Acupuncture',
     telephone: '+1-514-750-3735',
     address: {
       '@type': 'PostalAddress',
       streetAddress: '2554 rue Beaubien Est',
-      addressLocality: 'Montr\u00e9al',
+      addressLocality: 'Montréal',
       addressRegion: 'QC',
       postalCode: 'H1Y 1G3',
       addressCountry: 'CA',
@@ -68,7 +68,7 @@ const JSON_LD = [
     potentialAction: {
       '@type': 'ReserveAction',
       target: GRV_URL,
-      result: { '@type': 'Reservation', name: 'S\u00e9ance d\u2019acupuncture' },
+      result: { '@type': 'Reservation', name: 'Séance d’acupuncture' },
     },
   },
   {
@@ -76,7 +76,7 @@ const JSON_LD = [
     '@type': 'BreadcrumbList',
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'Accueil', item: 'https://acupuncturejudith.ca/' },
-      { '@type': 'ListItem', position: 2, name: 'R\u00e9server', item: 'https://acupuncturejudith.ca/reserver' },
+      { '@type': 'ListItem', position: 2, name: 'Réserver', item: 'https://acupuncturejudith.ca/reserver' },
     ],
   },
 ];

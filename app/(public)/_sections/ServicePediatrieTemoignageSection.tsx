@@ -7,10 +7,10 @@ export default function ServicePediatrieTemoignageSection() {
         <TestimonialCard
           featured
           quote={
-            "Je suis venue voir Judith pour aider mon enfant de 6 ans. Elle a \u00e9t\u00e9 super ! " +
-            "Il ne voulait pas des aiguilles, elle a trouv\u00e9 d'autres fa\u00e7ons de le traiter " +
-            "(avec des aimants). Il a beaucoup appr\u00e9ci\u00e9 la s\u00e9ance. J'ai aussi \u00e9t\u00e9 " +
-            "trait\u00e9e par Judith \u00e0 d'autres occasions (sant\u00e9 des femmes) et \u00e7a m'a fait " +
+            "Je suis venue voir Judith pour aider mon enfant de 6 ans. Elle a été super ! " +
+            "Il ne voulait pas des aiguilles, elle a trouvé d'autres façons de le traiter " +
+            "(avec des aimants). Il a beaucoup apprécié la séance. J'ai aussi été " +
+            "traitée par Judith à d'autres occasions (santé des femmes) et ça m'a fait " +
             "beaucoup de bien."
           }
           name="Parent d'un enfant de 6 ans"

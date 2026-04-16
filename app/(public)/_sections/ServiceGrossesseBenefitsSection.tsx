@@ -6,27 +6,27 @@ import SectionHeading from '../_components/SectionHeading';
 const TRIMESTRES = [
   {
     num: '1er',
-    title: 'Survivre aux naus\u00e9es',
-    desc: "Points PC6 et ST36 sp\u00e9cifiques, document\u00e9s. Plusieurs patientes voient une am\u00e9lioration d\u00e8s la 1\u00e8re ou 2e s\u00e9ance. Fr\u00e9quence : 1-2x/semaine pendant 2-3 semaines, puis espacement.",
+    title: 'Survivre aux nausées',
+    desc: "Points PC6 et ST36 spécifiques, documentés. Plusieurs patientes voient une amélioration dès la 1ère ou 2e séance. Fréquence : 1-2x/semaine pendant 2-3 semaines, puis espacement.",
   },
   {
     num: '2e',
-    title: 'Le confort retrouv\u00e9',
-    desc: "Douleurs lombaires, sciatique, crampes, sommeil. Fr\u00e9quence : 1 s\u00e9ance toutes les 2-3 semaines.",
+    title: 'Le confort retrouvé',
+    desc: "Douleurs lombaires, sciatique, crampes, sommeil. Fréquence : 1 séance toutes les 2-3 semaines.",
   },
   {
     num: '3e',
-    title: 'Pr\u00e9parer la rencontre',
-    desc: "Version du si\u00e8ge (moxibustion 33-36 sem), maturation du col (\u00e0 partir de 36-37 sem), d\u00e9tente pr\u00e9-accouchement. Fr\u00e9quence : 1x/semaine \u00e0 partir de 36 semaines.",
+    title: 'Préparer la rencontre',
+    desc: "Version du siège (moxibustion 33-36 sem), maturation du col (à partir de 36-37 sem), détente pré-accouchement. Fréquence : 1x/semaine à partir de 36 semaines.",
   },
 ];
 
 const OTHER_BENEFITS = [
-  "Troubles digestifs (br\u00fblements, reflux)",
-  "Contr\u00f4le glyc\u00e9mie (diab\u00e8te gestationnel)",
-  "Constipation et h\u00e9morro\u00efdes",
-  "Enflure, oed\u00e8me, varices (activation circulation)",
-  "Maux de t\u00eate, migraines",
+  "Troubles digestifs (brûlements, reflux)",
+  "Contrôle glycémie (diabète gestationnel)",
+  "Constipation et hémorroïdes",
+  "Enflure, oedème, varices (activation circulation)",
+  "Maux de tête, migraines",
   "Sciatique, douleurs ligamentaires, tunnel carpien",
 ];
 

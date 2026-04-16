@@ -68,7 +68,7 @@ export default function AboutPage() {
       {/* Badges credentials */}
       <section className="bg-public-beige-light py-12 px-5 md:px-8">
         <div className="max-w-[780px] mx-auto flex flex-wrap justify-center gap-4">
-          {['Membre OAQ', 'La Source en Soi', 'M\u00e8re de 3 enfants'].map((badge) => (
+          {['Membre OAQ', 'La Source en Soi', 'Mère de 3 enfants'].map((badge) => (
             <span
               key={badge}
               className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-[13px] font-medium text-public-text-medium shadow-public-sm border border-public-border-subtle"
@@ -79,7 +79,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Pour aller plus loin \u2014 cross-linking SEO */}
+      {/* Pour aller plus loin — cross-linking SEO */}
       <section className="bg-public-beige-warm py-12 px-5 md:px-8 border-t border-public-border-subtle">
         <div className="max-w-[780px] mx-auto">
           <h3 className="font-public-serif text-[18px] font-semibold mb-4 text-public-text-dark">

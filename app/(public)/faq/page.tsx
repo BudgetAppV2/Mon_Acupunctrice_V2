@@ -10,16 +10,16 @@ import type { FAQ, FaqCategory } from '@/lib/types/faq';
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: 'Questions frequentes \u2014 Acupuncture a Rosemont, Montreal',
+  title: 'Questions frequentes — Acupuncture a Rosemont, Montreal',
   description:
-    'Reponses aux questions les plus courantes sur l\u2019acupuncture en fertilite, grossesse, anxiete. Membre OAQ, La Source en Soi, Rosemont.',
+    'Reponses aux questions les plus courantes sur l’acupuncture en fertilite, grossesse, anxiete. Membre OAQ, La Source en Soi, Rosemont.',
 };
 
 const CATEGORY_LABELS: Record<FaqCategory, string> = {
-  seance: 'Questions g\u00e9n\u00e9rales',
-  fertilite: 'Fertilit\u00e9',
-  grossesse: 'Grossesse & p\u00e9rinatalit\u00e9',
-  pediatrie: 'P\u00e9diatrie',
+  seance: 'Questions générales',
+  fertilite: 'Fertilité',
+  grossesse: 'Grossesse & périnatalité',
+  pediatrie: 'Pédiatrie',
   'acupuncture-sociale': 'Acupuncture sociale',
 };
 

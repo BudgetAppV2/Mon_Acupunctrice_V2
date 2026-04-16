@@ -5,18 +5,18 @@ import SectionHeading from '../_components/SectionHeading';
 const TECHNIQUES = [
   {
     name: 'Aiguilles ultra-fines',
-    desc: '5 \u00e0 10 fois plus fines qu\u2019une aiguille de vaccination \u2014 la plupart des enfants ne sentent rien.',
+    desc: '5 à 10 fois plus fines qu’une aiguille de vaccination — la plupart des enfants ne sentent rien.',
   },
   {
     name: 'Laser',
-    desc: 'Pas d\u2019aiguille, stimulation lumineuse des points.',
+    desc: 'Pas d’aiguille, stimulation lumineuse des points.',
   },
   {
     name: 'Aimants',
-    desc: 'Coll\u00e9s sur les points, port\u00e9s quelques jours.',
+    desc: 'Collés sur les points, portés quelques jours.',
   },
   {
-    name: 'Tuina p\u00e9diatrique',
+    name: 'Tuina pédiatrique',
     desc: 'Massage chinois sur les points.',
   },
   {

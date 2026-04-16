@@ -4,25 +4,25 @@ import SectionHeading from '../_components/SectionHeading';
 
 const AGE_GROUPS = [
   {
-    title: 'B\u00e9b\u00e9s',
+    title: 'Bébés',
     range: '0-12 MOIS',
     items: [
-      'Coliques (\u00e9tude Landgren 2017 : r\u00e9duction significative des pleurs)',
-      'Reflux, r\u00e9gurgitations',
+      'Coliques (étude Landgren 2017 : réduction significative des pleurs)',
+      'Reflux, régurgitations',
       'Troubles du sommeil',
-      'Ecz\u00e9ma',
-      'Pouss\u00e9es dentaires',
+      'Eczéma',
+      'Poussées dentaires',
     ],
   },
   {
     title: 'Enfants',
     range: '1-12 ANS',
     items: [
-      'Allergies saisonni\u00e8res, asthme',
-      'Anxi\u00e9t\u00e9, troubles du sommeil',
-      '\u00c9nur\u00e9sie nocturne',
-      'Maux de ventre r\u00e9currents',
-      'TDAH (en compl\u00e9ment \u2014 revue 2025 : 25 \u00e9tudes)',
+      'Allergies saisonnières, asthme',
+      'Anxiété, troubles du sommeil',
+      'Énurésie nocturne',
+      'Maux de ventre récurrents',
+      'TDAH (en complément — revue 2025 : 25 études)',
       'Douleurs de croissance',
     ],
   },
@@ -30,9 +30,9 @@ const AGE_GROUPS = [
     title: 'Adolescents',
     range: '12+',
     items: [
-      "Anxi\u00e9t\u00e9 et stress scolaire",
+      "Anxiété et stress scolaire",
       'Douleurs menstruelles',
-      'Acn\u00e9, maux de t\u00eate',
+      'Acné, maux de tête',
       'Troubles du sommeil',
     ],
   },

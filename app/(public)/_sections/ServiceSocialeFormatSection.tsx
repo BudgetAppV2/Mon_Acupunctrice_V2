@@ -2,18 +2,18 @@ import SectionNumber from '../_components/SectionNumber';
 import SectionHeading from '../_components/SectionHeading';
 
 const STEPS = [
-  { n: 1, label: 'Accueil', text: "On \u00e9change sur comment vous allez, vos sympt\u00f4mes du jour" },
-  { n: 2, label: 'Installation', text: "Vous vous installez confortablement, habill\u00e9(e) (manches et pantalons retrouss\u00e9s)" },
-  { n: 3, label: 'Traitement', text: "J'ins\u00e8re les aiguilles aux points distaux (mains, avant-bras, pieds, jambes, t\u00eate, oreilles). G\u00e9n\u00e9ralement 6 \u00e0 12 aiguilles." },
-  { n: 4, label: 'Repos', text: "Vous restez 20 \u00e0 30 minutes avec les aiguilles. Beaucoup de gens s'endorment. C'est normal." },
-  { n: 5, label: 'Retrait', text: "Je retire les aiguilles quand vous \u00eates pr\u00eat(e)." },
+  { n: 1, label: 'Accueil', text: "On échange sur comment vous allez, vos symptômes du jour" },
+  { n: 2, label: 'Installation', text: "Vous vous installez confortablement, habillé(e) (manches et pantalons retroussés)" },
+  { n: 3, label: 'Traitement', text: "J'insère les aiguilles aux points distaux (mains, avant-bras, pieds, jambes, tête, oreilles). Généralement 6 à 12 aiguilles." },
+  { n: 4, label: 'Repos', text: "Vous restez 20 à 30 minutes avec les aiguilles. Beaucoup de gens s'endorment. C'est normal." },
+  { n: 5, label: 'Retrait', text: "Je retire les aiguilles quand vous êtes prêt(e)." },
 ];
 
 const DIFFERENCES = [
-  { label: 'Espace', social: 'Partag\u00e9', prive: 'Salle priv\u00e9e' },
-  { label: 'Tenue', social: 'Habill\u00e9(e)', prive: 'Tenue adapt\u00e9e' },
+  { label: 'Espace', social: 'Partagé', prive: 'Salle privée' },
+  { label: 'Tenue', social: 'Habillé(e)', prive: 'Tenue adaptée' },
   { label: 'Points', social: 'Distaux', prive: 'Tout le corps' },
-  { label: 'Dur\u00e9e', social: '30-45 min', prive: '60 min' },
+  { label: 'Durée', social: '30-45 min', prive: '60 min' },
   { label: 'Tarif', social: '35-50 $', prive: 'Standard' },
 ];
 

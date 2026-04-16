@@ -3,9 +3,9 @@ import SectionHeading from '../_components/SectionHeading';
 import PilierCard from '../_components/PilierCard';
 
 export const metadata: Metadata = {
-  title: 'Services \u2014 Acupuncture a Rosemont, Montreal',
+  title: 'Services — Acupuncture a Rosemont, Montreal',
   description:
-    'Mes services d\u2019acupuncture a Rosemont : fertilite, grossesse et perinatalite, pediatrie, acupuncture sociale. La Source en Soi, Beaubien Est.',
+    'Mes services d’acupuncture a Rosemont : fertilite, grossesse et perinatalite, pediatrie, acupuncture sociale. La Source en Soi, Beaubien Est.',
 };
 
 const SCHEMA_ORG = {
@@ -38,26 +38,26 @@ export default function ServicesPage() {
       <section className="bg-white py-[68px] md:py-[88px] px-5 md:px-8">
         <div className="max-w-[1280px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <PilierCard
-            title="Fertilit\u00e9"
-            description="Soutien en fertilit\u00e9 naturelle, FIV, ins\u00e9mination. Accompagnement dans le temps long."
+            title="Fertilité"
+            description="Soutien en fertilité naturelle, FIV, insémination. Accompagnement dans le temps long."
             href="/services/fertilite"
             image="/site/judith/judith-portrait-07.webp"
           />
           <PilierCard
-            title="Grossesse & p\u00e9rinatalit\u00e9"
-            description="Du premier trimestre au post-partum. Naus\u00e9es, douleurs, pr\u00e9paration \u00e0 l\u2019accouchement."
+            title="Grossesse & périnatalité"
+            description="Du premier trimestre au post-partum. Nausées, douleurs, préparation à l’accouchement."
             href="/services/grossesse"
             image="/site/judith/judith-portrait-06.webp"
           />
           <PilierCard
-            title="P\u00e9diatrie"
-            description="Acupuncture adapt\u00e9e aux enfants et aux b\u00e9b\u00e9s. Techniques douces, souvent sans aiguilles."
+            title="Pédiatrie"
+            description="Acupuncture adaptée aux enfants et aux bébés. Techniques douces, souvent sans aiguilles."
             href="/services/pediatrie"
             image="/site/judith/judith-portrait-02.webp"
           />
           <PilierCard
             title="Acupuncture sociale"
-            description="Des soins accessibles \u00e0 tous, \u00e0 tarif r\u00e9duit. La sant\u00e9 ne devrait pas \u00eatre un privil\u00e8ge."
+            description="Des soins accessibles à tous, à tarif réduit. La santé ne devrait pas être un privilège."
             href="/services/acupuncture-sociale"
             image="/site/judith/judith-portrait-03.webp"
           />

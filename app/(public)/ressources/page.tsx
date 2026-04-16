@@ -8,7 +8,7 @@ export const revalidate = 3600;
 export const metadata: Metadata = {
   title: 'Ressources',
   description:
-    'Guides complets sur l\u2019acupuncture en fertilite, grossesse, pediatrie, acupuncture sociale et sante mentale. Etudes scientifiques recentes, protocoles documentes, FAQ.',
+    'Guides complets sur l’acupuncture en fertilite, grossesse, pediatrie, acupuncture sociale et sante mentale. Etudes scientifiques recentes, protocoles documentes, FAQ.',
 };
 
 const PILIER_ORDER = [

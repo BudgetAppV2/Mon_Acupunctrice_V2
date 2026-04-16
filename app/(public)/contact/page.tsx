@@ -5,7 +5,7 @@ import CtaBotanicalDeco from '../_components/CtaBotanicalDeco';
 import SectionHeading from '../_components/SectionHeading';
 
 export const metadata: Metadata = {
-  title: 'Contact \u2014 Acupuncture Rosemont, Beaubien Est, Montreal',
+  title: 'Contact — Acupuncture Rosemont, Beaubien Est, Montreal',
   description:
     'Contactez Judith Dufour-Savard, acupunctrice a Rosemont. Clinique La Source en Soi, 2554 rue Beaubien Est. Par telephone, courriel ou en personne.',
 };
@@ -27,7 +27,7 @@ const JSON_LD = [
     '@context': 'https://schema.org',
     '@type': ['MedicalBusiness', 'LocalBusiness'],
     '@id': 'https://acupuncturejudith.ca/#business',
-    name: 'Judith Dufour-Savard \u2014 Acupuncture',
+    name: 'Judith Dufour-Savard — Acupuncture',
     image: 'https://acupuncturejudith.ca/site/judith/judith-portrait-01.jpg',
     telephone: '+1-514-750-3735',
     email: CONTACT_EMAIL,
@@ -35,7 +35,7 @@ const JSON_LD = [
     address: {
       '@type': 'PostalAddress',
       streetAddress: '2554 rue Beaubien Est',
-      addressLocality: 'Montr\u00e9al',
+      addressLocality: 'Montréal',
       addressRegion: 'QC',
       postalCode: 'H1Y 1G3',
       addressCountry: 'CA',
@@ -47,8 +47,8 @@ const JSON_LD = [
     availableLanguage: ['French', 'English'],
     paymentAccepted: 'Cash, Credit Card, Debit Card, Interac',
     areaServed: [
-      { '@type': 'City', name: 'Montr\u00e9al' },
-      { '@type': 'AdministrativeArea', name: 'Rosemont\u2014La Petite-Patrie' },
+      { '@type': 'City', name: 'Montréal' },
+      { '@type': 'AdministrativeArea', name: 'Rosemont—La Petite-Patrie' },
     ],
     aggregateRating: {
       '@type': 'AggregateRating',
@@ -56,7 +56,7 @@ const JSON_LD = [
       reviewCount: '1215',
       bestRating: '5',
     },
-    memberOf: { '@type': 'Organization', name: 'Ordre des acupuncteurs du Qu\u00e9bec' },
+    memberOf: { '@type': 'Organization', name: 'Ordre des acupuncteurs du Québec' },
     parentOrganization: {
       '@type': 'MedicalClinic',
       name: 'La Source en Soi',
@@ -90,7 +90,7 @@ export default function ContactPage() {
           <SectionHeading
             kicker="CONTACT"
             title="Restons en contact."
-            subtitle="Une question avant de r&eacute;server ? Besoin de savoir si l&rsquo;acupuncture est adapt&eacute;e &agrave; votre situation ? &Eacute;crivez-moi ou appelez la clinique \u2014 je vous r&eacute;ponds avec plaisir."
+            subtitle="Une question avant de r&eacute;server ? Besoin de savoir si l&rsquo;acupuncture est adapt&eacute;e &agrave; votre situation ? &Eacute;crivez-moi ou appelez la clinique — je vous r&eacute;ponds avec plaisir."
           />
         </div>
       </section>
@@ -169,7 +169,7 @@ export default function ContactPage() {
               style={{ border: 0 }}
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
-              title="Carte Google Maps \u2014 La Source en Soi, 2554 rue Beaubien Est, Montr\u00e9al"
+              title="Carte Google Maps — La Source en Soi, 2554 rue Beaubien Est, Montréal"
               className="rounded-[14px] shadow-public-sm w-full"
             />
             <a

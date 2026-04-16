@@ -6,24 +6,24 @@ import SectionHeading from '../_components/SectionHeading';
 const STUDIES = [
   {
     pmid: '28621706',
-    text: "Une \u00e9tude contr\u00f4l\u00e9e randomis\u00e9e de 2017 (Carter et al., Behavioral Sciences) portant sur 100 patients en traitement de d\u00e9pendance montre que le NADA ajout\u00e9 au traitement conventionnel am\u00e9liore significativement la qualit\u00e9 de vie, r\u00e9duit l'anxi\u00e9t\u00e9 et la d\u00e9pression, et est associ\u00e9 \u00e0 une diminution de la consommation d'alcool \u00e0 3 et 6 mois, ainsi qu'\u00e0 une diminution du tabagisme \u00e0 6 mois.",
+    text: "Une étude contrôlée randomisée de 2017 (Carter et al., Behavioral Sciences) portant sur 100 patients en traitement de dépendance montre que le NADA ajouté au traitement conventionnel améliore significativement la qualité de vie, réduit l'anxiété et la dépression, et est associé à une diminution de la consommation d'alcool à 3 et 6 mois, ainsi qu'à une diminution du tabagisme à 6 mois.",
   },
   {
     pmid: '27994492',
-    text: "Une revue de 2016 (Stuyt & Voyles, Substance Abuse and Rehabilitation) confirme que le NADA est un outil adjuvant efficace pour les personnes vivant avec des probl\u00e8mes de sant\u00e9 mentale et de d\u00e9pendances.",
+    text: "Une revue de 2016 (Stuyt & Voyles, Substance Abuse and Rehabilitation) confirme que le NADA est un outil adjuvant efficace pour les personnes vivant avec des problèmes de santé mentale et de dépendances.",
   },
   {
     pmid: '36287403',
-    text: "Une m\u00e9ta-analyse en r\u00e9seau de 2022 (Prado et al., Revista Latino-Americana de Enfermagem) portant sur 15 \u00e9tudes montre que l'auriculoth\u00e9rapie (dont les points NADA font partie) est efficace pour r\u00e9duire l'anxi\u00e9t\u00e9 et le stress chez les professionnels de sant\u00e9.",
+    text: "Une méta-analyse en réseau de 2022 (Prado et al., Revista Latino-Americana de Enfermagem) portant sur 15 études montre que l'auriculothérapie (dont les points NADA font partie) est efficace pour réduire l'anxiété et le stress chez les professionnels de santé.",
   },
 ];
 
 const NADA_USES = [
-  "Gestion du stress et de l'anxi\u00e9t\u00e9",
-  "Soutien aux personnes vivant avec des d\u00e9pendances (alcool, tabac, drogues)",
+  "Gestion du stress et de l'anxiété",
+  "Soutien aux personnes vivant avec des dépendances (alcool, tabac, drogues)",
   "Accompagnement du stress post-traumatique (TSPT)",
-  "Arr\u00eat du tabac",
-  "D\u00e9tente g\u00e9n\u00e9rale et bien-\u00eatre",
+  "Arrêt du tabac",
+  "Détente générale et bien-être",
 ];
 
 export default function ServiceSocialeNadaSection() {

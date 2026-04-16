@@ -4,12 +4,12 @@ import SectionNumber from '../_components/SectionNumber';
 import SectionHeading from '../_components/SectionHeading';
 
 const BENEFITS = [
-  "R\u00e9gulariser un cycle menstruel irr\u00e9gulier ou une ovulation absente",
-  "Am\u00e9liorer la circulation sanguine vers l'ut\u00e9rus et les ovaires",
-  "Soutenir la qualit\u00e9 de l'endom\u00e8tre et la r\u00e9ceptivit\u00e9 embryonnaire",
-  "Att\u00e9nuer le stress et l'anxi\u00e9t\u00e9 qui affectent votre axe hormonal",
-  "Mieux tol\u00e9rer les effets secondaires des traitements hormonaux (FIV, IIU)",
-  "Accompagner les conditions comme le SOPK ou l'endom\u00e9triose",
+  "Régulariser un cycle menstruel irrégulier ou une ovulation absente",
+  "Améliorer la circulation sanguine vers l'utérus et les ovaires",
+  "Soutenir la qualité de l'endomètre et la réceptivité embryonnaire",
+  "Atténuer le stress et l'anxiété qui affectent votre axe hormonal",
+  "Mieux tolérer les effets secondaires des traitements hormonaux (FIV, IIU)",
+  "Accompagner les conditions comme le SOPK ou l'endométriose",
 ];
 
 export default function ServiceFertiliteBenefitsSection() {

@@ -6,16 +6,16 @@ import SectionHeading from '../_components/SectionHeading';
 import RessourceFaq from '../_components/RessourceFaq';
 
 export const metadata: Metadata = {
-  title: 'Tarifs \u2014 Acupuncture a Rosemont, Montreal',
+  title: 'Tarifs — Acupuncture a Rosemont, Montreal',
   description:
-    'Tarifs transparents pour mes services d\u2019acupuncture a La Source en Soi (Rosemont). Consultation privee 90 $/h, acupuncture sociale a tarif libre (35-50 $). Recu pour assurances.',
+    'Tarifs transparents pour mes services d’acupuncture a La Source en Soi (Rosemont). Consultation privee 90 $/h, acupuncture sociale a tarif libre (35-50 $). Recu pour assurances.',
 };
 
 const GRV_URL = 'https://www.gorendezvous.com/lasourceensoi?companyId=104074';
 
 const OFFERS = [
   {
-    kicker: 'CONSULTATION PRIV\u00c9E',
+    kicker: 'CONSULTATION PRIVÉE',
     bg: 'bg-white',
     price: '90 $ <span class="text-[16px] font-normal text-public-text-medium">/ s&eacute;ance de 60 min</span>',
     desc: 'S&eacute;ance individuelle, en cabinet priv&eacute;. &Eacute;change approfondi, &eacute;valuation compl&egrave;te, plan d&rsquo;accompagnement personnalis&eacute;.',
@@ -37,53 +37,53 @@ const OFFERS = [
 ];
 
 const INCLUSIONS = [
-  'Un \u00e9change approfondi pour comprendre votre situation',
-  'Une \u00e9valuation selon les principes de la m\u00e9decine traditionnelle chinoise',
-  'Le traitement avec aiguilles st\u00e9riles \u00e0 usage unique',
-  'Des conseils personnalis\u00e9s pour entre les s\u00e9ances',
-  'Un <strong>re\u00e7u officiel \u00e9mis par une acupunctrice membre de l\u2019OAQ</strong> (remboursable par la plupart des assurances priv\u00e9es au Qu\u00e9bec)',
+  'Un échange approfondi pour comprendre votre situation',
+  'Une évaluation selon les principes de la médecine traditionnelle chinoise',
+  'Le traitement avec aiguilles stériles à usage unique',
+  'Des conseils personnalisés pour entre les séances',
+  'Un <strong>reçu officiel émis par une acupunctrice membre de l’OAQ</strong> (remboursable par la plupart des assurances privées au Québec)',
 ];
 
 const INFOS_PRATIQUES = [
   {
     title: 'Paiement',
-    text: 'Comptant, d\u00e9bit, Visa, Mastercard, Interac. Paiement effectu\u00e9 \u00e0 la fin de la s\u00e9ance.',
+    text: 'Comptant, débit, Visa, Mastercard, Interac. Paiement effectué à la fin de la séance.',
   },
   {
     title: 'Assurances',
-    text: 'La plupart des r\u00e9gimes d\u2019assurance priv\u00e9s au Qu\u00e9bec couvrent l\u2019acupuncture. V\u00e9rifiez votre contrat. Un re\u00e7u officiel OAQ est remis apr\u00e8s chaque s\u00e9ance.',
+    text: 'La plupart des régimes d’assurance privés au Québec couvrent l’acupuncture. Vérifiez votre contrat. Un reçu officiel OAQ est remis après chaque séance.',
   },
   {
     title: 'Annulation',
-    text: 'Un d\u00e9lai de 24 heures est demand\u00e9 pour toute annulation. En cas d\u2019annulation tardive ou d\u2019absence, des frais de 50 % du co\u00fbt de la s\u00e9ance peuvent s\u2019appliquer.',
+    text: 'Un délai de 24 heures est demandé pour toute annulation. En cas d’annulation tardive ou d’absence, des frais de 50 % du coût de la séance peuvent s’appliquer.',
   },
 ];
 
 const FAQ_TARIFS = [
   {
-    question: 'L\u2019acupuncture est-elle rembours\u00e9e par les assurances au Qu\u00e9bec ?',
+    question: 'L’acupuncture est-elle remboursée par les assurances au Québec ?',
     answer:
-      'Oui, la plupart des r\u00e9gimes d\u2019assurance priv\u00e9s au Qu\u00e9bec couvrent l\u2019acupuncture lorsqu\u2019elle est pratiqu\u00e9e par un membre de l\u2019Ordre des acupuncteurs du Qu\u00e9bec (OAQ). V\u00e9rifiez les modalit\u00e9s de votre contrat. Je remets un re\u00e7u officiel \u00e0 chaque s\u00e9ance.',
+      'Oui, la plupart des régimes d’assurance privés au Québec couvrent l’acupuncture lorsqu’elle est pratiquée par un membre de l’Ordre des acupuncteurs du Québec (OAQ). Vérifiez les modalités de votre contrat. Je remets un reçu officiel à chaque séance.',
   },
   {
-    question: 'Quel est le tarif d\u2019une premi\u00e8re s\u00e9ance ?',
+    question: 'Quel est le tarif d’une première séance ?',
     answer:
-      'Une premi\u00e8re s\u00e9ance co\u00fbte 90 $ et dure 60 minutes. Ce tarif inclut l\u2019\u00e9change initial approfondi, l\u2019\u00e9valuation compl\u00e8te, le premier traitement et le plan d\u2019accompagnement personnalis\u00e9.',
+      'Une première séance coûte 90 $ et dure 60 minutes. Ce tarif inclut l’échange initial approfondi, l’évaluation complète, le premier traitement et le plan d’accompagnement personnalisé.',
   },
   {
-    question: 'Qu\u2019est-ce que l\u2019acupuncture sociale ?',
+    question: 'Qu’est-ce que l’acupuncture sociale ?',
     answer:
-      'L\u2019acupuncture sociale est une s\u00e9ance en format de petit groupe, \u00e0 tarif libre entre 35 $ et 50 $ selon vos moyens. C\u2019est la m\u00eame acupuncture \u2014 m\u00eame formation, m\u00eames aiguilles st\u00e9riles \u2014 simplement dans un format qui rend les soins accessibles \u00e0 tous.',
+      'L’acupuncture sociale est une séance en format de petit groupe, à tarif libre entre 35 $ et 50 $ selon vos moyens. C’est la même acupuncture — même formation, mêmes aiguilles stériles — simplement dans un format qui rend les soins accessibles à tous.',
   },
   {
     question: 'Puis-je payer par Interac ou par carte ?',
     answer:
-      'Oui. J\u2019accepte le comptant, Interac, Visa et Mastercard. Le paiement se fait \u00e0 la fin de chaque s\u00e9ance.',
+      'Oui. J’accepte le comptant, Interac, Visa et Mastercard. Le paiement se fait à la fin de chaque séance.',
   },
   {
-    question: 'Faut-il payer d\u2019avance pour r\u00e9server ?',
+    question: 'Faut-il payer d’avance pour réserver ?',
     answer:
-      'Non, il n\u2019y a pas de frais de r\u00e9servation. Vous r\u00e9servez en ligne via Go Rendez-Vous et vous payez \u00e0 la s\u00e9ance.',
+      'Non, il n’y a pas de frais de réservation. Vous réservez en ligne via Go Rendez-Vous et vous payez à la séance.',
   },
 ];
 
@@ -91,12 +91,12 @@ const JSON_LD = [
   {
     '@context': 'https://schema.org',
     '@type': 'MedicalBusiness',
-    name: 'Judith Dufour-Savard \u2014 Acupuncture',
+    name: 'Judith Dufour-Savard — Acupuncture',
     telephone: '+1-514-750-3735',
     address: {
       '@type': 'PostalAddress',
       streetAddress: '2554 rue Beaubien Est',
-      addressLocality: 'Montr\u00e9al',
+      addressLocality: 'Montréal',
       addressRegion: 'QC',
       postalCode: 'H1Y 1G3',
       addressCountry: 'CA',
@@ -106,12 +106,12 @@ const JSON_LD = [
     mainEntityOfPage: { '@id': 'https://acupuncturejudith.ca/#business' },
     hasOfferCatalog: {
       '@type': 'OfferCatalog',
-      name: 'Services d\u2019acupuncture',
+      name: 'Services d’acupuncture',
       itemListElement: [
         {
           '@type': 'Offer',
-          name: 'Consultation priv\u00e9e d\u2019acupuncture',
-          description: 'S\u00e9ance individuelle de 60 minutes en cabinet priv\u00e9',
+          name: 'Consultation privée d’acupuncture',
+          description: 'Séance individuelle de 60 minutes en cabinet privé',
           price: '90',
           priceCurrency: 'CAD',
           eligibleDuration: { '@type': 'QuantitativeValue', value: 60, unitCode: 'MIN' },
@@ -119,7 +119,7 @@ const JSON_LD = [
         {
           '@type': 'Offer',
           name: 'Acupuncture sociale',
-          description: 'S\u00e9ance en petit groupe, tarif libre 35-50 $',
+          description: 'Séance en petit groupe, tarif libre 35-50 $',
           priceSpecification: {
             '@type': 'PriceSpecification',
             minPrice: '35',
