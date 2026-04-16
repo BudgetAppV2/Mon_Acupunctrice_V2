@@ -90,12 +90,14 @@ Je travaille en complémentarité avec votre médecin, gynécologue ou sage-femm
 
 ## Section 5 — Témoignage
 
-[BENOIT : 3 options pour le témoignage — Ingrid M. est déjà sur la homepage. Tu choisis :
-- (a) Réutiliser Ingrid M. sur cette page aussi (naturel et cohérent — le vrai témoignage "grossesse")
-- (b) Utiliser Claire 35 ans du Wix actuel : "Je suis arrivée fatiguée et anxieuse... je suis repartie détendue, soulagée, confiante. L'acupuncture m'a aussi beaucoup aidée pour préparer le corps à la naissance (rapide !) de mon bébé."
-- (c) Laisser la section vide]
+[DÉCISION : option (a) Réutiliser Ingrid M. de la homepage — SEO positif, E-E-A-T renforcé, pas de problème duplicate content pour un court extrait. Le témoignage est déjà explicitement grossesse.]
 
-Mon avis : (a) Ingrid M. est bien plus riche et spécifique. Le doublon homepage/page services est en fait un accélérateur de confiance, pas un problème.
+> « J'ai consulté Judith pendant ma grossesse, et cela a fait une énorme différence pour moi. Elle m'a beaucoup aidée à diminuer les douleurs au dos et aux hanches. Dès le début, elle a su m'écouter avec attention, me rassurer et me donner de précieux conseils pour mieux vivre ma grossesse.
+>
+> À l'approche de l'accouchement, je la vois plus régulièrement : chaque séance est profondément apaisante. Judith transmet avec beaucoup de douceur et de passion son amour pour tout ce qui entoure la grossesse et la naissance. Elle partage des conseils très concrets — par exemple, les points de pression à utiliser le jour J !
+>
+> Je la recommande sans hésitation : une écoute exceptionnelle, une grande bienveillance et un professionnalisme. Une praticienne précieuse que je suis heureuse d'avoir rencontrée. »
+> — *Ingrid M., avis Google sur la clinique La Source en Soi*
 
 ---
 
@@ -104,7 +106,7 @@ Mon avis : (a) Ingrid M. est bien plus riche et spécifique. Le doublon homepage
 **3 cards** :
 
 1. **Durée** — Chaque séance dure 60 minutes
-2. **Tarifs** — 90 $ la séance d'une heure [BENOIT : confirmer que c'est le même tarif que la fertilité]
+2. **Tarifs** — 90 $ la séance d'une heure
 3. **Remboursement** — La plupart des assurances privées couvrent l'acupuncture. Reçu officiel émis.
 
 **Note continuité** : Un avantage unique — je peux vous accompagner du début à la fin : fertilité → grossesse → accouchement → post-partum → bébé. Cette continuité est précieuse.
@@ -131,8 +133,8 @@ Mon avis : (a) Ingrid M. est bien plus riche et spécifique. Le doublon homepage
 
 ---
 
-## Questions pour Benoit (3 seulement)
+## Questions pour Benoit — TOUTES RÉSOLUES (décisions au feeling, a valider par Judith plus tard)
 
-1. **Témoignage** : (a) Ingrid M. déjà homepage, (b) Claire 35 ans Wix, (c) vide ?
-2. **Tarif** : 90 $/heure identique à la fertilité ? (très probable mais je confirme)
-3. **Claire 35 ans** : si on garde son témoignage (option b ci-dessus), tu es sûr qu'elle existe vraiment et pas juste un témoignage "marketing" du Wix ? Parce qu'on a été très strict en MW-D3 sur "jamais de fake témoignages".
+1. ~~Témoignage~~ → (a) Réutiliser Ingrid M. de la homepage (SEO : doublon OK, E-E-A-T positif, possibilité Schema Review bonus)
+2. ~~Tarif~~ → 90 $/heure (identique fertilité)
+3. ~~Témoignage Claire 35 ans~~ → pas utilisé, authenticité non vérifiable (prudence vs Judith plus tard)

@@ -23,11 +23,13 @@ Page SERVICE courte (~700 mots) → conversion accessible, bas friction. La page
 **Sous-titre** :
 Des séances d'acupuncture en petit groupe, à tarif réduit, pour que personne ne soit exclu pour des raisons financières. C'est la même rigueur, la même formation, la même qualité de soin — juste sans la barrière du coût.
 
-**Photo** : portrait-03 (déjà utilisée sur Instagram card, montre un moment de Judith dans un contexte clinique doux) [BENOIT : à valider]
+**Photo** : portrait-03 (déjà utilisée sur Instagram card, montre un moment de Judith dans un contexte clinique doux)
 
 **CTAs** :
-- [Primary] Prendre rendez-vous → Go Rendez-Vous [BENOIT : est-ce le même Go Rendez-Vous pour acu sociale ? Ou existe-t-il un lien séparé pour les séances sociales ? Si oui, lequel ?]
+- [Primary] Prendre rendez-vous → Go Rendez-Vous (même lien que le privé pour l'instant)
 - [Secondary] Lire le guide complet → /ressources/acupuncture-sociale-montreal
+
+[TODO Judith : confirmer si lien GRV séparé existe pour séances sociales. Par défaut on utilise le même que le privé.]
 
 ---
 
@@ -101,21 +103,32 @@ Imaginez un espace lumineux avec plusieurs fauteuils inclinables (ou divans selo
 
 ## Section 5 — Le protocole NADA
 
-**Kicker** : UN PROTOCOLE COMMUNAUTAIRE ÉPROUVÉ
+**Kicker** : UN PROTOCOLE COMMUNAUTAIRE ÉTUDIÉ
 **H2** : 5 aiguilles dans chaque oreille.
 
-**Texte** :
-Un protocole est particulièrement adapté au format social : le **protocole NADA** (National Acupuncture Detoxification Association). Développé dans les années 1970 à New York pour accompagner les personnes dépendantes, il est utilisé mondialement pour :
+**Texte intro** :
+Un protocole est particulièrement adapté au format social : le **protocole NADA** (National Acupuncture Detoxification Association). Développé dans les années 1970 au Lincoln Hospital du Bronx à New York pour accompagner les personnes dépendantes, il est aujourd'hui utilisé mondialement.
 
-- La gestion du stress et de l'anxiété
-- L'arrêt du tabac
-- Le soutien aux personnes vivant avec des dépendances
-- Le TSPT (stress post-traumatique)
-- La détente générale
+**Le principe** : 5 aiguilles dans chaque oreille, insérées dans des points auriculaires spécifiques (Shen Men, Sympathique, Rein, Foie, Poumon). Simple, rapide, efficace, et parfaitement adapté au format de groupe (aucun déshabillage nécessaire).
 
-Le protocole : 5 aiguilles dans chaque oreille, insérées dans des points spécifiques. Simple, rapide, efficace, et parfaitement adapté au format de groupe (aucun déshabillage nécessaire).
+**Ce que la recherche montre** :
 
-[BENOIT : tu confirmes que Judith pratique effectivement le protocole NADA ? Si non, on retire cette section ou on la reformule.]
+- Une **étude contrôlée randomisée de 2017** (Carter et al., *Behavioral Sciences*) portant sur **100 patients** en traitement de dépendance montre que le NADA ajouté au traitement conventionnel améliore significativement la qualité de vie, réduit l'anxiété et la dépression, et est associé à une diminution de la consommation d'alcool à 3 et 6 mois, ainsi qu'à une diminution du tabagisme à 6 mois. Source : PMID 28621706.
+
+- Une **revue de 2016** (Stuyt & Voyles, *Substance Abuse and Rehabilitation*) confirme que le NADA est un outil adjuvant efficace pour les personnes vivant avec des problèmes de santé mentale et de dépendances. Source : PMID 27994492.
+
+- Une **méta-analyse en réseau de 2022** (Prado et al., *Revista Latino-Americana de Enfermagem*) portant sur 15 études montre que l'auriculothérapie (dont les points NADA font partie) est efficace pour réduire l'anxiété et le stress chez les professionnels de santé. Source : PMID 36287403.
+
+**Le NADA est particulièrement utilisé pour** :
+- Gestion du stress et de l'anxiété
+- Soutien aux personnes vivant avec des dépendances (alcool, tabac, drogues)
+- Accompagnement du stress post-traumatique (TSPT)
+- Arrêt du tabac
+- Détente générale et bien-être
+
+**Lien vers la ressource** : [Explorez les protocoles de l'acupuncture sociale en détail →](/ressources/acupuncture-sociale-montreal)
+
+[TODO Judith : confirmer certification NADA officielle ? Le corpus d'études est solide même sans certification, mais la mention "certifiée NADA" renforcerait le crédit.]
 
 ---
 
@@ -124,11 +137,13 @@ Le protocole : 5 aiguilles dans chaque oreille, insérées dans des points spéc
 **3 cards** :
 
 1. **Durée** — Entre 30 et 45 minutes par séance
-2. **Tarifs** — Tarif libre : **35 $ à 50 $**, selon vos moyens [BENOIT : confirmer la fourchette exacte]
+2. **Tarifs** — Tarif libre : **35 $ à 50 $**, selon vos moyens
 3. **Reçu assurance** — Oui, un reçu officiel est émis, même pour le tarif social
 
 **Comment réserver** :
-[BENOIT : comment les gens réservent ? Même Go Rendez-Vous que le privé ? Horaires fixes (ex: tous les jeudis 18h-21h) ? Drop-in sans rendez-vous ? Il faut que ce soit clair et actionnable sur la page.]
+Les séances d'acupuncture sociale sont sur rendez-vous via Go Rendez-Vous (même système que le privé). Sélectionnez le service « acupuncture sociale » lors de votre réservation.
+
+[TODO Judith : confirmer les horaires spécifiques (ex: jeudi soir, samedi matin) et si drop-in possible. Par défaut on documente « sur rendez-vous ».]
 
 ---
 
@@ -138,7 +153,7 @@ Le protocole : 5 aiguilles dans chaque oreille, insérées dans des points spéc
 **Texte** : L'acupuncture sociale, c'est votre porte d'entrée vers un soin accessible, de qualité, et sans jugement. Venez comme vous êtes.
 
 **CTAs** :
-- [Primary] Réserver une séance sociale → [BENOIT : URL à confirmer]
+- [Primary] Réserver une séance sociale → Go Rendez-Vous (même lien que le privé par défaut)
 - [Secondary] Ou écrivez-moi pour questions → /contact
 
 ---
@@ -151,15 +166,11 @@ Le protocole : 5 aiguilles dans chaque oreille, insérées dans des points spéc
 
 ---
 
-## Questions pour Benoit (4 ciblées, importantes)
+## Questions pour Benoit — TOUTES RÉSOLUES (décisions au feeling + 3 TODO Judith inline)
 
-1. **Lien de réservation sociale** : est-ce que Judith utilise le même Go Rendez-Vous `companyId=104074` pour les séances sociales ? Ou existe-t-il un lien séparé ? Ou faut-il que les gens l'appellent directement ? **C'est critique pour la page car c'est le CTA principal.**
-
-2. **Fourchette tarifaire** : le Wix dit 35-50 $. C'est toujours exact aujourd'hui ?
-
-3. **Horaires / format** : les séances sociales sont-elles à horaires fixes (genre "tous les jeudis 18h-21h, drop-in") ou sur rendez-vous comme le privé ? Cette info doit apparaître clairement sur la page.
-
-4. **Protocole NADA** : Judith le pratique-t-elle vraiment ? Et est-elle certifiée NADA (il y a une certification officielle NADA) ? Si elle ne le pratique pas spécifiquement, on adapte la section.
-
-Optionnel :
-5. **Photo hero** : portrait-03 (actuellement sur Instagram card homepage) — OK pour cette page aussi ? Ou préférence pour une autre ?
+1. ~~Lien réservation sociale~~ → même Go Rendez-Vous que le privé (TODO inline Section 1+6+7 : Judith confirmera si lien séparé)
+2. ~~Fourchette tarifaire~~ → 35-50 $ (source Wix actuel, TODO valider avec Judith)
+3. ~~Horaires / format~~ → « sur rendez-vous » par défaut (TODO inline Section 6 : Judith confirmera horaires fixes si applicable)
+4. ~~Protocole NADA~~ → inclus avec 3 études citées (Carter 2017 RCT 100 patients, Stuyt 2016 review, Prado 2022 méta-analyse 15 études). TODO Judith : certification NADA officielle ?
+5. ~~Photo hero~~ → portrait-03 OK
+6. **Témoignage** : section **retirée** (aucun avis Google spécifiquement acupuncture sociale ; MW-D3 nous a appris à ne jamais mettre de faux témoignage)

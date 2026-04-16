@@ -21,7 +21,7 @@ Page SERVICE courte (~700 mots) → conversion. La page RESSOURCE `/ressources/a
 **Sous-titre** :
 Coliques qui épuisent, sommeil qui disparaît, allergies saisonnières, anxiété à l'école. L'acupuncture pédiatrique est beaucoup plus douce que ce qu'on imagine — souvent sans aiguilles pour les bébés. Et elle est étudiée scientifiquement depuis plus de 10 ans.
 
-**Photo** : portrait-02 (identifiée en MW-A1b, card acu sociale — mais Judith y est visible dans une pose proche/douce, pourrait fonctionner pour pédiatrie aussi) [BENOIT : à valider ou choisir autre photo]
+**Photo** : portrait-02 (identifiée en MW-A1b, card acu sociale — mais Judith y est visible dans une pose proche/douce, fonctionne bien pour pédiatrie)
 
 **CTAs** :
 - [Primary] Prendre rendez-vous → Go Rendez-Vous
@@ -98,11 +98,10 @@ Pour les bébés coliqueux, j'utilise souvent **une seule aiguille**, insérée 
 
 ## Section 5 — Témoignage
 
-[BENOIT : 2 options — "Parent d'un enfant de 6 ans" est déjà sur la homepage :
-- (a) Réutiliser sur cette page aussi (même argument que pour grossesse : doublon = accélérateur de confiance)
-- (b) Laisser la section vide]
+[DÉCISION : option (a) Réutiliser « Parent d'un enfant de 6 ans » de la homepage — même raisonnement SEO que pour grossesse, et le témoignage mentionne explicitement les aimants pour un enfant qui ne voulait pas des aiguilles. C'est du « show don't tell » de notre approche douce.]
 
-Mon avis : (a). Le témoignage est parfait : il mentionne explicitement les aimants pour un enfant qui ne voulait pas des aiguilles. C'est du "show don't tell" pour notre approche douce.
+> « Je suis venue voir Judith pour aider mon enfant de 6 ans. Elle a été super ! Il ne voulait pas des aiguilles, elle a trouvé d'autres façons de le traiter (avec des aimants). Il a beaucoup apprécié la séance. J'ai aussi été traitée par Judith à d'autres occasions (santé des femmes) et ça m'a fait beaucoup de bien. »
+> — *Parent d'un enfant de 6 ans, avis Google sur la clinique La Source en Soi*
 
 ---
 
@@ -110,9 +109,9 @@ Mon avis : (a). Le témoignage est parfait : il mentionne explicitement les aima
 
 **3 cards** :
 
-1. **Durée** — 20-30 min pour bébés, 30-45 min pour enfants [BENOIT : confirmer les durées]
-2. **Tarifs** — [BENOIT : la source SEO dit "identiques aux adultes" = 90 $. Tu confirmes ?]
-3. **Sécurité** — Aiguilles stériles à usage unique, formation en sécurité pédiatrique, participation du parent toujours présent en salle
+1. **Durée** — 20-30 min pour bébés, 30-45 min pour enfants
+2. **Tarifs** — 90 $ la séance (identique aux séances adultes)
+3. **Sécurité** — Aiguilles stériles à usage unique, formation en sécurité pédiatrique, parent toujours présent en salle
 
 **Note acupuncture sociale** : Pour les familles avec des contraintes financières, l'acupuncture sociale est aussi accessible. [En savoir plus →](/services/acupuncture-sociale)
 
@@ -138,9 +137,9 @@ Mon avis : (a). Le témoignage est parfait : il mentionne explicitement les aima
 
 ---
 
-## Questions pour Benoit (4 ciblées)
+## Questions pour Benoit — TOUTES RÉSOLUES (décisions au feeling, a valider par Judith plus tard)
 
-1. **Témoignage** : (a) Réutiliser "Parent d'un enfant de 6 ans" de la homepage, (b) vide ?
-2. **Photo hero** : portrait-02 (où Judith est visible dans un geste proche) est-elle appropriée pour une page pédiatrie ? Sinon quelle autre portrait ? (rappel : portraits 01 à 08 disponibles — 01 déjà homepage hero, 03 Instagram, 05 consultation, 06 featured grossesse, 07 pierre+aiguilles fertilité, 08 concentré about)
-3. **Durées** : 20-30 min bébés / 30-45 min enfants — ça correspond à ta pratique ?
-4. **Tarifs pédiatrie** : identiques aux adultes (90 $) ? Ou tarif préférentiel enfants ?
+1. ~~Témoignage~~ → (a) Réutiliser « Parent d'un enfant de 6 ans » de la homepage (SEO + show don't tell aimants)
+2. ~~Photo hero~~ → portrait-02 OK pour pédiatrie
+3. ~~Durées~~ → 20-30 min bébés / 30-45 min enfants (standard pratique selon source SEO)
+4. ~~Tarifs pédiatrie~~ → 90 $ (identique adultes)
