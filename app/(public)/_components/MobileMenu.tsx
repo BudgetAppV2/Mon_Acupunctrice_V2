@@ -1,14 +1,16 @@
+'use client';
+
+import { useState } from 'react';
 import Link from 'next/link';
-import { XMarkIcon } from '@heroicons/react/24/outline';
+import { XMarkIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
 import CtaButton from './CtaButton';
 
-const NAV_LINKS = [
-  { href: '/a-propos', label: 'A propos' },
-  { href: '/services', label: 'Services' },
-  { href: '/blog', label: 'Blog' },
-  { href: '/tarifs', label: 'Tarifs' },
-  { href: '/contact', label: 'Contact' },
-] as const;
+const SERVICE_LINKS = [
+  { href: '/services/fertilite', label: 'Fertilité' },
+  { href: '/services/grossesse', label: 'Grossesse' },
+  { href: '/services/pediatrie', label: 'Pédiatrie' },
+  { href: '/services/acupuncture-sociale', label: 'Acupuncture sociale' },
+];
 
 interface MobileMenuProps {
   isOpen: boolean;
@@ -16,13 +18,15 @@ interface MobileMenuProps {
 }
 
 export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
+  const [servicesOpen, setServicesOpen] = useState(false);
+
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-[200] bg-white flex flex-col">
       <div className="flex justify-between items-center px-5 py-3.5 border-b border-public-border-subtle">
         <span className="font-public-serif text-[22px] font-semibold text-public-text-dark">
-          Judith Dufour-Savard
+          Judith Dufour Savard
         </span>
         <button
           onClick={onClose}
@@ -33,22 +37,73 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
         </button>
       </div>
 
-      <nav className="flex-1 flex flex-col gap-1 px-5 pt-8">
-        {NAV_LINKS.map(({ href, label }) => (
-          <Link
-            key={href}
-            href={href}
-            onClick={onClose}
-            className="text-lg font-medium text-public-text-medium py-3 border-b border-public-border-subtle/50 transition-colors hover:text-public-accent-taupe-dark"
+      <nav className="flex-1 flex flex-col gap-1 px-5 pt-8 overflow-y-auto">
+        <Link
+          href="/a-propos"
+          onClick={onClose}
+          className="text-lg font-medium text-public-text-medium py-3 border-b border-public-border-subtle/50 transition-colors hover:text-public-accent-taupe-dark"
+        >
+          À propos
+        </Link>
+
+        {/* Services avec sous-menu dépliable */}
+        <div className="border-b border-public-border-subtle/50">
+          <button
+            onClick={() => setServicesOpen(!servicesOpen)}
+            className="w-full text-left text-lg font-medium text-public-text-medium py-3 transition-colors hover:text-public-accent-taupe-dark flex items-center justify-between"
           >
-            {label}
-          </Link>
-        ))}
+            Services
+            <ChevronDownIcon className={`w-5 h-5 transition-transform duration-200 ${servicesOpen ? 'rotate-180' : ''}`} />
+          </button>
+          {servicesOpen && (
+            <div className="pb-3 pl-4 flex flex-col gap-1">
+              <Link
+                href="/services"
+                onClick={onClose}
+                className="text-[15px] text-public-accent-warm font-medium py-2 transition-colors hover:text-public-accent-taupe-dark"
+              >
+                Tous les services
+              </Link>
+              {SERVICE_LINKS.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={onClose}
+                  className="text-[15px] text-public-text-medium py-2 transition-colors hover:text-public-accent-taupe-dark"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <Link
+          href="/blog"
+          onClick={onClose}
+          className="text-lg font-medium text-public-text-medium py-3 border-b border-public-border-subtle/50 transition-colors hover:text-public-accent-taupe-dark"
+        >
+          Blog
+        </Link>
+        <Link
+          href="/tarifs"
+          onClick={onClose}
+          className="text-lg font-medium text-public-text-medium py-3 border-b border-public-border-subtle/50 transition-colors hover:text-public-accent-taupe-dark"
+        >
+          Tarifs
+        </Link>
+        <Link
+          href="/contact"
+          onClick={onClose}
+          className="text-lg font-medium text-public-text-medium py-3 border-b border-public-border-subtle/50 transition-colors hover:text-public-accent-taupe-dark"
+        >
+          Contact
+        </Link>
       </nav>
 
       <div className="px-5 pb-8 pt-4">
         <CtaButton variant="primary" size="lg" className="w-full justify-center">
-          Reserver une seance
+          Réserver une séance
         </CtaButton>
       </div>
     </div>
