@@ -7,9 +7,10 @@ export default function SocialSection() {
         aria-hidden="true"
         style={{
           backgroundImage: 'url("/site/svg/social-pattern.svg")',
-          backgroundSize: '600px',
+          backgroundSize: '1800px',
           backgroundRepeat: 'repeat',
-          opacity: 0.35,
+          backgroundPosition: 'center',
+          opacity: 0.55,
         }}
       />
       {/* Overlay blanc semi-transparent pour adoucir le pattern */}
