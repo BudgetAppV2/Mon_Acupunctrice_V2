@@ -1,0 +1,261 @@
+# Keyword Backlog — acupuncturejudith.ca
+
+**Date** : 18 avril 2026
+**Méthode** : Compilation manuelle (plan v0.3 + scouting SERP + analyse concurrents + Google PAA)
+**Prochaine étape** : Valider volumes + difficulté via LowFruits (ciblage Canada/FR)
+**Statut** : BRUT — à enrichir avec données LowFruits
+
+---
+
+## Méthodologie de scoring (à appliquer post-LowFruits)
+
+Chaque mot-clé sera scoré sur 3 axes :
+- **Volume** (recherches/mois au Canada FR) : 0-500+
+- **Difficulté** (KD ou weak spots) : facile / moyen / difficile
+- **Pertinence Judith** : directe (service offert) / adjacente / éducatif
+
+**Priorité** = Volume × (1/Difficulté) × Pertinence
+- P1 = volume correct + faible difficulté + service direct → RESSOURCE
+- P2 = volume moyen + difficulté moyenne + adjacent → ARTICLE BLOG
+- P3 = faible volume mais question précise → FAQ
+
+---
+
+## Pilier 1 — Fertilité
+
+### Head terms (forte concurrence)
+| Mot-clé | Type contenu | Concurrent #1 | Statut Judith |
+|---------|-------------|---------------|---------------|
+| acupuncture fertilité Montréal | Ressource (existe) | Clinique Synergek | Ressource publiée, pas encore indexée |
+| acupuncture fertilité | Ressource | Sino-Santé | Couvert |
+| acupuncture FIV Montréal | Ressource | Synergek | Couvert partiellement |
+| acupuncture infertilité | Ressource | Nathalie Gagnon | Couvert |
+
+### Long-tail informationnels (opportunités)
+| Mot-clé | Type contenu | Couvert? |
+|---------|-------------|----------|
+| combien de séances acupuncture pour tomber enceinte | FAQ | Couvert dans ressource |
+| acupuncture avant transfert embryon FIV | FAQ/Blog | Couvert (protocole Paulus) |
+| acupuncture et SOPK | Ressource | NON — À CRÉER |
+| acupuncture et endométriose | Ressource | NON — À CRÉER |
+| acupuncture qualité ovocytaire | Blog | NON |
+| acupuncture fertilité masculine spermogramme | Blog | NON |
+| acupuncture après fausse couche | FAQ | NON |
+| acupuncture insémination artificielle IIU | FAQ | NON |
+| acupuncture préparation FIV combien de temps avant | FAQ | Couvert |
+| est-ce que acupuncture marche pour fertilité | Blog | Couvert (ressource) |
+| acupuncture fertilité naturelle sans FIV | Blog | NON |
+| acupuncture cycle menstruel irrégulier | Blog | NON |
+| acupuncture et aménorrhée | FAQ | NON |
+| acupuncture ovulation | FAQ | NON |
+| acupuncture implantation embryon | FAQ | Couvert |
+
+### Long-tail locaux (sweet spot)
+| Mot-clé | Type contenu | Couvert? |
+|---------|-------------|----------|
+| acupuncture fertilité Rosemont | Service page | OUI (page service) |
+| acupunctrice femme enceinte Montréal est | Service page | Partiellement |
+| clinique acupuncture FIV près OVO Montréal | Blog | NON |
+| acupunctrice spécialisée fertilité Montréal | Service page | OUI |
+
+---
+
+## Pilier 2 — Grossesse & périnatalité
+
+### Head terms
+| Mot-clé | Type contenu | Concurrent #1 | Statut Judith |
+|---------|-------------|---------------|---------------|
+| acupuncture grossesse Montréal | Ressource (existe) | La Source en Soi (top 1) | Ressource publiée |
+| acupuncture grossesse Rosemont | Service page | La Source en Soi | Page service existe |
+| acupuncture nausées grossesse | Blog | Articles génériques | Blog existant (~pos 6) |
+
+### Long-tail informationnels (opportunités)
+| Mot-clé | Type contenu | Couvert? |
+|---------|-------------|----------|
+| acupuncture nausées premier trimestre | Blog | OUI (article existant) |
+| acupuncture déclenchement accouchement 41 semaines | Blog/FAQ | NON — À CRÉER |
+| acupuncture bébé en siège version | FAQ | OUI (FAQ existante) |
+| acupuncture préparation accouchement | Blog | NON — À CRÉER |
+| acupuncture post-partum récupération | Ressource | NON — À CRÉER |
+| acupuncture allaitement douleur | FAQ | NON |
+| acupuncture sciatique grossesse | Blog | NON — À CRÉER |
+| acupuncture douleur ligamentaire grossesse | FAQ | NON |
+| acupuncture insomnie grossesse | FAQ | NON |
+| acupuncture brûlements estomac grossesse | FAQ | NON |
+| acupuncture baby blues post-partum | Blog | NON |
+| acupuncture maux de dos grossesse | FAQ | NON |
+| acupuncture constipation grossesse | FAQ | NON |
+| acupuncture gonflement jambes grossesse | FAQ | NON |
+| quand commencer acupuncture grossesse | FAQ | NON — À CRÉER |
+| acupuncture pendant grossesse est-ce sécuritaire | FAQ | Couvert dans ressource |
+| acupuncture et fausse couche prévention | Blog | NON |
+
+---
+
+## Pilier 3 — Acupuncture sociale
+
+### Head terms
+| Mot-clé | Type contenu | Concurrent #1 | Statut Judith |
+|---------|-------------|---------------|---------------|
+| acupuncture sociale Montréal | Ressource (existe) | Acu Sociale Hochelaga | Ressource publiée |
+| acupuncture tarif solidaire Montréal | Service page | AcuPop | Page service existe |
+| acupuncture pas cher Montréal | Service page | AcuPop / annuaires | Partiellement |
+
+### Long-tail informationnels (opportunités)
+| Mot-clé | Type contenu | Couvert? |
+|---------|-------------|----------|
+| acupuncture accessible Montréal | Service page | OUI |
+| acupuncture communautaire Rosemont | Blog | NON |
+| c'est quoi acupuncture sociale | FAQ | OUI (ressource) |
+| acupuncture échelle solidaire comment ça marche | FAQ | OUI |
+| acupuncture sans assurance Montréal | FAQ | NON — À CRÉER |
+| acupuncture prix abordable Québec | FAQ | NON |
+| acupuncture RAMQ couvert Québec | FAQ | NON — À CRÉER (question fréquente) |
+| acupuncture couverte assurances Québec | FAQ | NON — À CRÉER |
+
+---
+
+## Pilier 4 — Pédiatrie (niche quasi-vide!)
+
+### Head terms
+| Mot-clé | Type contenu | Concurrent #1 | Statut Judith |
+|---------|-------------|---------------|---------------|
+| acupuncture pédiatrique Montréal | Ressource (existe) | Clinique OC Chambly | Ressource publiée, RANKE ~pos 5! |
+| acupuncture bébé Montréal | Service page | Marilou Montpetit | Page service existe |
+| acupuncture enfant Montréal | Service page | Clinique Shanti | Page service existe |
+
+### Long-tail informationnels (NICHE OUVERTE — opportunités massives)
+| Mot-clé | Type contenu | Couvert? |
+|---------|-------------|----------|
+| acupuncture coliques bébé | Blog | OUI (article existant) |
+| acupuncture sommeil bébé | Blog | NON — À CRÉER |
+| acupuncture stress enfant école | Blog | OUI (article existant) |
+| acupuncture TDAH enfant | Blog | NON — À CRÉER |
+| acupuncture allergie enfant | FAQ | NON |
+| acupuncture otite enfant | FAQ | NON |
+| acupuncture énurésie enfant pipi au lit | FAQ | NON |
+| acupuncture asthme enfant | FAQ | NON |
+| acupuncture reflux bébé RGO | Blog | NON — À CRÉER |
+| acupuncture eczéma enfant | FAQ | NON |
+| acupuncture terreur nocturne enfant | FAQ | NON |
+| acupuncture immunité enfant rhume | Blog | NON |
+| est-ce que acupuncture fait mal bébé | FAQ | NON — À CRÉER (rassurance) |
+| à quel âge acupuncture bébé | FAQ | NON — À CRÉER (rassurance) |
+| acupuncture sans aiguille enfant | FAQ | NON |
+
+---
+
+## Pilier transversal — Santé générale + local
+
+### Santé mentale (ressource existante)
+| Mot-clé | Type contenu | Couvert? |
+|---------|-------------|----------|
+| acupuncture anxiété Montréal | Ressource (existe) | OUI |
+| acupuncture stress chronique | Blog | Couvert partiellement |
+| acupuncture insomnie | Blog | NON — À CRÉER |
+| acupuncture burnout | Blog | NON |
+| acupuncture dépression | FAQ | NON |
+| acupuncture attaque panique | FAQ | NON |
+
+### Douleur (pas encore couvert)
+| Mot-clé | Type contenu | Couvert? |
+|---------|-------------|----------|
+| acupuncture douleur chronique Montréal | Ressource | NON — À CRÉER |
+| acupuncture migraine | Blog | NON |
+| acupuncture maux de tête | FAQ | NON |
+| acupuncture tendinite | FAQ | NON |
+| acupuncture sciatique | Blog | NON |
+| acupuncture fibromyalgie | Blog | NON |
+| acupuncture douleur menstruelle dysménorrhée | Blog | NON — À CRÉER |
+| acupuncture arthrite | FAQ | NON |
+
+### Transactionnel (conversion)
+| Mot-clé | Type contenu | Couvert? |
+|---------|-------------|----------|
+| combien coûte acupuncture Montréal | Page tarifs | OUI |
+| prix séance acupuncture Rosemont | Page tarifs | OUI |
+| acupuncture reçu assurance | FAQ | NON — À CRÉER |
+| première séance acupuncture quoi s'attendre | Blog/FAQ | Couvert dans ressources |
+| acupunctrice Rosemont | GBP + Service | Partiellement |
+| Judith Dufour-Savard acupuncture | Marque | OUI |
+
+### Ménopause (nouveau pilier potentiel)
+| Mot-clé | Type contenu | Couvert? |
+|---------|-------------|----------|
+| acupuncture ménopause bouffées chaleur | Ressource | NON — À CRÉER |
+| acupuncture périménopause | Blog | NON |
+| acupuncture symptômes ménopause | FAQ | NON |
+
+---
+
+## Résumé du gap analysis
+
+| Pilier | Mots-clés identifiés | Déjà couverts | À CRÉER |
+|--------|---------------------|---------------|---------|
+| Fertilité | 19 | 8 | 11 |
+| Grossesse | 17 | 4 | 13 |
+| Sociale | 8 | 5 | 3 |
+| Pédiatrie | 15 | 3 | 12 |
+| Santé mentale | 6 | 2 | 4 |
+| Douleur | 8 | 0 | 8 |
+| Transactionnel | 6 | 4 | 2 |
+| Ménopause | 3 | 0 | 3 |
+| **TOTAL** | **82** | **26** | **56** |
+
+---
+
+## Contenu prioritaire à produire (avant validation LowFruits)
+
+### Ressources (pages longues 2500+ mots, citations PubMed)
+1. Acupuncture et endométriose — Pilier 1 (niche peu couverte localement)
+2. Acupuncture et SOPK — Pilier 1 (question fréquente, peu de contenu QC structuré)
+3. Acupuncture post-partum — Pilier 2 (aucun concurrent local avec page dédiée)
+4. Acupuncture douleur chronique — Transversal (élargit la clientèle)
+5. Acupuncture et ménopause — Transversal (nouvelle clientèle cible)
+6. Acupuncture et insomnie — Transversal (très recherché)
+
+### Articles blog (800-1500 mots)
+1. Acupuncture pour déclencher accouchement à 41 semaines
+2. Acupuncture et sommeil du bébé
+3. Acupuncture et TDAH chez l'enfant
+4. Acupuncture pour la sciatique pendant la grossesse
+5. Acupuncture et reflux (RGO) du nourrisson
+6. Acupuncture et douleur menstruelle
+7. Acupuncture fertilité masculine (spermogramme)
+
+### FAQ (50-300 mots chacune)
+1. Est-ce que l'acupuncture est couverte par la RAMQ?
+2. Est-ce que l'acupuncture est couverte par les assurances au Québec?
+3. Est-ce que l'acupuncture fait mal à un bébé?
+4. À quel âge un bébé peut recevoir de l'acupuncture?
+5. Quand commencer l'acupuncture pendant la grossesse?
+6. Acupuncture après une fausse couche, est-ce recommandé?
+7. Acupuncture sans assurance, combien ça coûte?
+8. Comment fonctionne l'échelle solidaire en acupuncture?
+
+---
+
+## Outils à utiliser pour valider
+
+1. **LowFruits** (~25$/mois PAYG) — volumes, weak spots, clustering
+   - Seed keywords à entrer : les head terms de chaque pilier
+   - Ciblage : Canada, Français
+   - Filtrer : DA < 30, volume > 20/mois
+
+2. **Google Search Console** (gratuit) — données réelles post-launch
+   - Soumettre sitemap
+   - Attendre 2-4 semaines pour les premières données
+   - Identifier les mots-clés où on apparaît en position 5-20 (quick wins)
+
+3. **AnswerThePublic** (3 recherches gratuites/jour)
+   - Entrer "acupuncture" ciblé FR/Canada
+   - Extraire les questions "est-ce que", "comment", "pourquoi"
+   - Cross-référencer avec les FAQ à produire
+
+4. **Google Trends** (gratuit)
+   - Comparer les volumes relatifs entre piliers
+   - Identifier la saisonnalité (ex: fertilité → septembre-janvier?)
+
+---
+
+*Document généré le 18 avril 2026. À enrichir avec données LowFruits.*
