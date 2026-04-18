@@ -259,3 +259,89 @@ Chaque mot-clé sera scoré sur 3 axes :
 ---
 
 *Document généré le 18 avril 2026. À enrichir avec données LowFruits.*
+
+---
+
+## DONNÉES UBERSUGGEST (18 avril 2026)
+
+Source : Ubersuggest free trial, locId=2124 (Canada), lang=fr
+Fichier brut : project-docs/02_ROADMAP/content-strategy/UBERSUGGEST_RAW_DATA.md
+
+### Constats clés
+
+1. **SD extrêmement bas** sur tout le marché francophone acupuncture Canada (4-17 pour la majorité)
+2. **Le marché anglophone montréalais est sous-exploité** : "acupuncture anxiety disorder" (480/mo, SD 18) est le mot-clé avec le plus gros volume détecté
+3. **"acupuncture conception"** (70/mo, SD 28) est le meilleur mot-clé francophone — terme utilisé au QC plus que "fertilité"
+4. **"acupuncture bébé"** (20/mo, SD 32) est le seul mot-clé pédiatrique avec volume mesurable
+5. Les volumes "0" ne signifient pas absence de recherches — Ubersuggest ne tracke pas sous son seuil (~10/mo). Google Search Console révélera les vrais chiffres post-launch.
+
+### Priorités révisées post-Ubersuggest
+
+#### PRIORITÉ 1 — Quick wins (SD < 12, contenu facile à produire)
+
+| Mot-clé | Vol | SD | Type contenu | Action |
+|---------|-----|-----|-------------|--------|
+| quand faire acupuncture pour tomber enceinte | 10 | 5 | FAQ | CRÉER |
+| quand faire acupuncture grossesse | 10 | 5 | FAQ | CRÉER |
+| acupuncture femme enceinte bébé en siège | 10 | 5 | FAQ | EXISTE (enrichir) |
+| acupuncture et fertilité masculine | 10 | 5 | Blog | CRÉER |
+| acupuncture point bébé zen | 10 | 5 | Blog | CRÉER |
+| est-ce que l'acupuncture soigne l'anxiété | 0 | 4 | FAQ | CRÉER |
+| comment se passe acupuncture grossesse | 0 | 4 | FAQ | CRÉER |
+| acupuncture pour traiter l'insomnie | 0 | 4 | FAQ | CRÉER |
+| hypnose ou acupuncture pour insomnie | 0 | 4 | FAQ/Blog | CRÉER |
+| acupuncture grossesse 1er trimestre | 10 | 11 | Blog | CRÉER |
+
+#### PRIORITÉ 2 — Volume + difficulté modérée
+
+| Mot-clé | Vol | SD | Type contenu | Action |
+|---------|-----|-----|-------------|--------|
+| acupuncture conception | 70 | 28 | Ressource | MODIFIER titre ressource fertilité |
+| acupuncture bébé | 20 | 32 | Ressource | EXISTE (optimiser H1) |
+| acupuncture grossesse prix | 10 | 13 | Page tarifs | OPTIMISER |
+| acupuncture bienfaits stress | 10 | 19 | Ressource | EXISTE (enrichir) |
+| acupuncture oreille stress | 10 | 13 | Blog | CRÉER |
+| clinique acupuncture cégep rosemont | 10 | 13 | Local | NON PERTINENT |
+
+#### PRIORITÉ 3 — Contenu bilingue FR/EN (nouveau)
+
+| Mot-clé | Vol | SD | Type contenu | Action |
+|---------|-----|-----|-------------|--------|
+| acupuncture anxiety disorder | 480 | 18 | Ressource EN | À ÉVALUER |
+| acupuncture stress management | 110 | 14 | Ressource EN | À ÉVALUER |
+| acupuncture stress points | 50 | 20 | Blog EN | À ÉVALUER |
+| acupuncture anxiety depression | 30 | 21 | Ressource EN | À ÉVALUER |
+
+Note : le contenu bilingue est une décision stratégique à prendre avec Judith.
+Judith pratique en français. Mais ses patientes anglophones existent (Montréal est bilingue).
+Option : pages EN séparées ou contenu bilingue intégré.
+
+#### PRIORITÉ 4 — Terrain vierge (vol 0 mais SD ultra-bas)
+
+| Mot-clé | Vol | SD | Type contenu | Action |
+|---------|-----|-----|-------------|--------|
+| acupuncture SOPK | 0 | 17 | Ressource | CRÉER (terrain vierge QC) |
+| acupuncture endométriose | 0 | 17 | Ressource | CRÉER (terrain vierge QC) |
+| acupuncture douleur chronique | 0 | 12 | Ressource | CRÉER |
+| acupuncture bébé sommeil | 0 | 12 | Blog | CRÉER |
+| acupuncture bébé reflux | 0 | 12 | Blog | CRÉER |
+| acupuncture enfant anxiété | 0 | 12 | Blog | CRÉER |
+| acupuncture insomnie | 0 | 17 | Ressource | CRÉER |
+| acupuncture sociale montréal | 0 | 12 | Ressource | EXISTE |
+
+### Plan d'action immédiat (post-DNS switch)
+
+**Semaine 1** : 
+- Switch DNS + soumettre sitemap à Google Search Console
+- Installer Plausible Analytics
+- Créer les 10 FAQ de Priorité 1 (SD < 12, ~2h de travail)
+
+**Semaine 2-3** :
+- Modifier le titre de la ressource fertilité : "Acupuncture et conception à Montréal"
+- Créer 3 nouveaux blogs Priorité 1 (fertilité masculine, grossesse 1er trimestre, insomnie)
+- Produire les ressources SOPK + endométriose (terrain vierge)
+
+**Mois 2** :
+- Évaluer le contenu bilingue avec Judith
+- Google Search Console aura des données — ajuster la stratégie selon les vrais volumes
+
