@@ -345,3 +345,81 @@ Option : pages EN séparées ou contenu bilingue intégré.
 - Évaluer le contenu bilingue avec Judith
 - Google Search Console aura des données — ajuster la stratégie selon les vrais volumes
 
+
+---
+
+## DONNÉES ANSWERTHEPUBLIC (18 avril 2026)
+
+Source : AnswerThePublic, seed "acupuncture", Canada/Français
+Note : Les volumes ATP sont significativement plus élevés que ceux d'Ubersuggest — ATP utilise des sources de données différentes (Google Suggest + volume estimé). La vérité est probablement entre les deux.
+
+### Découvertes clés (changent les priorités)
+
+1. **"acupuncture à montréal" = 2 400/mois** — head term massif. La homepage DOIT être optimisée pour ça.
+2. **"acupuncture pour fertilité" = 320/mois** — 4x plus que ce qu'Ubersuggest montrait. Confirme que le pilier fertilité est LE pilier #1.
+3. **"acupuncture et perte de poids" = 140/mois** — nouveau sujet non couvert. Judith offre-t-elle ce service?
+4. **"acupuncture vs needling" = 140/mois** — contenu éducatif comparatif à créer
+5. Questions "quand faire acupuncture pour X" = pattern récurrent → série de FAQ à produire
+
+### Nouvelles FAQ à produire (issues des PAA Google)
+
+#### Priorité absolue (questions fréquentes, SD ultra-bas)
+- Qu'est-ce que l'acupuncture peut soigner?
+- Est-ce que l'acupuncture fonctionne vraiment?
+- Qu'est-ce qu'il ne faut pas faire après une séance d'acupuncture?
+- Quels sont les bienfaits de l'acupuncture?
+- Quand faire acupuncture pour tomber enceinte?
+- Quand faire acupuncture grossesse?
+- Comment se passe une séance d'acupuncture? (acupuncture comment ça marche — vol 10)
+- Acupuncture comment s'habiller? (vol 10)
+- Pourquoi acupuncture grossesse?
+- Quand faire acupuncture pour déclencher accouchement?
+- Quand faire acupuncture pour retourner bébé?
+- Acupuncture quelle fréquence?
+- Est-ce que l'acupuncture soigne l'anxiété?
+
+#### Questions de rassurance (conversion)
+- Acupuncture qui fait mal? / Point acupuncture qui fait mal
+- Acupuncture qui peut pratiquer? / Qui a le droit?
+- Acupuncture à partir de quel âge?
+- Acupuncture sans aiguille (vol 20)
+
+#### Questions comparatives (différenciation)
+- Acupuncture vs dry needling (vol 140)
+- Acupuncture ou ostéopathie?
+- Acupuncture ou hypnose pour maigrir?
+- Acupuncture ou shiatsu?
+- Acupuncture ou réflexologie?
+
+### Nouveaux sujets identifiés (non couverts dans le plan original)
+
+| Sujet | Volume | Type contenu | Pertinence Judith |
+|-------|--------|-------------|-------------------|
+| Acupuncture et perte de poids | 140/mois | Ressource | À VALIDER avec Judith |
+| Acupuncture vs needling/dry needling | 140/mois | Blog éducatif | OUI — différenciation |
+| Acupuncture contre-indications | 20/mois | FAQ | OUI — rassurance |
+| Acupuncture contre le stress | 10/mois | Couvert (ressource) | EXISTE |
+| Acupuncture contre migraine | — | Blog | NON couvert |
+| Acupuncture contre allergie | — | Blog | NON couvert |
+| Acupuncture contre insomnie | — | Blog | À CRÉER |
+| Acupuncture au laser | 30/mois | FAQ | NON pertinent (Judith ne fait pas laser) |
+| Acupuncture à domicile | — | FAQ | À VALIDER (Judith le fait?) |
+
+### Volumes croisés — Tableau consolidé Ubersuggest × AnswerThePublic
+
+| Mot-clé | Vol Ubersuggest | Vol ATP | SD | Priorité |
+|---------|----------------|---------|-----|----------|
+| acupuncture à montréal | 0 | 2 400 | 17 | HEAD TERM — optimiser homepage |
+| acupuncture anxiety disorder | 480 | — | 18 | EN — évaluer bilingue |
+| acupuncture pour fertilité | 0 | 320 | 17 | P1 — ressource existe, optimiser titre |
+| acupuncture et perte de poids | — | 140 | — | NOUVEAU — valider avec Judith |
+| acupuncture vs needling | — | 140 | — | P2 — blog éducatif à créer |
+| acupuncture stress management | 110 | — | 14 | EN — couvert partiellement |
+| acupuncture conception | 70 | — | 28 | P1 — synonyme de "fertilité" au QC |
+| acupuncture stress points | 50 | — | 20 | EN — couvert |
+| acupuncture près de chez moi | — | 30 | — | LOCAL — GBP + homepage |
+| acupuncture au laser | — | 30 | — | NON PERTINENT |
+| acupuncture bébé | 20 | — | 32 | P1 — ressource existe |
+| acupuncture sans aiguille | — | 20 | — | FAQ — rassurance pédiatrie |
+| acupuncture contre-indication | — | 20 | — | FAQ — rassurance |
+
