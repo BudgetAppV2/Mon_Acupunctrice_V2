@@ -62,6 +62,13 @@ de la clinique La Source en Soi (1 215 avis 4,9/5 sur Google).
 - Milestones exécutables : `project-docs/02_ROADMAP/migration-wix/`
 - Rapports de scouting : `docs/migration-wix/02-recherche/scouting/`
 
+**Pipeline de contenu SEO/GEO (post-migration)** :
+- Vision du pipeline : `project-docs/02_ROADMAP/content-strategy/VISION.md`
+- Architecture technique (CC audit) : `project-docs/02_ROADMAP/content-strategy/ARCHITECTURE.md`
+- Backlog mots-clés + données Ubersuggest/ATP : `project-docs/02_ROADMAP/content-strategy/KEYWORD_BACKLOG.md`
+- 4 décisions tranchées : couper Wix (R1), hardcoder UID admin (R2), Plausible Cloud (R3), textarea markdown (R4)
+- Sprints à exécuter : MW-F3a (Plausible) → MW-E3 (Blog CMS) → MW-E1 (FAQ CMS) → MW-E2 (Ressources CMS)
+
 ### Feedback de Judith (toujours valide)
 
 - Elle aime les 4 styles : Enseigner / Connecter / Aider / Inspirer
