@@ -591,3 +591,59 @@ Acupuncture fertilité Plateau/Montréal/Laval — concurrent direct non identif
 | acupuncture allergie | 54 | acupuncture allergies asthma | 10 | 8 |
 | acupuncture reflux | 82 | acupressure gastric reflux | 70 | 6 |
 
+
+---
+
+## ANALYSE BACKLINKS (27 avril 2026)
+
+Source : Ubersuggest Backlinks + export CSV (225 backlinks)
+Fichier brut : backlinks-lasourceensoi-raw.csv
+
+### Profil lasourceensoi.com (référence)
+- DA : 26 | Domaines référents : 217 | Total backlinks : 12 058
+- Top backlinks par DA : Wikipedia (95), aufeminin.com (86), Mailchimp (85), voir.ca (62), fresha.com (62), coupdepouce.com (57), ellequebec.com (54), Lumino Santé (54), 411.ca (53)
+
+### Profil acumedicina.com (concurrent découvert)
+- DA : 15 | Domaines référents : 72 | Total backlinks : 333
+- Top : ic.gc.ca (73), fresha.com (62), Lumino Santé (54), canpages.ca (51), gorendezvous.com (42), medimap.ca (39)
+
+### Plan d'action backlinks pour acupuncturejudith.ca
+
+#### Semaine 1 — Quick wins (15 fiches annuaires)
+1. Google Business Profile (créer/optimiser)
+2. ic.gc.ca — Registraire des entreprises (DA 73)
+3. fresha.com (DA 62) — fiche praticien
+4. Lumino Santé sunlife.ca (DA 54) — profil Judith
+5. 411.ca (DA 53) — fiche entreprise
+6. canpages.ca (DA 51) — fiche
+7. OAQ — Ordre des acupuncteurs du Québec (répertoire)
+8. gorendezvous.com (DA 42) — profil existant, vérifier lien
+9. medimap.ca (DA 39) — fiche praticien
+10. goldbook.ca (DA 38) — fiche
+11. Yelp — créer profil
+12. RateMDs — créer profil
+13. bestprosintown — fiche
+14. datagemba.com — fiche
+15. askmap.net — fiche
+
+#### Mois 1-2 — Outreach local (12 cibles)
+1. coupdepouce.com (DA 57) — pitch article maternité + acupuncture
+2. voir.ca (DA 62) — pitch article bien-être Rosemont
+3. ellequebec.com (DA 54) — pitch santé femme
+4. gazettedesfemmes.ca (DA 40) — pitch fertilité/acupuncture
+5. nourrisourcemontreal.org — partenariat allaitement
+6. avac-info.org — partenariat accouchement naturel
+7. Collège de Rosemont — programme acupuncture, lien alumni
+8. Maisons de naissance Montréal — praticien recommandé
+9. Clinique OVO fertilité — praticien complémentaire
+10. PROCREA fertilité — praticien complémentaire
+11. roseflash.ca — média local Rosemont
+12. mamanpourlavie.com — guest post périnatalité
+
+#### Mois 3-6 — Médias et long terme
+- aufeminin.com (DA 86)
+- Radio-Canada
+- La Presse
+- Podcasts périnatalité (ex: Post-partum de Valérie Roberts — déjà linké vers La Source)
+- Wikipedia (contribution factuelle sur acupuncture périnatale)
+
