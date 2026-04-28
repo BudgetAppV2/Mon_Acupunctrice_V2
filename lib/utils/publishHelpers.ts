@@ -4,7 +4,9 @@ const GRAPH_IG = 'https://graph.instagram.com/v25.0';
 const GRAPH_FB = 'https://graph.facebook.com/v25.0';
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
-const WIX_URL = process.env.NEXT_PUBLIC_WIX_URL || 'https://mon-acupunctrice.ca';
+import { getRdvUrl } from '@/lib/utils/rdvUrl';
+
+const RDV_YT_URL = getRdvUrl({ source: 'youtube', medium: 'description' });
 const POLL_INTERVAL_MS = 5_000;
 const POLL_TIMEOUT_MS = 90_000;
 
@@ -92,7 +94,7 @@ export async function publishYouTube(
   const vidBuf = await vidRes.arrayBuffer();
 
   const caption = (item.caption || item.title || '') as string;
-  const desc = `${caption}\n\n#Shorts #Acupuncture #SanteNaturelle\n\nPrendre rendez-vous : ${WIX_URL}`;
+  const desc = `${caption}\n\n#Shorts #Acupuncture #SanteNaturelle\n\nPrendre rendez-vous : ${RDV_YT_URL}`;
 
   // Init resumable upload
   const initRes = await fetch('https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status', {
@@ -149,7 +151,7 @@ export async function publishStoryViaInstagrapi(
     imageUrl: item.coverImageUrl || item.storyImageUrl || null,
     caption: item.caption || '',
     clinicUsername: options?.clinicUsername || 'lasourceensoi',
-    linkUrl: options?.linkUrl || 'https://acupuncturejudith.ca',
+    linkUrl: options?.linkUrl || 'https://acupuncturejudith.ca/reserver',
     hashtags: options?.hashtags || ['acupuncture'],
   };
 

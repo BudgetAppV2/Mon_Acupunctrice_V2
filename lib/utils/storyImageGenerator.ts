@@ -88,7 +88,7 @@ function drawCTA(ctx: CanvasRenderingContext2D) {
 
   ctx.font = '28px Inter, sans-serif';
   ctx.fillStyle = 'rgba(255,255,255,0.9)';
-  ctx.fillText('gorendezvous.com/lasourceensoi', W / 2, 1530);
+  ctx.fillText('acupuncturejudith.ca/reserver', W / 2, 1530);
 
   ctx.font = '24px Inter, sans-serif';
   ctx.fillStyle = 'rgba(255,255,255,0.55)';

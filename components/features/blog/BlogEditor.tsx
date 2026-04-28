@@ -10,7 +10,9 @@ import { htmlToMarkdownText } from '@/lib/utils/ricosConverter';
 
 const TiptapEditor = dynamic(() => import('./TiptapEditor'), { ssr: false });
 
-const RDV_URL = 'https://gorendezvous.com/lasourceensoi';
+import { getRdvUrl } from '@/lib/utils/rdvUrl';
+
+const RDV_URL = getRdvUrl({ source: 'blog', medium: 'article' });
 const CATEGORIES = ['Acupuncture', 'Fertilite', 'Grossesse', 'Bien-etre', 'Medecine chinoise', 'Conseils sante', 'Autre'];
 const DRAFT_KEY = 'blog-editor-draft';
 const EXPORT_KEY = 'editor-export-blog';
