@@ -535,3 +535,59 @@ Jours suivants (3/jour en version gratuite ATP) :
 | 14 | acupuncture grossesse nausée (YouTube) | 10 | — | ATP R2 YT | Vidéo | CRÉER (priorité) |
 | 15 | quand faire acupuncture pour tomber enceinte | 10 | 5 | Ubersuggest | FAQ | CRÉER |
 
+
+---
+
+## DONNÉES UBERSUGGEST COMPETITOR ANALYSIS (27 avril 2026)
+
+Source : Ubersuggest payant, Competitor Analysis + Keyword Ideas (10 seeds additionnels)
+Fichier brut : UBERSUGGEST_COMPETITOR_RAW.md
+
+### Constat principal : terrain quasi-vierge
+
+Sur 5 concurrents analysés, **4 n'ont AUCUNE donnée indexée** (synergek.ca, sino-sante.com, nathalie-gagnon-acupuncteure.com, acupuncturehochelaga.com). Seul lasourceensoi.com a des données significatives (~1087 mots-clés, ~3-4K visites/mois, 5483 backlinks). Cela confirme que le marché SEO acupuncture Montréal est OUVERT.
+
+### Concurrent principal : lasourceensoi.com
+
+Top mots-clés qui génèrent du traffic :
+- doula / doulas (8 100 vol) — pos 6-7
+- massage prenatal near me (3 600 vol) — pos 8
+- naturopathie (5 400 vol) — pos 10
+- yoga mamas (3 600 vol) — pos 1
+- acupuncture prenatal (260 vol, SD 8) — pos 5
+
+Note : La Source en Soi ranke sur des mots-clés multidisciplinaires (doula, yoga, massage), PAS sur acupuncture spécifiquement. Judith peut les dépasser sur tous les mots-clés "acupuncture + [spécialité]".
+
+### Concurrent découvert : acumedicina.com
+Acupuncture fertilité Plateau/Montréal/Laval — concurrent direct non identifié précédemment.
+
+### Top 10 opportunités Ubersuggest Competitor Analysis
+
+| # | Mot-clé | Volume | SD | CPC | Action |
+|---|---------|--------|-----|-----|--------|
+| 1 | acupuncture perte de poids | 140 | 9 | $1.05 | Ressource — VALIDER avec Judith |
+| 2 | acupuncture for migraine headache | 390 | 14 | $2.54 | Blog EN |
+| 3 | acupuncture stress management | 110 | 14 | $2.88 | Ressource EN |
+| 4 | acupressure points gastric reflux | 70 | 6 | — | Blog — SD ultra-bas! |
+| 5 | acupuncture pour le stress | 50 | 11 | $1.72 | Couvert (ressource santé mentale) |
+| 6 | acupuncture for GERD points | 50 | 6 | — | Blog — SD ultra-bas! |
+| 7 | perte de poids par acupuncture | 50 | 8 | — | Ressource |
+| 8 | acupuncture prenatal Montreal | 260 | 8 | — | Page service — PRIORITÉ LOCALE |
+| 9 | acupuncture perimenopause | 140 | 27 | $1.78 | Ressource ménopause |
+| 10 | acupressure points headache relief | 110 | 14 | $1.01 | Blog |
+
+### Nouveaux seeds — Keyword Ideas (10 seeds additionnels)
+
+| Seed | Total KW | Meilleure opportunité | Vol | SD |
+|------|----------|----------------------|-----|-----|
+| acupuncture ménopause | 112 | acupuncture perimenopause | 140 | 27 |
+| acupuncture migraine | 201 | acupuncture for migraine headache | 390 | 14 |
+| acupuncture douleur | 210 | acupuncture mal de tête | 10 | 19 |
+| acupuncture accouchement | 164 | acupression accouchement pdf | 20 | 13 |
+| acupuncture nausée | 84 | acupression nausées | 40 | 19 |
+| acupuncture stress | 226 | acupuncture stress management | 110 | 14 |
+| acupuncture perte de poids | 68 | acupuncture perte de poids | 140 | 9 |
+| acupuncture sciatique | 56 | sciatique acupuncture points | 10 | 17 |
+| acupuncture allergie | 54 | acupuncture allergies asthma | 10 | 8 |
+| acupuncture reflux | 82 | acupressure gastric reflux | 70 | 6 |
+
