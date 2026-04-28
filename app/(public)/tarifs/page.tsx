@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     'Tarifs transparents pour mes services d’acupuncture a La Source en Soi (Rosemont). Consultation privee 90 $/h, acupuncture sociale a tarif libre (35-50 $). Recu pour assurances.',
 };
 
-const GRV_URL = 'https://www.gorendezvous.com/lasourceensoi?companyId=104074';
+const GRV_URL = 'https://www.gorendezvous.com/lasourceensoi?companyId=104074&eids=175708';
 
 const OFFERS = [
   {
@@ -21,7 +21,7 @@ const OFFERS = [
     desc: 'S&eacute;ance individuelle, en cabinet priv&eacute;. &Eacute;change approfondi, &eacute;valuation compl&egrave;te, plan d&rsquo;accompagnement personnalis&eacute;.',
     indications:
       '<strong>Indications</strong> : fertilit&eacute;, grossesse, p&eacute;diatrie, sant&eacute; mentale, douleurs, bien-&ecirc;tre g&eacute;n&eacute;ral.',
-    ctaHref: 'https://www.gorendezvous.com/lasourceensoi?companyId=104074',
+    ctaHref: 'https://www.gorendezvous.com/lasourceensoi?companyId=104074&eids=175708',
     ctaLabel: 'Prendre rendez-vous',
   },
   {

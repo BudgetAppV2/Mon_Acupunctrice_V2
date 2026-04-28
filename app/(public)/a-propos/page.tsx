@@ -120,7 +120,7 @@ export default function AboutPage() {
             <CtaButton
               variant="white"
               size="lg"
-              href="https://www.gorendezvous.com/lasourceensoi?companyId=104074"
+              href="https://www.gorendezvous.com/lasourceensoi?companyId=104074&eids=175708"
             >
               Prendre rendez-vous en ligne
             </CtaButton>

@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     'Contactez Judith Dufour-Savard, acupunctrice a Rosemont. Clinique La Source en Soi, 2554 rue Beaubien Est. Par telephone, courriel ou en personne.',
 };
 
-const GRV_URL = 'https://www.gorendezvous.com/lasourceensoi?companyId=104074';
+const GRV_URL = 'https://www.gorendezvous.com/lasourceensoi?companyId=104074&eids=175708';
 // TODO Judith: email a completer (placeholder suggere info@acupuncturejudith.ca)
 const CONTACT_EMAIL = 'info@acupuncturejudith.ca';
 const MAPS_EMBED_SRC = 'https://www.google.com/maps?q=2554+rue+Beaubien+Est+Montreal+QC+H1Y+1G3&output=embed';

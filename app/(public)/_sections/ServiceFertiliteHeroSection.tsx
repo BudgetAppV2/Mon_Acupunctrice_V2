@@ -24,7 +24,7 @@ export default function ServiceFertiliteHeroSection() {
             accompagner avec douceur, rigueur, et une vraie &eacute;coute.
           </p>
           <div className="flex flex-wrap gap-4">
-            <CtaButton variant="primary" size="lg" href="https://www.gorendezvous.com/lasourceensoi?companyId=104074">
+            <CtaButton variant="primary" size="lg" href="https://www.gorendezvous.com/lasourceensoi?companyId=104074&eids=175708">
               Prendre rendez-vous
             </CtaButton>
             <CtaButton variant="secondary" href="/ressources/acupuncture-fertilite-montreal">

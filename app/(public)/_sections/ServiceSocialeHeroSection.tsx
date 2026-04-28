@@ -25,7 +25,7 @@ export default function ServiceSocialeHeroSection() {
           </p>
           {/* TODO Judith : confirmer si lien GRV separe existe pour seances sociales. Par defaut on utilise le meme que le prive. */}
           <div className="flex flex-wrap gap-4">
-            <CtaButton variant="primary" size="lg" href="https://www.gorendezvous.com/lasourceensoi?companyId=104074">
+            <CtaButton variant="primary" size="lg" href="https://www.gorendezvous.com/lasourceensoi?companyId=104074&eids=175708">
               Prendre rendez-vous
             </CtaButton>
             <CtaButton variant="secondary" href="/ressources/acupuncture-sociale-montreal">

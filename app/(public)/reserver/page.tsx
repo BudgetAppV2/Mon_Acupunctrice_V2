@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     'Reservez votre seance d’acupuncture a Rosemont en ligne, par telephone ou par courriel. Disponibilites en temps reel via Go Rendez-Vous. Clinique La Source en Soi.',
 };
 
-const GRV_URL = 'https://www.gorendezvous.com/lasourceensoi?companyId=104074';
+const GRV_URL = 'https://www.gorendezvous.com/lasourceensoi?companyId=104074&eids=175708';
 
 const CONTACT_MODES = [
   {
@@ -124,9 +124,8 @@ export default function ReserverPage() {
           >
             Voir les disponibilit&eacute;s &rarr;
           </a>
-          {/* TODO Judith: lien direct vers profil Judith sur GRV (employeeId 7556837) a confirmer */}
           <p className="mt-6 text-[13px] text-public-text-light max-w-[540px] mx-auto">
-            Sur Go Rendez-Vous, s&eacute;lectionnez la clinique <strong>La Source en Soi</strong> puis <strong>Judith Dufour-Savard</strong>.
+            Le lien vous am&egrave;ne directement sur mon profil <strong>Go Rendez-Vous</strong>. Choisissez le type de s&eacute;ance et l&rsquo;heure qui vous convient.
           </p>
         </div>
       </section>
