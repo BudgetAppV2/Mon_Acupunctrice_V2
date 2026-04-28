@@ -647,3 +647,121 @@ Fichier brut : backlinks-lasourceensoi-raw.csv
 - Podcasts périnatalité (ex: Post-partum de Valérie Roberts — déjà linké vers La Source)
 - Wikipedia (contribution factuelle sur acupuncture périnatale)
 
+
+---
+
+## DONNÉES ANSWERTHEPUBLIC ROUND 3 — 7 SEEDS FINAUX (27 avril 2026)
+
+Source : AnswerThePublic Pro trial, 7 seeds sans "acupuncture" (Round 2)
+Fichier brut : ATP_RAW_DATA_R3.md (604 lignes)
+
+### Découverte explosive : "menopause" = 22 200 recherches/mois au Canada
+
+C'est le mot-clé avec le plus grand volume de TOUTE notre recherche (toutes sources confondues). La ménopause est un nouveau pilier stratégique pour acupuncturejudith.ca.
+
+### Données par seed
+
+| Seed | Volume | Richesse données | Découverte clé |
+|------|--------|-----------------|----------------|
+| bébé colique | 0 (exact) / 20 (YouTube) | Très riche (369 résultats) | "comment soulager bébé colique" = entrée funnel pédiatrie |
+| endométriose | 0 (CA/FR) | Faible | Terme non indexé au Canada — utiliser en ressource longue |
+| ménopause | 22 200/mois | MASSIVE (470 résultats) | Nouveau pilier stratégique |
+| insomnie | 0 (CA/FR) | Faible ATP | Mieux couvert par Ubersuggest |
+| douleur chronique | 0 (exact) | Bon (20 résultats + PAA) | "médicament douleur chronique" vol 30 = intercepter |
+| SOPK | 0 (exact) | Très bon (20 rés + PAA) | "sopk comment tomber enceinte" vol 10 = pépite fertilité |
+| accouchement | — | Bon (PAA + 20 prompts IA) | Fort ciblage Montréal/Québec dans les prompts LLM |
+
+### SOPK × Fertilité — intersection parfaite
+
+- sopk comment tomber enceinte — vol: 10 ⭐⭐⭐
+- sopk comment soigner — vol: 10
+- sopk comment savoir — vol: 10
+- sopk comment perdre du poids — vol: 10
+- endométriose ou sopk — vol: 10
+L'acupuncture améliore l'ovulation dans le SOPK — c'est un contenu direct pour la ressource fertilité.
+
+### Prompts LLM Round 2 — GEO ciblant Montréal/Québec (13 prompts)
+
+Coliques : "services consultation bébé colique", "techniques massage ventre bébé"
+Ménopause : "alternatives non hormonales périménopause" ⭐⭐⭐, "cliniques traitements ménopause Montréal"
+Accouchement : "clinique accouchement naturel Canada" ⭐⭐, "méthodes naturelles douleur accouchement" ⭐⭐⭐, "doula certifiée Québec"
+Douleur : "cliniques spécialisées douleur chronique"
+
+### Sujets où l'acupuncture est la réponse naturelle
+
+| Sujet recherché | Lien acupuncture | Priorité contenu |
+|----------------|-----------------|-----------------|
+| Coliques bébé | Acupuncture pédiatrique | ⭐⭐⭐ |
+| SOPK comment tomber enceinte | Régulation ovulation | ⭐⭐⭐ |
+| Méthodes naturelles douleur accouchement | Acupuncture pendant travail | ⭐⭐⭐ |
+| Alternatives non hormonales périménopause | Bouffées chaleur sans hormones | ⭐⭐⭐ |
+| Douleur chronique | Traitement reconnu | ⭐⭐⭐ |
+| Fibromyalgie symptômes | Traitement reconnu | ⭐⭐ |
+| Insomnie ménopausique | Améliore sommeil en ménopause | ⭐⭐⭐ |
+
+---
+
+## PLAN DE CONTENU FINAL — PRIORITÉS TOUTES SOURCES CONFONDUES
+
+### Ressources à créer (pages longues 2500+ mots, citations PubMed)
+
+| # | Titre proposé | Mots-clés cibles | Volume combiné | Priorité |
+|---|--------------|-----------------|---------------|----------|
+| 1 | Acupuncture et ménopause : soulager sans hormones | menopause (22.2K), bouffées chaleur, périménopause (140) | 22 000+ | ⭐⭐⭐ URGENTE |
+| 2 | Acupuncture et SOPK : retrouver ses cycles et sa fertilité | sopk tomber enceinte (10), sopk soigner (10), SOPK fertilité | 50+ | ⭐⭐⭐ |
+| 3 | Acupuncture et douleur chronique | douleur chronique (30), fibromyalgie, migraine (390 EN) | 400+ | ⭐⭐⭐ |
+| 4 | Acupuncture post-partum : récupération après l'accouchement | post-partum, récupération, allaitement | — | ⭐⭐ |
+| 5 | Acupuncture et endométriose | endométriose traitement, endo fertilité | — (terrain vierge) | ⭐⭐ |
+| 6 | Acupuncture et perte de poids | perte de poids acupuncture (140), SD 9 | 190+ | ⭐⭐ (valider Judith) |
+| 7 | Acupuncture et insomnie | insomnie traitement, acupuncture sommeil | — | ⭐⭐ |
+
+### Articles blog à créer
+
+| # | Titre | Mot-clé cible | Volume | SD |
+|---|-------|--------------|--------|-----|
+| 1 | Acupuncture pour déclencher l'accouchement à 41 semaines | accouchement naturel, déclenchement | — | bas |
+| 2 | Coliques de bébé : l'acupuncture pédiatrique comme solution | colique bébé soulager (10-20) | 20+ | bas |
+| 3 | SOPK et grossesse : comment l'acupuncture peut aider | sopk tomber enceinte (10) | 10+ | bas |
+| 4 | Acupuncture vs dry needling : quelle différence ? | acupuncture vs needling (140) | 140 | — |
+| 5 | Reflux du nourrisson : que peut faire l'acupuncture ? | reflux bébé, RGO | — | bas |
+| 6 | Sciatique pendant la grossesse : soulagement par acupuncture | sciatique grossesse | — | bas |
+| 7 | Fertilité masculine : l'acupuncture peut-elle aider ? | fertilité masculine (50 YT) | 50+ | bas |
+
+### FAQ prioritaires (13 FAQ, SD ultra-bas)
+
+| # | Question | Source | SD |
+|---|---------|--------|-----|
+| 1 | Quand faire de l'acupuncture pour tomber enceinte ? | Ubersuggest | 5 |
+| 2 | Quand commencer l'acupuncture pendant la grossesse ? | ATP R1 | 5 |
+| 3 | Est-ce que l'acupuncture fait mal à un bébé ? | KEYWORD_BACKLOG | — |
+| 4 | Comment soulager les coliques de bébé naturellement ? | ATP R3 | — |
+| 5 | L'acupuncture est-elle couverte par la RAMQ ? | KEYWORD_BACKLOG | — |
+| 6 | L'acupuncture est-elle couverte par les assurances au Québec ? | KEYWORD_BACKLOG | — |
+| 7 | Quel est le meilleur anxiolytique naturel ? | ATP R2 PAA | 4 |
+| 8 | Comment se débarrasser de l'anxiété sans médicaments ? | ATP R2 PAA | 4 |
+| 9 | SOPK : comment tomber enceinte naturellement ? | ATP R3 | — |
+| 10 | Acupuncture vs dry needling : quelle différence ? | ATP R1 | — |
+| 11 | Quels sont les signes de la ménopause ? | ATP R3 PAA | — |
+| 12 | Comment soulager les bouffées de chaleur sans hormones ? | ATP R3 | — |
+| 13 | Acupuncture grossesse : comment ça se passe ? | ATP R2 | 4 |
+
+---
+
+## RECHERCHE COMPLÉTÉE — RÉSUMÉ EXÉCUTIF
+
+**Date** : 27 avril 2026
+**Sources** : Ubersuggest (payant) × AnswerThePublic (Pro trial) × Google SERP scouting
+**Total seeds recherchés** : 30 (10 Ubersuggest KW + 10 Ubersuggest Competitor + 10 ATP)
+**Total mots-clés identifiés** : 150+
+**Contenus à créer** : 7 ressources + 7 articles blog + 13 FAQ = 27 pièces de contenu
+
+**La stratégie est claire** :
+1. Le marché SEO acupuncture Québec est quasi-vierge (4/5 concurrents sans données)
+2. Les SD sont ultra-bas (4-17) — tout ce qu'on publie va ranker
+3. La ménopause (22.2K/mois) est un nouveau pilier massif à exploiter
+4. Les mots-clés d'entrée de funnel (sans "acupuncture") captent les gens AVANT qu'ils connaissent la solution
+5. Les prompts LLM ciblant Montréal/Québec montrent exactement le contenu à produire pour le GEO
+6. Les backlinks de La Source en Soi (12K) sont réplicables via 15 quick wins annuaires
+
+**Prochaine étape** : construire le CMS (MW-E1/E2/E3) et commencer à injecter du contenu.
+
