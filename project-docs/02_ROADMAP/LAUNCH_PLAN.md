@@ -429,3 +429,198 @@ Inclut la stratégie GBP partenariat détaillée.
 | Ressources publiées | 7 | 8 | 15 | 25 |
 | FAQ publiées | 11 | 16 | 25 | 50 |
 
+
+---
+
+## STRATÉGIE DE RÉVISION — Rendre ça simple pour Judith
+
+### Le problème
+Judith n'a pas le temps de réviser chaque mot de chaque page. Et pour le contenu futur
+(27+ pièces à produire), on ne peut pas lui demander de tout lire en détail.
+
+### La solution : 3 niveaux de révision
+
+**Niveau 1 — Validation factuelle (5 min par pièce)**
+Judith ne lit PAS le contenu en entier. On lui fournit un résumé de 3-5 lignes :
+- Sujet de la page
+- Les 2-3 affirmations cliniques principales
+- Les études citées (titres seulement)
+- Elle dit OK ou signale une erreur factuelle
+
+**Niveau 2 — Relecture tonalité (premier contenu de chaque type seulement)**
+Pour le PREMIER article blog, la PREMIÈRE ressource, et la PREMIÈRE FAQ,
+Judith fait une relecture complète pour valider la voix et le ton.
+Ensuite, le guide de ton est calé et les suivants passent au Niveau 1.
+
+**Niveau 3 — Pages identitaires (une seule fois)**
+Les pages qui parlent directement de Judith (à-propos, services, accueil)
+méritent une relecture complète. C'est ce qu'elle fait en ce moment.
+Une fois validées, on n'y touche plus.
+
+### Workflow CMS futur (MW-E4)
+1. Benoit produit le contenu via Claude + PubMed
+2. Le contenu est créé en statut "draft" dans Firestore
+3. Judith reçoit un résumé dans le Hub : titre + 3 bullet points + "Approuver / Rejeter"
+4. Si approuvé → statut "published", le site se rafraîchit (ISR)
+5. Si rejeté → Judith ajoute un commentaire, Benoit corrige
+
+### Pour la révision ACTUELLE du site (preview Vercel)
+Au lieu de demander à Judith de tout relire, on peut lui dire :
+"Concentre-toi seulement sur les pages qui parlent de TOI :
+- /a-propos
+- /services (les 4 pages)
+- /tarifs
+- /reserver
+- /contact
+Les pages de contenu (blog, ressources, FAQ) sont basées sur la science
+et seront ajustées au fur et à mesure."
+
+---
+
+## PLAN DE CONTENU FUTUR — Backlog complet
+
+Basé sur le KEYWORD_BACKLOG.md (767 lignes, 150+ mots-clés, données Ubersuggest + ATP).
+
+### Phase 1 — Contenu de lancement (J-14 à J+7)
+
+Contenu à produire AVANT ou juste après le switch DNS.
+Objectif : avoir du contenu frais dès le jour 1 pour que Google indexe plus de pages.
+
+| # | Type | Titre | Mot-clé cible | Volume | SD | Statut |
+|---|------|-------|--------------|--------|-----|--------|
+| 1 | Ressource | Acupuncture et ménopause | menopause | 22 200 | — | À PRODUIRE |
+| 2 | Ressource | Acupuncture et SOPK | sopk tomber enceinte | 10+ | — | À PRODUIRE |
+| 3 | FAQ | Quand faire acupuncture pour tomber enceinte ? | quand faire acupuncture tomber enceinte | 10 | 5 | À PRODUIRE |
+| 4 | FAQ | Quand commencer acupuncture grossesse ? | quand faire acupuncture grossesse | 10 | 5 | À PRODUIRE |
+| 5 | FAQ | Est-ce que l'acupuncture soigne l'anxiété ? | acupuncture soigne anxiété | 0 | 4 | À PRODUIRE |
+| 6 | FAQ | Comment se passe une séance d'acupuncture ? | acupuncture comment ça marche | 10 | 4 | À PRODUIRE |
+| 7 | FAQ | Acupuncture pour traiter l'insomnie ? | acupuncture insomnie | 0 | 4 | À PRODUIRE |
+
+### Phase 2 — Première vague de contenu (J+7 à J+30)
+
+| # | Type | Titre | Mot-clé cible | Volume | SD |
+|---|------|-------|--------------|--------|-----|
+| 8 | Ressource | Acupuncture et douleur chronique | douleur chronique | 30+ | 12 |
+| 9 | Ressource | Acupuncture et insomnie | insomnie traitement | — | 17 |
+| 10 | Blog | Acupuncture pour déclencher accouchement 41 sem. | accouchement naturel | — | bas |
+| 11 | Blog | Coliques bébé : l'acupuncture pédiatrique | colique bébé soulager | 20 | bas |
+| 12 | Blog | SOPK et grossesse : l'acupuncture peut aider | sopk tomber enceinte | 10 | bas |
+| 13 | Blog | Acupuncture vs dry needling : quelle différence ? | acupuncture vs needling | 140 | — |
+| 14 | FAQ | Est-ce que l'acupuncture fait mal à un bébé ? | — | — | — |
+| 15 | FAQ | Acupuncture couverte par la RAMQ ? | — | — | — |
+| 16 | FAQ | Acupuncture couverte par les assurances QC ? | — | — | — |
+| 17 | FAQ | SOPK : comment tomber enceinte naturellement ? | sopk tomber enceinte | 10 | — |
+| 18 | FAQ | Comment soulager bouffées chaleur sans hormones ? | menopause bouffée chaleur | — | — |
+
+### Phase 3 — Deuxième vague (J+30 à J+60)
+
+| # | Type | Titre | Mot-clé cible | Volume | SD |
+|---|------|-------|--------------|--------|-----|
+| 19 | Ressource | Acupuncture post-partum | post-partum récupération | — | bas |
+| 20 | Ressource | Acupuncture et endométriose | endométriose traitement | — | 17 |
+| 21 | Ressource | Acupuncture et perte de poids | perte de poids acupuncture | 140 | 9 |
+| 22 | Blog | Reflux nourrisson et acupuncture | reflux bébé RGO | — | bas |
+| 23 | Blog | Sciatique grossesse et acupuncture | sciatique grossesse | — | bas |
+| 24 | Blog | Fertilité masculine et acupuncture | fertilité masculine | 50 | bas |
+| 25 | Blog | Acupuncture et migraine | migraine acupuncture | 390 (EN) | 14 |
+| 26 | FAQ | À quel âge un bébé peut recevoir acupuncture ? | — | — | — |
+| 27 | FAQ | Acupuncture grossesse : est-ce sécuritaire ? | — | — | — |
+
+### Phase 4 — Terrain vierge + entrée de funnel (J+60 à J+90)
+
+Contenu qui cible les gens AVANT qu'ils connaissent l'acupuncture.
+
+| # | Type | Titre | Mot-clé cible | Volume |
+|---|------|-------|--------------|--------|
+| 28 | Blog | Comment soulager nausées grossesse naturellement | nausée grossesse soulager | 10-100 |
+| 29 | Blog | Anxiété : se soigner sans médicaments | anxiété sans médicaments | 50-100 |
+| 30 | Blog | Quel est le meilleur anxiolytique naturel ? | anxiolytique naturel | 30-50 |
+| 31 | Blog | Insomnie ménopausique : solutions naturelles | insomnie ménopause | — |
+| 32 | Blog | Douleur accouchement : méthodes naturelles | douleur accouchement naturel | — |
+| 33 | FAQ | Qui consulter pour problèmes de fertilité ? | qui consulter fertilité | 10 |
+| 34 | Blog | Acupuncture Repentigny : soins disponibles | acupuncture Repentigny | — |
+| 35 | Blog | Acupuncture oreille stress (auriculothérapie) | acupuncture oreille stress | 10 |
+
+### Résumé du backlog contenu
+
+| Phase | Période | Ressources | Blogs | FAQ | Total |
+|-------|---------|-----------|-------|-----|-------|
+| Phase 1 | J-14 à J+7 | 2 | 0 | 5 | 7 |
+| Phase 2 | J+7 à J+30 | 2 | 4 | 5 | 11 |
+| Phase 3 | J+30 à J+60 | 3 | 4 | 2 | 9 |
+| Phase 4 | J+60 à J+90 | 0 | 6 | 1 | 7 |
+| **Total** | **3 mois** | **7** | **14** | **13** | **34** |
+
+Plus les 5 ressources + 11 blogs + 6 FAQ existantes = **56 pièces de contenu total à J+90**.
+
+### Cadence de production
+
+- **Semaine type** : 1 ressource OU 2 blogs + 2-3 FAQ
+- **Temps estimé par session** : 3-4h (Benoit + Claude Desktop)
+- **Sessions par semaine** : 1-2
+- **Validation Judith** : Niveau 1 (5 min par pièce, résumé bullet points)
+
+### Workflow de production (session type)
+
+1. Benoit ouvre Claude Desktop
+2. Choisit 2-3 sujets dans le backlog ci-dessus
+3. Claude recherche PubMed (études récentes)
+4. Claude génère le contenu structuré (markdown, citations, FAQ Schema)
+5. Benoit révise et ajuste
+6. Injection via CMS Hub (quand MW-E1/E2 sont prêts) ou script Firestore (en attendant)
+7. Judith reçoit le résumé → approuve en 5 min
+8. ISR rafraîchit le site automatiquement
+
+---
+
+## TRAVAIL TECHNIQUE FUTUR — Milestones restants
+
+### Sprint 1 — Fondations (priorité immédiate)
+| Milestone | Effort CC | Dépend de | Description |
+|-----------|----------|-----------|-------------|
+| MW-F3a | 30 min | Compte Plausible | Script Plausible dans layout.tsx |
+| MW-E3 | 4-5h | — | Blog publish → Firestore (couper Wix) |
+
+### Sprint 2 — CMS Admin
+| Milestone | Effort CC | Dépend de | Description |
+|-----------|----------|-----------|-------------|
+| MW-E1 | 3h | MW-E3 | Admin FAQ CRUD + composant MarkdownField |
+| MW-E2 | 6-7h | MW-E1 | Admin Ressources CRUD (7 sections markdown) |
+| MW-E4 | 3h | MW-E1+E2 | Workflow review UI (draft/pending/published) + approbation Judith |
+
+### Sprint 3 — Automatisation
+| Milestone | Effort CC | Dépend de | Description |
+|-----------|----------|-----------|-------------|
+| MW-E5 | 2-3h | MW-E3 | Blog → Social pipeline (auto contentItem) |
+| MW-E6 | 2-3h | — | Maillage interne dynamique (RelatedContent) |
+| MW-F2 | 2h | — | Cron revalidation ISR programmée |
+| MW-F3b | 3-4h | MW-F3a | Analytics Plausible dashboard dans le Hub |
+
+### Sprint 4 — Deuxième clinique
+| Milestone | Effort CC | Dépend de | Description |
+|-----------|----------|-----------|-------------|
+| EDEN-1 | 2h | Code GRV Eden | Page /reserver avec 2 cliniques |
+| EDEN-2 | 1h | EDEN-1 | Page /contact avec 2 adresses |
+| EDEN-3 | 1h | EDEN-1 | Schema.org 2 locations |
+| EDEN-4 | 1h | EDEN-1 | Mention Repentigny sur pages services |
+
+### Sprint 5 — SEO post-launch
+| Milestone | Effort | Dépend de | Description |
+|-----------|--------|-----------|-------------|
+| SEO-1 | 2h30 | DNS switché | Créer 12 fiches annuaires |
+| SEO-2 | 1h | Rencontre LSSI | Obtenir backlink page équipe |
+| SEO-3 | 1h | Rencontre Émilie | Obtenir backlink edenyogapilates.ca |
+| SEO-4 | 30 min | DNS switché | Soumettre sitemap à GSC |
+| SEO-5 | 30 min | Ubersuggest | Recherche mots-clés Repentigny |
+| SEO-6 | continu | GSC data | Analyser et ajuster selon données réelles |
+
+### Effort total estimé
+
+| Catégorie | Effort |
+|-----------|--------|
+| Sprints CC (technique) | 30-35h |
+| Production contenu (Benoit + Claude) | ~50-60h sur 3 mois |
+| SEO / annuaires / outreach (Benoit) | ~10h |
+| Validation Judith | ~3h total (5 min × 34 pièces + révision pages identitaires) |
+| **Total projet post-launch** | **~100h sur 3 mois** |
+
