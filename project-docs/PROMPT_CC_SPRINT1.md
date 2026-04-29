@@ -19,13 +19,16 @@ Ajouter le script Plausible Analytics dans le layout public pour tracker les vis
 1. Dans `app/(public)/layout.tsx`, ajouter le script Plausible dans le `<head>` :
 ```tsx
 <Script
-  defer
-  data-domain="acupuncturejudith.ca"
-  src="https://plausible.io/js/script.js"
+  async
+  src="https://plausible.io/js/pa-aZzfsJ6lLBfrRf7qnpB1w.js"
   strategy="afterInteractive"
 />
+<Script id="plausible-init" strategy="afterInteractive">
+  {`window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};plausible.init()`}
+</Script>
 ```
 Importer `Script` de `next/script`.
+NOTE : Ne PAS utiliser `data-domain` — le domaine est encodé dans l'URL du script (`pa-aZzfsJ6lLBfrRf7qnpB1w`).
 
 2. Ajouter les goal events pour tracker les conversions :
 - `Réservation Rosemont` — clic sur CTA GRV La Source en Soi
