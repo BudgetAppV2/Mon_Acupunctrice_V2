@@ -60,8 +60,8 @@ function parseFrontmatter(content) {
     // Skip comments
     if (line.trim().startsWith('#')) continue;
     
-    // Array item with object (citations, faqEntries)
-    const arrayObjMatch = line.match(/^    - (\w+): "?([^"]*)"?$/);
+    // Array item with object (citations, faqEntries) — 2 or 4 space indent
+    const arrayObjMatch = line.match(/^  {1,3}- (\w+): "?([^"]*)"?$/);
     if (arrayObjMatch && currentArray) {
       if (arrayObjMatch[1] === Object.keys(currentArrayItem || {})[0] || !currentArrayItem) {
         if (currentArrayItem && Object.keys(currentArrayItem).length > 0) {
@@ -75,8 +75,8 @@ function parseFrontmatter(content) {
       continue;
     }
     
-    // Object property continuation
-    const objPropMatch = line.match(/^      (\w+): "?([^"]*)"?$/);
+    // Object property continuation — 4 or 6 space indent
+    const objPropMatch = line.match(/^    {1,3}(\w+): "?([^"]*)"?$/);
     if (objPropMatch && currentArrayItem) {
       let val = objPropMatch[2].replace(/^"(.*)"$/, '$1');
       if (!isNaN(Number(val)) && val.trim() !== '') val = Number(val);
