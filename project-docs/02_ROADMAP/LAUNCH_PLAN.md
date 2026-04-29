@@ -163,12 +163,24 @@ Sauvegarder via JavaScript download : ubersuggest-repentigny.md
 
 ### GBP (peut être fait AVANT le switch DNS)
 
+Le GBP de Judith EXISTE DÉJÀ — géré par jdufoursavard@gmail.com.
+Il faut l'OPTIMISER, pas le créer.
+
 | # | Action | Qui | Effort |
 |---|--------|-----|--------|
-| 1 | Créer GBP "Judith Dufour-Savard" — Acupuncturist | Benoit/Judith | 30 min |
-| 2 | Vérification vidéo (filmer à LSSI) | Judith | 15 min |
-| 3 | Remplir description, heures, services, photos | Benoit | 30 min |
-| 4 | Publier post "Opening Soon" | Benoit | 10 min |
+| 1 | Se connecter sur business.google.com (jdufoursavard@gmail.com) | Judith/Benoit | 5 min |
+| 2 | Catégorie primaire → "Acupuncturist" | Benoit | 2 min |
+| 3 | Site web → https://acupuncturejudith.ca | Benoit | 2 min |
+| 4 | Lien réservation → URL GRV avec eids=175708 | Benoit | 2 min |
+| 5 | Description optimisée (750 chars, mentionne 2 cliniques, spécialités, OAQ) | Benoit | 15 min |
+| 6 | Ajouter 6 services (fertilité, grossesse, pédiatrie, stress, sociale, ménopause) | Benoit | 15 min |
+| 7 | Ajouter 10-15 photos (profil, cabinet LSSI, en action) | Benoit/Judith | 30 min |
+| 8 | Attributs : Women-led, Accepts insurance, langues | Benoit | 5 min |
+| 9 | Post "Opening Soon" — nouveau site web | Benoit | 10 min |
+| 10 | Demander à Émilie d'ajouter "Acupuncture" dans services GBP Eden | Émilie | 5 min |
+
+Note : UN SEUL GBP praticien pour Judith (pas un deuxième pour Eden).
+La description mentionne les deux cliniques, Google le géolocalise correctement.
 
 ---
 
