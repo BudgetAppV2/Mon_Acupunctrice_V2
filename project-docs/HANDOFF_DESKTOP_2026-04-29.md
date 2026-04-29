@@ -11,7 +11,7 @@ GitHub : `BudgetAppV2/Mon_Acupunctrice_V2`
 
 ## État du projet — Vue d'ensemble
 
-Le site public est CONSTRUIT (76 pages, Lighthouse 96/100/100) mais PAS LIVE.
+Le site public est CONSTRUIT (68 pages, Lighthouse 96/100/100) mais PAS LIVE.
 Le DNS n'est PAS encore switché — en attente du feedback de Judith sur le preview Vercel.
 La recherche SEO est COMPLÉTÉE. Le plan de lancement est DOCUMENTÉ.
 
@@ -63,7 +63,7 @@ La recherche SEO est COMPLÉTÉE. Le plan de lancement est DOCUMENTÉ.
 | Lieu | 2554 Beaubien E, Rosemont, MTL H1Y 1G3 | 121 Boul. Industriel #225, Repentigny |
 | Horaire | Lun-Ven (sauf mercredi) | Mercredi 9h-15h (dernier patient 14h) |
 | Services | Classique + sociale | Classique seulement (PAS de sociale) |
-| GRV | eids=175708 | eids=?????? (EN ATTENTE — Émilie) |
+| GRV | eids=175708 | eids=192390, stype=Acupuncture |
 | GBP | LSSI a un GBP (DA 26) | Eden a un GBP (à vérifier) |
 | Site | lasourceensoi.com (12K backlinks) | edenyogapilates.ca |
 
@@ -86,18 +86,14 @@ La recherche SEO est COMPLÉTÉE. Le plan de lancement est DOCUMENTÉ.
 ## Commits récents (branche feature/site-public-migration)
 
 ```
+ad1fe45 feat(public): ajoute Eden Yoga Pilates comme deuxième clinique (18 fichiers)
+e4c9c7a docs: prompt CC ajout Éden Yoga Pilates (2e clinique Repentigny)
+0a338bf docs(strategy): LAUNCH_PLAN v4 — stratégie révision Judith + backlog contenu complet
+869addc docs: HANDOFF 29 avril 2026 — état complet du projet
 e791971 docs(strategy): LAUNCH_PLAN — GBP existe déjà, optimiser au lieu de créer
 c5434c7 docs(strategy): LAUNCH_PLAN v3 — 2 cliniques, GBP guide, contacts complets
-25ba5a7 docs(strategy): LAUNCH_PLAN v2 — plan de lancement structuré en 6 phases
-d0a8803 docs(strategy): LAUNCH_PLAN.md — plan pré-lancement + lancement + contacts
 035c173 docs(strategy): RECHERCHE COMPLÉTÉE — 30 seeds, 150+ mots-clés, plan contenu final
 9ab6ac0 docs(strategy): backlinks analysis + CSV 225 liens + plan action
-713f82c docs(strategy): KEYWORD_BACKLOG + données Ubersuggest Competitor Analysis
-ad626d7 docs(strategy): KEYWORD_BACKLOG enrichi AnswerThePublic Round 2
-1270e46 docs(strategy): KEYWORD_BACKLOG enrichi données AnswerThePublic
-b1f95ac docs(strategy): KEYWORD_BACKLOG enrichi avec données Ubersuggest
-854d8b5 docs(strategy): KEYWORD_BACKLOG.md — 82 mots-clés, 56 à créer, 4 piliers
-5a9ee56 docs: CLAUDE.md référence le pipeline content-strategy
 8afa91f feat(public): lien direct Go Rendez-Vous vers Judith (eids=175708)
 e0ce162 fix(hub): centralise URL GRV — lien direct Judith eids=175708 (CHERRY-PICKABLE sur main)
 ```
@@ -116,11 +112,28 @@ e0ce162 fix(hub): centralise URL GRV — lien direct Judith eids=175708 (CHERRY-
 
 | # | Action | Bloqué par | Priorité |
 |---|--------|-----------|----------|
-| 1 | Judith valide preview Vercel | Judith | CRITIQUE |
-| 2 | Code GRV Éden Yoga Pilates (eids de Judith) | Rencontre Émilie | HAUTE |
-| 3 | Rencontre responsable SEO La Source en Soi | Annie fait l'intro | HAUTE |
-| 4 | Courriel OAQ sur avis Google | Rédaction | MOYENNE |
-| 5 | Cherry-pick e0ce162 sur main | Benoit | RAPIDE |
+| 1 | Judith valide preview Vercel | Judith (en cours — elle fait un doc de commentaires) | CRITIQUE |
+| 2 | Rencontre responsable SEO La Source en Soi | Annie fait l'intro | HAUTE |
+| 3 | Courriel OAQ sur avis Google | Rédaction | MOYENNE |
+| 4 | Cherry-pick e0ce162 sur main | Benoit | RAPIDE |
+| 5 | Recherche Ubersuggest mots-clés Repentigny/rive-nord | Benoit | MOYENNE |
+
+## Fait aujourd'hui (29 avril 2026)
+
+- ✅ GBP Judith optimisé (URL → acupuncturejudith.ca, services ajoutés, description 2 cliniques)
+- ✅ Code GRV Eden obtenu (companyId=141296, eids=192390, stype=Acupuncture)
+- ✅ CC a intégré Eden Yoga Pilates dans le site (18 fichiers, commit ad1fe45)
+  - /reserver : 2 cartes côte à côte (Rosemont + Repentigny)
+  - /contact : 2 adresses + 2 Google Maps
+  - Pages services : mention disponibilité 2 lieux
+  - CtaFinalSection, SiteFooter : 2 cliniques
+  - Schema.org : MedicalBusiness 2 locations
+  - rdvUrl.ts : type Clinic ('lssi' | 'eden'), CLINICS object
+- ✅ Recherche SEO complétée (Ubersuggest competitors + ATP 10 seeds + backlinks CSV)
+- ✅ LAUNCH_PLAN v4 (626 lignes) : backlog contenu 34 pièces, stratégie révision Judith
+- ✅ Domaines documentés : garder 3, laisser expirer judithdufoursavardacu.com (8 juil 2026)
+- ✅ Recherche déontologie OAQ : avis Google en zone grise, prudence recommandée
+- ✅ Handoff mis à jour
 
 ---
 
@@ -137,6 +150,7 @@ e0ce162 fix(hub): centralise URL GRV — lien direct Judith eids=175708 (CHERRY-
 | 7 | Recherche Ubersuggest mots-clés Repentigny | 30 min | Claude in Chrome |
 | 8 | Créer 12 fiches annuaires (brouillon) | 2h30 | Benoit |
 | 9 | Post GBP "Opening Soon" | 10 min | Benoit |
+| 10 | Intégrer commentaires de Judith sur le preview | Variable | Benoit + CC |
 
 ---
 
@@ -162,7 +176,7 @@ e0ce162 fix(hub): centralise URL GRV — lien direct Judith eids=175708 (CHERRY-
 - **Vercel** : preview déployé sur feature/site-public-migration
 - **Firebase** : collections publicBlog (11), faqs (6), ressources (5)
 - **GRV LSSI** : companyId=104074, eids=175708
-- **GRV Eden** : eids EN ATTENTE
+- **GRV Eden** : companyId=141296, eids=192390, stype=Acupuncture
 
 ---
 
