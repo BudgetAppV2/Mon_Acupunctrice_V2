@@ -20,6 +20,11 @@ export interface PublicBlogPost {
   updatedAt: Timestamp;
   createdAt: Timestamp;
   faqs?: { question: string; answer: string }[];
+  // Champs review (MW-E4)
+  reviewComment?: string;
+  reviewedAt?: Timestamp;
+  reviewedBy?: string;
+  submittedAt?: Timestamp;
   // Champs rejet (Q11)
   rejectionReason?: string;
   rejectedAt?: Timestamp;

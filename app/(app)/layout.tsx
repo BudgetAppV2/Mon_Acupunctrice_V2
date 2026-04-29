@@ -8,12 +8,14 @@ import { useProgression } from '@/lib/hooks/useProgression';
 import {
   LightBulbIcon as LightBulbOutline,
   CalendarIcon as CalendarOutline,
+  DocumentTextIcon as DocumentTextOutline,
   BookOpenIcon as BookOpenOutline,
   UserIcon as UserOutline,
 } from '@heroicons/react/24/outline';
 import {
   LightBulbIcon as LightBulbSolid,
   CalendarIcon as CalendarSolid,
+  DocumentTextIcon as DocumentTextSolid,
   BookOpenIcon as BookOpenSolid,
   UserIcon as UserSolid,
 } from '@heroicons/react/24/solid';
@@ -21,6 +23,7 @@ import {
 const TABS = [
   { href: '/idees', label: 'Idees', outline: LightBulbOutline, solid: LightBulbSolid },
   { href: '/calendrier', label: 'Calendrier', outline: CalendarOutline, solid: CalendarSolid },
+  { href: '/contenu', label: 'Contenu', outline: DocumentTextOutline, solid: DocumentTextSolid },
   { href: '/blogue', label: 'Blogue', outline: BookOpenOutline, solid: BookOpenSolid },
   { href: '/profil', label: 'Profil', outline: UserOutline, solid: UserSolid },
 ] as const;
@@ -70,7 +73,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
       {!isEditor && <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white/85 backdrop-blur-xl border-t border-gray-200">
         <div
-          className="grid grid-cols-4 items-end"
+          className="grid grid-cols-5 items-end"
           style={{ height: 'calc(49px + env(safe-area-inset-bottom))', paddingBottom: 'env(safe-area-inset-bottom)' }}
         >
           {TABS.map(({ href, label, outline: Outline, solid: Solid }) => {

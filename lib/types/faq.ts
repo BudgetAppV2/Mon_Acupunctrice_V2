@@ -25,6 +25,11 @@ export interface FAQ {
   publishedAt: Timestamp | null;
   updatedAt: Timestamp;
   createdAt: Timestamp;
+  // Champs review (MW-E4)
+  reviewComment?: string;
+  reviewedAt?: Timestamp;
+  reviewedBy?: string;
+  submittedAt?: Timestamp;
   // Champs rejet (Q11)
   rejectionReason?: string;
   rejectedAt?: Timestamp;
