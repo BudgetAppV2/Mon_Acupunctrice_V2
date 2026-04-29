@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 // ReactDOM.preload supprimé — ne fonctionne pas dans Next.js 15 App Router Server Components
 import { Cormorant_Garamond, Inter } from 'next/font/google';
+import Script from 'next/script';
 import './globals-public.css';
 import SiteHeader from './_components/SiteHeader';
 import SiteFooter from './_components/SiteFooter';
@@ -55,6 +56,15 @@ export default function PublicLayout({
       <main className="flex-1">{children}</main>
       <SiteFooter />
     </div>
+    {/* Plausible Analytics — site public uniquement */}
+    <Script
+      async
+      src="https://plausible.io/js/pa-aZzfsJ6lLBfrRf7qnpB1w.js"
+      strategy="afterInteractive"
+    />
+    <Script id="plausible-init" strategy="afterInteractive">
+      {`window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};plausible.init()`}
+    </Script>
     </>
   );
 }

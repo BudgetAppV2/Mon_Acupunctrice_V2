@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { CLINICS } from '@/lib/utils/rdvUrl';
 import CtaButton from '../_components/CtaButton';
 import CtaBotanicalDeco from '../_components/CtaBotanicalDeco';
+import TrackedLink from '../_components/TrackedLink';
 import SectionHeading from '../_components/SectionHeading';
 
 export const metadata: Metadata = {
@@ -125,14 +126,15 @@ export default function ReserverPage() {
               </dl>
 
               <div className="mt-auto">
-                <a
+                <TrackedLink
                   href={CLINICS.lssi.grvUrl}
+                  event="Reservation Rosemont"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 bg-public-accent-taupe text-white rounded-md font-semibold uppercase px-8 py-[16px] text-sm tracking-[1px] transition-all duration-200 hover:bg-public-accent-taupe-dark hover:-translate-y-px hover:shadow-public-md w-full justify-center"
                 >
                   R&eacute;server &agrave; Rosemont &rarr;
-                </a>
+                </TrackedLink>
               </div>
             </div>
 
@@ -153,14 +155,15 @@ export default function ReserverPage() {
               </dl>
 
               <div className="mt-auto">
-                <a
+                <TrackedLink
                   href={CLINICS.eden.grvUrl}
+                  event="Reservation Repentigny"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 bg-public-accent-taupe text-white rounded-md font-semibold uppercase px-8 py-[16px] text-sm tracking-[1px] transition-all duration-200 hover:bg-public-accent-taupe-dark hover:-translate-y-px hover:shadow-public-md w-full justify-center"
                 >
                   R&eacute;server &agrave; Repentigny &rarr;
-                </a>
+                </TrackedLink>
               </div>
             </div>
           </div>

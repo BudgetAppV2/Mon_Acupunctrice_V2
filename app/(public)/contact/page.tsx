@@ -4,6 +4,7 @@ import { CLINICS } from '@/lib/utils/rdvUrl';
 import CtaButton from '../_components/CtaButton';
 import CtaBotanicalDeco from '../_components/CtaBotanicalDeco';
 import SectionHeading from '../_components/SectionHeading';
+import TrackedLink from '../_components/TrackedLink';
 
 export const metadata: Metadata = {
   title: 'Contact — Acupuncture Rosemont et Repentigny',
@@ -120,11 +121,11 @@ export default function ContactPage() {
             <dl className="space-y-3 text-[15px] text-public-text-medium">
               <div className="flex items-start gap-3">
                 <PhoneIcon />
-                <span><strong>T&eacute;l&eacute;phone</strong> : <a href={`tel:${CLINICS.lssi.phoneFull}`} className="underline underline-offset-2 hover:text-public-accent-warm">{CLINICS.lssi.phone}</a></span>
+                <span><strong>T&eacute;l&eacute;phone</strong> : <TrackedLink href={`tel:${CLINICS.lssi.phoneFull}`} event="Contact telephone" className="underline underline-offset-2 hover:text-public-accent-warm">{CLINICS.lssi.phone}</TrackedLink></span>
               </div>
               <div className="flex items-start gap-3">
                 <MailIcon />
-                <span><strong>Courriel</strong> : <a href={`mailto:${CONTACT_EMAIL}`} className="underline underline-offset-2 hover:text-public-accent-warm">{CONTACT_EMAIL}</a></span>
+                <span><strong>Courriel</strong> : <TrackedLink href={`mailto:${CONTACT_EMAIL}`} event="Contact courriel" className="underline underline-offset-2 hover:text-public-accent-warm">{CONTACT_EMAIL}</TrackedLink></span>
               </div>
               <div className="flex items-start gap-3">
                 <GlobeIcon />
