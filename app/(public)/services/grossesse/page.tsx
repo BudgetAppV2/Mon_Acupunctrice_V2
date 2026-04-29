@@ -11,7 +11,7 @@ import ServiceGrossesseCtaSection from '../../_sections/ServiceGrossesseCtaSecti
 export const metadata: Metadata = {
   title: 'Acupuncture grossesse',
   description:
-    'Acupunctrice a Rosemont specialisee en grossesse : nausees, douleurs, version du siege (moxibustion), preparation accouchement. 60 min, 90 $, ex-maison de naissance. La Source en Soi.',
+    'Acupunctrice a Rosemont specialisee en grossesse : nausees, douleurs, version du siege (moxibustion), preparation accouchement. 60 min, 100 $. La Source en Soi.',
 };
 
 const SCHEMA_ORG = {

@@ -43,7 +43,7 @@ export default function ServiceSocialePublicSection() {
         </ul>
 
         <h3 className="font-public-serif text-[22px] font-semibold mt-12 mb-6 text-public-text-dark">
-          Conditions id&eacute;ales pour le format social
+          Raisons de consultation courantes
         </h3>
         <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-3">
           {CONDITIONS.map((c) => (
@@ -54,12 +54,7 @@ export default function ServiceSocialePublicSection() {
           ))}
         </ul>
 
-        <div className="mt-10 p-5 bg-public-beige-light rounded-[10px] border-l-4 border-public-accent-taupe text-[15px] leading-relaxed text-public-text-medium">
-          <strong className="text-public-text-dark">Note</strong> : Pour les conditions plus
-          complexes (fertilit&eacute;, grossesse, p&eacute;diatrie), je recommande g&eacute;n&eacute;ralement
-          de <strong className="text-public-text-dark">commencer par une s&eacute;ance priv&eacute;e</strong>
-          {' '}puis de compl&eacute;ter avec des s&eacute;ances sociales.
-        </div>
+
       </div>
     </section>
   );

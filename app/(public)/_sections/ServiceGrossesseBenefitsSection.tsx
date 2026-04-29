@@ -7,17 +7,17 @@ const TRIMESTRES = [
   {
     num: '1er',
     title: 'Survivre aux nausées',
-    desc: "Points PC6 et ST36 spécifiques, documentés. Plusieurs patientes voient une amélioration dès la 1ère ou 2e séance. Fréquence : 1-2x/semaine pendant 2-3 semaines, puis espacement.",
+    desc: "Plusieurs patientes voient une amélioration dès la 1ère ou 2e séance. Fréquence : 2x/semaine pendant 2 semaines.",
   },
   {
     num: '2e',
     title: 'Le confort retrouvé',
-    desc: "Douleurs lombaires, sciatique, crampes, sommeil. Fréquence : 1 séance toutes les 2-3 semaines.",
+    desc: "Douleurs lombaires, sciatique, crampes, sommeil. Fréquence : 2 à 3 séances par semaine.",
   },
   {
     num: '3e',
     title: 'Préparer la rencontre',
-    desc: "Version du siège (moxibustion 33-36 sem), maturation du col (à partir de 36-37 sem), détente pré-accouchement. Fréquence : 1x/semaine à partir de 36 semaines.",
+    desc: "Version du bébé en siège (moxibustion 33-36 sem), maturation du col (à partir de 36-37 sem), détente pré-accouchement. Fréquence : 1x/semaine à partir de 36 semaines.",
   },
 ];
 

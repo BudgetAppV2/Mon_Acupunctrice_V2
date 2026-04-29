@@ -11,7 +11,7 @@ import ServiceFertiliteCtaSection from '../../_sections/ServiceFertiliteCtaSecti
 export const metadata: Metadata = {
   title: 'Acupuncture fertilite',
   description:
-    'Acupunctrice a Rosemont specialisee en fertilite : conception naturelle, FIV, insemination, SOPK, endometriose. Approche douce, 60 min par seance, 90 $, assurances. La Source en Soi.',
+    'Acupunctrice a Rosemont specialisee en fertilite : conception naturelle, FIV, insemination, SOPK, endometriose. Approche douce, 60 min par seance, 100 $, assurances. La Source en Soi.',
 };
 
 const SCHEMA_ORG = {

@@ -5,15 +5,19 @@ import SectionHeading from '../_components/SectionHeading';
 const TECHNIQUES = [
   {
     name: 'Aiguilles ultra-fines',
-    desc: '5 à 10 fois plus fines qu’une aiguille de vaccination — la plupart des enfants ne sentent rien.',
-  },
-  {
-    name: 'Laser',
-    desc: 'Pas d’aiguille, stimulation lumineuse des points.',
+    desc: 'Aiguilles de la grosseur d’un cheveu — la plupart des enfants ne sentent rien.',
   },
   {
     name: 'Aimants',
-    desc: 'Collés sur les points, portés quelques jours.',
+    desc: 'Collés sur les points, ne percent pas le derme.',
+  },
+  {
+    name: 'Ventouse',
+    desc: 'Création d’une succion temporaire sur la peau.',
+  },
+  {
+    name: 'Shino shin',
+    desc: 'Objet en forme d’éventail qui vient stimuler les points par la pression.',
   },
   {
     name: 'Tuina pédiatrique',
@@ -32,7 +36,7 @@ export default function ServicePediatrieApprocheSection() {
         <SectionNumber number="03" align="left" />
         <SectionHeading
           kicker="LES ENFANTS NE SONT PAS DES ADULTES EN MINIATURE"
-          title="Des s&eacute;ances courtes, des techniques douces."
+          title="Des s&eacute;ances adapt&eacute;es, des techniques douces."
           align="left"
         />
 
@@ -42,7 +46,7 @@ export default function ServicePediatrieApprocheSection() {
             Les s&eacute;ances sont <strong className="text-public-text-dark">plus courtes</strong>
             {' '}(20-30 min pour b&eacute;b&eacute;s, 30-45 min pour enfants),{' '}
             <strong className="text-public-text-dark">plus l&eacute;g&egrave;res</strong> (moins
-            d&rsquo;aiguilles, insertion plus br&egrave;ve), et{' '}
+            d&rsquo;aiguilles ou pas d&rsquo;aiguille, insertion plus br&egrave;ve), et{' '}
             <strong className="text-public-text-dark">plus flexibles</strong> (on s&rsquo;adapte
             &agrave; l&rsquo;enfant, pas l&rsquo;inverse).
           </p>
@@ -70,7 +74,7 @@ export default function ServicePediatrieApprocheSection() {
             Pour les b&eacute;b&eacute;s coliqueux, j&rsquo;utilise souvent{' '}
             <strong className="text-public-text-dark">une seule aiguille</strong>, ins&eacute;r&eacute;e
             pendant quelques secondes. C&rsquo;est tout. Bien souvent, les b&eacute;b&eacute;s
-            pleurent moins pendant la s&eacute;ance qu&rsquo;&agrave; une prise de sang ordinaire.
+            ne pleurent pas.
           </p>
         </div>
       </div>

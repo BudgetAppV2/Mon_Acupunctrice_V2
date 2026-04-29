@@ -17,7 +17,7 @@ export default function ServiceGrossesseInfosSection() {
           <InfoCard
             icon={<DollarIcon />}
             title="Tarifs"
-            text="90 $ la s&eacute;ance d'une heure."
+            text="100 $ la s&eacute;ance d'une heure."
           />
           <InfoCard
             icon={<ReceiptIcon />}

@@ -33,7 +33,7 @@ export default function AboutParcoursSection() {
           </p>
           <p>
             J&rsquo;ai voulu comprendre ce monde de l&rsquo;int&eacute;rieur. J&rsquo;ai compl&eacute;t&eacute;
-            mon DEP en acupuncture au Coll&egrave;ge de Rosemont, et pendant mes &eacute;tudes,
+            mon DEC en acupuncture au Coll&egrave;ge de Rosemont, et pendant mes &eacute;tudes,
             j&rsquo;ai travaill&eacute; &agrave; la Maison de naissance C&ocirc;te-des-Neiges o&ugrave;
             j&rsquo;ai accompagn&eacute; de nombreuses familles dans les d&eacute;buts de la vie.
           </p>

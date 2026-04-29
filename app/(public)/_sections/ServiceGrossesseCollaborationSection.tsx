@@ -14,12 +14,10 @@ export default function ServiceGrossesseCollaborationSection() {
 
         <div className="mt-8 space-y-6 text-[17px] leading-[1.75] text-public-text-medium">
           <p>
-            L&rsquo;acupuncture pendant la grossesse est reconnue s&eacute;curitaire par les
-            grandes m&eacute;ta-analyses (aucun effet ind&eacute;sirable grave rapport&eacute; sur
-            les nouveau-n&eacute;s). Certains points sont &eacute;vit&eacute;s pendant la grossesse
-            &mdash; c&rsquo;est une formation sp&eacute;cifique qui fait partie de ma pratique
-            courante. J&rsquo;utilise des aiguilles st&eacute;riles, &agrave; usage unique, plus
-            fines qu&rsquo;un cheveu.
+            L&rsquo;acupuncture est reconnue comme s&eacute;curitaire pendant la grossesse.
+            J&rsquo;ai suivi une formation sp&eacute;cifique pour accompagner les femmes pendant
+            leur grossesse. J&rsquo;utilise des aiguilles st&eacute;riles, &agrave; usage unique,
+            plus fines qu&rsquo;un cheveu.
           </p>
           <p>
             Je travaille en compl&eacute;mentarit&eacute; avec votre m&eacute;decin, gyn&eacute;cologue

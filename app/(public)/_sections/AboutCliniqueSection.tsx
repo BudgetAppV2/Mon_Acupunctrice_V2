@@ -12,7 +12,7 @@ export default function AboutCliniqueSection() {
         <div className="max-w-[680px] mx-auto text-center mt-8 space-y-6 text-[17px] leading-[1.75] text-public-text-medium">
           <p>
             Je pratique &agrave; La Source en Soi, une clinique familiale sur Beaubien Est &agrave; Rosemont.
-            L&rsquo;&eacute;quipe r&eacute;unit des acupunctrices, des ost&eacute;opathes, des sages-femmes
+            L&rsquo;&eacute;quipe r&eacute;unit des acupunctrices, des ost&eacute;opathes, des physioth&eacute;rapeutes
             et des doulas &mdash; chaque discipline se compl&egrave;te naturellement.
           </p>
           <p>

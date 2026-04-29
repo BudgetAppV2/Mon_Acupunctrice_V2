@@ -12,12 +12,12 @@ export default function ServiceSocialeInfosSection() {
           <InfoCard
             icon={<ClockIcon />}
             title="Dur&eacute;e"
-            text="Entre 30 et 45 minutes par s&eacute;ance."
+            text="60 minutes par s&eacute;ance."
           />
           <InfoCard
             icon={<DollarIcon />}
             title="Tarifs"
-            text="Tarif libre : <strong>35 $ &agrave; 50 $</strong>, sliding scale, selon vos moyens."
+            text="Tarif libre : <strong>35 $ &agrave; 60 $</strong>, sliding scale, selon vos moyens."
           />
           <InfoCard
             icon={<ReceiptIcon />}

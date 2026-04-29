@@ -18,7 +18,7 @@ export default function ServicePediatrieInfosSection() {
           <InfoCard
             icon={<DollarIcon />}
             title="Tarifs"
-            text="90 $ la s&eacute;ance (identique aux s&eacute;ances adultes)."
+            text="90 $ la s&eacute;ance."
           />
           <InfoCard
             icon={<ShieldIcon />}

@@ -11,7 +11,7 @@ import CtaBotanicalDeco from '../_components/CtaBotanicalDeco';
 export const metadata: Metadata = {
   title: 'A propos',
   description:
-    'Judith Dufour-Savard, acupunctrice a Montreal. Parcours : regie et eclairage, maison de naissance, DEP en acupuncture au College de Rosemont. Membre OAQ. La Source en Soi, Rosemont.',
+    'Judith Dufour-Savard, acupunctrice a Montreal. Parcours : regie et eclairage, maison de naissance, DEC en acupuncture au College de Rosemont. Membre OAQ. La Source en Soi, Rosemont.',
 };
 
 const SCHEMA_ORG = {

@@ -25,7 +25,7 @@ export default function AboutSpecialitesSection() {
           />
           <PilierCard
             title="P&eacute;diatrie"
-            description="Acupuncture adapt&eacute;e aux enfants et aux b&eacute;b&eacute;s. Techniques douces, souvent sans aiguilles (aimants, laser)."
+            description="Acupuncture adapt&eacute;e aux enfants et aux b&eacute;b&eacute;s. Techniques douces, souvent sans aiguilles (aimants, shino shin)."
             href="/services/pediatrie"
             image="/site/judith/judith-portrait-02.webp"
           />

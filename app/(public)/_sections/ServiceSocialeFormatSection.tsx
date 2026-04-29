@@ -5,7 +5,7 @@ const STEPS = [
   { n: 1, label: 'Accueil', text: "On échange sur comment vous allez, vos symptômes du jour" },
   { n: 2, label: 'Installation', text: "Vous vous installez confortablement, habillé(e) (manches et pantalons retroussés)" },
   { n: 3, label: 'Traitement', text: "J'insère les aiguilles aux points distaux (mains, avant-bras, pieds, jambes, tête, oreilles). Généralement 6 à 12 aiguilles." },
-  { n: 4, label: 'Repos', text: "Vous restez 20 à 30 minutes avec les aiguilles. Beaucoup de gens s'endorment. C'est normal." },
+  { n: 4, label: 'Repos', text: "Vous restez 30 minutes avec les aiguilles. Beaucoup de gens s'endorment. C'est normal." },
   { n: 5, label: 'Retrait', text: "Je retire les aiguilles quand vous êtes prêt(e)." },
 ];
 
@@ -13,8 +13,8 @@ const DIFFERENCES = [
   { label: 'Espace', social: 'Partagé', prive: 'Salle privée' },
   { label: 'Tenue', social: 'Habillé(e)', prive: 'Tenue adaptée' },
   { label: 'Points', social: 'Distaux', prive: 'Tout le corps' },
-  { label: 'Durée', social: '30-45 min', prive: '60 min' },
-  { label: 'Tarif', social: '35-50 $', prive: 'Standard' },
+  { label: 'Durée', social: '60 min', prive: '60 min' },
+  { label: 'Tarif', social: '35-60 $', prive: 'Standard' },
 ];
 
 export default function ServiceSocialeFormatSection() {
@@ -30,8 +30,7 @@ export default function ServiceSocialeFormatSection() {
 
         <div className="mt-8 space-y-6 text-[17px] leading-[1.75] text-public-text-medium">
           <p>
-            Imaginez un espace lumineux avec plusieurs fauteuils inclinables (ou divans selon
-            la configuration), des couvertures douces, une lumi&egrave;re tamis&eacute;e.
+            Imaginez un espace lumineux avec plusieurs fauteuils inclinables et une lumi&egrave;re tamis&eacute;e.
             D&rsquo;autres personnes sont l&agrave;, les yeux ferm&eacute;s, en train de recevoir
             leur traitement. Un silence respectueux, un fond sonore doux.
           </p>
@@ -71,7 +70,7 @@ export default function ServiceSocialeFormatSection() {
         <div className="mt-8 p-5 bg-public-beige-warm/40 rounded-[10px] text-[15px] leading-relaxed text-public-text-medium">
           <strong className="text-public-text-dark">Important</strong> : C&rsquo;est{' '}
           <strong className="text-public-text-dark">la m&ecirc;me acupuncture</strong>. M&ecirc;me
-          formation (DEP de 3 ans &agrave; l&rsquo;OAQ), m&ecirc;mes aiguilles st&eacute;riles &agrave;
+          formation (technique de 3 ans reconnue par l&rsquo;OAQ), m&ecirc;mes aiguilles st&eacute;riles &agrave;
           usage unique, m&ecirc;me rigueur. Ce qui change, c&rsquo;est le format de distribution.
         </div>
       </div>

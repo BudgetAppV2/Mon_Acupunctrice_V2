@@ -11,7 +11,7 @@ import ServicePediatrieCtaSection from '../../_sections/ServicePediatrieCtaSecti
 export const metadata: Metadata = {
   title: 'Acupuncture pediatrique',
   description:
-    'Acupunctrice a Rosemont specialisee en pediatrie : coliques bebe, sommeil, allergies, anxiete enfant, TDAH. Aiguilles ultra-fines, laser, aimants. 90 $, La Source en Soi.',
+    'Acupunctrice a Rosemont specialisee en pediatrie : coliques bebe, sommeil, allergies, anxiete enfant, TDAH. Aiguilles ultra-fines, shino shin, aimants. 90 $, La Source en Soi.',
 };
 
 const SCHEMA_ORG = {
@@ -75,7 +75,7 @@ export default function ServicePediatriePage() {
                 href="/services/acupuncture-sociale"
                 className="text-public-accent-warm underline underline-offset-4 hover:text-public-accent-warm-soft transition-colors"
               >
-                Acupuncture sociale (35-50 $) pour les familles &rarr;
+                Acupuncture sociale (35-60 $) pour les familles &rarr;
               </Link>
             </li>
             <li>

@@ -8,7 +8,7 @@ import RessourceFaq from '../_components/RessourceFaq';
 export const metadata: Metadata = {
   title: 'Tarifs — Acupuncture Rosemont et Repentigny',
   description:
-    'Tarifs transparents. Consultation privee 90 $/h, acupuncture sociale 35-50 $. Rosemont et Repentigny. Recu pour assurances.',
+    'Tarifs transparents. Consultation privee 100 $/h, acupuncture sociale 35-60 $. Rosemont et Repentigny. Recu pour assurances.',
 };
 
 const GRV_URL = '/reserver';
@@ -17,7 +17,7 @@ const OFFERS = [
   {
     kicker: 'CONSULTATION PRIVÉE',
     bg: 'bg-white',
-    price: '90 $ <span class="text-[16px] font-normal text-public-text-medium">/ s&eacute;ance de 60 min</span>',
+    price: '100 $ <span class="text-[16px] font-normal text-public-text-medium">/ s&eacute;ance de 60 min</span>',
     desc: 'S&eacute;ance individuelle, en cabinet priv&eacute;. &Eacute;change approfondi, &eacute;valuation compl&egrave;te, plan d&rsquo;accompagnement personnalis&eacute;.',
     indications:
       '<strong>Indications</strong> : fertilit&eacute;, grossesse, p&eacute;diatrie, sant&eacute; mentale, douleurs, bien-&ecirc;tre g&eacute;n&eacute;ral.',
@@ -27,8 +27,8 @@ const OFFERS = [
   {
     kicker: 'ACUPUNCTURE SOCIALE',
     bg: 'bg-public-beige-light',
-    price: '35 $ &agrave; 50 $ <span class="text-[16px] font-normal text-public-text-medium">/ tarif libre</span>',
-    desc: 'S&eacute;ance en petit groupe, dans un espace partag&eacute; chaleureux. 30 &agrave; 45 minutes. Habill&eacute;(e), points distaux.',
+    price: '35 $ &agrave; 60 $ <span class="text-[16px] font-normal text-public-text-medium">/ tarif libre</span>',
+    desc: 'S&eacute;ance en petit groupe, dans un espace partag&eacute; chaleureux. 60 minutes. Habill&eacute;(e), points distaux.',
     indications:
       '<strong>Indications</strong> : stress, anxi&eacute;t&eacute;, insomnie, sommeil, d&eacute;tente g&eacute;n&eacute;rale.',
     ctaHref: '/services/acupuncture-sociale',
@@ -68,12 +68,12 @@ const FAQ_TARIFS = [
   {
     question: 'Quel est le tarif d’une première séance ?',
     answer:
-      'Une première séance coûte 90 $ et dure 60 minutes. Ce tarif inclut l’échange initial approfondi, l’évaluation complète, le premier traitement et le plan d’accompagnement personnalisé.',
+      'Une première séance coûte 100 $ et dure 60 minutes. Ce tarif inclut l’échange initial approfondi, l’évaluation complète, le premier traitement et le plan d’accompagnement personnalisé.',
   },
   {
     question: 'Qu’est-ce que l’acupuncture sociale ?',
     answer:
-      'L’acupuncture sociale est une séance en format de petit groupe, à tarif libre entre 35 $ et 50 $ selon vos moyens. C’est la même acupuncture — même formation, mêmes aiguilles stériles — simplement dans un format qui rend les soins accessibles à tous.',
+      'L’acupuncture sociale est une séance en format de petit groupe, à tarif libre entre 35 $ et 60 $ selon vos moyens. C’est la même acupuncture — même formation, mêmes aiguilles stériles — simplement dans un format qui rend les soins accessibles à tous.',
   },
   {
     question: 'Puis-je payer par Interac ou par carte ?',
@@ -119,7 +119,7 @@ const JSON_LD = [
         {
           '@type': 'Offer',
           name: 'Acupuncture sociale',
-          description: 'Séance en petit groupe, tarif libre 35-50 $',
+          description: 'Séance en petit groupe, tarif libre 35-60 $',
           priceSpecification: {
             '@type': 'PriceSpecification',
             minPrice: '35',

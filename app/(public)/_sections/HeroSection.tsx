@@ -40,6 +40,7 @@ export default function HeroSection() {
               Acupunctrice &agrave; Rosemont et &agrave; Repentigny, j&rsquo;accompagne les femmes et les familles
               dans leur parcours de fertilit&eacute;, de grossesse, et au-del&agrave;.
               Avec douceur, &eacute;coute et l&rsquo;envie sinc&egrave;re de vous aider.
+              Tout en militant pour rendre l&rsquo;acupuncture accessible &agrave; tous.
             </p>
 
             <div className="flex flex-wrap gap-4 mb-10">
@@ -58,7 +59,7 @@ export default function HeroSection() {
               </span>
               <span className="flex items-center gap-2.5">
                 <ShieldIcon />
-                Ex-maison de naissance
+                Ancienne accompagnante en maison de naissance
               </span>
               <span className="flex items-center gap-2.5">
                 <MapPinIcon />

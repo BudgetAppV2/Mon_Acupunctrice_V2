@@ -29,7 +29,7 @@ export default function ServicePediatrieBioSection() {
           </p>
           <p>
             Dans mon cabinet, je ne force jamais. Si votre enfant ne veut pas d&rsquo;aiguilles
-            aujourd&rsquo;hui, on fait autrement &mdash; acupression, laser, aimants, tuina
+            aujourd&rsquo;hui, on fait autrement &mdash; acupression, shino shin, aimants, tuina
             p&eacute;diatrique (massage chinois). L&rsquo;important, c&rsquo;est que l&rsquo;enfant
             se sente en s&eacute;curit&eacute; et que le soin lui fasse du bien.
           </p>

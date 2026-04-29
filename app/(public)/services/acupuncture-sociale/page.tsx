@@ -11,7 +11,7 @@ import ServiceSocialeCtaSection from '../../_sections/ServiceSocialeCtaSection';
 export const metadata: Metadata = {
   title: 'Acupuncture sociale',
   description:
-    'Acupuncture a tarif reduit en format communautaire a Rosemont. Sliding scale 35-50 $, protocole NADA, accessible a tous. La Source en Soi.',
+    'Acupuncture a tarif reduit en format communautaire a Rosemont. Sliding scale 35-60 $, accessible a tous. La Source en Soi.',
 };
 
 const SCHEMA_ORG = {
