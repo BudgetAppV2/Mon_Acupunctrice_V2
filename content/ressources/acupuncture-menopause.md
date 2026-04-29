@@ -77,8 +77,6 @@ L'hormonothérapie substitutive est efficace, mais elle ne convient pas à toute
 
 L'acupuncture s'inscrit dans cet espace. Elle agit sur plusieurs des mécanismes impliqués dans les symptômes ménopausiques : régulation hormonale, système nerveux autonome, inflammation, neurotransmetteurs du sommeil et de l'humeur. Et la recherche scientifique des dernières années est venue confirmer ce que la médecine chinoise observe depuis des siècles.
 
-Je suis Judith Dufour-Savard, acupunctrice membre de l'OAQ, et j'accompagne des femmes en périménopause et en ménopause à La Source en Soi à Rosemont (Montréal) et à Éden Yoga Pilates à Repentigny. Voici ce que la science nous dit, et comment je peux vous accompagner.
-
 ## scienceSection
 ### Bouffées de chaleur et symptômes vasomoteurs
 
