@@ -53,7 +53,7 @@ export default function PiliersSection() {
               title="Acupuncture sociale"
               description="Des soins accessibles &agrave; tous, selon votre capacit&eacute; financi&egrave;re. Tarification solidaire."
               href="/services/acupuncture-sociale"
-              image="/site/judith/judith-portrait-02.webp"
+              image="/site/judith/judith-portrait-03.webp"
             />
           </div>
         </div>

@@ -30,17 +30,11 @@ export default function TemoignagesSection() {
           subtitle="Avis Google publics de la clinique La Source en Soi, o&ugrave; Judith pratique. 4,9/5 sur 1 215 avis."
         />
 
-        <div className="grid grid-cols-1 md:grid-cols-[1.3fr_1fr] md:grid-rows-2 gap-6 mt-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
           <TestimonialCard
             featured
             quote="Judith a su tout de suite me mettre &agrave; l'aise et &eacute;tant autiste, c'&eacute;tait pas gagn&eacute; d'avance, mais la douceur de cette petite f&eacute;e de l'acupuncture m'a ensorcel&eacute; de par sa gentillesse et son savoir faire."
             name="Alexandra P."
-            detail="Avis Google &middot; La Source en Soi"
-          />
-
-          <TestimonialCard
-            quote="J'ai consult&eacute; Judith pendant ma grossesse, et cela a fait une &eacute;norme diff&eacute;rence. Elle m'a beaucoup aid&eacute;e &agrave; diminuer les douleurs au dos et aux hanches."
-            name="Ingrid M."
             detail="Avis Google &middot; La Source en Soi"
           />
 
