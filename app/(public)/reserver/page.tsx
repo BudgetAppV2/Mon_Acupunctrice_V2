@@ -1,82 +1,85 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { CLINICS } from '@/lib/utils/rdvUrl';
 import CtaButton from '../_components/CtaButton';
 import CtaBotanicalDeco from '../_components/CtaBotanicalDeco';
 import SectionHeading from '../_components/SectionHeading';
 
 export const metadata: Metadata = {
-  title: 'Prendre rendez-vous — Acupuncture Rosemont, Montreal',
+  title: 'Prendre rendez-vous — Acupuncture Rosemont et Repentigny',
   description:
-    'Reservez votre seance d’acupuncture a Rosemont en ligne, par telephone ou par courriel. Disponibilites en temps reel via Go Rendez-Vous. Clinique La Source en Soi.',
+    'R\u00e9servez votre s\u00e9ance d\u2019acupuncture \u00e0 Rosemont (La Source en Soi) ou \u00e0 Repentigny (\u00c9den Yoga Pilates). Disponibilit\u00e9s en temps r\u00e9el via Go Rendez-Vous.',
 };
 
-const GRV_URL = 'https://www.gorendezvous.com/lasourceensoi?companyId=104074&eids=175708';
-
-const CONTACT_MODES = [
-  {
-    title: 'Par téléphone',
-    text: '514 750-3735 — Appelez La Source en Soi et demandez Judith Dufour-Savard. Message vocal disponible si je suis en séance.',
-  },
-  {
-    // TODO Judith: email a completer (placeholder suggere info@acupuncturejudith.ca)
-    title: 'Par courriel',
-    text: '[à compléter] — Pour les questions préalables à la prise de rendez-vous ou les situations particulières.',
-  },
-  {
-    title: 'En clinique',
-    text: '2554 rue Beaubien Est, Montréal, QC H1Y 1G3 (Rosemont, métro Beaubien).',
-  },
-];
+// TODO Judith: email a completer (placeholder suggere info@acupuncturejudith.ca)
+const CONTACT_EMAIL = 'info@acupuncturejudith.ca';
 
 const EXPECT = [
   {
-    title: 'Durée',
-    text: '60 minutes (consultation privée) / 30 à 45 minutes (acupuncture sociale)',
+    title: 'Dur\u00e9e',
+    text: '60 minutes (consultation priv\u00e9e) / 30 \u00e0 45 minutes (acupuncture sociale, Rosemont seulement)',
   },
   {
     title: 'Tenue',
-    text: 'Portez des vêtements confortables qui se retroussent au niveau des coudes et des genoux. Vous n’aurez pas à vous dévêtir.',
+    text: 'Portez des v\u00eatements confortables qui se retroussent au niveau des coudes et des genoux. Vous n\u2019aurez pas \u00e0 vous d\u00e9v\u00eatir.',
   },
   {
-    title: 'À apporter',
-    text: 'Si vous avez des résultats d’examens médicaux récents (bilans sanguins, imagerie, suivi de fertilité), apportez-les. Sinon, rien de particulier.',
+    title: '\u00c0 apporter',
+    text: 'Si vous avez des r\u00e9sultats d\u2019examens m\u00e9dicaux r\u00e9cents (bilans sanguins, imagerie, suivi de fertilit\u00e9), apportez-les. Sinon, rien de particulier.',
   },
-];
-
-// TODO Judith: horaires exacts a valider (placeholder plausible alimentant Schema.org)
-const OPENING_HOURS = [
-  { dayOfWeek: ['Tuesday', 'Wednesday', 'Thursday', 'Friday'], opens: '09:00', closes: '19:00' },
-  { dayOfWeek: 'Saturday', opens: '09:00', closes: '15:00' },
 ];
 
 const JSON_LD = [
   {
     '@context': 'https://schema.org',
     '@type': 'MedicalBusiness',
-    name: 'Judith Dufour-Savard — Acupuncture',
-    telephone: '+1-514-750-3735',
-    address: {
-      '@type': 'PostalAddress',
-      streetAddress: '2554 rue Beaubien Est',
-      addressLocality: 'Montréal',
-      addressRegion: 'QC',
-      postalCode: 'H1Y 1G3',
-      addressCountry: 'CA',
-    },
+    name: 'Judith Dufour-Savard \u2014 Acupuncture',
+    telephone: CLINICS.lssi.phoneFull,
+    location: [
+      {
+        '@type': 'Place',
+        name: CLINICS.lssi.name,
+        address: {
+          '@type': 'PostalAddress',
+          streetAddress: '2554 rue Beaubien Est',
+          addressLocality: 'Montr\u00e9al',
+          addressRegion: 'QC',
+          postalCode: 'H1Y 1G3',
+          addressCountry: 'CA',
+        },
+      },
+      {
+        '@type': 'Place',
+        name: CLINICS.eden.name,
+        address: {
+          '@type': 'PostalAddress',
+          streetAddress: '121 boul. Industriel #225',
+          addressLocality: 'Repentigny',
+          addressRegion: 'QC',
+          addressCountry: 'CA',
+        },
+      },
+    ],
     mainEntityOfPage: { '@id': 'https://acupuncturejudith.ca/#business' },
-    openingHoursSpecification: OPENING_HOURS.map((h) => ({ '@type': 'OpeningHoursSpecification', ...h })),
-    potentialAction: {
-      '@type': 'ReserveAction',
-      target: GRV_URL,
-      result: { '@type': 'Reservation', name: 'Séance d’acupuncture' },
-    },
+    potentialAction: [
+      {
+        '@type': 'ReserveAction',
+        target: CLINICS.lssi.grvUrl,
+        result: { '@type': 'Reservation', name: 'S\u00e9ance d\u2019acupuncture \u2014 Rosemont' },
+      },
+      {
+        '@type': 'ReserveAction',
+        target: CLINICS.eden.grvUrl,
+        result: { '@type': 'Reservation', name: 'S\u00e9ance d\u2019acupuncture \u2014 Repentigny' },
+      },
+    ],
   },
   {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'Accueil', item: 'https://acupuncturejudith.ca/' },
-      { '@type': 'ListItem', position: 2, name: 'Réserver', item: 'https://acupuncturejudith.ca/reserver' },
+      { '@type': 'ListItem', position: 2, name: 'R\u00e9server', item: 'https://acupuncturejudith.ca/reserver' },
     ],
   },
 ];
@@ -88,7 +91,6 @@ export default function ReserverPage() {
 
       {/* Hero */}
       <section className="bg-gradient-to-b from-public-beige-bg to-public-beige-light py-[68px] md:py-[104px] px-5 md:px-8 relative overflow-hidden">
-        {/* SVG hands-lotus filigrane gauche */}
         <div className="absolute -left-[100px] top-[10px] w-[380px] h-[460px] pointer-events-none z-0 hidden lg:block" aria-hidden="true" style={{ transform: 'rotate(-8deg)', opacity: 0.12, mixBlendMode: 'multiply' }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/site/svg/hands-lotus.svg" alt="" loading="lazy" className="w-full h-full object-contain" />
@@ -97,35 +99,75 @@ export default function ReserverPage() {
           <SectionHeading
             kicker="R&Eacute;SERVER"
             title="Prendre rendez-vous."
-            subtitle="Trois fa&ccedil;ons de r&eacute;server votre s&eacute;ance d&rsquo;acupuncture &agrave; Rosemont. Choisissez celle qui vous convient."
+            subtitle="Je pratique &agrave; deux cliniques. Choisissez celle qui vous convient et r&eacute;servez en ligne &mdash; disponibilit&eacute;s en temps r&eacute;el."
           />
         </div>
       </section>
 
-      {/* Option principale : en ligne */}
+      {/* Deux cliniques */}
       <section className="bg-white py-[68px] md:py-[88px] px-5 md:px-8">
-        <div className="max-w-[780px] mx-auto text-center">
-          <span className="inline-block text-[11px] font-semibold uppercase tracking-[2.5px] text-public-accent-taupe-dark mb-3">
-            RECOMMAND&Eacute;
-          </span>
-          <h2 className="font-public-serif text-[32px] md:text-[40px] font-medium text-public-text-dark mb-6">
-            En ligne
-          </h2>
-          <p className="text-[17px] leading-relaxed text-public-text-medium mb-8">
-            Le syst&egrave;me de r&eacute;servation <strong>Go Rendez-Vous</strong> vous permet de voir
-            mes disponibilit&eacute;s en temps r&eacute;el et de r&eacute;server directement. Vous recevez
-            un courriel de confirmation imm&eacute;diat et un rappel 24h avant votre s&eacute;ance.
-          </p>
-          <a
-            href={GRV_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-public-accent-taupe text-white rounded-md font-semibold uppercase px-11 py-[18px] text-sm tracking-[1px] transition-all duration-200 hover:bg-public-accent-taupe-dark hover:-translate-y-px hover:shadow-public-md"
-          >
-            Voir les disponibilit&eacute;s &rarr;
-          </a>
-          <p className="mt-6 text-[13px] text-public-text-light max-w-[540px] mx-auto">
-            Le lien vous am&egrave;ne directement sur mon profil <strong>Go Rendez-Vous</strong>. Choisissez le type de s&eacute;ance et l&rsquo;heure qui vous convient.
+        <div className="max-w-[1080px] mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* La Source en Soi */}
+            <div className="bg-public-beige-light rounded-[14px] p-8 border border-public-border-subtle flex flex-col">
+              <span className="inline-block text-[11px] font-semibold uppercase tracking-[2.5px] text-public-accent-taupe-dark mb-2">
+                ROSEMONT &mdash; MONTR&Eacute;AL
+              </span>
+              <h2 className="font-public-serif text-[26px] md:text-[30px] font-medium text-public-text-dark mb-1">
+                {CLINICS.lssi.name}
+              </h2>
+              <p className="text-[14px] text-public-text-medium mb-4">{CLINICS.lssi.addressShort}, Montr&eacute;al</p>
+
+              <dl className="space-y-2 text-[14px] text-public-text-medium mb-6">
+                <div className="flex gap-2"><dt className="font-semibold shrink-0">Jours :</dt><dd>{CLINICS.lssi.days}</dd></div>
+                <div className="flex gap-2"><dt className="font-semibold shrink-0">Services :</dt><dd>Acupuncture classique + sociale</dd></div>
+                <div className="flex gap-2"><dt className="font-semibold shrink-0">T&eacute;l. :</dt><dd><a href={`tel:${CLINICS.lssi.phoneFull}`} className="underline underline-offset-2 hover:text-public-accent-warm">{CLINICS.lssi.phone}</a></dd></div>
+              </dl>
+
+              <div className="mt-auto">
+                <a
+                  href={CLINICS.lssi.grvUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 bg-public-accent-taupe text-white rounded-md font-semibold uppercase px-8 py-[16px] text-sm tracking-[1px] transition-all duration-200 hover:bg-public-accent-taupe-dark hover:-translate-y-px hover:shadow-public-md w-full justify-center"
+                >
+                  R&eacute;server &agrave; Rosemont &rarr;
+                </a>
+              </div>
+            </div>
+
+            {/* Eden Yoga Pilates */}
+            <div className="bg-public-beige-light rounded-[14px] p-8 border border-public-border-subtle flex flex-col">
+              <span className="inline-block text-[11px] font-semibold uppercase tracking-[2.5px] text-public-accent-taupe-dark mb-2">
+                REPENTIGNY
+              </span>
+              <h2 className="font-public-serif text-[26px] md:text-[30px] font-medium text-public-text-dark mb-1">
+                {CLINICS.eden.name}
+              </h2>
+              <p className="text-[14px] text-public-text-medium mb-4">{CLINICS.eden.addressShort}, Repentigny</p>
+
+              <dl className="space-y-2 text-[14px] text-public-text-medium mb-6">
+                <div className="flex gap-2"><dt className="font-semibold shrink-0">Jour :</dt><dd>{CLINICS.eden.days}</dd></div>
+                <div className="flex gap-2"><dt className="font-semibold shrink-0">Services :</dt><dd>Acupuncture classique</dd></div>
+                <div className="flex gap-2"><dt className="font-semibold shrink-0">Dernier patient :</dt><dd>14 h</dd></div>
+              </dl>
+
+              <div className="mt-auto">
+                <a
+                  href={CLINICS.eden.grvUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 bg-public-accent-taupe text-white rounded-md font-semibold uppercase px-8 py-[16px] text-sm tracking-[1px] transition-all duration-200 hover:bg-public-accent-taupe-dark hover:-translate-y-px hover:shadow-public-md w-full justify-center"
+                >
+                  R&eacute;server &agrave; Repentigny &rarr;
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <p className="mt-6 text-center text-[13px] text-public-text-light">
+            Les deux syst&egrave;mes <strong>Go Rendez-Vous</strong> affichent les disponibilit&eacute;s
+            en temps r&eacute;el. Vous recevez un courriel de confirmation imm&eacute;diat.
           </p>
         </div>
       </section>
@@ -135,12 +177,27 @@ export default function ReserverPage() {
         <div className="max-w-[1080px] mx-auto">
           <SectionHeading kicker="AUTREMENT" title="Autres moyens de r&eacute;server." />
           <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-            {CONTACT_MODES.map((mode) => (
-              <div key={mode.title} className="bg-white rounded-[14px] p-6 border border-public-border-subtle">
-                <h3 className="font-public-serif text-[20px] font-semibold mb-2 text-public-text-dark">{mode.title}</h3>
-                <p className="text-[14px] text-public-text-medium leading-relaxed">{mode.text}</p>
-              </div>
-            ))}
+            <div className="bg-white rounded-[14px] p-6 border border-public-border-subtle">
+              <h3 className="font-public-serif text-[20px] font-semibold mb-2 text-public-text-dark">Par t&eacute;l&eacute;phone</h3>
+              <p className="text-[14px] text-public-text-medium leading-relaxed">
+                {CLINICS.lssi.phone} &mdash; Appelez La Source en Soi et demandez Judith Dufour-Savard.
+                Message vocal disponible si je suis en s&eacute;ance.
+              </p>
+            </div>
+            <div className="bg-white rounded-[14px] p-6 border border-public-border-subtle">
+              <h3 className="font-public-serif text-[20px] font-semibold mb-2 text-public-text-dark">Par courriel</h3>
+              <p className="text-[14px] text-public-text-medium leading-relaxed">
+                <a href={`mailto:${CONTACT_EMAIL}`} className="underline underline-offset-2 hover:text-public-accent-warm">{CONTACT_EMAIL}</a> &mdash;
+                Pour les questions pr&eacute;alables &agrave; la prise de rendez-vous ou les situations particuli&egrave;res.
+              </p>
+            </div>
+            <div className="bg-white rounded-[14px] p-6 border border-public-border-subtle">
+              <h3 className="font-public-serif text-[20px] font-semibold mb-2 text-public-text-dark">En clinique</h3>
+              <p className="text-[14px] text-public-text-medium leading-relaxed">
+                Rosemont : {CLINICS.lssi.addressShort} (m&eacute;tro Beaubien).<br />
+                Repentigny : {CLINICS.eden.addressShort}.
+              </p>
+            </div>
           </div>
         </div>
       </section>
@@ -164,39 +221,18 @@ export default function ReserverPage() {
         </div>
       </section>
 
-      {/* Horaires */}
-      <section className="bg-public-beige-light py-[68px] md:py-[88px] px-5 md:px-8">
-        <div className="max-w-[620px] mx-auto text-center">
-          <SectionHeading kicker="HORAIRES" title="Horaires de consultation." />
-          {/* TODO Judith: horaires exacts a valider. Placeholder plausible alimentant Schema.org. */}
-          <dl className="mt-10 space-y-2 text-[16px] text-public-text-medium">
-            <div className="flex justify-between gap-4 py-2 border-b border-public-border-subtle">
-              <dt>Mardi au vendredi</dt>
-              <dd>9 h &ndash; 19 h</dd>
-            </div>
-            <div className="flex justify-between gap-4 py-2 border-b border-public-border-subtle">
-              <dt>Samedi</dt>
-              <dd>9 h &ndash; 15 h</dd>
-            </div>
-            <div className="flex justify-between gap-4 py-2 text-public-text-light">
-              <dt>Lundi et dimanche</dt>
-              <dd>Ferm&eacute;</dd>
-            </div>
-          </dl>
-        </div>
-      </section>
-
       {/* CTA final */}
       <section className="bg-gradient-to-b from-public-accent-taupe to-public-accent-taupe-dark text-white py-[68px] md:py-[88px] px-5 md:px-8 text-center relative overflow-hidden">
         <CtaBotanicalDeco />
         <div className="max-w-[620px] mx-auto relative z-10">
           <h2 className="font-public-serif text-[28px] md:text-[40px] font-medium mb-4">Pr&ecirc;te ?</h2>
           <div className="flex flex-col sm:flex-row justify-center gap-4 items-center mt-4">
-            <CtaButton variant="white" size="lg" href={GRV_URL}>R&eacute;server maintenant</CtaButton>
-            <Link href="/tarifs" className="text-white/80 hover:text-white underline underline-offset-4 text-[14px]">
-              Voir les tarifs
-            </Link>
+            <CtaButton variant="white" size="lg" href={CLINICS.lssi.grvUrl}>Rosemont</CtaButton>
+            <CtaButton variant="white" size="lg" href={CLINICS.eden.grvUrl}>Repentigny</CtaButton>
           </div>
+          <Link href="/tarifs" className="mt-6 inline-block text-white/80 hover:text-white underline underline-offset-4 text-[14px]">
+            Voir les tarifs
+          </Link>
         </div>
       </section>
     </main>

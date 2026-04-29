@@ -25,7 +25,7 @@ export default function ServiceGrossesseHeroSection() {
             ex-maison de naissance.
           </p>
           <div className="flex flex-wrap gap-4">
-            <CtaButton variant="primary" size="lg" href="https://www.gorendezvous.com/lasourceensoi?companyId=104074&eids=175708">
+            <CtaButton variant="primary" size="lg" href="/reserver">
               Prendre rendez-vous
             </CtaButton>
             <CtaButton variant="secondary" href="/ressources/acupuncture-grossesse-montreal">

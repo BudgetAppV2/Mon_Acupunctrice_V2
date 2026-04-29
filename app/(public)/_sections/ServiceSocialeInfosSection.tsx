@@ -35,6 +35,9 @@ export default function ServiceSocialeInfosSection() {
             (m&ecirc;me syst&egrave;me que le priv&eacute;). S&eacute;lectionnez le service
             &laquo;&nbsp;acupuncture sociale&nbsp;&raquo; lors de votre r&eacute;servation.
           </p>
+          <p className="mt-3 text-[13px] text-public-text-light italic">
+            Ce service est offert uniquement &agrave; la clinique La Source en Soi, &agrave; Rosemont.
+          </p>
           {/* TODO Judith : confirmer les horaires specifiques (ex: jeudi soir, samedi matin) et si drop-in possible. Par defaut on documente "sur rendez-vous". */}
         </div>
       </div>

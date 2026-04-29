@@ -1,54 +1,69 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { CLINICS } from '@/lib/utils/rdvUrl';
 import CtaButton from '../_components/CtaButton';
 import CtaBotanicalDeco from '../_components/CtaBotanicalDeco';
 import SectionHeading from '../_components/SectionHeading';
 
 export const metadata: Metadata = {
-  title: 'Contact — Acupuncture Rosemont, Beaubien Est, Montreal',
+  title: 'Contact — Acupuncture Rosemont et Repentigny',
   description:
-    'Contactez Judith Dufour-Savard, acupunctrice a Rosemont. Clinique La Source en Soi, 2554 rue Beaubien Est. Par telephone, courriel ou en personne.',
+    'Contactez Judith Dufour-Savard, acupunctrice \u00e0 Rosemont (La Source en Soi) et Repentigny (\u00c9den Yoga Pilates). Par t\u00e9l\u00e9phone, courriel ou en personne.',
 };
 
-const GRV_URL = 'https://www.gorendezvous.com/lasourceensoi?companyId=104074&eids=175708';
 // TODO Judith: email a completer (placeholder suggere info@acupuncturejudith.ca)
 const CONTACT_EMAIL = 'info@acupuncturejudith.ca';
-const MAPS_EMBED_SRC = 'https://www.google.com/maps?q=2554+rue+Beaubien+Est+Montreal+QC+H1Y+1G3&output=embed';
-const MAPS_DIRECTIONS_URL = 'https://maps.google.com/?daddr=2554+rue+Beaubien+Est+Montreal+QC+H1Y+1G3';
 
-// TODO Judith: horaires exacts a valider (alimente Schema.org openingHoursSpecification)
-const OPENING_HOURS = [
-  { dayOfWeek: ['Tuesday', 'Wednesday', 'Thursday', 'Friday'], opens: '09:00', closes: '19:00' },
-  { dayOfWeek: 'Saturday', opens: '09:00', closes: '15:00' },
-];
+const MAPS_LSSI_EMBED = `https://www.google.com/maps?q=${CLINICS.lssi.mapsQuery}&output=embed`;
+const MAPS_LSSI_DIR = `https://maps.google.com/?daddr=${CLINICS.lssi.mapsQuery}`;
+const MAPS_EDEN_EMBED = `https://www.google.com/maps?q=${CLINICS.eden.mapsQuery}&output=embed`;
+const MAPS_EDEN_DIR = `https://maps.google.com/?daddr=${CLINICS.eden.mapsQuery}`;
 
 const JSON_LD = [
   {
     '@context': 'https://schema.org',
     '@type': ['MedicalBusiness', 'LocalBusiness'],
     '@id': 'https://acupuncturejudith.ca/#business',
-    name: 'Judith Dufour-Savard — Acupuncture',
+    name: 'Judith Dufour-Savard \u2014 Acupuncture',
     image: 'https://acupuncturejudith.ca/site/judith/judith-portrait-01.jpg',
-    telephone: '+1-514-750-3735',
+    telephone: CLINICS.lssi.phoneFull,
     email: CONTACT_EMAIL,
     url: 'https://acupuncturejudith.ca',
-    address: {
-      '@type': 'PostalAddress',
-      streetAddress: '2554 rue Beaubien Est',
-      addressLocality: 'Montréal',
-      addressRegion: 'QC',
-      postalCode: 'H1Y 1G3',
-      addressCountry: 'CA',
-    },
-    geo: { '@type': 'GeoCoordinates', latitude: 45.5501, longitude: -73.5832 },
-    openingHoursSpecification: OPENING_HOURS.map((h) => ({ '@type': 'OpeningHoursSpecification', ...h })),
+    location: [
+      {
+        '@type': 'Place',
+        name: CLINICS.lssi.name,
+        address: {
+          '@type': 'PostalAddress',
+          streetAddress: '2554 rue Beaubien Est',
+          addressLocality: 'Montr\u00e9al',
+          addressRegion: 'QC',
+          postalCode: 'H1Y 1G3',
+          addressCountry: 'CA',
+        },
+        geo: { '@type': 'GeoCoordinates', ...CLINICS.lssi.geo },
+      },
+      {
+        '@type': 'Place',
+        name: CLINICS.eden.name,
+        address: {
+          '@type': 'PostalAddress',
+          streetAddress: '121 boul. Industriel #225',
+          addressLocality: 'Repentigny',
+          addressRegion: 'QC',
+          addressCountry: 'CA',
+        },
+        geo: { '@type': 'GeoCoordinates', ...CLINICS.eden.geo },
+      },
+    ],
     priceRange: '$$',
     medicalSpecialty: ['Acupuncture', 'Obstetrics', 'Pediatrics'],
     availableLanguage: ['French', 'English'],
     paymentAccepted: 'Cash, Credit Card, Debit Card, Interac',
     areaServed: [
-      { '@type': 'City', name: 'Montréal' },
-      { '@type': 'AdministrativeArea', name: 'Rosemont—La Petite-Patrie' },
+      { '@type': 'City', name: 'Montr\u00e9al' },
+      { '@type': 'AdministrativeArea', name: 'Rosemont\u2014La Petite-Patrie' },
+      { '@type': 'City', name: 'Repentigny' },
     ],
     aggregateRating: {
       '@type': 'AggregateRating',
@@ -56,13 +71,8 @@ const JSON_LD = [
       reviewCount: '1215',
       bestRating: '5',
     },
-    memberOf: { '@type': 'Organization', name: 'Ordre des acupuncteurs du Québec' },
-    parentOrganization: {
-      '@type': 'MedicalClinic',
-      name: 'La Source en Soi',
-      url: 'https://lasourceensoi.com/',
-    },
-    sameAs: ['https://www.instagram.com/mon_acupunctrice/', 'https://lasourceensoi.com/'],
+    memberOf: { '@type': 'Organization', name: 'Ordre des acupuncteurs du Qu\u00e9bec' },
+    sameAs: ['https://www.instagram.com/mon_acupunctrice/', 'https://lasourceensoi.com/', 'https://edenyogapilates.ca/'],
   },
   {
     '@context': 'https://schema.org',
@@ -90,26 +100,27 @@ export default function ContactPage() {
           <SectionHeading
             kicker="CONTACT"
             title="Restons en contact."
-            subtitle="Une question avant de r&eacute;server ? Besoin de savoir si l&rsquo;acupuncture est adapt&eacute;e &agrave; votre situation ? &Eacute;crivez-moi ou appelez la clinique — je vous r&eacute;ponds avec plaisir."
+            subtitle="Une question avant de r&eacute;server ? Besoin de savoir si l&rsquo;acupuncture est adapt&eacute;e &agrave; votre situation ? &Eacute;crivez-moi ou appelez la clinique &mdash; je vous r&eacute;ponds avec plaisir."
           />
         </div>
       </section>
 
-      {/* Coordonnees / NAP */}
+      {/* Deux cliniques */}
       <section className="bg-white py-[68px] md:py-[88px] px-5 md:px-8">
-        <div className="max-w-[780px] mx-auto">
+        <div className="max-w-[1080px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* LSSI */}
           <div className="bg-public-beige-light rounded-[14px] p-8 md:p-10 border border-public-border-subtle">
             <h2 className="font-public-serif text-[28px] md:text-[32px] font-medium text-public-text-dark mb-2">
-              La Source en Soi
+              {CLINICS.lssi.name}
             </h2>
             <p className="text-[16px] text-public-text-medium leading-relaxed mb-6">
-              2554 rue Beaubien Est<br />
-              Montr&eacute;al, QC &nbsp; H1Y 1G3
+              {CLINICS.lssi.addressShort}<br />
+              Montr&eacute;al, QC &nbsp; {CLINICS.lssi.postalCode}
             </p>
             <dl className="space-y-3 text-[15px] text-public-text-medium">
               <div className="flex items-start gap-3">
                 <PhoneIcon />
-                <span><strong>T&eacute;l&eacute;phone</strong> : <a href="tel:+15147503735" className="underline underline-offset-2 hover:text-public-accent-warm">514 750-3735</a></span>
+                <span><strong>T&eacute;l&eacute;phone</strong> : <a href={`tel:${CLINICS.lssi.phoneFull}`} className="underline underline-offset-2 hover:text-public-accent-warm">{CLINICS.lssi.phone}</a></span>
               </div>
               <div className="flex items-start gap-3">
                 <MailIcon />
@@ -117,75 +128,97 @@ export default function ContactPage() {
               </div>
               <div className="flex items-start gap-3">
                 <GlobeIcon />
-                <span><strong>Site de la clinique</strong> : <a href="https://lasourceensoi.com/" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-public-accent-warm">lasourceensoi.com</a></span>
+                <span><strong>Site clinique</strong> : <a href={CLINICS.lssi.siteUrl} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-public-accent-warm">lasourceensoi.com</a></span>
+              </div>
+              <div className="flex items-start gap-3">
+                <CalendarIcon />
+                <span><strong>Jours</strong> : {CLINICS.lssi.days}</span>
               </div>
               <div className="flex items-start gap-3">
                 <PinIcon />
-                <span>M&eacute;tro Beaubien (ligne orange) &mdash; 10 minutes &agrave; pied. Stationnement sur rue disponible.</span>
+                <span>M&eacute;tro Beaubien (ligne orange) &mdash; 10 minutes &agrave; pied. Stationnement sur rue.</span>
               </div>
             </dl>
-            <div className="mt-6 inline-flex items-center gap-2 bg-white px-4 py-2 rounded-full border border-public-border-subtle text-[13px] font-medium text-public-text-dark">
+            <div className="mt-4 inline-flex items-center gap-2 bg-white px-4 py-2 rounded-full border border-public-border-subtle text-[13px] font-medium text-public-text-dark">
               <StarIcon />
               4,9/5 sur 1 215 avis Google
             </div>
-            <div className="mt-8">
-              <CtaButton variant="primary" size="lg" href={GRV_URL}>Prendre rendez-vous</CtaButton>
+            <div className="mt-6">
+              <CtaButton variant="primary" size="lg" href={CLINICS.lssi.grvUrl}>R&eacute;server &agrave; Rosemont</CtaButton>
+            </div>
+          </div>
+
+          {/* Eden */}
+          <div className="bg-public-beige-light rounded-[14px] p-8 md:p-10 border border-public-border-subtle">
+            <h2 className="font-public-serif text-[28px] md:text-[32px] font-medium text-public-text-dark mb-2">
+              {CLINICS.eden.name}
+            </h2>
+            <p className="text-[16px] text-public-text-medium leading-relaxed mb-6">
+              {CLINICS.eden.addressShort}<br />
+              Repentigny, QC
+            </p>
+            <dl className="space-y-3 text-[15px] text-public-text-medium">
+              <div className="flex items-start gap-3">
+                <CalendarIcon />
+                <span><strong>Jour</strong> : {CLINICS.eden.days}</span>
+              </div>
+              <div className="flex items-start gap-3">
+                <ClockIcon />
+                <span><strong>Dernier patient</strong> : 14 h</span>
+              </div>
+              <div className="flex items-start gap-3">
+                <GlobeIcon />
+                <span><strong>Site clinique</strong> : <a href={CLINICS.eden.siteUrl} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-public-accent-warm">edenyogapilates.ca</a></span>
+              </div>
+              <div className="flex items-start gap-3">
+                <PinIcon />
+                <span>Stationnement gratuit sur place.</span>
+              </div>
+            </dl>
+            <div className="mt-6">
+              <CtaButton variant="primary" size="lg" href={CLINICS.eden.grvUrl}>R&eacute;server &agrave; Repentigny</CtaButton>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Horaires */}
+      {/* Google Maps — Deux cartes */}
       <section className="bg-public-beige-bg py-[68px] md:py-[88px] px-5 md:px-8">
-        <div className="max-w-[620px] mx-auto text-center">
-          <SectionHeading kicker="HORAIRES" title="Horaires de consultation." />
-          {/* TODO Judith: horaires exacts a valider. Meme contenu que /reserver pour coherence. */}
-          <dl className="mt-10 space-y-2 text-[16px] text-public-text-medium">
-            <div className="flex justify-between gap-4 py-2 border-b border-public-border-subtle">
-              <dt>Mardi au vendredi</dt>
-              <dd>9 h &ndash; 19 h</dd>
+        <div className="max-w-[1080px] mx-auto">
+          <SectionHeading kicker="ACC&Egrave;S" title="Se rendre aux cliniques." align="left" />
+          <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <h3 className="font-public-serif text-[18px] font-semibold text-public-text-dark mb-3">Rosemont &mdash; La Source en Soi</h3>
+              <iframe
+                src={MAPS_LSSI_EMBED}
+                width="100%" height={300} style={{ border: 0 }} loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Carte Google Maps — La Source en Soi"
+                className="rounded-[14px] shadow-public-sm w-full"
+              />
+              <a href={MAPS_LSSI_DIR} target="_blank" rel="noopener noreferrer" className="inline-block mt-3 text-[14px] font-medium text-public-accent-warm underline underline-offset-4 hover:text-public-accent-warm-soft">
+                Itin&eacute;raire &rarr;
+              </a>
             </div>
-            <div className="flex justify-between gap-4 py-2 border-b border-public-border-subtle">
-              <dt>Samedi</dt>
-              <dd>9 h &ndash; 15 h</dd>
+            <div>
+              <h3 className="font-public-serif text-[18px] font-semibold text-public-text-dark mb-3">Repentigny &mdash; &Eacute;den Yoga Pilates</h3>
+              <iframe
+                src={MAPS_EDEN_EMBED}
+                width="100%" height={300} style={{ border: 0 }} loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Carte Google Maps — &Eacute;den Yoga Pilates"
+                className="rounded-[14px] shadow-public-sm w-full"
+              />
+              <a href={MAPS_EDEN_DIR} target="_blank" rel="noopener noreferrer" className="inline-block mt-3 text-[14px] font-medium text-public-accent-warm underline underline-offset-4 hover:text-public-accent-warm-soft">
+                Itin&eacute;raire &rarr;
+              </a>
             </div>
-            <div className="flex justify-between gap-4 py-2 text-public-text-light">
-              <dt>Lundi et dimanche</dt>
-              <dd>Ferm&eacute;</dd>
-            </div>
-          </dl>
-        </div>
-      </section>
-
-      {/* Google Maps */}
-      <section className="bg-white py-[68px] md:py-[88px] px-5 md:px-8">
-        <div className="max-w-[960px] mx-auto">
-          <SectionHeading kicker="ACC&Egrave;S" title="Se rendre &agrave; la clinique." align="left" />
-          <div className="mt-10">
-            <iframe
-              src={MAPS_EMBED_SRC}
-              width="100%"
-              height={400}
-              style={{ border: 0 }}
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              title="Carte Google Maps — La Source en Soi, 2554 rue Beaubien Est, Montréal"
-              className="rounded-[14px] shadow-public-sm w-full"
-            />
-            <a
-              href={MAPS_DIRECTIONS_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block mt-4 text-[14px] font-medium text-public-accent-warm underline underline-offset-4 hover:text-public-accent-warm-soft"
-            >
-              Obtenir l&rsquo;itin&eacute;raire &rarr;
-            </a>
           </div>
         </div>
       </section>
 
       {/* Ecrivez-moi */}
-      <section className="bg-public-beige-light py-[68px] md:py-[88px] px-5 md:px-8">
+      <section className="bg-white py-[68px] md:py-[88px] px-5 md:px-8">
         <div className="max-w-[720px] mx-auto text-center">
           <SectionHeading kicker="&Eacute;CRIVEZ-MOI" title="Une question ? &Eacute;crivez-moi." />
           <p className="mt-8 text-[17px] leading-relaxed text-public-text-medium mb-8">
@@ -214,7 +247,7 @@ export default function ContactPage() {
             Pr&ecirc;te &agrave; franchir le pas ?
           </h2>
           <div className="flex flex-col sm:flex-row justify-center gap-4 items-center">
-            <CtaButton variant="white" size="lg" href={GRV_URL}>Prendre rendez-vous</CtaButton>
+            <CtaButton variant="white" size="lg" href="/reserver">Prendre rendez-vous</CtaButton>
             <Link href="/tarifs" className="text-white/80 hover:text-white underline underline-offset-4 text-[14px]">Voir les tarifs</Link>
             <Link href="/services/fertilite" className="text-white/80 hover:text-white underline underline-offset-4 text-[14px]">Mes services</Link>
           </div>
@@ -257,6 +290,20 @@ function StarIcon() {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-public-accent-warm">
       <path fillRule="evenodd" clipRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354l-4.627 2.828c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.006Z" />
+    </svg>
+  );
+}
+function CalendarIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.6} stroke="currentColor" className="w-5 h-5 text-public-accent-warm shrink-0 mt-0.5">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+    </svg>
+  );
+}
+function ClockIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.6} stroke="currentColor" className="w-5 h-5 text-public-accent-warm shrink-0 mt-0.5">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
     </svg>
   );
 }

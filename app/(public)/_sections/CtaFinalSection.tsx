@@ -16,12 +16,12 @@ export default function CtaFinalSection() {
         </h2>
         <p className="font-public-serif text-[16px] md:text-[18px] italic opacity-[0.92] mb-10">
           60 minutes d&rsquo;&eacute;coute, d&rsquo;&eacute;valuation et de soin.
-          &Agrave; La Source en Soi, sur Beaubien Est, dans Rosemont.
+          &Agrave; Rosemont ou &agrave; Repentigny.
         </p>
         <CtaButton
           variant="white"
           size="lg"
-          href="https://www.gorendezvous.com/lasourceensoi?companyId=104074&eids=175708"
+          href="/reserver"
         >
           Prendre rendez-vous en ligne
         </CtaButton>
@@ -29,7 +29,11 @@ export default function CtaFinalSection() {
         <div className="mt-12 pt-6 border-t border-white/20 flex flex-col md:flex-row justify-center gap-4 md:gap-8 text-[14px] opacity-80">
           <span className="flex items-center justify-center gap-2">
             <MapPinIcon />
-            2554 rue Beaubien Est, Montr&eacute;al
+            Rosemont &mdash; La Source en Soi
+          </span>
+          <span className="flex items-center justify-center gap-2">
+            <MapPinIcon />
+            Repentigny &mdash; &Eacute;den Yoga Pilates
           </span>
           <span className="flex items-center justify-center gap-2">
             <PhoneIcon />

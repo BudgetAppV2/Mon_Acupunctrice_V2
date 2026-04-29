@@ -16,14 +16,17 @@ export default function ServiceFertiliteCtaSection() {
           un plan adapt&eacute;.
         </p>
         <div className="flex flex-col sm:flex-row justify-center gap-4">
-          <CtaButton variant="white" size="lg" href="https://www.gorendezvous.com/lasourceensoi?companyId=104074&eids=175708">
+          <CtaButton variant="white" size="lg" href="/reserver">
             Prendre rendez-vous en ligne
           </CtaButton>
           <CtaButton variant="secondary" href="/contact" className="text-white/80 hover:text-white">
             Ou &eacute;crivez-moi
           </CtaButton>
         </div>
-        <div className="mt-6 text-center">
+        <p className="mt-4 text-[13px] text-white/60">
+          Disponible &agrave; Rosemont (La Source en Soi) et &agrave; Repentigny (&Eacute;den Yoga Pilates).
+        </p>
+        <div className="mt-4 text-center">
           <Link href="/faq" className="text-[14px] text-white/70 underline underline-offset-4 hover:text-white transition-colors">
             Consulter les questions fr&eacute;quentes
           </Link>

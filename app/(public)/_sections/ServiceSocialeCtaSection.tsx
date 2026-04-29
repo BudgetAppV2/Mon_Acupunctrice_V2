@@ -22,7 +22,10 @@ export default function ServiceSocialeCtaSection() {
             Ou &eacute;crivez-moi pour questions
           </CtaButton>
         </div>
-        <div className="mt-6 text-center">
+        <p className="mt-4 text-[13px] text-white/60">
+          Disponible uniquement &agrave; Rosemont (La Source en Soi).
+        </p>
+        <div className="mt-4 text-center">
           <Link href="/faq" className="text-[14px] text-white/70 underline underline-offset-4 hover:text-white transition-colors">
             Consulter les questions fr&eacute;quentes
           </Link>

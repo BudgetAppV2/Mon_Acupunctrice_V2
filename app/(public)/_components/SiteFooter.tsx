@@ -24,8 +24,8 @@ export default function SiteFooter() {
               Judith Dufour-Savard
             </h3>
             <p className="text-[13px] leading-relaxed opacity-70 max-w-[320px]">
-              Acupunctrice a Rosemont, specialisee en fertilite, grossesse
-              et acupuncture sociale. Clinique La Source en Soi.
+              Acupunctrice &agrave; Rosemont et Repentigny, specialis&eacute;e en fertilit&eacute;, grossesse
+              et acupuncture sociale.
             </p>
           </div>
 
@@ -70,11 +70,11 @@ export default function SiteFooter() {
           {/* Contact */}
           <div>
             <h4 className="text-[11px] font-semibold tracking-[1.5px] uppercase opacity-60 mb-4">
-              Contact
+              Cliniques
             </h4>
             <ul className="flex flex-col gap-2.5 text-[13px] opacity-85">
-              <li>Clinique La Source en Soi</li>
-              <li>Rosemont, Montreal</li>
+              <li>La Source en Soi &mdash; Rosemont</li>
+              <li>&Eacute;den Yoga Pilates &mdash; Repentigny</li>
               <li className="flex gap-4 mt-2">
                 <a
                   href="https://www.instagram.com/mon_acupunctrice/"
@@ -107,7 +107,7 @@ export default function SiteFooter() {
 
         {/* Bottom bar */}
         <p className="text-center text-xs opacity-60 mt-8">
-          En partenariat avec Clinique La Source en Soi — 4,9/5 sur Google
+          La Source en Soi (Rosemont) &middot; &Eacute;den Yoga Pilates (Repentigny)
           {' · '}
           &copy; 2026 Judith Dufour-Savard
         </p>

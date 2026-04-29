@@ -37,13 +37,13 @@ export default function HeroSection() {
             </h1>
 
             <p className="text-[18px] leading-relaxed text-public-text-medium max-w-[520px] mb-8">
-              Acupunctrice &agrave; Rosemont, j&rsquo;accompagne les femmes et les familles
+              Acupunctrice &agrave; Rosemont et &agrave; Repentigny, j&rsquo;accompagne les femmes et les familles
               dans leur parcours de fertilit&eacute;, de grossesse, et au-del&agrave;.
               Avec douceur, &eacute;coute et l&rsquo;envie sinc&egrave;re de vous aider.
             </p>
 
             <div className="flex flex-wrap gap-4 mb-10">
-              <CtaButton variant="primary" size="lg" href="https://www.gorendezvous.com/lasourceensoi?companyId=104074&eids=175708">
+              <CtaButton variant="primary" size="lg" href="/reserver">
                 Prendre rendez-vous
               </CtaButton>
               <CtaButton variant="secondary" href="/a-propos">

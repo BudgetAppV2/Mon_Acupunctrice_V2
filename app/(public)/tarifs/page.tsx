@@ -6,12 +6,12 @@ import SectionHeading from '../_components/SectionHeading';
 import RessourceFaq from '../_components/RessourceFaq';
 
 export const metadata: Metadata = {
-  title: 'Tarifs — Acupuncture a Rosemont, Montreal',
+  title: 'Tarifs — Acupuncture Rosemont et Repentigny',
   description:
-    'Tarifs transparents pour mes services d’acupuncture a La Source en Soi (Rosemont). Consultation privee 90 $/h, acupuncture sociale a tarif libre (35-50 $). Recu pour assurances.',
+    'Tarifs transparents. Consultation privee 90 $/h, acupuncture sociale 35-50 $. Rosemont et Repentigny. Recu pour assurances.',
 };
 
-const GRV_URL = 'https://www.gorendezvous.com/lasourceensoi?companyId=104074&eids=175708';
+const GRV_URL = '/reserver';
 
 const OFFERS = [
   {
@@ -21,7 +21,7 @@ const OFFERS = [
     desc: 'S&eacute;ance individuelle, en cabinet priv&eacute;. &Eacute;change approfondi, &eacute;valuation compl&egrave;te, plan d&rsquo;accompagnement personnalis&eacute;.',
     indications:
       '<strong>Indications</strong> : fertilit&eacute;, grossesse, p&eacute;diatrie, sant&eacute; mentale, douleurs, bien-&ecirc;tre g&eacute;n&eacute;ral.',
-    ctaHref: 'https://www.gorendezvous.com/lasourceensoi?companyId=104074&eids=175708',
+    ctaHref: '/reserver',
     ctaLabel: 'Prendre rendez-vous',
   },
   {
