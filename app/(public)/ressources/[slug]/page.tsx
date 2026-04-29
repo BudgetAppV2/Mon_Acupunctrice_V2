@@ -123,11 +123,11 @@ export default async function RessourcePage({
         <div className="max-w-[780px] mx-auto space-y-16">
           {[
             ressource.introSection,
-            ressource.scienceSection,
-            ressource.mechanismSection,
             ressource.judithApproach,
             ressource.whatToExpect,
             ressource.protocolSection,
+            ressource.scienceSection,
+            ressource.mechanismSection,
             ressource.testimonial,
           ].map((content, idx) =>
             content ? (
@@ -151,6 +151,57 @@ export default async function RessourcePage({
             <div className="mt-12">
               <RessourceFaq entries={ressource.faqEntries} />
             </div>
+          </div>
+        </section>
+      )}
+
+      {/* Citations scientifiques */}
+      {ressource.citations && ressource.citations.length > 0 && (
+        <section className="bg-white py-[48px] px-5 md:px-8 border-t border-public-border-subtle">
+          <div className="max-w-[780px] mx-auto">
+            <h2 className="font-public-serif text-[22px] font-medium text-public-text-dark mb-6">
+              Sources scientifiques
+            </h2>
+            <ol className="space-y-3 text-[14px] text-public-text-medium leading-relaxed">
+              {ressource.citations.map((c, i) => (
+                <li key={i} className="pl-2">
+                  <span className="font-medium">{c.authors}</span>
+                  {' \u2014 '}
+                  <em>{c.title}</em>
+                  {'. '}
+                  {c.journal}, {c.year}.
+                  {c.url && (
+                    <>
+                      {' '}
+                      <a href={c.url} target="_blank" rel="noopener noreferrer"
+                         className="text-public-accent-taupe-dark underline underline-offset-2">
+                        Lire l&rsquo;&eacute;tude
+                      </a>
+                    </>
+                  )}
+                </li>
+              ))}
+            </ol>
+          </div>
+        </section>
+      )}
+
+      {/* Articles de blog associes */}
+      {ressource.relatedArticles && ressource.relatedArticles.length > 0 && (
+        <section className="bg-public-beige-bg py-[48px] px-5 md:px-8">
+          <div className="max-w-[780px] mx-auto">
+            <h3 className="text-[16px] font-semibold text-public-text-dark mb-3">
+              Articles de blog sur ce sujet
+            </h3>
+            <ul className="space-y-2">
+              {ressource.relatedArticles.map((articleSlug) => (
+                <li key={articleSlug}>
+                  <Link href={`/blog/${articleSlug}`} className="text-public-accent-taupe-dark underline underline-offset-2 text-[14px]">
+                    {articleSlug.replace(/-/g, ' ')}
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </div>
         </section>
       )}

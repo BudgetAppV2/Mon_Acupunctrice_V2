@@ -82,9 +82,9 @@ export default function NewRessourcePage() {
         <Accordion title="Contenu principal" open={openSection === 'contenu'} onToggle={() => toggleSection('contenu')}>
           <div className="space-y-4">
             <MarkdownField label="Introduction" value={introSection} onChange={setIntroSection} rows={6} />
-            <MarkdownField label="Ce que la science dit" value={scienceSection} onChange={setScienceSection} rows={8} />
-            <MarkdownField label="Mon approche" value={approcheSection} onChange={setApprocheSection} rows={6} />
+            <MarkdownField label="Mon approche (Judith)" value={approcheSection} onChange={setApprocheSection} rows={6} />
             <MarkdownField label="Protocole / FAQ inline" value={faqSection} onChange={setFaqSection} rows={6} />
+            <MarkdownField label="Ce que la science dit" value={scienceSection} onChange={setScienceSection} rows={8} />
           </div>
         </Accordion>
 
