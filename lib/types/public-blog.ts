@@ -19,6 +19,7 @@ export interface PublicBlogPost {
   publishedAt: Timestamp | null;
   updatedAt: Timestamp;
   createdAt: Timestamp;
+  faqs?: { question: string; answer: string }[];
   // Champs rejet (Q11)
   rejectionReason?: string;
   rejectedAt?: Timestamp;

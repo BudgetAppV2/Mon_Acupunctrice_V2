@@ -268,7 +268,7 @@ export default function BlogEditor({ onPublish, onCancel, publishing }: Props) {
         )}
         <button onClick={handlePublish} disabled={!canPublish || publishing}
           className={`w-full py-3 rounded-xl text-sm font-semibold transition ${canPublish && !publishing ? 'bg-sage text-white active:bg-sage/90' : 'bg-gray-200 text-gray-400'}`}>
-          {publishing ? 'Publication en cours...' : 'Publier sur Wix'}
+          {publishing ? 'Publication en cours...' : 'Publier'}
         </button>
       </div>
     </div>
