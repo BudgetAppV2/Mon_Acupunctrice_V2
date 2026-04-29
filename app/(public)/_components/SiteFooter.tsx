@@ -111,6 +111,14 @@ export default function SiteFooter() {
           {' · '}
           &copy; 2026 Judith Dufour-Savard
         </p>
+        <p className="text-center mt-3">
+          <a
+            href="/calendrier"
+            className="text-[10px] opacity-30 hover:opacity-60 transition-opacity"
+          >
+            Espace admin
+          </a>
+        </p>
       </div>
     </footer>
   );

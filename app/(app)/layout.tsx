@@ -11,6 +11,7 @@ import {
   DocumentTextIcon as DocumentTextOutline,
   BookOpenIcon as BookOpenOutline,
   UserIcon as UserOutline,
+  ArrowTopRightOnSquareIcon,
 } from '@heroicons/react/24/outline';
 import {
   LightBulbIcon as LightBulbSolid,
@@ -68,6 +69,18 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         </div>
       )}
       <div className={isEditor ? '' : 'pt-[env(safe-area-inset-top)] pb-[calc(49px+env(safe-area-inset-bottom))]'}>
+        {!isEditor && (
+          <div className="flex justify-end px-4 pt-2">
+            <a
+              href="/"
+              target="_blank"
+              className="flex items-center gap-1 text-[11px] text-gray-400 hover:text-sage transition-colors"
+            >
+              Voir le site
+              <ArrowTopRightOnSquareIcon className="w-3 h-3" />
+            </a>
+          </div>
+        )}
         {children}
       </div>
 
