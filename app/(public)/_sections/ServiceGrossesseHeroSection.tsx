@@ -21,8 +21,7 @@ export default function ServiceGrossesseHeroSection() {
             Naus&eacute;es qui durent, douleurs au dos, b&eacute;b&eacute; en si&egrave;ge,
             stress de l&rsquo;accouchement. &Agrave; chaque trimestre, l&rsquo;acupuncture
             peut &ecirc;tre un alli&eacute; pr&eacute;cieux &mdash; document&eacute; par la
-            recherche, et pratiqu&eacute; ici avec l&rsquo;exp&eacute;rience d&rsquo;une
-            ex-maison de naissance.
+            recherche, et pratiqu&eacute; ici avec exp&eacute;rience.
           </p>
           <div className="flex flex-wrap gap-4">
             <CtaButton variant="primary" size="lg" href="/reserver">

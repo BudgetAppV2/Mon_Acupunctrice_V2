@@ -20,7 +20,7 @@ const OFFERS = [
     price: '100 $ <span class="text-[16px] font-normal text-public-text-medium">/ s&eacute;ance de 60 min</span>',
     desc: 'S&eacute;ance individuelle, en cabinet priv&eacute;. &Eacute;change approfondi, &eacute;valuation compl&egrave;te, plan d&rsquo;accompagnement personnalis&eacute;.',
     indications:
-      '<strong>Indications</strong> : fertilit&eacute;, grossesse, p&eacute;diatrie, sant&eacute; mentale, douleurs, bien-&ecirc;tre g&eacute;n&eacute;ral.',
+      '<strong>Indications</strong> : fertilit&eacute;, grossesse, sant&eacute; mentale, douleurs, bien-&ecirc;tre g&eacute;n&eacute;ral.<br/><span class="inline-block mt-2 text-public-text-medium"><strong>Tarif p&eacute;diatrique</strong> : 90 $ pour les enfants de 0 &agrave; 17 ans.</span>',
     ctaHref: '/reserver',
     ctaLabel: 'Prendre rendez-vous',
   },
@@ -71,6 +71,11 @@ const FAQ_TARIFS = [
       'Une première séance coûte 100 $ et dure 60 minutes. Ce tarif inclut l’échange initial approfondi, l’évaluation complète, le premier traitement et le plan d’accompagnement personnalisé.',
   },
   {
+    question: 'Quel est le tarif pour une séance pédiatrique ?',
+    answer:
+      'Une séance pour enfant ou adolescent (0 à 17 ans) coûte 90 $ et dure 60 minutes. Le tarif inclut l’échange avec l’enfant et le parent, l’évaluation et le traitement adapté à l’âge (techniques douces, souvent sans aiguilles pour les plus petits).',
+  },
+  {
     question: 'Qu’est-ce que l’acupuncture sociale ?',
     answer:
       'L’acupuncture sociale est une séance en format de petit groupe, à tarif libre entre 35 $ et 60 $ selon vos moyens. C’est la même acupuncture — même formation, mêmes aiguilles stériles — simplement dans un format qui rend les soins accessibles à tous.',
@@ -112,6 +117,14 @@ const JSON_LD = [
           '@type': 'Offer',
           name: 'Consultation privée d’acupuncture',
           description: 'Séance individuelle de 60 minutes en cabinet privé',
+          price: '100',
+          priceCurrency: 'CAD',
+          eligibleDuration: { '@type': 'QuantitativeValue', value: 60, unitCode: 'MIN' },
+        },
+        {
+          '@type': 'Offer',
+          name: 'Consultation pédiatrique d’acupuncture',
+          description: 'Séance pour enfants de 0 à 17 ans, 60 minutes',
           price: '90',
           priceCurrency: 'CAD',
           eligibleDuration: { '@type': 'QuantitativeValue', value: 60, unitCode: 'MIN' },
@@ -119,17 +132,16 @@ const JSON_LD = [
         {
           '@type': 'Offer',
           name: 'Acupuncture sociale',
-          description: 'Séance en petit groupe, tarif libre 35-60 $',
+          description: 'Séance en petit groupe, tarif libre 35-60 CAD',
           priceSpecification: {
             '@type': 'PriceSpecification',
             minPrice: '35',
-            maxPrice: '50',
+            maxPrice: '60',
             priceCurrency: 'CAD',
           },
           eligibleDuration: {
             '@type': 'QuantitativeValue',
-            minValue: 30,
-            maxValue: 45,
+            value: 60,
             unitCode: 'MIN',
           },
         },
@@ -174,7 +186,7 @@ export default function TarifsPage() {
           <SectionHeading
             kicker="TARIFS"
             title="Tarifs transparents, accessibles &agrave; tous."
-            subtitle="Les prix de mes s&eacute;ances d&rsquo;acupuncture sont clairs, sans frais cach&eacute;s. Et parce que la sant&eacute; ne devrait pas &ecirc;tre un privil&egrave;ge, j&rsquo;offre aussi de l&rsquo;acupuncture sociale &agrave; tarif libre. Clinique &agrave; Rosemont, sur Beaubien Est."
+            subtitle="Les prix de mes s&eacute;ances d&rsquo;acupuncture sont clairs, sans frais cach&eacute;s. Et parce que la sant&eacute; ne devrait pas &ecirc;tre un privil&egrave;ge, j&rsquo;offre aussi de l&rsquo;acupuncture sociale &agrave; tarif libre. Clinique &agrave; Rosemont (Beaubien Est) et &agrave; Repentigny (&Eacute;den Yoga Pilates)."
           />
         </div>
       </section>

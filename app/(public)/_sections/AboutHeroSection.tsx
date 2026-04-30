@@ -21,13 +21,14 @@ export default function AboutHeroSection() {
           <SectionHeading kicker="QUI JE SUIS" title="Je suis Judith." align="left" />
           <div className="mt-6 space-y-6 text-[17px] leading-[1.75] text-public-text-medium">
             <p>
-              Acupunctrice &agrave; Rosemont, j&rsquo;accompagne les femmes, les familles et les enfants
+              Acupunctrice &agrave; Rosemont et &agrave; Repentigny, j&rsquo;accompagne les femmes, les familles et les enfants
               dans les grands passages de la vie. Fertilit&eacute;, grossesse, post-partum, p&eacute;diatrie
               &mdash; et aussi, tout simplement, les maux du quotidien.
             </p>
             <p>
-              Mon cabinet est &agrave; La Source en Soi, sur Beaubien Est. C&rsquo;est un lieu chaleureux,
-              familial, o&ugrave; chaque personne est accueillie dans ce qu&rsquo;elle vit, maintenant.
+              Mon cabinet principal est &agrave; La Source en Soi, sur Beaubien Est &agrave; Rosemont.
+              Je pratique aussi le mercredi &agrave; &Eacute;den Yoga Pilates, &agrave; Repentigny.
+              Deux lieux chaleureux et familiaux, o&ugrave; chaque personne est accueillie dans ce qu&rsquo;elle vit, maintenant.
             </p>
           </div>
         </div>

@@ -60,7 +60,7 @@ export default function SocialSection() {
             Instagram
           </a>
           <a
-            href="https://www.youtube.com"
+            href="https://www.youtube.com/@JudithDufourSavard"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 rounded-full border border-public-border-subtle px-4 py-2.5 text-[13px] font-medium text-public-text-medium hover:border-public-accent-taupe hover:-translate-y-px hover:shadow-public-sm transition-all"
