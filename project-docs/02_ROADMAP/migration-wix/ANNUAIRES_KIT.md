@@ -6,19 +6,34 @@ Date cible : 3 mai 2026 (jour du switch DNS). À soumettre simultanément pour u
 
 ## 0. Avant de commencer — Infos à compléter
 
-Ces champs sont demandés par toutes ou presque toutes les plateformes. Vérifier avec Judith
-avant le déploiement pour éviter de devoir corriger 12 fois.
+Ces champs sont demandés par toutes ou presque toutes les plateformes. Vérifier avant le déploiement pour éviter de devoir corriger 12 fois.
 
-| Champ | Valeur | À vérifier |
-|-------|--------|------------|
+### Workflow recommandé pour compléter ces infos
+
+1. **Lancer le prompt Claude in Chrome** (`project-docs/PROMPT_CLAUDE_CHROME_ANNUAIRES.md`)
+   - Récupère numéro OAQ, année début pratique, code postal Éden, heures LSSI
+   - Vérifie l'existence de fiches Judith sur les 12 plateformes
+   - Capture les exigences spécifiques de chaque annuaire
+   - Sortie : `ANNUAIRES_KIT_DATA.md` à fusionner ici
+
+2. **Demander à Judith** (en parallèle ou après) :
+   - Préférence téléphone pro (LSSI / perso / dédié)
+   - Confirmation email pro
+   - Existence d'un logo perso
+   - Validation des heures LSSI récupérées par CiC
+
+3. **Photos** : déjà disponibles dans `/Users/benoitarchambault/Dropbox (Compte personnel)/Judith/` — 14 photos Eric Bates + 8 croppées. Aucune action requise sauf l'upload au moment de la soumission de chaque fiche.
+
+| Champ | Valeur | Source |
+|-------|--------|--------|
 | Nom légal complet | Judith Dufour-Savard | ✓ |
-| Numéro OAQ (membre #) | `<À COMPLÉTER>` | À demander à Judith |
-| Téléphone pro principal | `<À COMPLÉTER>` | LSSI ou perso ? |
-| Email pro | jdufoursavard@gmail.com | À confirmer si email pro distinct |
+| Numéro OAQ (membre #) | `<À COMPLÉTER>` | 🔍 Claude in Chrome (répertoire OAQ) |
+| Téléphone pro principal | `<À COMPLÉTER>` | 💬 Judith (préférence) |
+| Email pro | jdufoursavard@gmail.com | 💬 Judith (à confirmer) |
 | Site web officiel | https://acupuncturejudith.ca | ✓ |
-| Année de début de pratique | `<À COMPLÉTER>` | À demander à Judith |
-| Photo professionnelle (URL ou path) | `<À COMPLÉTER>` | Min 5 photos |
-| Logo (si applicable) | `<À COMPLÉTER>` | — |
+| Année de début de pratique | `<À COMPLÉTER>` | 🔍 Claude in Chrome (OAQ / LSSI bio) |
+| Photo professionnelle | `/Users/benoitarchambault/Dropbox (Compte personnel)/Judith/` | ✓ 14 photos Eric Bates + 8 versions croppées dispo |
+| Logo (si applicable) | `<À COMPLÉTER>` | 💬 Judith (a-t-elle un logo perso ?) |
 
 ### Adresses
 
@@ -33,13 +48,13 @@ Montréal, QC  H1Y 1G3
 ```
 Éden Yoga Pilates
 121 Boulevard Industriel, suite 225
-Repentigny, QC  <code postal à vérifier>
+Repentigny, QC  <code postal à vérifier — 🔍 Claude in Chrome>
 ```
 
 ### Horaires consolidés
 
 ```
-Lundi    : <heures LSSI>
+Lundi    : <heures LSSI>     ← 🔍 Claude in Chrome (GoRendezVous LSSI)
 Mardi    : <heures LSSI>
 Mercredi : 9h00 - 15h00 (Éden Yoga Pilates, Repentigny)
 Jeudi    : <heures LSSI>
@@ -48,7 +63,7 @@ Samedi   : Fermé
 Dimanche : Fermé
 ```
 
-À demander à Judith : heures exactes LSSI par jour.
+Complémenté par Claude in Chrome via le widget GRV de LSSI (`companyId=104074&eids=175708`). À valider avec Judith ensuite.
 
 ### URLs de réservation
 
