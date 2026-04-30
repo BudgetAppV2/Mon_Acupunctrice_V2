@@ -4,6 +4,21 @@ import type { Ressource } from '@/lib/types/ressource';
 const COLLECTION = 'ressources';
 
 /**
+ * Sanitize les champs array d'une ressource Firestore.
+ * Defense en profondeur contre les donnees malformees (ex: parser YAML d'inject.mjs
+ * qui pouvait stocker '[]' comme string au lieu d'un vrai array vide).
+ */
+function normalizeRessource(data: Record<string, unknown>): Record<string, unknown> {
+  const arrayFields = ['faqEntries', 'citations', 'relatedServices', 'relatedFaqs', 'relatedArticles', 'relatedResources'];
+  for (const field of arrayFields) {
+    if (!Array.isArray(data[field])) {
+      data[field] = [];
+    }
+  }
+  return data;
+}
+
+/**
  * Recupere toutes les ressources publiees (status === 'published').
  * Utilise cote Server Component uniquement (firebase-admin).
  */
@@ -15,7 +30,7 @@ export async function getAllPublishedRessources(): Promise<Ressource[]> {
     .get();
   return snap.docs.map((doc) => ({
     id: doc.id,
-    ...(doc.data() as Omit<Ressource, 'id'>),
+    ...(normalizeRessource(doc.data()) as Omit<Ressource, 'id'>),
   }));
 }
 
@@ -29,7 +44,7 @@ export async function getRessourceBySlug(slug: string): Promise<Ressource | null
   if (!doc.exists) return null;
   const data = doc.data()!;
   if (data.status !== 'published') return null;
-  return { id: doc.id, ...(data as Omit<Ressource, 'id'>) };
+  return { id: doc.id, ...(normalizeRessource(data) as Omit<Ressource, 'id'>) };
 }
 
 /**
@@ -48,7 +63,7 @@ export async function getRelatedRessources(
     .get();
   return snap.docs
     .filter((doc) => doc.id !== currentSlug)
-    .map((doc) => ({ id: doc.id, ...(doc.data() as Omit<Ressource, 'id'>) }))
+    .map((doc) => ({ id: doc.id, ...(normalizeRessource(doc.data()) as Omit<Ressource, 'id'>) }))
     .sort((a, b) => {
       if (a.pilier === pilier && b.pilier !== pilier) return -1;
       if (a.pilier !== pilier && b.pilier === pilier) return 1;

@@ -105,7 +105,8 @@ function parseFrontmatter(content) {
       let val = kvMatch[2].trim().replace(/^"(.*)"$/, '$1');
       
       // Detect types
-      if (val === 'true') val = true;
+      if (val === '[]') val = [];
+      else if (val === 'true') val = true;
       else if (val === 'false') val = false;
       else if (!isNaN(Number(val)) && val.trim() !== '') val = Number(val);
       
