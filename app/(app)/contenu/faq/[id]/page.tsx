@@ -57,6 +57,16 @@ export default function EditFaqPage({ params }: { params: Promise<{ id: string }
     router.push('/contenu');
   };
 
+  const handleUnpublish = async () => {
+    if (!confirm('Retirer cette FAQ du site public ?\n\nElle repassera en « En attente » et pourra être réapprouvée en 1 clic.')) return;
+    await fetch('/api/cms/unpublish', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, type: 'faq' }),
+    });
+    router.push('/contenu');
+  };
+
   const handleDelete = async () => {
     if (!confirm('Supprimer cette FAQ ?')) return;
     await fetch(`/api/cms/faq/${id}`, { method: 'DELETE' });
@@ -113,6 +123,12 @@ export default function EditFaqPage({ params }: { params: Promise<{ id: string }
             <button onClick={handleSubmit}
               className="flex-1 py-3 rounded-xl text-sm font-semibold bg-amber-500 text-white">
               Soumettre a Judith
+            </button>
+          )}
+          {status === 'published' && (
+            <button onClick={handleUnpublish}
+              className="flex-1 py-3 rounded-xl text-sm font-semibold bg-gray-200 text-gray-700 hover:bg-gray-300">
+              Retirer du site
             </button>
           )}
         </div>

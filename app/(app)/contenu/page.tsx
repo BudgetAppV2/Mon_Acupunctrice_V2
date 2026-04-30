@@ -75,6 +75,16 @@ export default function ContenuPage() {
     refresh();
   };
 
+  const handleUnpublish = async (id: string, type: string) => {
+    if (!confirm('Retirer ce contenu du site public ?\n\nIl repassera en « En attente » et pourra être réapprouvé en 1 clic.')) return;
+    await fetch('/api/cms/unpublish', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, type, uid: user?.uid }),
+    });
+    refresh();
+  };
+
   const pendingCount = items.filter((i) => i.status === 'pending').length;
 
   return (
@@ -147,6 +157,14 @@ export default function ContenuPage() {
                   <button onClick={() => handleComment(item.id, item.type)}
                     className="text-[11px] font-medium text-amber-600 bg-amber-50 px-2.5 py-1 rounded-md">
                     Commenter
+                  </button>
+                </div>
+              )}
+              {item.status === 'published' && (
+                <div className="flex gap-2 mt-1 ml-4">
+                  <button onClick={() => handleUnpublish(item.id, item.type)}
+                    className="text-[11px] font-medium text-gray-600 bg-gray-100 px-2.5 py-1 rounded-md hover:bg-gray-200">
+                    Retirer du site
                   </button>
                 </div>
               )}

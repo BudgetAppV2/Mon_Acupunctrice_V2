@@ -4,8 +4,8 @@ import { getAdminFirestore } from '@/lib/firebase-admin';
 /** GET /api/cms/list — Liste unifiee blog + FAQ + ressources avec filtres */
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
-  const typeFilter = searchParams.get('type'); // blog | faq | ressource
-  const statusFilter = searchParams.get('status'); // draft | pending | published
+  const typeFilter = searchParams.get('type');
+  const statusFilter = searchParams.get('status');
 
   const db = getAdminFirestore();
   const items: Record<string, unknown>[] = [];
@@ -18,14 +18,21 @@ export async function GET(request: NextRequest) {
         { name: 'ressources', type: 'ressource' },
       ];
 
-  await Promise.all(
+  const results = await Promise.allSettled(
     collections.map(async ({ name, type }) => {
       let query = db.collection(name).orderBy('updatedAt', 'desc').limit(100);
       if (statusFilter) {
         query = db.collection(name).where('status', '==', statusFilter).orderBy('updatedAt', 'desc').limit(100);
       }
       const snap = await query.get();
-      snap.docs.forEach((doc) => {
+      return { type, docs: snap.docs };
+    }),
+  );
+
+  for (const result of results) {
+    if (result.status === 'fulfilled') {
+      const { type, docs } = result.value;
+      docs.forEach((doc) => {
         const d = doc.data();
         items.push({
           id: doc.id,
@@ -37,10 +44,11 @@ export async function GET(request: NextRequest) {
           reviewComment: d.reviewComment || null,
         });
       });
-    }),
-  );
+    } else {
+      console.error('[cms/list] Collection query failed:', result.reason);
+    }
+  }
 
-  // Sort by updatedAt desc across all types
   items.sort((a, b) => {
     const da = a.updatedAt as string || '';
     const db2 = b.updatedAt as string || '';

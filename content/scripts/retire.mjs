@@ -34,13 +34,16 @@ function loadEnv(path) {
 
 const args = process.argv.slice(2);
 const shouldDelete = args.includes('--delete');
-const collection = args[0];
-const slug = args[1];
+const shouldDraft = args.includes('--draft');
+const collection = args.filter(a => !a.startsWith('--'))[0];
+const slug = args.filter(a => !a.startsWith('--'))[1];
 
 if (!collection || !slug) {
-  console.log('Usage: node content/scripts/retire.mjs <collection> <slug> [--delete]');
+  console.log('Usage: node content/scripts/retire.mjs <collection> <slug> [--draft|--delete]');
   console.log('  collection: ressources | faqs | publicBlog');
-  console.log('  --delete: supprime le document (au lieu de le mettre en draft)');
+  console.log('  par defaut : passe en pending (reapprouvable depuis le Hub)');
+  console.log('  --draft : passe en draft (archive, reapparait dans Brouillons)');
+  console.log('  --delete : supprime le document');
   process.exit(1);
 }
 
@@ -60,8 +63,9 @@ if (shouldDelete) {
   await docRef.delete();
   console.log(`🗑️  ${collection}/${slug} SUPPRIMÉ de Firestore`);
 } else {
-  await docRef.update({ status: 'draft', updatedAt: new Date() });
-  console.log(`📦 ${collection}/${slug} archivé (status → draft)`);
+  const newStatus = shouldDraft ? 'draft' : 'pending';
+  await docRef.update({ status: newStatus, updatedAt: new Date(), reviewComment: '' });
+  console.log(`📦 ${collection}/${slug} ${shouldDraft ? 'archive (draft)' : 'retire (pending)'}`);
 }
 
 console.log('💡 Le site se rafraîchira via ISR dans ~1h. Pour un refresh immédiat, redéployez.');
