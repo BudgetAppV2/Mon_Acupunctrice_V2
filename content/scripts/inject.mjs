@@ -19,7 +19,7 @@ import { readFileSync, existsSync } from 'node:fs';
 import { resolve, basename, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { initializeApp, cert } from 'firebase-admin/app';
-import { getFirestore, Timestamp } from 'firebase-admin/firestore';
+import { getFirestore, Timestamp, FieldValue } from 'firebase-admin/firestore';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '../..');
@@ -197,10 +197,18 @@ function buildDocument(fm, sections, collection) {
   if (collection === 'faqs') {
     return {
       question: fm.question || fm.title || '',
-      answer: sections.answer || sections.shortAnswer || '',
-      category: fm.category || fm.pilier || 'general',
+      // Champ Firestore officiel = 'reponse' (cf. lib/types/faq.ts).
+      // Le markdown peut utiliser ## reponse OU ## answer (rétrocompat).
+      reponse: sections.reponse || sections.answer || sections.shortAnswer || '',
+      // Supprime l'ancien champ 'answer' s'il existait (bug d'une version precedente d'inject.mjs)
+      answer: FieldValue.delete(),
+      category: fm.category || fm.pilier || 'seance',
       order: fm.order || 0,
       status: fm.status || 'pending',
+      ctaVariant: fm.ctaVariant || 'reserver',
+      relatedServices: fm.relatedServices || [],
+      relatedArticles: fm.relatedArticles || [],
+      relatedFaqs: fm.relatedFaqs || [],
       updatedAt: now,
       createdAt: now,
       publishedAt: fm.status === 'published' ? now : null,
