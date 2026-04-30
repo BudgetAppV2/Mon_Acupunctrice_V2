@@ -118,6 +118,78 @@ L'ordre d'affichage est défini dans `app/(public)/ressources/[slug]/page.tsx` �
 
 ---
 
+## Production d'un article de blog
+
+**⚠️ Workflow different des ressources et FAQ — transitoire jusqu'au sprint MW-BLOG2 (post-launch).**
+
+### État actuel (avant 3 mai)
+
+Les articles de blog sont produits via l'éditeur Tiptap dans `/blogue` (Hub) :
+
+```
+Hub /blogue → "Nouvel article"
+  → BlogEditor (titre, image cover, contenu Tiptap, FAQ IA, CTA)
+  → POST /api/blog/publish
+  → Firestore publicBlog (status: 'published' DIRECT, pas de pending)
+  → ISR revalidate /blog et /blog/<slug>
+```
+
+**Ce qui marche** :
+- Éditeur riche (gras/italique/H2-H3/listes), upload image, IA pour FAQ SEO, CTA rdv automatique
+- Brouillon auto-sauvé dans localStorage
+- Conversion HTML → markdown au moment de la publication
+
+**Ce qui ne marche pas encore** :
+- Pas de mode édition d'un article publié (création seulement)
+- Pas de workflow review (pas de status `pending` → Judith voit pas l'article avant publication)
+- Le Hub `/contenu` liste les blogs mais le clic redirige vers `/blogue` sans charger l'article à éditer
+- Pas de support markdown + inject pour la production batch (les 14 articles SEO du LAUNCH_PLAN)
+
+### Workflow recommandé actuel
+
+**Pour Judith (articles spontanés, courts)** : utiliser `/blogue` directement. Tiptap est l'outil adapté à ce type d'usage (rich text + images).
+
+**Pour Benoit (articles SEO en batch)** : pour l'instant, soit utiliser `/blogue` un par un, soit attendre le sprint MW-BLOG2 (voir roadmap ci-dessous).
+
+### Roadmap blog — Option B (hybride, post-launch)
+
+Validation stratégique : on garde les **deux méthodes** de création, qui convergent vers la même collection Firestore `publicBlog`.
+
+```
+Methode 1 — Tiptap (Judith, articles spontanes)
+  /blogue → BlogEditor → publicBlog (status: pending)
+
+Methode 2 — Markdown + inject (Benoit, batch SEO)
+  content/blog/<slug>.md → inject.mjs → publicBlog (status: pending)
+
+         ↓ Les deux convergent ici ↓
+
+Hub /contenu → Judith approuve → published → ISR revalidate
+```
+
+**Sprints post-launch à réaliser (effort estimé ~6-8h)** :
+
+1. **MW-BLOG1** — Workflow pending pour Tiptap (~1h)
+   - `/api/blog/publish` écrit `status: 'pending'` au lieu de `'published'`
+   - Le bouton "Publier" devient "Soumettre à Judith" dans BlogEditor
+   - Judith approuve depuis `/contenu` (même flow que ressources/FAQ)
+
+2. **MW-BLOG2** — Support markdown dans inject.mjs (~2h)
+   - Ajouter `buildDocument()` pour la collection `publicBlog`
+   - Créer `content/blog/_TEMPLATE.md`
+   - Documenter dans ce README
+
+3. **MW-BLOG3** — Édition d'article existant (~3h)
+   - Page `/contenu/blog/[id]/page.tsx` qui charge un article et permet de le modifier (Tiptap pré-rempli)
+   - API PUT `/api/blog/[id]` (mise à jour, préserve `publishedAt`)
+   - Le clic sur un blog dans `/contenu` ouvre cette page au lieu de `/blogue`
+
+4. **MW-BLOG4** — Bouton "Retirer du site" pour blogs (~30 min)
+   - Le bouton existe déjà pour les blogs dans `/contenu/page.tsx` (cf. unpublish API qui supporte `type: 'blog'`)
+   - Vérifier qu'il fonctionne, ajuster si bug
+
+---
+
 ## Production d'une FAQ
 
 ### Format
