@@ -36,7 +36,7 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Caveat:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@400;500;700&family=Kalam:wght@400;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Manrope:wght@300;400;600;700&family=Oswald:wght@400;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Poppins:wght@400;600;700;900&family=Space+Grotesk:wght@400;500;700&display=swap"
         />
       </head>
-      <body className="bg-sand text-gray-900 antialiased min-h-screen">
+      <body suppressHydrationWarning className="bg-sand text-gray-900 antialiased min-h-screen">
         {children}
       </body>
     </html>

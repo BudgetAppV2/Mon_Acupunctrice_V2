@@ -1,21 +1,45 @@
 'use client';
 
 import Reveal from '../../_components/animations/Reveal';
-import StaggerChildren from '../../_components/animations/StaggerChildren';
+import ScrollHighlightText from '../../_components/animations/ScrollHighlightText';
 import SectionHeading from '../../_components/SectionHeading';
 
+/**
+ * Section Homme avec ScrollHighlightText : les paragraphes commencent en gris pale
+ * et chaque mot s'assombrit l'un apres l'autre au fur et a mesure que l'utilisateur
+ * scrolle dans la section. Effet editorial type Apple Health Stories / NYT.
+ *
+ * Sensation de "lecture qui se construit" pendant le scroll.
+ */
 export default function ServiceFertiliteHommeSectionLab() {
   return (
     <section className="bg-white py-[68px] md:py-[104px] px-5 md:px-8">
       <div className="max-w-[780px] mx-auto">
         <Reveal>
-          <SectionHeading kicker="FERTILIT&Eacute; MASCULINE" title="Votre conjoint est aussi le bienvenu." align="left" />
+          <SectionHeading
+            kicker="FERTILIT&Eacute; MASCULINE"
+            title="Votre conjoint est aussi le bienvenu."
+            align="left"
+          />
         </Reveal>
-        <StaggerChildren stagger={0.1} className="mt-8 space-y-6 text-[17px] leading-[1.75] text-public-text-medium">
-          <p>Chez l&rsquo;homme, l&rsquo;acupuncture peut am&eacute;liorer la qualit&eacute;, la quantit&eacute; et la motilit&eacute; des spermatozo&iuml;des.</p>
-          <p>Certaines recherches sugg&egrave;rent que l&rsquo;acupuncture pourrait aider &agrave; r&eacute;guler les hormones.</p>
-          <p>Par ailleurs, l&rsquo;acupuncture peut activer le syst&egrave;me parasympathique et favoriser une sensation de relaxation.</p>
-        </StaggerChildren>
+
+        <div className="mt-8 space-y-6 text-[17px] leading-[1.75]">
+          <ScrollHighlightText
+            text="Chez l'homme, l'acupuncture peut améliorer la qualité, la quantité et la motilité des spermatozoïdes."
+            start="top 75%"
+            end="bottom 55%"
+          />
+          <ScrollHighlightText
+            text="Certaines recherches suggèrent que l'acupuncture pourrait aider à réguler les hormones."
+            start="top 75%"
+            end="bottom 50%"
+          />
+          <ScrollHighlightText
+            text="Par ailleurs, l'acupuncture peut activer le système parasympathique et favoriser une sensation de relaxation."
+            start="top 75%"
+            end="bottom 45%"
+          />
+        </div>
       </div>
     </section>
   );

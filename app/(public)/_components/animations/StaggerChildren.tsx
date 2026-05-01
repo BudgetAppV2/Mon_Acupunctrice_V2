@@ -18,7 +18,7 @@ interface StaggerChildrenProps {
 
 export default function StaggerChildren({
   children,
-  childSelector = '> *',
+  childSelector = ':scope > *',
   stagger = ANIMATION.stagger.standard,
   y = ANIMATION.translate.standard,
   scale = 1,
@@ -31,7 +31,12 @@ export default function StaggerChildren({
   useGSAP(
     () => {
       if (!ref.current) return;
-      const targets = ref.current.querySelectorAll(childSelector);
+      // Selector valide en CSS standard. Si l'utilisateur passe '> *' par habitude,
+      // on le corrige automatiquement en ':scope > *'.
+      const safeSelector = childSelector.trim().startsWith('>')
+        ? `:scope ${childSelector.trim()}`
+        : childSelector;
+      const targets = ref.current.querySelectorAll(safeSelector);
       if (!targets.length) return;
       if (prefersReduced) {
         gsap.set(targets, { opacity: 1, y: 0, scale: 1 });

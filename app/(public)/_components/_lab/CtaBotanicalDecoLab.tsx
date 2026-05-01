@@ -2,18 +2,50 @@
 
 import FloatingDeco from '../animations/FloatingDeco';
 
+/**
+ * Version LAB : meme structure que CtaBotanicalDeco mais avec animations FloatingDeco.
+ * Utilise les memes images plant.webp en mix-blend-mode screen.
+ * Les deux feuilles flottent avec amplitudes et delais differents pour un effet naturel.
+ */
 export default function CtaBotanicalDecoLab() {
   return (
     <>
-      <FloatingDeco amplitude={6} duration={4} delay={0} className="absolute -top-16 -left-20 w-[280px] h-[280px] opacity-[0.12] pointer-events-none z-0">
-        <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-          <path d="M100 20c20 40 60 60 80 80-20 20-40 60-80 80-20-40-60-60-80-80 20-20 40-60 80-80z" fill="currentColor" opacity="0.4" />
-        </svg>
+      {/* Gauche */}
+      <FloatingDeco
+        amplitude={12}
+        duration={6}
+        delay={0}
+        className="absolute top-[20px] left-[-80px] w-[30%] h-full pointer-events-none z-0 hidden md:block overflow-hidden"
+      >
+        <div aria-hidden="true" className="w-full h-full">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/site/svg/plant.webp"
+            alt=""
+            loading="lazy"
+            className="w-full h-full object-cover object-center"
+            style={{ mixBlendMode: 'screen', transform: 'scale(2.2)', transformOrigin: 'center center', opacity: 0.55 }}
+          />
+        </div>
       </FloatingDeco>
-      <FloatingDeco amplitude={8} duration={5} delay={1.5} className="absolute -bottom-12 -right-16 w-[220px] h-[220px] opacity-[0.10] pointer-events-none z-0">
-        <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full rotate-45">
-          <path d="M100 20c20 40 60 60 80 80-20 20-40 60-80 80-20-40-60-60-80-80 20-20 40-60 80-80z" fill="currentColor" opacity="0.4" />
-        </svg>
+
+      {/* Droite (miroir) */}
+      <FloatingDeco
+        amplitude={10}
+        duration={7}
+        delay={2}
+        className="absolute top-[20px] right-[-80px] w-[30%] h-full pointer-events-none z-0 hidden md:block overflow-hidden"
+      >
+        <div aria-hidden="true" className="w-full h-full" style={{ transform: 'scaleX(-1)' }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/site/svg/plant.webp"
+            alt=""
+            loading="lazy"
+            className="w-full h-full object-cover object-center"
+            style={{ mixBlendMode: 'screen', transform: 'scale(2.2)', transformOrigin: 'center center', opacity: 0.55 }}
+          />
+        </div>
       </FloatingDeco>
     </>
   );

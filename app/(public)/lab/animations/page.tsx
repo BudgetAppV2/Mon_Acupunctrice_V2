@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import GsapBootstrap from './GsapBootstrap';
+import LenisProvider from './LenisProvider';
 import ServiceFertiliteHeroSectionLab from '../../_sections/_lab/ServiceFertiliteHeroSectionLab';
 import ServiceFertiliteBioSectionLab from '../../_sections/_lab/ServiceFertiliteBioSectionLab';
 import ServiceFertiliteBenefitsSectionLab from '../../_sections/_lab/ServiceFertiliteBenefitsSectionLab';
@@ -23,6 +24,7 @@ export default function AnimationsLabPage() {
   return (
     <>
       <GsapBootstrap />
+      <LenisProvider />
       <div className="bg-amber-500 text-white text-center py-2 text-[12px] font-semibold uppercase tracking-[2px]">
         LAB - Page de test animations - Non indexee
       </div>
