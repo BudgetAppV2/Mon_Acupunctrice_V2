@@ -1,58 +1,51 @@
+'use client';
+
+import Reveal from '../_components/animations/Reveal';
+import RevealWords from '../_components/animations/RevealWords';
 import SectionNumber from '../_components/SectionNumber';
 import SectionHeading from '../_components/SectionHeading';
 
 export default function ServiceFertiliteBioSection() {
   return (
     <section className="bg-white py-[68px] md:py-[104px] px-5 md:px-8 relative overflow-hidden">
-      {/* SVG decoratif reproductive-flowers en filigrane a droite */}
-      <div
-        className="absolute -right-[80px] top-[40px] w-[460px] h-[560px] hidden md:block pointer-events-none z-0"
-        aria-hidden="true"
-        style={{ transform: 'rotate(-8deg)', opacity: 0.14, mixBlendMode: 'multiply' }}
-      >
+      <div className="absolute -right-[80px] top-[40px] w-[460px] h-[560px] hidden md:block pointer-events-none z-0" aria-hidden="true" style={{ transform: 'rotate(-8deg)', opacity: 0.14, mixBlendMode: 'multiply' }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/site/svg/reproductive-flowers.svg"
-          alt=""
-          loading="lazy"
-          className="w-full h-full object-contain"
-        />
+        <img src="/site/svg/reproductive-flowers.svg" alt="" loading="lazy" className="w-full h-full object-contain" />
       </div>
 
       <div className="max-w-[780px] mx-auto relative z-10">
-        <SectionNumber number="01" align="left" />
-        <SectionHeading
-          kicker="QUI VOUS ACCOMPAGNE"
-          title="Une approche n&eacute;e du terrain."
-          align="left"
-        />
+        <Reveal scaleFrom={0.7} delay={0.1} duration={0.8}>
+          <SectionNumber number="01" align="left" />
+        </Reveal>
+        <Reveal>
+          <SectionHeading kicker="QUI VOUS ACCOMPAGNE" title="Une approche n&eacute;e du terrain." align="left" />
+        </Reveal>
 
         <div className="mt-8 space-y-6 text-[17px] leading-[1.75] text-public-text-medium">
           <p>
-            Je suis Judith Dufour-Savard, acupunctrice &agrave; La Source en Soi, sur Beaubien Est
-            &agrave; Rosemont. J&rsquo;ai travaill&eacute; &agrave; la Maison de naissance C&ocirc;te-des-Neiges
-            avant ma pratique, et je suis m&egrave;re de trois enfants. Quand je vous &eacute;coute me parler
-            de votre parcours de fertilit&eacute;, je ne le fais pas juste comme professionnelle &mdash;
-            je le fais aussi comme femme qui comprend l&rsquo;attente, l&rsquo;espoir, et la fatigue
-            &eacute;motionnelle qui viennent avec.
+            <RevealWords
+              text="Je suis Judith Dufour-Savard, acupunctrice à La Source en Soi, sur Beaubien Est à Rosemont. J'ai travaillé à la Maison de naissance Côte-des-Neiges avant ma pratique, et je suis mère de trois enfants. Quand je vous écoute me parler de votre parcours de fertilité, je ne le fais pas juste comme professionnelle — je le fais aussi comme femme qui comprend l'attente, l'espoir, et la fatigue émotionnelle qui viennent avec."
+              stagger={0.03}
+              duration={0.6}
+              y={20}
+            />
           </p>
           <p>
-            Ma pratique combine la rigueur de la m&eacute;decine traditionnelle chinoise, les &eacute;tudes
-            scientifiques r&eacute;centes (une{' '}
-            <a
-              href="/ressources/acupuncture-fertilite-montreal"
-              className="text-public-accent-warm underline underline-offset-4 hover:text-public-accent-warm-soft transition-colors"
-            >
-              m&eacute;ta-analyse de septembre 2025
-            </a>{' '}
-            montre des r&eacute;sultats encourageants sur 3 561 femmes), et une bonne dose d&rsquo;humanit&eacute;.
+            <RevealWords
+              text="Ma pratique combine la rigueur de la médecine traditionnelle chinoise, les études scientifiques récentes, et une bonne dose d'humanité."
+              stagger={0.04}
+              duration={0.6}
+              y={20}
+            />
           </p>
         </div>
 
-        <div className="mt-8 inline-flex items-center gap-2 rounded-full bg-public-beige-light px-5 py-2.5 text-[13px] font-medium text-public-text-medium border border-public-border-subtle">
-          <ShieldCheckIcon />
-          Membre de l&rsquo;Ordre des acupuncteurs du Qu&eacute;bec (OAQ)
-        </div>
+        <Reveal delay={0.4}>
+          <div className="mt-8 inline-flex items-center gap-2 rounded-full bg-public-beige-light px-5 py-2.5 text-[13px] font-medium text-public-text-medium border border-public-border-subtle">
+            <ShieldCheckIcon />
+            Membre de l&rsquo;Ordre des acupuncteurs du Qu&eacute;bec (OAQ)
+          </div>
+        </Reveal>
       </div>
     </section>
   );

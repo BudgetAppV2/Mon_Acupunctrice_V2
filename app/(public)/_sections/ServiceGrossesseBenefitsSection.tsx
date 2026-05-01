@@ -1,7 +1,10 @@
+'use client';
+
 import Link from 'next/link';
 import PaperTexture from '../_components/PaperTexture';
 import SectionNumber from '../_components/SectionNumber';
 import SectionHeading from '../_components/SectionHeading';
+import Reveal from '../_components/animations/Reveal';
 
 const TRIMESTRES = [
   {

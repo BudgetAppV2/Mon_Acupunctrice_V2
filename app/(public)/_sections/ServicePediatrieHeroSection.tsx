@@ -1,5 +1,8 @@
+'use client';
+
 import GrainOverlay from '../_components/GrainOverlay';
 import CtaButton from '../_components/CtaButton';
+import Reveal from '../_components/animations/Reveal';
 
 export default function ServicePediatrieHeroSection() {
   return (

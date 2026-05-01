@@ -1,5 +1,8 @@
+'use client';
+
 import SectionNumber from '../_components/SectionNumber';
 import SectionHeading from '../_components/SectionHeading';
+import Reveal from '../_components/animations/Reveal';
 
 const STEPS = [
   { n: 1, label: 'Accueil', text: "On échange sur comment vous allez, vos symptômes du jour" },

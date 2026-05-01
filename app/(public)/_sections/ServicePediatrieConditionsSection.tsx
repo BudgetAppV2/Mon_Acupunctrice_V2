@@ -1,6 +1,9 @@
+'use client';
+
 import Link from 'next/link';
 import SectionNumber from '../_components/SectionNumber';
 import SectionHeading from '../_components/SectionHeading';
+import Reveal from '../_components/animations/Reveal';
 
 const AGE_GROUPS: { title: string; range: string; items: string[]; note?: string }[] = [
   {

@@ -1,4 +1,7 @@
+'use client';
+
 import TestimonialCard from '../_components/TestimonialCard';
+import Reveal from '../_components/animations/Reveal';
 
 export default function ServiceGrossesseTemoignageSection() {
   return (
