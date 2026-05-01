@@ -23,14 +23,19 @@ export default function ServiceGrossesseBioSection() {
       </div>
 
       <div className="max-w-[780px] mx-auto relative z-10">
-        <SectionNumber number="01" align="left" />
-        <SectionHeading
+        <Reveal scaleFrom={0.7} delay={0.1} duration={0.8}>
+          <SectionNumber number="01" align="left" />
+        </Reveal>
+        <Reveal>
+          <SectionHeading
           kicker="QUI VOUS ACCOMPAGNE"
           title="La grossesse, je la connais des deux c&ocirc;t&eacute;s."
           align="left"
         />
+        </Reveal>
 
-        <div className="mt-8 space-y-6 text-[17px] leading-[1.75] text-public-text-medium">
+        <Reveal delay={0.15}>
+          <div className="mt-8 space-y-6 text-[17px] leading-[1.75] text-public-text-medium">
           <p>
             Avant de devenir acupunctrice, j&rsquo;ai travaill&eacute; &agrave; la Maison de
             naissance C&ocirc;te-des-Neiges. Cette exp&eacute;rience m&rsquo;a profond&eacute;ment
@@ -45,11 +50,14 @@ export default function ServiceGrossesseBioSection() {
             C&rsquo;est une diff&eacute;rence qui compte.
           </p>
         </div>
+        </Reveal>
 
-        <div className="mt-8 inline-flex items-center gap-2 rounded-full bg-public-beige-light px-5 py-2.5 text-[13px] font-medium text-public-text-medium border border-public-border-subtle">
+        <Reveal delay={0.4}>
+          <div className="mt-8 inline-flex items-center gap-2 rounded-full bg-public-beige-light px-5 py-2.5 text-[13px] font-medium text-public-text-medium border border-public-border-subtle">
           <ShieldCheckIcon />
           Membre de l&rsquo;Ordre des acupuncteurs du Qu&eacute;bec (OAQ)
         </div>
+        </Reveal>
       </div>
     </section>
   );
