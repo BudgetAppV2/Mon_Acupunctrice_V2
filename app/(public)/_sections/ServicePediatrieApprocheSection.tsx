@@ -77,6 +77,46 @@ export default function ServicePediatrieApprocheSection() {
             ne pleurent pas.
           </p>
         </div>
+
+        {/* A quoi s'attendre selon l'age */}
+        <h3 className="mt-12 font-public-serif text-[22px] font-semibold mb-6 text-public-text-dark">
+          &Agrave; quoi s&rsquo;attendre, selon l&rsquo;&acirc;ge
+        </h3>
+        <div className="space-y-4">
+          <div className="bg-white/70 backdrop-blur-sm p-5 rounded-[10px] border border-public-border-subtle">
+            <strong className="font-public-serif text-[17px] text-public-text-dark block mb-2">
+              B&eacute;b&eacute;s (0-12 mois)
+            </strong>
+            <ul className="space-y-1.5 text-[14px] text-public-text-medium leading-relaxed">
+              <li>&middot; <strong>Fr&eacute;quence (coliques)</strong> : 2 s&eacute;ances par semaine pendant 2-3 semaines.</li>
+              <li>&middot; <strong>R&eacute;action typique</strong> : certains b&eacute;b&eacute;s ne r&eacute;agissent pas du tout, d&rsquo;autres pleurent bri&egrave;vement (moins qu&rsquo;&agrave; la vaccination).</li>
+              <li>&middot; Le parent reste pr&egrave;s du b&eacute;b&eacute;, peut le tenir, l&rsquo;allaiter.</li>
+            </ul>
+          </div>
+
+          <div className="bg-white/70 backdrop-blur-sm p-5 rounded-[10px] border border-public-border-subtle">
+            <strong className="font-public-serif text-[17px] text-public-text-dark block mb-2">
+              Enfants (1-12 ans)
+            </strong>
+            <ul className="space-y-1.5 text-[14px] text-public-text-medium leading-relaxed">
+              <li>&middot; On commence par expliquer ce qu&rsquo;on va faire avec un langage adapt&eacute;.</li>
+              <li>&middot; L&rsquo;enfant explore, touche les ventouses et/ou le shino shin, pose ses questions.</li>
+              <li>&middot; Si l&rsquo;enfant ne veut pas d&rsquo;aiguilles : on a des alternatives sans aiguilles (ventouse, acupression, tuina).</li>
+              <li>&middot; Le parent peut rester en salle, c&rsquo;est souvent rassurant.</li>
+            </ul>
+          </div>
+
+          <div className="bg-white/70 backdrop-blur-sm p-5 rounded-[10px] border border-public-border-subtle">
+            <strong className="font-public-serif text-[17px] text-public-text-dark block mb-2">
+              Adolescents (12+)
+            </strong>
+            <ul className="space-y-1.5 text-[14px] text-public-text-medium leading-relaxed">
+              <li>&middot; S&eacute;ance plus proche du format adulte, dans un cadre confidentiel.</li>
+              <li>&middot; Le parent peut attendre &agrave; l&rsquo;ext&eacute;rieur si l&rsquo;adolescent le pr&eacute;f&egrave;re.</li>
+              <li>&middot; <em>&Agrave; partir de 14 ans, l&rsquo;adolescent peut consentir aux soins sans l&rsquo;accord de ses parents.</em></li>
+            </ul>
+          </div>
+        </div>
       </div>
     </PaperTexture>
   );

@@ -2,7 +2,7 @@ import Link from 'next/link';
 import SectionNumber from '../_components/SectionNumber';
 import SectionHeading from '../_components/SectionHeading';
 
-const AGE_GROUPS = [
+const AGE_GROUPS: { title: string; range: string; items: string[]; note?: string }[] = [
   {
     title: 'Bébés',
     range: '0-12 MOIS',
@@ -35,6 +35,7 @@ const AGE_GROUPS = [
       'Acné, maux de tête',
       'Troubles du sommeil',
     ],
+    note: 'Un adolescent de 14 ans et plus n’a pas besoin du consentement de ses parents pour recevoir un traitement.',
   },
 ];
 
@@ -53,7 +54,7 @@ export default function ServicePediatrieConditionsSection() {
           {AGE_GROUPS.map((group) => (
             <div
               key={group.title}
-              className="bg-white rounded-[14px] p-8 border border-public-border-subtle"
+              className="bg-white rounded-[14px] p-8 border border-public-border-subtle flex flex-col"
             >
               <h3 className="font-public-serif text-[22px] font-semibold mb-2 text-public-text-dark">
                 {group.title}
@@ -61,7 +62,7 @@ export default function ServicePediatrieConditionsSection() {
               <p className="text-[11px] uppercase tracking-[1.5px] text-public-accent-taupe-dark mb-4">
                 {group.range}
               </p>
-              <ul className="space-y-2 text-[14px] text-public-text-medium leading-relaxed">
+              <ul className="space-y-2 text-[14px] text-public-text-medium leading-relaxed flex-1">
                 {group.items.map((item) => (
                   <li key={item} className="flex items-start gap-2">
                     <span className="shrink-0 w-1.5 h-1.5 rounded-full bg-public-accent-warm mt-2" aria-hidden="true" />
@@ -69,6 +70,11 @@ export default function ServicePediatrieConditionsSection() {
                   </li>
                 ))}
               </ul>
+              {group.note && (
+                <p className="mt-4 pt-4 border-t border-public-border-subtle text-[12px] italic text-public-text-light leading-relaxed">
+                  {group.note}
+                </p>
+              )}
             </div>
           ))}
         </div>

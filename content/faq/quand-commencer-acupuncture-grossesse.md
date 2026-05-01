@@ -15,7 +15,7 @@ L'acupuncture peut être pratiquée **à tous les trimestres**, et chaque pério
 
 **Deuxième trimestre (semaines 14 à 27)** — Période plus calme côté symptômes. C'est un bon moment pour traiter les douleurs lombaires ou pelviennes qui apparaissent, le sommeil, l'anxiété et préparer le corps pour la suite.
 
-**Troisième trimestre (semaines 28 à 40)** — Préparation à l'accouchement, version d'un bébé en siège (autour de 33-34 semaines), gestion des douleurs sciatiques, des œdèmes, et préparation cervicale à partir de 36-37 semaines pour favoriser un travail efficace.
+**Troisième trimestre (semaines 28 à 40)** — Préparation à l'accouchement, version d'un bébé en siège (autour de 33-35 semaines, fenêtre optimale), gestion des douleurs sciatiques, des œdèmes, et préparation cervicale à partir de 36-37 semaines pour favoriser un travail efficace. À partir de 37 semaines, si bébé est encore en siège, la version manuelle par un médecin sera conseillée — un traitement d'acupuncture le jour même peut augmenter les chances de réussite.
 
 Dans tous les cas, on utilise un protocole spécifiquement adapté à la grossesse — certains points sont contre-indiqués pendant la grossesse et je les évite systématiquement. Mentionnez toujours à votre acupuncteur que vous êtes enceinte, même très tôt.
 

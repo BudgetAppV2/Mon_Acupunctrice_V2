@@ -5,7 +5,7 @@ export default function ServiceFertiliteCollaborationSection() {
   return (
     <section className="bg-public-beige-bg py-[68px] md:py-[104px] px-5 md:px-8 border-t border-b border-public-accent-warm/20">
       <div className="max-w-[780px] mx-auto">
-        <SectionNumber number="03" align="left" />
+        <SectionNumber number="04" align="left" />
         <SectionHeading
           kicker="COMPL&Eacute;MENT, JAMAIS OPPOSITION"
           title="J&rsquo;accompagne votre suivi m&eacute;dical."

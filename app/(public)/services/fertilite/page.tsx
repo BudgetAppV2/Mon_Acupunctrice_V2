@@ -3,6 +3,7 @@ import Link from 'next/link';
 import ServiceFertiliteHeroSection from '../../_sections/ServiceFertiliteHeroSection';
 import ServiceFertiliteBioSection from '../../_sections/ServiceFertiliteBioSection';
 import ServiceFertiliteBenefitsSection from '../../_sections/ServiceFertiliteBenefitsSection';
+import ServiceFertiliteHommeSection from '../../_sections/ServiceFertiliteHommeSection';
 import ServiceFertiliteCollaborationSection from '../../_sections/ServiceFertiliteCollaborationSection';
 import ServiceFertiliteTemoignageSection from '../../_sections/ServiceFertiliteTemoignageSection';
 import ServiceFertiliteInfosSection from '../../_sections/ServiceFertiliteInfosSection';
@@ -41,6 +42,7 @@ export default function ServiceFertilitePage() {
       <ServiceFertiliteHeroSection />
       <ServiceFertiliteBioSection />
       <ServiceFertiliteBenefitsSection />
+      <ServiceFertiliteHommeSection />
       <ServiceFertiliteCollaborationSection />
       <ServiceFertiliteTemoignageSection />
       <ServiceFertiliteInfosSection />

@@ -8,7 +8,7 @@ export default function ServiceFertiliteHeroSection() {
         {/* Contenu gauche */}
         <div>
           <span className="inline-block text-[11px] font-semibold uppercase tracking-[2.5px] text-public-accent-taupe-dark mb-4">
-            FERTILIT&Eacute;
+            FERTILIT&Eacute; &middot; ROSEMONT &amp; REPENTIGNY
           </span>
           <h1 className="font-public-serif text-[40px] md:text-[56px] font-medium leading-[1.1] tracking-tight text-public-text-dark mb-6">
             Votre parcours fertilit&eacute;,{' '}

@@ -26,7 +26,7 @@ export default function ServiceSocialeConvictionSection() {
             Je suis devenue acupunctrice pour aider les gens &mdash; pas seulement ceux qui
             peuvent se le payer. Quand j&rsquo;ai d&eacute;couvert le mod&egrave;le d&rsquo;acupuncture
             sociale (n&eacute; aux &Eacute;tats-Unis dans les ann&eacute;es 2000, puis import&eacute;
-            au Qu&eacute;bec par la Clinique d&rsquo;Hochelaga), j&rsquo;ai su que &ccedil;a devait
+            au Qu&eacute;bec par la Clinique d&rsquo;acupuncture sociale d&rsquo;Hochelaga), j&rsquo;ai su que &ccedil;a devait
             faire partie de ma pratique.
           </p>
           <p>

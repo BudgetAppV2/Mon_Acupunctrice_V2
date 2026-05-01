@@ -13,7 +13,7 @@ export default function ServicePediatrieInfosSection() {
           <InfoCard
             icon={<ClockIcon />}
             title="Dur&eacute;e"
-            text="20-30 min pour b&eacute;b&eacute;s, 30-45 min pour enfants."
+            text="Rencontre d'<strong>1 heure</strong> pour bien expliquer ce qu'on fait &agrave; l'enfant et aux parents.<br/><span class='text-[12px] text-public-text-light'>Traitement actif : 20-30 min pour b&eacute;b&eacute;s, 30-45 min pour enfants.</span>"
           />
           <InfoCard
             icon={<DollarIcon />}

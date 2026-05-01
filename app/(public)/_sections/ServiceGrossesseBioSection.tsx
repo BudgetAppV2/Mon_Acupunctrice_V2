@@ -30,17 +30,16 @@ export default function ServiceGrossesseBioSection() {
         <div className="mt-8 space-y-6 text-[17px] leading-[1.75] text-public-text-medium">
           <p>
             Avant de devenir acupunctrice, j&rsquo;ai travaill&eacute; &agrave; la Maison de
-            naissance C&ocirc;te-des-Neiges, aux c&ocirc;t&eacute;s de sages-femmes. J&rsquo;ai
-            vu na&icirc;tre beaucoup de b&eacute;b&eacute;s, j&rsquo;ai accompagn&eacute; beaucoup
-            de familles dans les premi&egrave;res heures, les premiers jours. Je suis aussi
-            m&egrave;re de trois enfants &mdash; j&rsquo;ai moi-m&ecirc;me v&eacute;cu les naus&eacute;es,
-            les douleurs, l&rsquo;impatience, la peur de l&rsquo;accouchement, et la magie
-            de la rencontre.
+            naissance C&ocirc;te-des-Neiges. Cette exp&eacute;rience m&rsquo;a profond&eacute;ment
+            marqu&eacute;e &mdash; elle a orient&eacute; ma pratique vers la p&eacute;rinatalit&eacute;
+            et le soutien aux familles.
           </p>
           <p>
-            Quand vous me parlez de votre grossesse, je vous &eacute;coute comme professionnelle
-            ET comme femme qui est pass&eacute;e par l&agrave;. C&rsquo;est une diff&eacute;rence
-            qui compte.
+            Je suis aussi m&egrave;re de trois enfants &mdash; j&rsquo;ai moi-m&ecirc;me v&eacute;cu
+            les naus&eacute;es, les douleurs, l&rsquo;impatience, la peur de l&rsquo;accouchement,
+            et la magie de la rencontre. Quand vous me parlez de votre grossesse, je vous
+            &eacute;coute comme professionnelle ET comme femme qui est pass&eacute;e par l&agrave;.
+            C&rsquo;est une diff&eacute;rence qui compte.
           </p>
         </div>
 

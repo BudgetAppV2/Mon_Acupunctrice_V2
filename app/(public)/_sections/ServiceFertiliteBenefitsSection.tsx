@@ -40,8 +40,7 @@ export default function ServiceFertiliteBenefitsSection() {
 
         <p className="mt-10 text-[16px] leading-relaxed text-public-text-medium max-w-[720px]">
           Chaque s&eacute;ance dure 60 minutes et s&rsquo;adapte &agrave; votre r&eacute;alit&eacute; :
-          conception naturelle, ins&eacute;mination, FIV. Votre partenaire est aussi le bienvenu
-          &mdash; la fertilit&eacute; masculine b&eacute;n&eacute;ficie &eacute;galement de l&rsquo;acupuncture.
+          conception naturelle, ins&eacute;mination, FIV.
         </p>
 
         <div className="mt-8">

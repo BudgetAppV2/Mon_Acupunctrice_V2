@@ -6,7 +6,7 @@ export default function ServiceFertiliteInfosSection() {
   return (
     <section className="bg-public-beige-light py-[68px] md:py-[104px] px-5 md:px-8">
       <div className="max-w-[960px] mx-auto">
-        <SectionNumber number="04" />
+        <SectionNumber number="05" />
         <SectionHeading kicker="PRATIQUE" title="Ce qu'il faut savoir." />
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
