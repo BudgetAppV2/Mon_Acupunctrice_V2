@@ -27,17 +27,12 @@ export default function ServicePediatrieHeroSection() {
         return;
       }
       gsap.set(photoRef.current, { clipPath: 'inset(0 0 100% 0)', scale: 1.08, opacity: 1 });
-      gsap.set([kickerRef.current, h1Line1Ref.current, h1Line2Ref.current, paragraphRef.current, ctasRef.current], { opacity: 1, y: 28 });
+      gsap.set([kickerRef.current, h1Line1Ref.current, h1Line2Ref.current, paragraphRef.current, ctasRef.current], { opacity: 1 });
       gsap.set(underlineRef.current, { scaleX: 0, transformOrigin: 'left center' });
 
       const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
       tl.to(photoRef.current, { clipPath: 'inset(0 0 0% 0)', scale: 1, duration: 1.4, ease: 'power2.inOut' }, 0);
-      tl.to(kickerRef.current, { y: 0, duration: 0.7 }, 0.3);
-      tl.to(h1Line1Ref.current, { y: 0, duration: 0.8 }, 0.45);
-      tl.to(h1Line2Ref.current, { y: 0, duration: 0.8 }, 0.7);
       tl.to(underlineRef.current, { scaleX: 1, duration: 0.8, ease: 'power2.inOut' }, 1.1);
-      tl.to(paragraphRef.current, { y: 0, duration: 0.7 }, 0.9);
-      tl.to(ctasRef.current, { y: 0, duration: 0.7 }, 1.1);
     },
     { dependencies: [prefersReduced] },
   );

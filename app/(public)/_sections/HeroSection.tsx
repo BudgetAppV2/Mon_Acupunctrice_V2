@@ -23,14 +23,9 @@ export default function HeroSection() {
       gsap.set([kickerRef.current, h1Ref.current, paragraphRef.current, ctasRef.current, badgesRef.current], { opacity: 1, y: 0 });
       return;
     }
-    gsap.set([kickerRef.current, h1Ref.current, paragraphRef.current, ctasRef.current, badgesRef.current], { opacity: 1, y: 28 });
+    gsap.set([kickerRef.current, h1Ref.current, paragraphRef.current, ctasRef.current, badgesRef.current], { opacity: 1 });
 
     const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
-    tl.to(kickerRef.current, { y: 0, duration: 0.7 }, 0);
-    tl.to(h1Ref.current, { y: 0, duration: 0.9 }, 0.2);
-    tl.to(paragraphRef.current, { y: 0, duration: 0.7 }, 0.5);
-    tl.to(ctasRef.current, { y: 0, duration: 0.7 }, 0.7);
-    tl.to(badgesRef.current, { y: 0, duration: 0.6 }, 0.9);
   }, { dependencies: [prefersReduced] });
 
   return (
