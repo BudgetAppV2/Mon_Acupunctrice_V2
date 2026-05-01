@@ -5,6 +5,7 @@ import Script from 'next/script';
 import './globals-public.css';
 import SiteHeader from './_components/SiteHeader';
 import SiteFooter from './_components/SiteFooter';
+import LenisProvider from './_components/LenisProvider';
 
 // CSS variables consommées par tailwind.config.ts
 // (fontFamily['public-serif'] et fontFamily['public-sans'])
@@ -53,6 +54,7 @@ export default function PublicLayout({
       className={`${cormorant.variable} ${inter.variable} bg-public-beige-bg text-public-text-dark font-public-sans min-h-screen flex flex-col`}
     >
       <SiteHeader />
+      <LenisProvider />
       <main className="flex-1">{children}</main>
       <SiteFooter />
     </div>

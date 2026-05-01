@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import GsapBootstrap from './GsapBootstrap';
-import LenisProvider from './LenisProvider';
+import LenisProvider from '../../_components/LenisProvider';
 import ServiceFertiliteHeroSectionLab from '../../_sections/_lab/ServiceFertiliteHeroSectionLab';
 import ServiceFertiliteBioSectionLab from '../../_sections/_lab/ServiceFertiliteBioSectionLab';
 import ServiceFertiliteBenefitsSectionLab from '../../_sections/_lab/ServiceFertiliteBenefitsSectionLab';
