@@ -1,3 +1,6 @@
+'use client';
+
+import Reveal from '../_components/animations/Reveal';
 import GrainOverlay from '../_components/GrainOverlay';
 import SectionHeading from '../_components/SectionHeading';
 

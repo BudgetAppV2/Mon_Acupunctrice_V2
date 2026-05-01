@@ -3,6 +3,9 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { getAdminFirestore } from '@/lib/firebase-admin';
 import SectionHeading from '../_components/SectionHeading';
+import Reveal from '../_components/animations/Reveal';
+import StaggerChildren from '../_components/animations/StaggerChildren';
+import HoverLift from '../_components/animations/HoverLift';
 
 export const metadata: Metadata = {
   title: 'Blog',

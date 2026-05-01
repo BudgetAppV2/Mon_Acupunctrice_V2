@@ -1,3 +1,6 @@
+'use client';
+
+import Reveal from '../_components/animations/Reveal';
 import SectionNumber from '../_components/SectionNumber';
 import SectionHeading from '../_components/SectionHeading';
 
@@ -14,13 +17,18 @@ export default function AboutParcoursSection() {
         <img src="/site/svg/hands-lotus.svg" alt="" loading="lazy" className="w-full h-full object-contain" />
       </div>
       <div className="max-w-[780px] mx-auto relative z-10">
-        <SectionNumber number="01" align="left" />
-        <SectionHeading
-          kicker="MON PARCOURS"
-          title="D&rsquo;une sc&egrave;ne &agrave; l&rsquo;autre."
-          align="left"
-        />
+        <Reveal scaleFrom={0.7} delay={0.1} duration={0.8}>
+          <SectionNumber number="01" align="left" />
+        </Reveal>
+        <Reveal>
+          <SectionHeading
+            kicker="MON PARCOURS"
+            title="D&rsquo;une sc&egrave;ne &agrave; l&rsquo;autre."
+            align="left"
+          />
+        </Reveal>
 
+        <Reveal delay={0.15}>
         <div className="mt-8 space-y-6 text-[17px] leading-[1.75] text-public-text-medium">
           <p>
             Avant de devenir acupunctrice, j&rsquo;ai eu une premi&egrave;re vie dans le monde
@@ -45,6 +53,7 @@ export default function AboutParcoursSection() {
             et les transitions de vie.
           </p>
         </div>
+        </Reveal>
       </div>
     </section>
   );

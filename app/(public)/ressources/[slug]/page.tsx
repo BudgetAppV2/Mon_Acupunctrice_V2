@@ -11,6 +11,7 @@ import RessourceCard from '../../_components/RessourceCard';
 import RessourceFaq from '../../_components/RessourceFaq';
 import CtaButton from '../../_components/CtaButton';
 import SectionHeading from '../../_components/SectionHeading';
+import Reveal from '../../_components/animations/Reveal';
 
 export const revalidate = 3600;
 
@@ -131,9 +132,9 @@ export default async function RessourcePage({
             ressource.testimonial,
           ].map((content, idx) =>
             content ? (
-              <section key={idx}>
+              <Reveal key={idx} as="section">
                 <MarkdownRenderer content={content} />
-              </section>
+              </Reveal>
             ) : null
           )}
         </div>

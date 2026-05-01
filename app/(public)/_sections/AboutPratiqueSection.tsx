@@ -1,3 +1,6 @@
+'use client';
+
+import Reveal from '../_components/animations/Reveal';
 import PaperTexture from '../_components/PaperTexture';
 import SectionNumber from '../_components/SectionNumber';
 import SectionHeading from '../_components/SectionHeading';

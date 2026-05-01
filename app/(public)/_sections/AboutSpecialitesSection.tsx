@@ -1,3 +1,6 @@
+'use client';
+
+import Reveal from '../_components/animations/Reveal';
 import SectionHeading from '../_components/SectionHeading';
 import PilierCard from '../_components/PilierCard';
 

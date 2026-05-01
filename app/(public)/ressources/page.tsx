@@ -2,6 +2,9 @@ import type { Metadata } from 'next';
 import { getAllPublishedRessources } from '@/lib/firestore/public-ressources';
 import SectionHeading from '../_components/SectionHeading';
 import RessourceCard from '../_components/RessourceCard';
+import Reveal from '../_components/animations/Reveal';
+import StaggerChildren from '../_components/animations/StaggerChildren';
+import HoverLift from '../_components/animations/HoverLift';
 
 export const revalidate = 3600;
 
@@ -35,11 +38,13 @@ export default async function RessourcesIndexPage() {
       {/* Hero */}
       <section className="bg-gradient-to-b from-public-beige-bg to-public-beige-light py-[68px] md:py-[104px] px-5 md:px-8">
         <div className="max-w-[960px] mx-auto text-center">
-          <SectionHeading
-            kicker="LE GUIDE COMPLET"
-            title="Ressources"
-            subtitle="Des guides approfondis sur l&rsquo;acupuncture en fertilite, grossesse, pediatrie, acupuncture sociale et sante mentale. Etudes scientifiques recentes, protocoles documentes, et les reponses aux questions qu&rsquo;on me pose le plus souvent."
-          />
+          <Reveal>
+            <SectionHeading
+              kicker="LE GUIDE COMPLET"
+              title="Ressources"
+              subtitle="Des guides approfondis sur l&rsquo;acupuncture en fertilite, grossesse, pediatrie, acupuncture sociale et sante mentale. Etudes scientifiques recentes, protocoles documentes, et les reponses aux questions qu&rsquo;on me pose le plus souvent."
+            />
+          </Reveal>
         </div>
       </section>
 
@@ -51,20 +56,21 @@ export default async function RessourcesIndexPage() {
               Aucune ressource disponible pour le moment.
             </p>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <StaggerChildren scale={0.92} y={28} stagger={0.12} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {sorted.map((r) => (
-                <RessourceCard
-                  key={r.slug}
-                  ressource={{
-                    slug: r.slug,
-                    title: r.title,
-                    metaDescription: r.metaDescription,
-                    pilier: r.pilier,
-                    shortAnswer: r.shortAnswer,
-                  }}
-                />
+                <HoverLift key={r.slug}>
+                  <RessourceCard
+                    ressource={{
+                      slug: r.slug,
+                      title: r.title,
+                      metaDescription: r.metaDescription,
+                      pilier: r.pilier,
+                      shortAnswer: r.shortAnswer,
+                    }}
+                  />
+                </HoverLift>
               ))}
-            </div>
+            </StaggerChildren>
           )}
         </div>
       </section>
