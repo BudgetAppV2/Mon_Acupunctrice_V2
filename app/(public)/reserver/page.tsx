@@ -5,6 +5,7 @@ import CtaButton from '../_components/CtaButton';
 import CtaBotanicalDeco from '../_components/CtaBotanicalDeco';
 import TrackedLink from '../_components/TrackedLink';
 import SectionHeading from '../_components/SectionHeading';
+import Reveal from '../_components/animations/Reveal';
 
 export const metadata: Metadata = {
   title: 'Prendre rendez-vous — Acupuncture Rosemont et Repentigny',
@@ -97,11 +98,13 @@ export default function ReserverPage() {
           <img src="/site/svg/hands-lotus.svg" alt="" loading="lazy" className="w-full h-full object-contain" />
         </div>
         <div className="max-w-[860px] mx-auto text-center relative z-10">
-          <SectionHeading
-            kicker="R&Eacute;SERVER"
-            title="Prendre rendez-vous."
-            subtitle="Je pratique &agrave; deux cliniques. Choisissez celle qui vous convient et r&eacute;servez en ligne &mdash; disponibilit&eacute;s en temps r&eacute;el."
-          />
+          <Reveal>
+            <SectionHeading
+              kicker="R&Eacute;SERVER"
+              title="Prendre rendez-vous."
+              subtitle="Je pratique &agrave; deux cliniques. Choisissez celle qui vous convient et r&eacute;servez en ligne &mdash; disponibilit&eacute;s en temps r&eacute;el."
+            />
+          </Reveal>
         </div>
       </section>
 

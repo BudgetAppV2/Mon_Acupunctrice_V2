@@ -5,6 +5,7 @@ import CtaButton from '../_components/CtaButton';
 import CtaBotanicalDeco from '../_components/CtaBotanicalDeco';
 import SectionHeading from '../_components/SectionHeading';
 import TrackedLink from '../_components/TrackedLink';
+import Reveal from '../_components/animations/Reveal';
 
 export const metadata: Metadata = {
   title: 'Contact — Acupuncture Rosemont et Repentigny',
@@ -98,11 +99,13 @@ export default function ContactPage() {
       {/* Hero */}
       <section className="bg-gradient-to-b from-public-beige-bg to-public-beige-light py-[68px] md:py-[104px] px-5 md:px-8">
         <div className="max-w-[860px] mx-auto text-center">
-          <SectionHeading
-            kicker="CONTACT"
-            title="Restons en contact."
-            subtitle="Une question avant de r&eacute;server ? Besoin de savoir si l&rsquo;acupuncture est adapt&eacute;e &agrave; votre situation ? &Eacute;crivez-moi ou appelez la clinique &mdash; je vous r&eacute;ponds avec plaisir."
-          />
+          <Reveal>
+            <SectionHeading
+              kicker="CONTACT"
+              title="Restons en contact."
+              subtitle="Une question avant de r&eacute;server ? Besoin de savoir si l&rsquo;acupuncture est adapt&eacute;e &agrave; votre situation ? &Eacute;crivez-moi ou appelez la clinique &mdash; je vous r&eacute;ponds avec plaisir."
+            />
+          </Reveal>
         </div>
       </section>
 

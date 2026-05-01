@@ -5,6 +5,8 @@ import MarkdownRenderer from '../_components/MarkdownRenderer';
 import SectionHeading from '../_components/SectionHeading';
 import CtaBotanicalDeco from '../_components/CtaBotanicalDeco';
 import CtaButton from '../_components/CtaButton';
+import Reveal from '../_components/animations/Reveal';
+import StaggerChildren from '../_components/animations/StaggerChildren';
 import type { FAQ, FaqCategory } from '@/lib/types/faq';
 
 export const revalidate = 3600;
@@ -90,17 +92,19 @@ export default async function FaqPage() {
           <img src="/site/svg/zen-stones.svg" alt="" loading="lazy" className="w-full h-full object-contain" />
         </div>
         <div className="max-w-[860px] mx-auto text-center relative z-10">
-          <SectionHeading
-            kicker="FAQ"
-            title="Questions fr&eacute;quentes"
-            subtitle="Les r&eacute;ponses aux questions que mes patientes me posent le plus souvent. Si votre question n&rsquo;est pas ici, n&rsquo;h&eacute;sitez pas &agrave; me contacter."
-          />
+          <Reveal>
+            <SectionHeading
+              kicker="FAQ"
+              title="Questions fr&eacute;quentes"
+              subtitle="Les r&eacute;ponses aux questions que mes patientes me posent le plus souvent. Si votre question n&rsquo;est pas ici, n&rsquo;h&eacute;sitez pas &agrave; me contacter."
+            />
+          </Reveal>
         </div>
       </section>
 
       {/* FAQ groupees par categorie */}
       <section className="bg-white py-[68px] md:py-[88px] px-5 md:px-8">
-        <div className="max-w-[860px] mx-auto space-y-16">
+        <StaggerChildren stagger={0.06} className="max-w-[860px] mx-auto space-y-16">
           {grouped.map(([category, items]) => (
             <div key={category}>
               <h2 className="font-public-serif text-[24px] md:text-[30px] font-medium text-public-text-dark mb-8">
@@ -141,7 +145,7 @@ export default async function FaqPage() {
               </div>
             </div>
           ))}
-        </div>
+        </StaggerChildren>
       </section>
 
       {/* CTA final */}

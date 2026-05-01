@@ -4,6 +4,9 @@ import CtaButton from '../_components/CtaButton';
 import CtaBotanicalDeco from '../_components/CtaBotanicalDeco';
 import SectionHeading from '../_components/SectionHeading';
 import RessourceFaq from '../_components/RessourceFaq';
+import Reveal from '../_components/animations/Reveal';
+import StaggerChildren from '../_components/animations/StaggerChildren';
+import HoverLift from '../_components/animations/HoverLift';
 
 export const metadata: Metadata = {
   title: 'Tarifs — Acupuncture Rosemont et Repentigny',
@@ -183,19 +186,22 @@ export default function TarifsPage() {
           <img src="/site/svg/zen-stones.svg" alt="" loading="lazy" className="w-full h-full object-contain" />
         </div>
         <div className="max-w-[860px] mx-auto text-center relative z-10">
-          <SectionHeading
-            kicker="TARIFS"
-            title="Tarifs transparents, accessibles &agrave; tous."
-            subtitle="Les prix de mes s&eacute;ances d&rsquo;acupuncture sont clairs, sans frais cach&eacute;s. Et parce que la sant&eacute; ne devrait pas &ecirc;tre un privil&egrave;ge, j&rsquo;offre aussi de l&rsquo;acupuncture sociale &agrave; tarif libre. Clinique &agrave; Rosemont (Beaubien Est) et &agrave; Repentigny (&Eacute;den Yoga Pilates)."
-          />
+          <Reveal>
+            <SectionHeading
+              kicker="TARIFS"
+              title="Tarifs transparents, accessibles &agrave; tous."
+              subtitle="Les prix de mes s&eacute;ances d&rsquo;acupuncture sont clairs, sans frais cach&eacute;s. Et parce que la sant&eacute; ne devrait pas &ecirc;tre un privil&egrave;ge, j&rsquo;offre aussi de l&rsquo;acupuncture sociale &agrave; tarif libre. Clinique &agrave; Rosemont (Beaubien Est) et &agrave; Repentigny (&Eacute;den Yoga Pilates)."
+            />
+          </Reveal>
         </div>
       </section>
 
       {/* 2 offres */}
       <section className="bg-white py-[68px] md:py-[88px] px-5 md:px-8">
-        <div className="max-w-[1080px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
+        <StaggerChildren scale={0.92} y={28} stagger={0.12} className="max-w-[1080px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
           {OFFERS.map((o) => (
-            <div key={o.kicker} className={`${o.bg} rounded-[14px] p-8 border border-public-border-subtle flex flex-col`}>
+            <HoverLift key={o.kicker}>
+            <div className={`${o.bg} rounded-[14px] p-8 border border-public-border-subtle flex flex-col`}>
               <span className="text-[10px] font-semibold uppercase tracking-[1.5px] text-public-accent-taupe-dark mb-3">
                 {o.kicker}
               </span>
@@ -204,8 +210,9 @@ export default function TarifsPage() {
               <p className="text-[13px] text-public-text-light mb-5" dangerouslySetInnerHTML={{ __html: o.indications }} />
               <CtaButton variant="primary" href={o.ctaHref}>{o.ctaLabel}</CtaButton>
             </div>
+            </HoverLift>
           ))}
-        </div>
+        </StaggerChildren>
       </section>
 
       {/* Ce qui est inclus */}
