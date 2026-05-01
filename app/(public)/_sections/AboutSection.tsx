@@ -1,6 +1,9 @@
+'use client';
+
 import SectionNumber from '../_components/SectionNumber';
 import SectionHeading from '../_components/SectionHeading';
 import CtaButton from '../_components/CtaButton';
+import Reveal from '../_components/animations/Reveal';
 
 export default function AboutSection() {
   return (

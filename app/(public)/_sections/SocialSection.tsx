@@ -1,3 +1,6 @@
+'use client';
+import Reveal from '../_components/animations/Reveal';
+
 export default function SocialSection() {
   return (
     <section className="relative border-y border-public-border-subtle py-[68px] md:py-[88px] px-5 md:px-8 overflow-hidden">

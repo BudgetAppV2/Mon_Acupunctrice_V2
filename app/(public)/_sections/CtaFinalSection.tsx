@@ -1,13 +1,28 @@
+'use client';
+
+import Reveal from '../_components/animations/Reveal';
+import MagneticButton from '../_components/animations/MagneticButton';
+import FloatingDeco from '../_components/animations/FloatingDeco';
 import CtaButton from '../_components/CtaButton';
-import CtaBotanicalDeco from '../_components/CtaBotanicalDeco';
 
 export default function CtaFinalSection() {
   return (
-    <section className="bg-gradient-to-b from-public-accent-taupe to-public-accent-taupe-dark text-white py-[68px] md:py-[108px] px-5 md:px-8 border-t-[3px] border-public-accent-warm relative overflow-hidden">
-      <CtaBotanicalDeco />
+    <section className="cta-bg-shift text-white py-[68px] md:py-[108px] px-5 md:px-8 border-t-[3px] border-public-accent-warm relative overflow-hidden">
+      {/* Botanical deco avec FloatingDeco */}
+      <FloatingDeco amplitude={12} duration={6} delay={0} className="absolute top-[20px] left-[-80px] w-[30%] h-full pointer-events-none z-0 hidden md:block overflow-hidden">
+        <div aria-hidden="true" className="w-full h-full">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/site/svg/plant.webp" alt="" loading="lazy" className="w-full h-full object-cover object-center" style={{ mixBlendMode: 'screen', transform: 'scale(2.2)', transformOrigin: 'center center', opacity: 0.55 }} />
+        </div>
+      </FloatingDeco>
+      <FloatingDeco amplitude={10} duration={7} delay={2} className="absolute top-[20px] right-[-80px] w-[30%] h-full pointer-events-none z-0 hidden md:block overflow-hidden">
+        <div aria-hidden="true" className="w-full h-full" style={{ transform: 'scaleX(-1)' }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/site/svg/plant.webp" alt="" loading="lazy" className="w-full h-full object-cover object-center" style={{ mixBlendMode: 'screen', transform: 'scale(2.2)', transformOrigin: 'center center', opacity: 0.55 }} />
+        </div>
+      </FloatingDeco>
 
-      {/* Contenu */}
-      <div className="max-w-[720px] mx-auto text-center relative z-10">
+      <Reveal y={56} duration={1.1} delay={0.2} className="max-w-[720px] mx-auto text-center relative z-10">
         <span className="block text-[11px] font-semibold tracking-[2.5px] uppercase opacity-90 mb-4">
           PR&Ecirc;TE &Agrave; COMMENCER
         </span>
@@ -18,13 +33,11 @@ export default function CtaFinalSection() {
           60 minutes d&rsquo;&eacute;coute, d&rsquo;&eacute;valuation et de soin.
           &Agrave; Rosemont ou &agrave; Repentigny.
         </p>
-        <CtaButton
-          variant="white"
-          size="lg"
-          href="/reserver"
-        >
-          Prendre rendez-vous en ligne
-        </CtaButton>
+        <MagneticButton range={120} strength={0.4}>
+          <div className="shimmer-cta rounded-md inline-block">
+            <CtaButton variant="white" size="lg" href="/reserver">Prendre rendez-vous en ligne</CtaButton>
+          </div>
+        </MagneticButton>
 
         <div className="mt-12 pt-6 border-t border-white/20 flex flex-col md:flex-row justify-center gap-4 md:gap-8 text-[14px] opacity-80">
           <span className="flex items-center justify-center gap-2">
@@ -40,7 +53,7 @@ export default function CtaFinalSection() {
             514 750-3735
           </span>
         </div>
-      </div>
+      </Reveal>
     </section>
   );
 }

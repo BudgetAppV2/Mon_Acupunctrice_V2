@@ -1,7 +1,12 @@
+'use client';
+
 import PaperTexture from '../_components/PaperTexture';
 import SectionNumber from '../_components/SectionNumber';
 import SectionHeading from '../_components/SectionHeading';
 import TestimonialCard from '../_components/TestimonialCard';
+import StaggerChildren from '../_components/animations/StaggerChildren';
+import HoverLift from '../_components/animations/HoverLift';
+import Reveal from '../_components/animations/Reveal';
 
 export default function TemoignagesSection() {
   return (

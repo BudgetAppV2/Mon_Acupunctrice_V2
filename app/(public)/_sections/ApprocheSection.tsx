@@ -1,6 +1,9 @@
+'use client';
+
 import GrainOverlay from '../_components/GrainOverlay';
 import SectionNumber from '../_components/SectionNumber';
 import SectionHeading from '../_components/SectionHeading';
+import Reveal from '../_components/animations/Reveal';
 
 export default function ApprocheSection() {
   return (
