@@ -28,14 +28,18 @@ export default function PiliersSection() {
           />
         </div>
 
-        <SectionNumber number="01" />
-        <SectionHeading
-          kicker="TROIS DOMAINES, UN M&Ecirc;ME SOIN"
-          title="Ce pour quoi on me consulte le plus"
-          subtitle="Chaque parcours est unique, mais il y a trois univers dans lesquels j'accompagne le plus souvent mes patientes."
-        />
+        <Reveal scaleFrom={0.7} delay={0.1} duration={0.8}>
+          <SectionNumber number="01" />
+        </Reveal>
+        <Reveal>
+          <SectionHeading
+            kicker="TROIS DOMAINES, UN M&Ecirc;ME SOIN"
+            title="Ce pour quoi on me consulte le plus"
+            subtitle="Chaque parcours est unique, mais il y a trois univers dans lesquels j'accompagne le plus souvent mes patientes."
+          />
+        </Reveal>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-[72px]">
+        <StaggerChildren scale={0.92} y={28} stagger={0.12} className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-[72px]">
           <div className="md:translate-y-6">
             <PilierCard
               title="Fertilit&eacute;"
@@ -61,7 +65,7 @@ export default function PiliersSection() {
               image="/site/judith/judith-portrait-03.webp"
             />
           </div>
-        </div>
+        </StaggerChildren>
       </div>
     </PaperTexture>
   );

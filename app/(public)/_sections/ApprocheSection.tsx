@@ -27,12 +27,17 @@ export default function ApprocheSection() {
 
         {/* Texte */}
         <div className="order-2 md:order-1 relative z-10">
-          <SectionNumber number="02" align="left" />
-          <SectionHeading
-            kicker="MON APPROCHE"
-            title="Un soin qui prend le temps."
-            align="left"
-          />
+          <Reveal scaleFrom={0.7} delay={0.1} duration={0.8}>
+            <SectionNumber number="02" align="left" />
+          </Reveal>
+          <Reveal>
+            <SectionHeading
+              kicker="MON APPROCHE"
+              title="Un soin qui prend le temps."
+              align="left"
+            />
+          </Reveal>
+          <Reveal delay={0.15}>
           <div className="mt-6 space-y-6 text-[17px] leading-[1.75] text-public-text-medium">
             <p>
               Je crois que chaque personne qui entre dans mon cabinet m&eacute;rite
@@ -51,6 +56,7 @@ export default function ApprocheSection() {
               {' '}&mdash; et adapt&eacute;e &agrave; qui vous &ecirc;tes aujourd&rsquo;hui.
             </p>
           </div>
+          </Reveal>
         </div>
 
         {/* Photo */}

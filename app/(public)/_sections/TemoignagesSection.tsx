@@ -28,14 +28,18 @@ export default function TemoignagesSection() {
           />
         </div>
 
-        <SectionNumber number="03" />
-        <SectionHeading
-          kicker="CE QU'ELLES EN DISENT"
-          title="Des parcours r&eacute;els"
-          subtitle="Avis Google publics de la clinique La Source en Soi, o&ugrave; Judith pratique. 4,9/5 sur 1 215 avis."
-        />
+        <Reveal scaleFrom={0.7} delay={0.1} duration={0.8}>
+          <SectionNumber number="03" />
+        </Reveal>
+        <Reveal>
+          <SectionHeading
+            kicker="CE QU'ELLES EN DISENT"
+            title="Des parcours r&eacute;els"
+            subtitle="Avis Google publics de la clinique La Source en Soi, o&ugrave; Judith pratique. 4,9/5 sur 1 215 avis."
+          />
+        </Reveal>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
+        <StaggerChildren scale={0.92} y={28} stagger={0.12} className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
           <TestimonialCard
             featured
             quote="Judith a su tout de suite me mettre &agrave; l'aise et &eacute;tant autiste, c'&eacute;tait pas gagn&eacute; d'avance, mais la douceur de cette petite f&eacute;e de l'acupuncture m'a ensorcel&eacute; de par sa gentillesse et son savoir faire."
@@ -48,7 +52,7 @@ export default function TemoignagesSection() {
             name="Parent d'un enfant de 6 ans"
             detail="Avis Google &middot; La Source en Soi"
           />
-        </div>
+        </StaggerChildren>
       </div>
     </PaperTexture>
   );

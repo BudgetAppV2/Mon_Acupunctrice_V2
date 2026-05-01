@@ -41,6 +41,7 @@ export default function SocialSection() {
         </div>
 
         {/* Texte central */}
+        <Reveal delay={0.15}>
         <div className="text-center md:text-left">
           <h3 className="font-public-serif text-[22px] font-semibold text-public-text-dark mb-2">
             Suivez mon quotidien
@@ -50,6 +51,7 @@ export default function SocialSection() {
             J&rsquo;ai aussi lanc&eacute; r&eacute;cemment une cha&icirc;ne YouTube.
           </p>
         </div>
+        </Reveal>
 
         {/* Pills sociaux */}
         <div className="flex flex-wrap justify-center md:justify-end gap-3">

@@ -22,9 +22,14 @@ export default function AboutSection() {
         </div>
 
         <div>
-          <SectionNumber number="04" align="left" />
-          <SectionHeading kicker="QUI JE SUIS" title="Je suis Judith." align="left" />
+          <Reveal scaleFrom={0.7} delay={0.1} duration={0.8}>
+            <SectionNumber number="04" align="left" />
+          </Reveal>
+          <Reveal>
+            <SectionHeading kicker="QUI JE SUIS" title="Je suis Judith." align="left" />
+          </Reveal>
 
+          <Reveal delay={0.15}>
           <div className="mt-6 space-y-6 text-[17px] leading-[1.75] text-public-text-medium">
             <p>
               Avant de devenir acupunctrice,{' '}
@@ -39,7 +44,9 @@ export default function AboutSection() {
               que je porte &agrave; chaque personne qui me fait confiance.
             </p>
           </div>
+          </Reveal>
 
+          <Reveal delay={0.4}>
           <div className="flex flex-wrap gap-3 my-7">
             <Badge icon={<ShieldIcon />} label="Membre OAQ" />
             <Badge icon={<BuildingIcon />} label="La Source en Soi" />
@@ -49,6 +56,7 @@ export default function AboutSection() {
           <CtaButton variant="primary" size="lg" href="/a-propos">
             Lire mon parcours complet
           </CtaButton>
+          </Reveal>
         </div>
       </div>
     </section>
