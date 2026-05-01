@@ -1,0 +1,19 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://acupuncturejudith.ca/sitemap.xml
+
+# Bloquer les routes admin du Hub
+Disallow: /blogue
+Disallow: /blitz
+Disallow: /calendrier
+Disallow: /editeur-image
+Disallow: /editeur/
+Disallow: /editeur-v2/
+Disallow: /idees
+Disallow: /inspiration
+Disallow: /login
+Disallow: /profil
+Disallow: /stats
+Disallow: /api/
+Disallow: /_next/

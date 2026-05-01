@@ -14,6 +14,9 @@ interface Props {
 
 export default function TiptapEditor({ content, onChange, placeholder }: Props) {
   const editor = useEditor({
+    // Required for Next.js 15 App Router — evite les hydration mismatches.
+    // Tiptap rend cote client uniquement, donc on desactive le rendu immediat (SSR).
+    immediatelyRender: false,
     extensions: [
       StarterKit.configure({ heading: { levels: [2, 3] } }),
       Underline,

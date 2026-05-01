@@ -10,4 +10,55 @@
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
+
+  .arrow-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25em;
+    transition: gap 240ms ease-out;
+  }
+  .arrow-link:hover {
+    gap: 0.5em;
+  }
+
+  .cta-bg-shift {
+    background: linear-gradient(180deg, #8A9A7B, #6F8566);
+    background-size: 200% 200%;
+    animation: ctaBgShift 12s ease-in-out infinite;
+  }
+
+  .shimmer-cta {
+    position: relative;
+    overflow: hidden;
+  }
+  .shimmer-cta::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%);
+    animation: shimmerSweep 8s ease-in-out infinite;
+    animation-delay: 4s;
+    pointer-events: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .arrow-link { transition: none; }
+    .arrow-link:hover { gap: 0.25em; }
+    .cta-bg-shift { animation: none; }
+    .shimmer-cta::before { animation: none; display: none; }
+  }
+}
+
+@keyframes ctaBgShift {
+  0%, 100% { background-position: 0% 0%; }
+  50% { background-position: 100% 100%; }
+}
+
+@keyframes shimmerSweep {
+  0% { left: -100%; }
+  15% { left: 200%; }
+  100% { left: 200%; }
 }

@@ -10,7 +10,9 @@ import { htmlToMarkdownText } from '@/lib/utils/ricosConverter';
 
 const TiptapEditor = dynamic(() => import('./TiptapEditor'), { ssr: false });
 
-const RDV_URL = 'https://gorendezvous.com/lasourceensoi';
+import { getRdvUrl } from '@/lib/utils/rdvUrl';
+
+const RDV_URL = getRdvUrl({ source: 'blog', medium: 'article' });
 const CATEGORIES = ['Acupuncture', 'Fertilite', 'Grossesse', 'Bien-etre', 'Medecine chinoise', 'Conseils sante', 'Autre'];
 const DRAFT_KEY = 'blog-editor-draft';
 const EXPORT_KEY = 'editor-export-blog';
@@ -266,7 +268,7 @@ export default function BlogEditor({ onPublish, onCancel, publishing }: Props) {
         )}
         <button onClick={handlePublish} disabled={!canPublish || publishing}
           className={`w-full py-3 rounded-xl text-sm font-semibold transition ${canPublish && !publishing ? 'bg-sage text-white active:bg-sage/90' : 'bg-gray-200 text-gray-400'}`}>
-          {publishing ? 'Publication en cours...' : 'Publier sur Wix'}
+          {publishing ? 'Publication en cours...' : 'Publier'}
         </button>
       </div>
     </div>

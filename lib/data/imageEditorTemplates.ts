@@ -86,10 +86,10 @@ export function getTemplateObjects(): Record<string, unknown>[] {
       width: 860, editable: true, selectable: true,
     },
 
-    // "GORENDEZVOUS.COM/ LASOURCEENSOI"
+    // CTA reservation — redirige vers la page /reserver du site
     {
       type: 'textbox', left: W / 2, top: 1280, originX: 'center', originY: 'center',
-      text: 'GORENDEZVOUS.COM/\nLASOURCEENSOI',
+      text: 'ACUPUNCTUREJUDITH.CA/\nRESERVER',
       fontFamily: 'Mulish', fontSize: 56, fontWeight: '700', fill: PALETTE.charcoal,
       textAlign: 'center', lineHeight: 1.1, charSpacing: 40,
       width: 800, editable: true, selectable: true,

@@ -3,7 +3,9 @@ import { getAdminFirestore } from '@/lib/firebase-admin';
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID!;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET!;
-const WIX_URL = process.env.NEXT_PUBLIC_WIX_URL || 'https://mon-acupunctrice.ca';
+import { getRdvUrl } from '@/lib/utils/rdvUrl';
+
+const RDV_YT_URL = getRdvUrl({ source: 'youtube', medium: 'description' });
 
 /** Refresh le access_token Google via le refresh_token */
 async function refreshAccessToken(refreshToken: string): Promise<string> {
@@ -55,7 +57,7 @@ export async function POST(request: NextRequest) {
     const videoBlob = await videoRes.arrayBuffer();
 
     // 3. Description YouTube — la caption YT inclut deja le lien si generee par l'IA
-    const description = ytCaption.includes(WIX_URL) ? ytCaption : `${ytCaption}\n\nPrendre rendez-vous : ${WIX_URL}`;
+    const description = ytCaption.includes(RDV_YT_URL) ? ytCaption : `${ytCaption}\n\nPrendre rendez-vous : ${RDV_YT_URL}`;
 
     // 4. Initier le resumable upload
     const initRes = await fetch(

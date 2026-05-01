@@ -18,6 +18,13 @@ service firebase.storage {
       allow read, write: if request.auth != null && request.auth.uid == userId;
     }
 
+    // Site public (migration Wix → Vercel) — lecture publique, ecriture via
+    // Admin SDK uniquement (qui bypass les rules). MW-B4, MW-A1b, etc.
+    match /public/{allPaths=**} {
+      allow read: if true;
+      allow write: if false;
+    }
+
     // Tout le reste — authentification requise
     match /{allPaths=**} {
       allow read, write: if request.auth != null;

@@ -26,13 +26,13 @@ et augmenter les prises de rendez-vous via Go Rendez-Vous.
 Lire dans cet ordre :
 1. Ce fichier (CLAUDE.md)
 2. `project-docs/HANDOFF.md` → résumé complet du projet
-3. `project-docs/02_ROADMAP/ROADMAP_STRATEGY.md` → Phase actuelle
-4. Le milestone en cours dans `project-docs/02_ROADMAP/`
+3. **Si tu travailles sur la migration du site public de Judith** : lire `docs/migration-wix/CLAUDE.md` puis le milestone en cours dans `project-docs/02_ROADMAP/migration-wix/`
+4. Sinon : le milestone en cours dans `project-docs/02_ROADMAP/`
 5. `project-docs/04_DEV_SYSTEM/TROUBLESHOOT_SYSTEM.md` si debugging
 
 ---
 
-## État actuel — Mars 2026
+## État actuel — Avril 2026
 
 ### Tout est complété et déployé ✅
 
@@ -46,13 +46,71 @@ Lire dans cet ordre :
 | M12 | Stats & Analytics | Instagram Insights + recharts + cron quotidien |
 | R/R2/R3 | Refinements | UX fixes, transcription vocale, éditeur multi-blocs |
 | SCHEDULER | Cron Vercel | Publication automatique planifiée |
+| S01-S08 | Stratégie | Système d'accompagnement contenu (archivé dans `_completed/`) |
+| IMAGE_EDITOR | Éditeur d'image Fabric.js | Intégré à l'éditeur |
 
-### Phase actuelle : STRATÉGIE (S01-S08)
+### Phase actuelle : MIGRATION WIX → VERCEL
 
-On construit le système d'accompagnement qui aide Judith à créer du
-contenu régulier. Voir `project-docs/02_ROADMAP/ROADMAP_STRATEGY.md`.
+On migre le site public de Judith (`acupuncturejudith.ca`) depuis Wix vers
+une section publique du Hub V2 (Next.js/Vercel). Objectif : unifier
+l'écosystème, reprendre le contrôle SEO, exploiter la réputation massive
+de la clinique La Source en Soi (1 215 avis 4,9/5 sur Google).
 
-### Feedback de Judith intégré dans la stratégie
+**Documentation de la migration** :
+- Plan éditorial stratégique : `docs/migration-wix/01-strategie/PLAN_EDITORIAL_SEO_GEO_v0.3.md`
+- Contexte permanent Claude Code : `docs/migration-wix/CLAUDE.md`
+- Milestones exécutables : `project-docs/02_ROADMAP/migration-wix/`
+- Rapports de scouting : `docs/migration-wix/02-recherche/scouting/`
+
+**Pipeline de contenu SEO/GEO (post-migration)** :
+- Vision du pipeline : `project-docs/02_ROADMAP/content-strategy/VISION.md`
+- Architecture technique (CC audit) : `project-docs/02_ROADMAP/content-strategy/ARCHITECTURE.md`
+- Backlog mots-clés + données Ubersuggest/ATP : `project-docs/02_ROADMAP/content-strategy/KEYWORD_BACKLOG.md` (767 lignes, 150+ mots-clés)
+- Plan de lancement : `project-docs/02_ROADMAP/LAUNCH_PLAN.md` (626 lignes, 6 phases)
+- Handoff : `project-docs/HANDOFF_DESKTOP_2026-04-29.md`
+
+**Décisions prises** :
+- R1 : Couper Wix → OUI
+- R2 : Auth admin → hardcoder UID Benoit
+- R3 : Analytics → Plausible Cloud 9$/mois
+- R4 : Éditeur CMS → textarea markdown + preview
+- R5 : Bilingue → NON pour l'instant (data-driven après 2-3 mois)
+- R6 : GBP → UN SEUL GBP praticien (multi-site), adresse principale LSSI
+- R7 : Avis Google → zone grise OAQ, courriel envoyé pour clarification
+- R8 : Domaines → garder 3 (acupuncturejudith.ca, grossesseacupuncture.ca, mon-acupunctrice.ca), expirer judithdufoursavardacu.com
+
+**Sprints CC complétés** :
+- ✅ MW-F3a : Plausible Analytics (script + goal events)
+- ✅ MW-E3 : Blog publish → Firestore (Wix coupé, -157 lignes)
+- ✅ MW-E1 : CMS FAQ (CRUD + MarkdownField réutilisable)
+- ✅ MW-E2 : CMS Ressources (formulaire multi-section, citations, FAQ)
+- ✅ MW-E4 : Workflow validation Judith (approve/comment/submit, badge pending)
+- ✅ GRV : centralisation URLs dans lib/utils/rdvUrl.ts (LSSI + Eden)
+- ✅ Eden Yoga Pilates : 2e clinique intégrée (18 fichiers)
+- ✅ Corrections Judith : 53 corrections appliquées (tarifs, terminologie, formulations)
+
+**Deux cliniques** :
+- La Source en Soi : 2554 Beaubien E, Rosemont, MTL | GRV companyId=104074 eids=175708
+- Éden Yoga Pilates : 121 Boul. Industriel #225, Repentigny | GRV companyId=141296 eids=192390 stype=Acupuncture
+- Judith : LSSI lun-mar-jeu-ven, Eden mercredi 9h-15h (pas de sociale à Eden)
+
+**Pipeline d'injection de contenu** :
+- Source de vérité : fichiers markdown dans `content/` (versionnés git)
+- Template : `content/ressources/_TEMPLATE.md` (frontmatter YAML + sections ##)
+- Injection : `node content/scripts/inject.mjs content/ressources/fichier.md [--dry-run]`
+- Audit fraîcheur : `node content/scripts/audit-freshness.mjs`
+- Retrait : `node content/scripts/retire.mjs <collection> <slug> [--delete]`
+- Workflow : markdown → inject (status pending) → Judith approuve dans Hub → published → ISR
+- Documentation complète : `content/README.md`
+
+**CMS dans le Hub** :
+- Onglet "Contenu" dans la navigation (5e onglet)
+- Dashboard unifié : blog + FAQ + ressources avec filtres type/statut
+- Formulaires : /contenu/faq/new, /contenu/faq/[id], /contenu/ressources/new, /contenu/ressources/[id]
+- API routes : /api/cms/list, /api/cms/approve, /api/cms/comment, /api/cms/submit, /api/cms/faq/*, /api/cms/ressources/*
+- Composants réutilisables : MarkdownField, StatusBadge, ContentReviewCard
+
+### Feedback de Judith (toujours valide)
 
 - Elle aime les 4 styles : Enseigner / Connecter / Aider / Inspirer
 - Elle est déjà à ~2 publications/semaine
@@ -160,8 +218,14 @@ lib/
 }
 ```
 
-**Contrainte plan Hobby :** 1 exécution/jour/route max.
-Les deux crons existants occupent les 2 slots disponibles.
+**Contraintes plan Hobby** (mises à jour avril 2026) :
+- **100 crons max par projet** (limite portée de 2 à 100 en janvier 2026)
+- **1 exécution par jour maximum** par cron (ex. `0 12 * * *` OK, `0 * * * *` rejeté au déploiement)
+- **Timing imprécis** : Vercel peut déclencher dans n'importe quelle minute de l'heure spécifiée (pour `0 12 * * *`, le trigger peut arriver entre 12:00 et 12:59)
+
+On a donc de la marge pour ajouter des crons de migration (ISR revalidation,
+fraîcheur SEO, sitemap) sans upgrade Pro. Si on a un jour besoin d'un cron
+sub-quotidien ou précis à la minute, il faudra passer au plan Pro.
 
 ---
 

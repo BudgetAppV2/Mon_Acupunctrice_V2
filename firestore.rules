@@ -26,5 +26,48 @@ service cloud.firestore {
       allow create: if request.auth != null
         && request.resource.data.userId == request.auth.uid;
     }
+
+    // --- Site public (migration Wix → Vercel) ---
+
+    // Helper admin pour les collections publiques.
+    //
+    // Mécanisme : allowlist d'emails vérifiés. Les deux admins sont
+    // Benoit (Directeur Technique qui opère le Hub) et Judith
+    // (acupunctrice, autrice du contenu). Pour ajouter un admin,
+    // ajouter son email dans la liste ci-dessous et redéployer les
+    // rules avec `firebase deploy --only firestore:rules`.
+    //
+    // Prérequis : l'admin doit s'être connecté au moins une fois via
+    // Google Sign-In avec un compte dont l'email est vérifié (automatique
+    // pour les comptes Google).
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.token.email_verified == true
+        && request.auth.token.email in [
+          'barchambault@grandsballets.com',
+          'jdufourdsavard@gmail.com'
+        ];
+    }
+
+    match /faqs/{faqId} {
+      allow read: if resource.data.status == 'published';
+      allow write: if isAdmin();
+    }
+    match /ressources/{resId} {
+      allow read: if resource.data.status == 'published';
+      allow write: if isAdmin();
+    }
+    match /publicBlog/{postId} {
+      allow read: if resource.data.status == 'published';
+      allow write: if isAdmin();
+    }
+    match /servicePages/{pageId} {
+      allow read: if resource.data.status == 'published';
+      allow write: if isAdmin();
+    }
+    match /siteConfig/{configId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
   }
 }

@@ -19,6 +19,28 @@ const withPWA = withPWAInit({
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'firebasestorage.googleapis.com',
+        pathname: '/v0/b/**',
+      },
+    ],
+  },
+  async redirects() {
+    return [
+      // Pages Wix → nouvelles URLs
+      { source: '/bienfaits', destination: '/faq', permanent: true },
+      { source: '/acupuncture-sociale', destination: '/services/acupuncture-sociale', permanent: true },
+      { source: '/contactez-moi', destination: '/contact', permanent: true },
+      { source: '/politique-de-confidentialite-et-cookies', destination: '/politique-de-confidentialite', permanent: true },
+      { source: '/book-online', destination: '/reserver', permanent: true },
+      { source: '/plans-pricing', destination: '/tarifs', permanent: true },
+      // Blog : /post/slug → /blog/slug
+      { source: '/post/:slug*', destination: '/blog/:slug*', permanent: true },
+    ];
+  },
   async headers() {
     return [
       {

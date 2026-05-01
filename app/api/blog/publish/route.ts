@@ -1,37 +1,33 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { textToRicos, type FaqItem } from '@/lib/utils/ricosConverter';
+import { revalidatePath } from 'next/cache';
+import { getAdminFirestore } from '@/lib/firebase-admin';
 import { getRdvUrl, slugify } from '@/lib/utils/rdvUrl';
+import { htmlToMarkdownText } from '@/lib/utils/ricosConverter';
+import { FieldValue } from 'firebase-admin/firestore';
 
-const WIX_API_KEY = process.env.WIX_API_KEY;
-const WIX_SITE_ID = process.env.WIX_SITE_ID;
-const WIX_MEMBER_ID = process.env.WIX_MEMBER_ID;
+interface FaqItem { question: string; answer: string }
 
-const WIX_BASE = 'https://www.wixapis.com/blog/v3';
-
-function wixHeaders(): Record<string, string> {
-  return {
-    'Authorization': WIX_API_KEY!,
-    'wix-site-id': WIX_SITE_ID!,
-    'Content-Type': 'application/json',
-  };
-}
-
-/** POST /api/blog/publish — Create and publish a blog post on Wix */
+/** POST /api/blog/publish — Publie un article dans Firestore publicBlog */
 export async function POST(request: NextRequest) {
-  if (!WIX_API_KEY || !WIX_SITE_ID) {
-    return NextResponse.json({ error: 'WIX_API_KEY ou WIX_SITE_ID manquant' }, { status: 500 });
-  }
-
   try {
-    const body = await request.json() as { title?: string; content?: string; category?: string; ctaUrl?: string; faqs?: FaqItem[] };
-    const { title, content, category } = body;
-    const ctaUrl = body.ctaUrl || getRdvUrl({ source: 'blog', medium: 'article', campaign: title ? slugify(title) : undefined });
+    const body = await request.json() as {
+      title?: string;
+      content?: string;
+      category?: string;
+      ctaUrl?: string;
+      faqs?: FaqItem[];
+      coverImageUrl?: string;
+    };
+    const { title, content, category, coverImageUrl } = body;
 
     if (!title || !content) {
       return NextResponse.json({ error: 'Titre et contenu requis' }, { status: 400 });
     }
 
-    // Generate FAQ if not provided (non-blocking fallback)
+    const slug = slugify(title);
+    const ctaUrl = body.ctaUrl || getRdvUrl({ source: 'blog', medium: 'article', campaign: slug });
+
+    // Generate FAQ if not provided
     let faqs = body.faqs;
     if (!faqs || faqs.length === 0) {
       try {
@@ -47,52 +43,44 @@ export async function POST(request: NextRequest) {
       } catch { /* FAQ generation failed — publish without */ }
     }
 
-    // Convert plain text to Ricos JSON (with FAQ if available)
-    const richContent = textToRicos(content, ctaUrl, faqs);
+    // Convert HTML to markdown (le site public rend du markdown)
+    const markdown = htmlToMarkdownText(content);
+    const excerpt = markdown.replace(/[#\-*]/g, '').trim().slice(0, 160);
 
-    // Step 1: Create draft post
-    const draftRes = await fetch(`${WIX_BASE}/draft-posts`, {
-      method: 'POST',
-      headers: wixHeaders(),
-      body: JSON.stringify({
-        draftPost: {
-          title,
-          richContent,
-          ...(WIX_MEMBER_ID ? { memberId: WIX_MEMBER_ID } : {}),
-          ...(category ? { categoryIds: [] } : {}), // Wix categories are IDs, not names — skip for now
-        },
-      }),
+    // Append CTA to markdown content
+    const contentWithCta = `${markdown}\n\n---\n\nPrendre rendez-vous : ${ctaUrl}`;
+
+    const db = getAdminFirestore();
+    const docRef = db.collection('publicBlog').doc(slug);
+
+    await docRef.set({
+      title,
+      slug,
+      content: contentWithCta,
+      excerpt,
+      coverImage: coverImageUrl || '',
+      author: 'Judith Dufour-Savard',
+      category: category || 'Acupuncture',
+      tags: [],
+      status: 'published',
+      relatedServices: [],
+      relatedFaqs: [],
+      relatedArticles: [],
+      faqs: faqs || [],
+      publishedAt: FieldValue.serverTimestamp(),
+      updatedAt: FieldValue.serverTimestamp(),
+      createdAt: FieldValue.serverTimestamp(),
     });
 
-    if (!draftRes.ok) {
-      const err = await draftRes.text();
-      return NextResponse.json({ error: 'Creation brouillon echouee', details: err }, { status: draftRes.status });
-    }
+    // Revalidate ISR pages
+    revalidatePath('/blog');
+    revalidatePath(`/blog/${slug}`);
 
-    const draftData = await draftRes.json() as { draftPost?: { id?: string } };
-    const draftId = draftData.draftPost?.id;
-    if (!draftId) {
-      return NextResponse.json({ error: 'Pas de draftId retourne' }, { status: 500 });
-    }
-
-    // Step 2: Publish the draft
-    const publishRes = await fetch(`${WIX_BASE}/draft-posts/${draftId}/publish`, {
-      method: 'POST',
-      headers: wixHeaders(),
+    return NextResponse.json({
+      success: true,
+      postId: slug,
+      postUrl: `/blog/${slug}`,
     });
-
-    if (!publishRes.ok) {
-      const err = await publishRes.text();
-      return NextResponse.json({ error: 'Publication echouee', details: err }, { status: publishRes.status });
-    }
-
-    const publishData = await publishRes.json() as { post?: { id?: string; url?: { base?: string; path?: string } } };
-    const postId = publishData.post?.id || draftId;
-    const postUrl = publishData.post?.url
-      ? `${publishData.post.url.base}${publishData.post.url.path}`
-      : `https://acupuncturejudith.ca/post/${draftId}`;
-
-    return NextResponse.json({ success: true, postId, postUrl });
   } catch (err) {
     const msg = err instanceof Error ? err.message : 'Erreur publication';
     return NextResponse.json({ error: msg }, { status: 500 });
