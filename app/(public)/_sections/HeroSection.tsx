@@ -23,14 +23,14 @@ export default function HeroSection() {
       gsap.set([kickerRef.current, h1Ref.current, paragraphRef.current, ctasRef.current, badgesRef.current], { opacity: 1, y: 0 });
       return;
     }
-    gsap.set([kickerRef.current, h1Ref.current, paragraphRef.current, ctasRef.current, badgesRef.current], { opacity: 0.01, y: 28 });
+    gsap.set([kickerRef.current, h1Ref.current, paragraphRef.current, ctasRef.current, badgesRef.current], { opacity: 1, y: 28 });
 
     const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
-    tl.to(kickerRef.current, { opacity: 1, y: 0, duration: 0.7 }, 0);
-    tl.to(h1Ref.current, { opacity: 1, y: 0, duration: 0.9 }, 0.2);
-    tl.to(paragraphRef.current, { opacity: 1, y: 0, duration: 0.7 }, 0.5);
-    tl.to(ctasRef.current, { opacity: 1, y: 0, duration: 0.7 }, 0.7);
-    tl.to(badgesRef.current, { opacity: 1, y: 0, duration: 0.6 }, 0.9);
+    tl.to(kickerRef.current, { y: 0, duration: 0.7 }, 0);
+    tl.to(h1Ref.current, { y: 0, duration: 0.9 }, 0.2);
+    tl.to(paragraphRef.current, { y: 0, duration: 0.7 }, 0.5);
+    tl.to(ctasRef.current, { y: 0, duration: 0.7 }, 0.7);
+    tl.to(badgesRef.current, { y: 0, duration: 0.6 }, 0.9);
   }, { dependencies: [prefersReduced] });
 
   return (
@@ -45,11 +45,11 @@ export default function HeroSection() {
 
           {/* Contenu gauche */}
           <div className="relative z-10">
-            <span ref={kickerRef} className="inline-block rounded-full bg-white px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[1.5px] text-public-accent-taupe-dark mb-6 shadow-public-sm" style={{ willChange: 'transform, opacity', opacity: 0.01 }}>
+            <span ref={kickerRef} className="inline-block rounded-full bg-white px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[1.5px] text-public-accent-taupe-dark mb-6 shadow-public-sm" style={{ willChange: 'transform, opacity', opacity: 1 }}>
               Acupunctrice &middot; Membre OAQ &middot; Rosemont
             </span>
 
-            <h1 ref={h1Ref} className="font-public-serif text-[48px] md:text-[74px] font-medium leading-[1.05] tracking-tight text-public-text-dark mb-6" style={{ willChange: 'transform, opacity', opacity: 0.01 }}>
+            <h1 ref={h1Ref} className="font-public-serif text-[48px] md:text-[74px] font-medium leading-[1.05] tracking-tight text-public-text-dark mb-6" style={{ willChange: 'transform, opacity', opacity: 1 }}>
               Venez comme vous{' '}
               <em className="italic underline decoration-public-accent-warm decoration-2 underline-offset-8">
                 &ecirc;tes
@@ -57,14 +57,14 @@ export default function HeroSection() {
               .
             </h1>
 
-            <p ref={paragraphRef} className="text-[18px] leading-relaxed text-public-text-medium max-w-[520px] mb-8" style={{ willChange: 'transform, opacity', opacity: 0.01 }}>
+            <p ref={paragraphRef} className="text-[18px] leading-relaxed text-public-text-medium max-w-[520px] mb-8" style={{ willChange: 'transform, opacity', opacity: 1 }}>
               Acupunctrice &agrave; Rosemont et &agrave; Repentigny, j&rsquo;accompagne les femmes et les familles
               dans leur parcours de fertilit&eacute;, de grossesse, et au-del&agrave;.
               Avec douceur, &eacute;coute et l&rsquo;envie sinc&egrave;re de vous aider.
               Tout en militant pour rendre l&rsquo;acupuncture accessible &agrave; tous.
             </p>
 
-            <div ref={ctasRef} className="flex flex-wrap gap-4 mb-10" style={{ willChange: 'transform, opacity', opacity: 0.01 }}>
+            <div ref={ctasRef} className="flex flex-wrap gap-4 mb-10" style={{ willChange: 'transform, opacity', opacity: 1 }}>
               <MagneticButton range={100} strength={0.35}>
                 <CtaButton variant="primary" size="lg" href="/reserver">Prendre rendez-vous</CtaButton>
               </MagneticButton>
@@ -73,7 +73,7 @@ export default function HeroSection() {
               </MagneticButton>
             </div>
 
-            <div ref={badgesRef} className="flex flex-col gap-3 text-[15px] text-public-text-medium" style={{ willChange: 'transform, opacity', opacity: 0.01 }}>
+            <div ref={badgesRef} className="flex flex-col gap-3 text-[15px] text-public-text-medium" style={{ willChange: 'transform, opacity', opacity: 1 }}>
               <span className="flex items-center gap-2.5">
                 <HeartIcon />
                 M&egrave;re de 3 enfants

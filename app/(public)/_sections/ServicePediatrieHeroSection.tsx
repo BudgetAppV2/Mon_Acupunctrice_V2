@@ -27,17 +27,17 @@ export default function ServicePediatrieHeroSection() {
         return;
       }
       gsap.set(photoRef.current, { clipPath: 'inset(0 0 100% 0)', scale: 1.08, opacity: 1 });
-      gsap.set([kickerRef.current, h1Line1Ref.current, h1Line2Ref.current, paragraphRef.current, ctasRef.current], { opacity: 0.01, y: 28 });
+      gsap.set([kickerRef.current, h1Line1Ref.current, h1Line2Ref.current, paragraphRef.current, ctasRef.current], { opacity: 1, y: 28 });
       gsap.set(underlineRef.current, { scaleX: 0, transformOrigin: 'left center' });
 
       const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
       tl.to(photoRef.current, { clipPath: 'inset(0 0 0% 0)', scale: 1, duration: 1.4, ease: 'power2.inOut' }, 0);
-      tl.to(kickerRef.current, { opacity: 1, y: 0, duration: 0.7 }, 0.3);
-      tl.to(h1Line1Ref.current, { opacity: 1, y: 0, duration: 0.8 }, 0.45);
-      tl.to(h1Line2Ref.current, { opacity: 1, y: 0, duration: 0.8 }, 0.7);
+      tl.to(kickerRef.current, { y: 0, duration: 0.7 }, 0.3);
+      tl.to(h1Line1Ref.current, { y: 0, duration: 0.8 }, 0.45);
+      tl.to(h1Line2Ref.current, { y: 0, duration: 0.8 }, 0.7);
       tl.to(underlineRef.current, { scaleX: 1, duration: 0.8, ease: 'power2.inOut' }, 1.1);
-      tl.to(paragraphRef.current, { opacity: 1, y: 0, duration: 0.7 }, 0.9);
-      tl.to(ctasRef.current, { opacity: 1, y: 0, duration: 0.7 }, 1.1);
+      tl.to(paragraphRef.current, { y: 0, duration: 0.7 }, 0.9);
+      tl.to(ctasRef.current, { y: 0, duration: 0.7 }, 1.1);
     },
     { dependencies: [prefersReduced] },
   );
@@ -46,23 +46,23 @@ export default function ServicePediatrieHeroSection() {
     <GrainOverlay className="bg-gradient-to-b from-public-beige-bg to-public-beige-light py-[68px] md:py-[104px] px-5 md:px-8">
       <div className="max-w-[1080px] mx-auto grid grid-cols-1 md:grid-cols-[1.1fr_1fr] gap-12 md:gap-[72px] items-center">
         <div>
-          <span ref={kickerRef} className="inline-block text-[11px] font-semibold uppercase tracking-[2.5px] text-public-accent-taupe-dark mb-4" style={{ willChange: 'transform, opacity', opacity: 0.01 }}>
+          <span ref={kickerRef} className="inline-block text-[11px] font-semibold uppercase tracking-[2.5px] text-public-accent-taupe-dark mb-4" style={{ willChange: 'transform, opacity', opacity: 1 }}>
             P&Eacute;DIATRIE &middot; ROSEMONT &amp; REPENTIGNY
           </span>
           <h1 className="font-public-serif text-[40px] md:text-[56px] font-medium leading-[1.1] tracking-tight text-public-text-dark mb-6">
-            <span ref={h1Line1Ref} className="inline-block" style={{ willChange: 'transform, opacity', opacity: 0.01 }}>
+            <span ref={h1Line1Ref} className="inline-block" style={{ willChange: 'transform, opacity', opacity: 1 }}>
               Des soins{' '}
             </span>
-            <span ref={h1Line2Ref} className="inline-block" style={{ willChange: 'transform, opacity', position: 'relative', opacity: 0.01 }}>
+            <span ref={h1Line2Ref} className="inline-block" style={{ willChange: 'transform, opacity', position: 'relative', opacity: 1 }}>
               <em className="italic">doux</em>
               <span ref={underlineRef} aria-hidden="true" style={{ position: 'absolute', left: 0, right: 0, bottom: '0.05em', height: 2, backgroundColor: '#B8694A', willChange: 'transform', transform: 'scaleX(0)', transformOrigin: 'left center' }} />
             </span>
             .
           </h1>
-          <p ref={paragraphRef} className="text-[18px] leading-relaxed text-public-text-medium mb-8" style={{ willChange: 'transform, opacity', opacity: 0.01 }}>
+          <p ref={paragraphRef} className="text-[18px] leading-relaxed text-public-text-medium mb-8" style={{ willChange: 'transform, opacity', opacity: 1 }}>
             Coliques qui &eacute;puisent, sommeil qui dispara&icirc;t, allergies saisonni&egrave;res, anxi&eacute;t&eacute; &agrave; l&rsquo;&eacute;cole. L&rsquo;acupuncture p&eacute;diatrique est beaucoup plus douce que ce qu&rsquo;on imagine &mdash; souvent sans aiguilles pour les b&eacute;b&eacute;s.
           </p>
-          <div ref={ctasRef} className="flex flex-wrap gap-4" style={{ willChange: 'transform, opacity', opacity: 0.01 }}>
+          <div ref={ctasRef} className="flex flex-wrap gap-4" style={{ willChange: 'transform, opacity', opacity: 1 }}>
             <MagneticButton range={100} strength={0.35}>
               <CtaButton variant="primary" size="lg" href="/reserver">Prendre rendez-vous</CtaButton>
             </MagneticButton>
