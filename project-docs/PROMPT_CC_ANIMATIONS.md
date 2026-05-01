@@ -18,6 +18,24 @@ Objectif : ajouter des animations scroll-reveal et micro-interactions élégante
 - **Accessibilité non-négociable** : `prefers-reduced-motion: reduce` désactive intégralement les translate/scale, ne garde que opacity (instantané ou fade ≤ 200ms). Hook centralisé à respecter partout.
 - **Zéro changement aux deps** sauf `@gsap/react`. Pas de Framer Motion, pas d'AOS, pas de motion-one.
 
+## Note importante sur les couleurs Tailwind
+
+Le projet utilise des **couleurs Tailwind directes** (config dans `tailwind.config.ts`) et non des CSS variables `--public-*` au runtime. Concrètement :
+
+- Les classes utilitaires comme `bg-public-accent-warm` ou `text-public-text-dark` fonctionnent (compilées par Tailwind)
+- `var(--public-accent-warm)` dans du CSS inline ou globals.css **ne fonctionnera pas**, la variable n'est pas définie au runtime
+
+Donc dans `<DrawUnderline>`, ne pas utiliser `var(--public-accent-warm, #c9a47e)`. Utiliser directement la couleur hex `#c9a47e` comme valeur par défaut OU permettre à l'utilisateur de passer une classe Tailwind. Résoudre la couleur en hex directement :
+
+```ts
+// Default = couleur Tailwind 'public-accent-warm' resolu en hex
+color = '#c9a47e',
+```
+
+(Récupérer la valeur hex exacte depuis `tailwind.config.ts` au moment de l'implémentation — chercher `accent-warm` dans les colors du theme.)
+
+Même logique pour `cta-bg-shift` dans globals.css : utiliser les valeurs hex directes plutôt que `var(--public-accent-taupe)`. Récupérer les hex depuis `tailwind.config.ts`.
+
 ## À lire d'abord
 
 - `CLAUDE.md` (racine)
