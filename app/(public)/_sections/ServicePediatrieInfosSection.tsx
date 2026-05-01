@@ -4,31 +4,37 @@ import Link from 'next/link';
 import SectionNumber from '../_components/SectionNumber';
 import SectionHeading from '../_components/SectionHeading';
 import Reveal from '../_components/animations/Reveal';
+import StaggerChildren from '../_components/animations/StaggerChildren';
+import HoverLift from '../_components/animations/HoverLift';
 
 export default function ServicePediatrieInfosSection() {
   return (
     <section className="bg-public-beige-bg py-[68px] md:py-[104px] px-5 md:px-8 border-t border-b border-public-accent-warm/20">
       <div className="max-w-[960px] mx-auto">
-        <SectionNumber number="04" />
-        <SectionHeading kicker="PRATIQUE" title="Ce qu'il faut savoir." />
+        <Reveal scaleFrom={0.7} delay={0.1} duration={0.8}>
+          <SectionNumber number="04" />
+        </Reveal>
+        <Reveal>
+          <SectionHeading kicker="PRATIQUE" title="Ce qu'il faut savoir." />
+        </Reveal>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
-          <InfoCard
+        <StaggerChildren scale={0.92} y={28} stagger={0.12} className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
+          <HoverLift><InfoCard
             icon={<ClockIcon />}
             title="Dur&eacute;e"
             text="Rencontre d'<strong>1 heure</strong> pour bien expliquer ce qu'on fait &agrave; l'enfant et aux parents.<br/><span class='text-[12px] text-public-text-light'>Traitement actif : 20-30 min pour b&eacute;b&eacute;s, 30-45 min pour enfants.</span>"
-          />
-          <InfoCard
+          /></HoverLift>
+          <HoverLift><InfoCard
             icon={<DollarIcon />}
             title="Tarifs"
             text="90 $ la s&eacute;ance."
-          />
-          <InfoCard
+          /></HoverLift>
+          <HoverLift><InfoCard
             icon={<ShieldIcon />}
             title="S&eacute;curit&eacute;"
             text="Aiguilles st&eacute;riles &agrave; usage unique, formation en s&eacute;curit&eacute; p&eacute;diatrique, parent toujours pr&eacute;sent en salle."
-          />
-        </div>
+          /></HoverLift>
+        </StaggerChildren>
 
         <p className="mt-12 text-center text-[15px] text-public-text-medium max-w-[720px] mx-auto">
           Pour les familles avec des contraintes financi&egrave;res,{' '}

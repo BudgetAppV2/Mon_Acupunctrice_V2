@@ -46,7 +46,9 @@ export default function ServicePediatrieConditionsSection() {
   return (
     <section className="bg-public-beige-light py-[68px] md:py-[104px] px-5 md:px-8">
       <div className="max-w-[1080px] mx-auto">
-        <SectionNumber number="02" align="left" />
+        <Reveal scaleFrom={0.7} delay={0.1} duration={0.8}>
+          <SectionNumber number="02" align="left" />
+        </Reveal>
         <SectionHeading
           kicker="LES MOTIFS LES PLUS FR&Eacute;QUENTS"
           title="Adapt&eacute; &agrave; chaque &acirc;ge."

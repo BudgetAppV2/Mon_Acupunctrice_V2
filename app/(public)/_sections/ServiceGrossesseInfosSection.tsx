@@ -3,31 +3,37 @@
 import SectionNumber from '../_components/SectionNumber';
 import SectionHeading from '../_components/SectionHeading';
 import Reveal from '../_components/animations/Reveal';
+import StaggerChildren from '../_components/animations/StaggerChildren';
+import HoverLift from '../_components/animations/HoverLift';
 
 export default function ServiceGrossesseInfosSection() {
   return (
     <section className="bg-public-beige-light py-[68px] md:py-[104px] px-5 md:px-8">
       <div className="max-w-[960px] mx-auto">
-        <SectionNumber number="04" />
-        <SectionHeading kicker="PRATIQUE" title="Ce qu'il faut savoir." />
+        <Reveal scaleFrom={0.7} delay={0.1} duration={0.8}>
+          <SectionNumber number="04" />
+        </Reveal>
+        <Reveal>
+          <SectionHeading kicker="PRATIQUE" title="Ce qu'il faut savoir." />
+        </Reveal>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
-          <InfoCard
+        <StaggerChildren scale={0.92} y={28} stagger={0.12} className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
+          <HoverLift><InfoCard
             icon={<ClockIcon />}
             title="Dur&eacute;e"
             text="Chaque s&eacute;ance dure 60 minutes."
-          />
-          <InfoCard
+          /></HoverLift>
+          <HoverLift><InfoCard
             icon={<DollarIcon />}
             title="Tarifs"
             text="100 $ la s&eacute;ance d'une heure."
-          />
-          <InfoCard
+          /></HoverLift>
+          <HoverLift><InfoCard
             icon={<ReceiptIcon />}
             title="Assurances"
             text="La plupart des assurances priv&eacute;es couvrent l'acupuncture. Re&ccedil;u officiel &eacute;mis."
-          />
-        </div>
+          /></HoverLift>
+        </StaggerChildren>
 
         {/* Note continuite */}
         <div className="mt-12 max-w-[780px] mx-auto p-6 bg-white rounded-[14px] border-l-4 border-public-accent-taupe">

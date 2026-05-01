@@ -17,13 +17,18 @@ export default function ServicePediatrieBioSection() {
         <img src="/site/svg/sleeping-baby.svg" alt="" loading="lazy" className="w-full h-full object-contain" />
       </div>
       <div className="max-w-[780px] mx-auto relative z-10">
-        <SectionNumber number="01" align="left" />
-        <SectionHeading
-          kicker="QUI VOUS ACCOMPAGNE"
-          title="Une approche qui rassure autant que les parents."
-          align="left"
-        />
+        <Reveal scaleFrom={0.7} delay={0.1} duration={0.8}>
+          <SectionNumber number="01" align="left" />
+        </Reveal>
+        <Reveal>
+          <SectionHeading
+            kicker="QUI VOUS ACCOMPAGNE"
+            title="Une approche qui rassure autant que les parents."
+            align="left"
+          />
+        </Reveal>
 
+        <Reveal delay={0.15}>
         <div className="mt-8 space-y-6 text-[17px] leading-[1.75] text-public-text-medium">
           <p>
             Je suis m&egrave;re de trois enfants. Je sais comment parler &agrave; un b&eacute;b&eacute;
@@ -41,11 +46,14 @@ export default function ServicePediatrieBioSection() {
             le temps.
           </p>
         </div>
+        </Reveal>
 
+        <Reveal delay={0.4}>
         <div className="mt-8 inline-flex items-center gap-2 rounded-full bg-public-beige-light px-5 py-2.5 text-[13px] font-medium text-public-text-medium border border-public-border-subtle">
           <ShieldCheckIcon />
           Membre de l&rsquo;Ordre des acupuncteurs du Qu&eacute;bec (OAQ)
         </div>
+        </Reveal>
       </div>
     </section>
   );

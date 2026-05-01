@@ -36,13 +36,18 @@ export default function ServicePediatrieApprocheSection() {
   return (
     <PaperTexture variant="real" className="py-[68px] md:py-[104px] px-5 md:px-8">
       <div className="max-w-[960px] mx-auto">
-        <SectionNumber number="03" align="left" />
-        <SectionHeading
-          kicker="LES ENFANTS NE SONT PAS DES ADULTES EN MINIATURE"
-          title="Des s&eacute;ances adapt&eacute;es, des techniques douces."
-          align="left"
-        />
+        <Reveal scaleFrom={0.7} delay={0.1} duration={0.8}>
+          <SectionNumber number="03" align="left" />
+        </Reveal>
+        <Reveal>
+          <SectionHeading
+            kicker="LES ENFANTS NE SONT PAS DES ADULTES EN MINIATURE"
+            title="Des s&eacute;ances adapt&eacute;es, des techniques douces."
+            align="left"
+          />
+        </Reveal>
 
+        <Reveal delay={0.15}>
         <div className="mt-8 mb-10 space-y-6 text-[17px] leading-[1.75] text-public-text-medium">
           <p>
             L&rsquo;acupuncture p&eacute;diatrique est diff&eacute;rente de celle des adultes.
@@ -54,7 +59,9 @@ export default function ServicePediatrieApprocheSection() {
             &agrave; l&rsquo;enfant, pas l&rsquo;inverse).
           </p>
         </div>
+        </Reveal>
 
+        <Reveal delay={0.3}>
         <h3 className="font-public-serif text-[22px] font-semibold mb-6 text-public-text-dark">
           Techniques possibles selon l&rsquo;enfant
         </h3>
@@ -71,7 +78,9 @@ export default function ServicePediatrieApprocheSection() {
             </li>
           ))}
         </ul>
+        </Reveal>
 
+        <Reveal delay={0.4}>
         <div className="mt-10 p-6 bg-public-beige-warm/40 rounded-[14px] border-l-4 border-public-accent-warm">
           <p className="text-[16px] leading-relaxed text-public-text-medium">
             Pour les b&eacute;b&eacute;s coliqueux, j&rsquo;utilise souvent{' '}
@@ -80,6 +89,7 @@ export default function ServicePediatrieApprocheSection() {
             ne pleurent pas.
           </p>
         </div>
+        </Reveal>
 
         {/* A quoi s'attendre selon l'age */}
         <h3 className="mt-12 font-public-serif text-[22px] font-semibold mb-6 text-public-text-dark">

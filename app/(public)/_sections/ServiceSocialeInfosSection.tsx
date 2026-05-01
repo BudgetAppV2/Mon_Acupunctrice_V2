@@ -3,15 +3,21 @@
 import SectionNumber from '../_components/SectionNumber';
 import SectionHeading from '../_components/SectionHeading';
 import Reveal from '../_components/animations/Reveal';
+import StaggerChildren from '../_components/animations/StaggerChildren';
+import HoverLift from '../_components/animations/HoverLift';
 
 export default function ServiceSocialeInfosSection() {
   return (
     <section className="bg-public-beige-light py-[68px] md:py-[104px] px-5 md:px-8">
       <div className="max-w-[960px] mx-auto">
-        <SectionNumber number="05" />
-        <SectionHeading kicker="PRATIQUE" title="Ce qu'il faut savoir." />
+        <Reveal scaleFrom={0.7} delay={0.1} duration={0.8}>
+          <SectionNumber number="05" />
+        </Reveal>
+        <Reveal>
+          <SectionHeading kicker="PRATIQUE" title="Ce qu'il faut savoir." />
+        </Reveal>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
+        <StaggerChildren scale={0.92} y={28} stagger={0.12} className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
           <InfoCard
             icon={<ClockIcon />}
             title="Dur&eacute;e"
@@ -27,8 +33,9 @@ export default function ServiceSocialeInfosSection() {
             title="Re&ccedil;u assurance"
             text="Oui, un re&ccedil;u officiel est &eacute;mis, m&ecirc;me pour le tarif social."
           />
-        </div>
+        </StaggerChildren>
 
+        <Reveal delay={0.3}>
         <div className="mt-12 max-w-[720px] mx-auto p-6 bg-white rounded-[14px] border border-public-border-subtle">
           <h3 className="font-public-serif text-[20px] font-semibold mb-3 text-public-text-dark">
             Comment r&eacute;server
@@ -43,6 +50,7 @@ export default function ServiceSocialeInfosSection() {
           </p>
           {/* TODO Judith : confirmer les horaires specifiques (ex: jeudi soir, samedi matin) et si drop-in possible. Par defaut on documente "sur rendez-vous". */}
         </div>
+        </Reveal>
       </div>
     </section>
   );

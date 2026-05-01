@@ -17,13 +17,18 @@ export default function ServiceSocialeConvictionSection() {
         <img src="/site/svg/yoga3.svg" alt="" loading="lazy" className="w-full h-full object-contain" />
       </div>
       <div className="max-w-[780px] mx-auto relative z-10">
-        <SectionNumber number="01" align="left" />
-        <SectionHeading
-          kicker="POURQUOI J'OFFRE CE SERVICE"
-          title="Je suis devenue acupunctrice pour aider les gens."
-          align="left"
-        />
+        <Reveal scaleFrom={0.7} delay={0.1} duration={0.8}>
+          <SectionNumber number="01" align="left" />
+        </Reveal>
+        <Reveal>
+          <SectionHeading
+            kicker="POURQUOI J'OFFRE CE SERVICE"
+            title="Je suis devenue acupunctrice pour aider les gens."
+            align="left"
+          />
+        </Reveal>
 
+        <Reveal delay={0.15}>
         <div className="mt-8 space-y-6 text-[17px] leading-[1.75] text-public-text-medium">
           <p>
             Je suis devenue acupunctrice pour aider les gens &mdash; pas seulement ceux qui
@@ -39,7 +44,9 @@ export default function ServiceSocialeConvictionSection() {
             &mdash; tout le monde m&eacute;rite d&rsquo;avoir acc&egrave;s &agrave; des soins.
           </p>
         </div>
+        </Reveal>
 
+        <Reveal delay={0.4}>
         <div className="mt-10 p-6 bg-public-beige-light rounded-[14px] border-l-4 border-public-accent-warm">
           <p className="text-[15px] leading-relaxed text-public-text-dark">
             <strong>Principe du tarif libre</strong> : Vous choisissez le montant que vous pouvez
@@ -47,6 +54,7 @@ export default function ServiceSocialeConvictionSection() {
             remplir pour &laquo;&nbsp;prouver&nbsp;&raquo; votre situation. Pas de jugement.
           </p>
         </div>
+        </Reveal>
       </div>
     </section>
   );
