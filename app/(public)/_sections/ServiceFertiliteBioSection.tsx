@@ -1,7 +1,6 @@
 'use client';
 
 import Reveal from '../_components/animations/Reveal';
-import RevealWords from '../_components/animations/RevealWords';
 import SectionNumber from '../_components/SectionNumber';
 import SectionHeading from '../_components/SectionHeading';
 
@@ -21,24 +20,22 @@ export default function ServiceFertiliteBioSection() {
           <SectionHeading kicker="QUI VOUS ACCOMPAGNE" title="Une approche n&eacute;e du terrain." align="left" />
         </Reveal>
 
-        <div className="mt-8 space-y-6 text-[17px] leading-[1.75] text-public-text-medium">
-          <p>
-            <RevealWords
-              text="Je suis Judith Dufour-Savard, acupunctrice à La Source en Soi, sur Beaubien Est à Rosemont. J'ai travaillé à la Maison de naissance Côte-des-Neiges avant ma pratique, et je suis mère de trois enfants. Quand je vous écoute me parler de votre parcours de fertilité, je ne le fais pas juste comme professionnelle — je le fais aussi comme femme qui comprend l'attente, l'espoir, et la fatigue émotionnelle qui viennent avec."
-              stagger={0.03}
-              duration={0.6}
-              y={20}
-            />
-          </p>
-          <p>
-            <RevealWords
-              text="Ma pratique combine la rigueur de la médecine traditionnelle chinoise, les études scientifiques récentes, et une bonne dose d'humanité."
-              stagger={0.04}
-              duration={0.6}
-              y={20}
-            />
-          </p>
-        </div>
+        <Reveal delay={0.15}>
+          <div className="mt-8 space-y-6 text-[17px] leading-[1.75] text-public-text-medium">
+            <p>
+              Je suis Judith Dufour-Savard, acupunctrice &agrave; La Source en Soi, sur Beaubien Est
+              &agrave; Rosemont. J&rsquo;ai travaill&eacute; &agrave; la Maison de naissance C&ocirc;te-des-Neiges
+              avant ma pratique, et je suis m&egrave;re de trois enfants. Quand je vous &eacute;coute me
+              parler de votre parcours de fertilit&eacute;, je ne le fais pas juste comme professionnelle
+              &mdash; je le fais aussi comme femme qui comprend l&rsquo;attente, l&rsquo;espoir, et la
+              fatigue &eacute;motionnelle qui viennent avec.
+            </p>
+            <p>
+              Ma pratique combine la rigueur de la m&eacute;decine traditionnelle chinoise, les &eacute;tudes
+              scientifiques r&eacute;centes, et une bonne dose d&rsquo;humanit&eacute;.
+            </p>
+          </div>
+        </Reveal>
 
         <Reveal delay={0.4}>
           <div className="mt-8 inline-flex items-center gap-2 rounded-full bg-public-beige-light px-5 py-2.5 text-[13px] font-medium text-public-text-medium border border-public-border-subtle">

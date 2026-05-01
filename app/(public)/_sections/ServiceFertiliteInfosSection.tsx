@@ -4,7 +4,6 @@ import Link from 'next/link';
 import Reveal from '../_components/animations/Reveal';
 import StaggerChildren from '../_components/animations/StaggerChildren';
 import HoverLift from '../_components/animations/HoverLift';
-import CountUp from '../_components/animations/CountUp';
 import SectionNumber from '../_components/SectionNumber';
 import SectionHeading from '../_components/SectionHeading';
 
@@ -25,7 +24,7 @@ export default function ServiceFertiliteInfosSection() {
               <div className="flex justify-center mb-4"><ClockIcon /></div>
               <h3 className="font-public-serif text-[20px] font-semibold mb-2 text-public-text-dark">Dur&eacute;e</h3>
               <p className="text-[14px] text-public-text-medium">
-                <span className="font-public-serif text-[28px] font-medium text-public-accent-warm"><CountUp to={60} duration={1.4} /></span>
+                <span className="font-public-serif text-[28px] font-medium text-public-accent-warm">60</span>
                 <span className="block mt-1">minutes par s&eacute;ance.</span>
               </p>
             </div>
@@ -35,7 +34,7 @@ export default function ServiceFertiliteInfosSection() {
               <div className="flex justify-center mb-4"><DollarIcon /></div>
               <h3 className="font-public-serif text-[20px] font-semibold mb-2 text-public-text-dark">Tarifs</h3>
               <p className="text-[14px] text-public-text-medium">
-                <span className="font-public-serif text-[28px] font-medium text-public-accent-warm"><CountUp to={100} duration={1.6} suffix=" $" /></span>
+                <span className="font-public-serif text-[28px] font-medium text-public-accent-warm">100&nbsp;$</span>
                 <span className="block mt-1">la s&eacute;ance d&rsquo;une heure.</span>
               </p>
             </div>

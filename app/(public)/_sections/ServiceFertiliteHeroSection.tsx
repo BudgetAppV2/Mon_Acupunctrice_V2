@@ -9,7 +9,6 @@ import CtaButton from '../_components/CtaButton';
 import MagneticButton from '../_components/animations/MagneticButton';
 
 export default function ServiceFertiliteHeroSection() {
-  const sectionRef = useRef<HTMLElement>(null);
   const photoRef = useRef<HTMLDivElement>(null);
   const kickerRef = useRef<HTMLSpanElement>(null);
   const h1Line1Ref = useRef<HTMLSpanElement>(null);
@@ -21,7 +20,8 @@ export default function ServiceFertiliteHeroSection() {
 
   useGSAP(
     () => {
-      if (!sectionRef.current) return;
+      // Garde sur photoRef (toujours attache contrairement a sectionRef qui n'existait pas)
+      if (!photoRef.current) return;
 
       if (prefersReduced) {
         gsap.set([photoRef.current, kickerRef.current, h1Line1Ref.current, h1Line2Ref.current, paragraphRef.current, ctasRef.current], { opacity: 1, y: 0, clipPath: 'inset(0 0 0 0)' });
@@ -82,7 +82,7 @@ export default function ServiceFertiliteHeroSection() {
             <source srcSet="/site/judith/judith-portrait-07.avif" type="image/avif" />
             <source srcSet="/site/judith/judith-portrait-07.webp" type="image/webp" />
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/site/judith/judith-portrait-07.webp" alt="Pierre zen avec aiguilles d'acupuncture, evoquant l'equilibre du parcours de fertilite" width={1600} height={2400} loading="eager" fetchPriority="high" className="w-full aspect-[4/5] object-cover rounded-[20px] shadow-public-photo" />
+            <img src="/site/judith/judith-portrait-07.webp" alt="Judith Dufour-Savard, acupunctrice" width={1600} height={2400} loading="eager" fetchPriority="high" className="w-full aspect-[4/5] object-cover rounded-[20px] shadow-public-photo" />
           </picture>
         </div>
       </div>
