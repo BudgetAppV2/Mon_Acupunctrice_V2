@@ -1,12 +1,7 @@
-'use client';
-
 import Link from 'next/link';
 import SectionNumber from '../_components/SectionNumber';
 import SectionHeading from '../_components/SectionHeading';
 import { getRecentBlogPosts } from '@/lib/firestore/public-blog';
-import StaggerChildren from '../_components/animations/StaggerChildren';
-import HoverLift from '../_components/animations/HoverLift';
-import Reveal from '../_components/animations/Reveal';
 
 function formatDate(publishedAt: { toDate?: () => Date; _seconds?: number; seconds?: number } | null): string {
   if (!publishedAt) return '';
