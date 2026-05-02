@@ -49,17 +49,6 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     }
   }, [user, loading, router]);
 
-  // Charge Google Fonts uniquement sur les pages Hub (pas sur le site public).
-  // Injection async via JS pour ne pas bloquer le first paint.
-  useEffect(() => {
-    if (typeof document === 'undefined') return;
-    if (document.querySelector('link[data-hub-fonts]')) return;
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = 'https://fonts.googleapis.com/css2?family=Archivo+Black&family=Caveat:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@400;500;700&family=Kalam:wght@400;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Manrope:wght@300;400;600;700&family=Oswald:wght@400;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Poppins:wght@400;600;700;900&family=Space+Grotesk:wght@400;500;700&display=swap';
-    link.setAttribute('data-hub-fonts', '');
-    document.head.appendChild(link);
-  }, []);
 
 
   if (loading) {

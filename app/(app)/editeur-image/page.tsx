@@ -1,6 +1,7 @@
 'use client';
 
 import dynamic from 'next/dynamic';
+import { useHubFonts } from '@/lib/hooks/useHubFonts';
 
 const ImageEditorLayout = dynamic(
   () => import('@/components/features/image-editor/ImageEditorLayout'),
@@ -8,6 +9,7 @@ const ImageEditorLayout = dynamic(
 );
 
 export default function EditeurImagePage() {
+  useHubFonts();
   return (
     <>
       <ImageEditorLayout />
