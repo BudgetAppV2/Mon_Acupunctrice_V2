@@ -32,6 +32,9 @@ export const metadata: Metadata = {
   description:
     'Acupunctrice à Montréal, spécialisée en fertilité, grossesse, pédiatrie et acupuncture sociale. En partenariat avec la clinique La Source en Soi à Rosemont.',
   robots: { index: true, follow: true },
+  verification: {
+    google: 'yeGvUwc8-62HMRgMLkgEmgkvNCe1oO4tDPRvtPxuQ80',
+  },
 };
 
 export const viewport: Viewport = {
