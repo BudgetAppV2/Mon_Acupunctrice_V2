@@ -51,7 +51,7 @@ export default function Reveal({
         return;
       }
 
-      const fromVars: gsap.TweenVars = { opacity: 0, y };
+      const fromVars: gsap.TweenVars = { opacity: 0, y, willChange: 'transform, opacity' };
       if (scaleFrom !== undefined) fromVars.scale = scaleFrom;
 
       const toVars: gsap.TweenVars = {
@@ -65,6 +65,10 @@ export default function Reveal({
           start: ANIMATION.trigger.start,
           once: ANIMATION.trigger.once,
         },
+        // Retirer le will-change apres l animation pour liberer le layer GPU
+        onComplete: () => {
+          if (ref.current) ref.current.style.willChange = 'auto';
+        },
       };
       if (scaleFrom !== undefined) toVars.scale = 1;
 
@@ -74,7 +78,7 @@ export default function Reveal({
   );
 
   return (
-    <Tag ref={ref as never} className={className} style={{ willChange: 'transform, opacity' }}>
+    <Tag ref={ref as never} className={className}>
       {children}
     </Tag>
   );
