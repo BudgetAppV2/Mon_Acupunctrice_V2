@@ -1,32 +1,11 @@
 'use client';
 
-import { useRef } from 'react';
-import { useGSAP } from '@gsap/react';
-import { gsap } from 'gsap';
-import { useReducedMotion } from '@/lib/hooks/useReducedMotion';
 import GrainOverlay from '../_components/GrainOverlay';
 import WatermarkText from '../_components/WatermarkText';
 import CtaButton from '../_components/CtaButton';
 import MagneticButton from '../_components/animations/MagneticButton';
 
 export default function HeroSection() {
-  const kickerRef = useRef<HTMLSpanElement>(null);
-  const h1Ref = useRef<HTMLHeadingElement>(null);
-  const paragraphRef = useRef<HTMLParagraphElement>(null);
-  const ctasRef = useRef<HTMLDivElement>(null);
-  const badgesRef = useRef<HTMLDivElement>(null);
-  const prefersReduced = useReducedMotion();
-
-  useGSAP(() => {
-    if (!h1Ref.current) return;
-    if (prefersReduced) {
-      gsap.set([kickerRef.current, h1Ref.current, paragraphRef.current, ctasRef.current, badgesRef.current], { opacity: 1, y: 0 });
-      return;
-    }
-    gsap.set([kickerRef.current, h1Ref.current, paragraphRef.current, ctasRef.current, badgesRef.current], { opacity: 1 });
-
-    const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
-  }, { dependencies: [prefersReduced] });
 
   return (
     <section className="relative bg-gradient-to-b from-public-beige-bg to-public-beige-light overflow-hidden">
@@ -40,11 +19,11 @@ export default function HeroSection() {
 
           {/* Contenu gauche */}
           <div className="relative z-10">
-            <span ref={kickerRef} className="inline-block rounded-full bg-white px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[1.5px] text-public-accent-taupe-dark mb-6 shadow-public-sm" style={{ willChange: 'transform, opacity', opacity: 1 }}>
+            <span className="inline-block rounded-full bg-white px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[1.5px] text-public-accent-taupe-dark mb-6 shadow-public-sm">
               Acupunctrice &middot; Membre OAQ &middot; Rosemont
             </span>
 
-            <h1 ref={h1Ref} className="font-public-serif text-[48px] md:text-[74px] font-medium leading-[1.05] tracking-tight text-public-text-dark mb-6" style={{ willChange: 'transform, opacity', opacity: 1 }}>
+            <h1 className="font-public-serif text-[48px] md:text-[74px] font-medium leading-[1.05] tracking-tight text-public-text-dark mb-6">
               Venez comme vous{' '}
               <em className="italic underline decoration-public-accent-warm decoration-2 underline-offset-8">
                 &ecirc;tes
@@ -52,14 +31,14 @@ export default function HeroSection() {
               .
             </h1>
 
-            <p ref={paragraphRef} className="text-[18px] leading-relaxed text-public-text-medium max-w-[520px] mb-8" style={{ willChange: 'transform, opacity', opacity: 1 }}>
+            <p className="text-[18px] leading-relaxed text-public-text-medium max-w-[520px] mb-8">
               Acupunctrice &agrave; Rosemont et &agrave; Repentigny, j&rsquo;accompagne les femmes et les familles
               dans leur parcours de fertilit&eacute;, de grossesse, et au-del&agrave;.
               Avec douceur, &eacute;coute et l&rsquo;envie sinc&egrave;re de vous aider.
               Tout en militant pour rendre l&rsquo;acupuncture accessible &agrave; tous.
             </p>
 
-            <div ref={ctasRef} className="flex flex-wrap gap-4 mb-10" style={{ willChange: 'transform, opacity', opacity: 1 }}>
+            <div className="flex flex-wrap gap-4 mb-10">
               <MagneticButton range={100} strength={0.35}>
                 <CtaButton variant="primary" size="lg" href="/reserver">Prendre rendez-vous</CtaButton>
               </MagneticButton>
@@ -68,7 +47,7 @@ export default function HeroSection() {
               </MagneticButton>
             </div>
 
-            <div ref={badgesRef} className="flex flex-col gap-3 text-[15px] text-public-text-medium" style={{ willChange: 'transform, opacity', opacity: 1 }}>
+            <div className="flex flex-col gap-3 text-[15px] text-public-text-medium">
               <span className="flex items-center gap-2.5">
                 <HeartIcon />
                 M&egrave;re de 3 enfants

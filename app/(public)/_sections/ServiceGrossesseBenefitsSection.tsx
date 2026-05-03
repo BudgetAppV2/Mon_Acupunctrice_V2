@@ -83,7 +83,7 @@ export default function ServiceGrossesseBenefitsSection() {
 
         <div ref={gridRef} className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
           {TRIMESTRES.map((trim) => (
-            <div key={trim.num} data-benefit-card className="bg-white rounded-[14px] p-8 border border-public-border-subtle" style={{ willChange: 'clip-path' }}>
+            <div key={trim.num} data-benefit-card className="bg-white rounded-[14px] p-8 border border-public-border-subtle">
               <div className="text-[11px] font-semibold uppercase tracking-[2px] text-public-accent-taupe-dark mb-2">
                 {trim.num} TRIMESTRE
               </div>
