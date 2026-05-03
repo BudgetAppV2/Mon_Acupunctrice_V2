@@ -35,6 +35,12 @@ export const metadata: Metadata = {
   verification: {
     google: 'yeGvUwc8-62HMRgMLkgEmgkvNCe1oO4tDPRvtPxuQ80',
   },
+  icons: {
+    icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+    ],
+    apple: '/favicon.svg',
+  },
 };
 
 export const viewport: Viewport = {
