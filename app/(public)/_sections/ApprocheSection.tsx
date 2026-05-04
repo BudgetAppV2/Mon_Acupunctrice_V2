@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import GrainOverlay from '../_components/GrainOverlay';
 import SectionNumber from '../_components/SectionNumber';
 import SectionHeading from '../_components/SectionHeading';
@@ -61,14 +62,14 @@ export default function ApprocheSection() {
 
         {/* Photo */}
         <div className="order-1 md:order-2 max-w-[420px] mx-auto md:max-w-none relative z-10">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <Image
             src="/site/judith/judith-portrait-05.webp"
             alt="Judith en consultation d'acupuncture"
             width={1600}
             height={1067}
             loading="lazy"
-            className="w-full rounded-[14px] shadow-public-photo aspect-[4/5] object-cover"
+            sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 540px"
+            className="w-full h-auto rounded-[14px] shadow-public-photo aspect-[4/5] object-cover"
           />
         </div>
       </div>

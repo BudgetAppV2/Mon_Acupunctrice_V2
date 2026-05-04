@@ -31,7 +31,6 @@ export default function PilierCard({
             src={image}
             alt={title}
             fill
-            unoptimized
             className="object-cover transition-transform duration-[400ms] ease-out group-hover:scale-[1.04]"
             sizes="(max-width: 768px) 100vw, 50vw"
           />
