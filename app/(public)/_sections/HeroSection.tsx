@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import GrainOverlay from '../_components/GrainOverlay';
 import WatermarkText from '../_components/WatermarkText';
 import CtaButton from '../_components/CtaButton';
@@ -65,12 +66,15 @@ export default function HeroSection() {
 
           {/* Photo hero */}
           <div className="max-w-[420px] md:max-w-none mx-auto md:mx-0">
-            <picture>
-              <source srcSet="/site/judith/judith-portrait-01.avif" type="image/avif" />
-              <source srcSet="/site/judith/judith-portrait-01.webp" type="image/webp" />
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/site/judith/judith-portrait-01.webp" alt="Judith Dufour Savard, acupunctrice, dans son cabinet a La Source en Soi a Rosemont" width={1600} height={2400} fetchPriority="high" className="w-full aspect-[4/5] object-cover object-[center_15%] rounded-[20px] shadow-public-photo" />
-            </picture>
+            <Image
+              src="/site/judith/judith-portrait-01.webp"
+              alt="Judith Dufour Savard, acupunctrice, dans son cabinet a La Source en Soi a Rosemont"
+              width={1600}
+              height={2400}
+              priority
+              sizes="(max-width: 768px) 420px, (max-width: 1280px) 50vw, 640px"
+              className="w-full h-auto aspect-[4/5] object-cover object-[center_15%] rounded-[20px] shadow-public-photo"
+            />
           </div>
         </div>
 

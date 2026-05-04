@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useRef } from 'react';
 import { useGSAP } from '@gsap/react';
 import { gsap } from 'gsap';
@@ -67,12 +68,15 @@ export default function ServicePediatrieHeroSection() {
           </div>
         </div>
         <div ref={photoRef} className="max-w-[420px] mx-auto md:max-w-none" style={{ willChange: 'transform, clip-path', clipPath: 'inset(0 0 100% 0)' }}>
-          <picture>
-            <source srcSet="/site/judith/judith-portrait-02.avif" type="image/avif" />
-            <source srcSet="/site/judith/judith-portrait-02.webp" type="image/webp" />
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/site/judith/judith-portrait-02.webp" alt="Judith avec un enfant en consultation pediatrique" width={1600} height={2400} loading="eager" fetchPriority="high" className="w-full aspect-[4/5] object-cover rounded-[20px] shadow-public-photo" />
-          </picture>
+          <Image
+                src="/site/judith/judith-portrait-02.webp"
+                alt="Judith avec un enfant en consultation pediatrique"
+                width={1600}
+                height={2400}
+                priority
+                sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 640px"
+                className="w-full aspect-[4/5] object-cover rounded-[20px] shadow-public-photo"
+              />
         </div>
       </div>
     </GrainOverlay>

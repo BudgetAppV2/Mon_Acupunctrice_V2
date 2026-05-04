@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import SectionNumber from '../_components/SectionNumber';
 import SectionHeading from '../_components/SectionHeading';
 import CtaButton from '../_components/CtaButton';
@@ -10,14 +11,14 @@ export default function AboutSection() {
     <section className="bg-white py-[68px] md:py-[104px] px-5 md:px-8">
       <div className="max-w-[1080px] mx-auto grid grid-cols-1 md:grid-cols-[1fr_1.3fr] gap-12 items-center relative">
         <div className="max-w-[340px] mx-auto md:max-w-none">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <Image
             src="/site/judith/judith-portrait-08.webp"
             alt="Judith Dufour-Savard"
             width={1600}
             height={1067}
             loading="lazy"
-            className="w-full rounded-[14px] shadow-public-photo aspect-[3/4] object-cover object-[center_20%]"
+            sizes="(max-width: 768px) 340px, (max-width: 1280px) 40vw, 460px"
+            className="w-full h-auto rounded-[14px] shadow-public-photo aspect-[3/4] object-cover object-[center_20%]"
           />
         </div>
 
