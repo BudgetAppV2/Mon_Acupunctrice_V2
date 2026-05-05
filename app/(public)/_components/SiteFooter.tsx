@@ -27,6 +27,17 @@ export default function SiteFooter() {
               Acupunctrice &agrave; Rosemont et Repentigny, specialis&eacute;e en fertilit&eacute;, grossesse
               et acupuncture sociale.
             </p>
+            <p className="text-[12px] opacity-50 mt-3">
+              Membre de l&rsquo;{' '}
+              <a
+                href="https://o-a-q.org"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline underline-offset-2 hover:opacity-80 transition-opacity"
+              >
+                Ordre des acupuncteurs du Qu&eacute;bec
+              </a>
+            </p>
           </div>
 
           {/* Services */}

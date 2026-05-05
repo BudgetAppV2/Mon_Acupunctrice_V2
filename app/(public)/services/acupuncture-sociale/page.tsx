@@ -19,6 +19,8 @@ const SCHEMA_ORG = {
   '@type': 'MedicalWebPage',
   name: 'Acupuncture sociale a Rosemont',
   description: 'Acupuncture a tarif reduit en format communautaire a Rosemont. Sliding scale, protocole NADA, accessible a tous.',
+  datePublished: '2026-04-15',
+  dateModified: '2026-04-29',
   medicalAudience: 'Patient',
   mainEntity: {
     '@type': 'MedicalTherapy',

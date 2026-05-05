@@ -73,12 +73,14 @@ export default async function BlogArticlePage({
   const post = doc.data()!;
   const dateStr = formatDate(post.publishedAt);
   const publishedIso = post.publishedAt?.toDate?.()?.toISOString();
+  const updatedIso = post.updatedAt?.toDate?.()?.toISOString();
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'BlogPosting',
     headline: post.title,
     author: { '@type': 'Person', name: post.author },
     datePublished: publishedIso,
+    dateModified: updatedIso ?? publishedIso,
     image: post.coverImage || undefined,
     publisher: { '@type': 'Person', name: 'Judith Dufour-Savard' },
     description: post.excerpt,

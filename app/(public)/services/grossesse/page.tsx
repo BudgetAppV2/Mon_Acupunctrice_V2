@@ -19,6 +19,8 @@ const SCHEMA_ORG = {
   '@type': 'MedicalWebPage',
   name: 'Acupuncture grossesse a Montreal',
   description: 'Acupuncture pour accompagner la grossesse a Rosemont. Nausees, douleurs, version du siege, preparation accouchement.',
+  datePublished: '2026-04-15',
+  dateModified: '2026-04-29',
   medicalAudience: 'Patient',
   about: {
     '@type': 'MedicalCondition',

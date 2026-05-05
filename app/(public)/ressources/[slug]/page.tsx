@@ -71,12 +71,16 @@ export default async function RessourcePage({
   const servicePageUrl = PILIER_SERVICE_URL[ressource.pilier];
 
   // Schema.org : MedicalWebPage + FAQPage (si entries)
+  const publishedAtDate = (ressource as unknown as Record<string, { toDate?: () => Date }>).publishedAt?.toDate?.();
+  const updatedAtDate = (ressource as unknown as Record<string, { toDate?: () => Date }>).updatedAt?.toDate?.();
   const jsonLd = [
     {
       '@context': 'https://schema.org',
       '@type': 'MedicalWebPage',
       name: ressource.metaTitle,
       description: ressource.metaDescription,
+      datePublished: publishedAtDate?.toISOString() ?? '2026-04-15',
+      dateModified: (updatedAtDate ?? publishedAtDate)?.toISOString() ?? '2026-04-29',
       medicalAudience: 'Patient',
       mainEntity: {
         '@type': 'MedicalTherapy',

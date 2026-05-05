@@ -17,6 +17,8 @@ export const metadata: Metadata = {
 const SCHEMA_ORG = {
   '@context': 'https://schema.org',
   '@type': 'AboutPage',
+  datePublished: '2026-04-15',
+  dateModified: '2026-04-29',
   mainEntity: {
     '@type': 'Person',
     name: 'Judith Dufour-Savard',

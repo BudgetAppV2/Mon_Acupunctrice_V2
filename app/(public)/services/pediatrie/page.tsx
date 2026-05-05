@@ -20,6 +20,8 @@ const SCHEMA_ORG = {
   name: 'Acupuncture pediatrique a Montreal',
   description:
     'Acupuncture pour bebes, enfants et adolescents a Rosemont. Coliques, sommeil, allergies, anxiete, TDAH. Techniques douces adaptees a chaque age.',
+  datePublished: '2026-04-15',
+  dateModified: '2026-04-29',
   medicalAudience: ['Patient', 'ParentAudience'],
   about: {
     '@type': 'MedicalCondition',

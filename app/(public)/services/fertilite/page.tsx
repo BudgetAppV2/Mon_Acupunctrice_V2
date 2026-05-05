@@ -20,6 +20,8 @@ const SCHEMA_ORG = {
   '@type': 'MedicalWebPage',
   name: 'Acupuncture fertilite a Montreal',
   description: 'Acupuncture pour soutenir le parcours de fertilite a Rosemont. Conception naturelle, FIV, IIU.',
+  datePublished: '2026-04-15',
+  dateModified: '2026-04-29',
   medicalAudience: 'Patient',
   about: {
     '@type': 'MedicalCondition',
@@ -80,6 +82,33 @@ export default function ServiceFertilitePage() {
               </Link>
             </li>
           </ul>
+          <div className="mt-6 pt-6 border-t border-public-border-subtle">
+            <p className="text-[12px] uppercase tracking-[1px] font-semibold text-public-text-light mb-2">
+              Références
+            </p>
+            <ul className="space-y-1 text-[13px] text-public-text-light">
+              <li>
+                <a
+                  href="https://o-a-q.org"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline underline-offset-2 hover:text-public-text-dark transition-colors"
+                >
+                  Ordre des acupuncteurs du Qu&eacute;bec (OAQ)
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://www.who.int/health-topics/traditional-complementary-and-integrative-medicine"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline underline-offset-2 hover:text-public-text-dark transition-colors"
+                >
+                  OMS &mdash; M&eacute;decine traditionnelle et compl&eacute;mentaire
+                </a>
+              </li>
+            </ul>
+          </div>
         </div>
       </section>
     </>
