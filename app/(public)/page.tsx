@@ -73,6 +73,7 @@ const SCHEMA_ORG = [
       },
     ],
     sameAs: [
+      'https://www.wikidata.org/wiki/Q139677208',
       'https://www.instagram.com/judith.acupuncture/',
       'https://www.facebook.com/profile.php?id=61562614934143',
       'https://www.linkedin.com/in/judith-dufour-savard-acu/',
