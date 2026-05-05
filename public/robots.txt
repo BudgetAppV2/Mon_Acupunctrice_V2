@@ -1,12 +1,36 @@
 User-agent: *
 Allow: /
 
+# Autoriser explicitement les crawlers AI
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
 Sitemap: https://acupuncturejudith.ca/sitemap.xml
 
 # Bloquer les routes admin du Hub
+User-agent: *
 Disallow: /blogue
 Disallow: /blitz
 Disallow: /calendrier
+Disallow: /contenu
 Disallow: /editeur-image
 Disallow: /editeur/
 Disallow: /editeur-v2/
@@ -16,4 +40,3 @@ Disallow: /login
 Disallow: /profil
 Disallow: /stats
 Disallow: /api/
-Disallow: /_next/
