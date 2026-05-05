@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import AuthorByline from '../../_components/AuthorByline';
 import ServiceSocialeHeroSection from '../../_sections/ServiceSocialeHeroSection';
 import ServiceSocialeConvictionSection from '../../_sections/ServiceSocialeConvictionSection';
 import ServiceSocialeFormatSection from '../../_sections/ServiceSocialeFormatSection';
@@ -22,11 +23,27 @@ const SCHEMA_ORG = {
   datePublished: '2026-04-15',
   dateModified: '2026-04-29',
   medicalAudience: 'Patient',
+  author: {
+    '@type': 'Person',
+    name: 'Judith Dufour-Savard',
+    jobTitle: 'Acupunctrice',
+    memberOf: { '@type': 'Organization', name: 'Ordre des acupuncteurs du Québec' },
+  },
   mainEntity: {
     '@type': 'MedicalTherapy',
     name: 'Acupuncture sociale (community acupuncture, protocole NADA)',
     relevantSpecialty: 'Integrative Medicine',
   },
+};
+
+const BREADCRUMB_LD = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Accueil', item: 'https://acupuncturejudith.ca' },
+    { '@type': 'ListItem', position: 2, name: 'Services', item: 'https://acupuncturejudith.ca/services' },
+    { '@type': 'ListItem', position: 3, name: 'Acupuncture sociale', item: 'https://acupuncturejudith.ca/services/acupuncture-sociale' },
+  ],
 };
 
 export default function ServiceAcupunctureSocialePage() {
@@ -36,6 +53,10 @@ export default function ServiceAcupunctureSocialePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(SCHEMA_ORG) }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(BREADCRUMB_LD) }}
+      />
       <ServiceSocialeHeroSection />
       <ServiceSocialeConvictionSection />
       <ServiceSocialeFormatSection />
@@ -43,6 +64,8 @@ export default function ServiceAcupunctureSocialePage() {
       <ServiceSocialeNadaSection />
       <ServiceSocialeInfosSection />
       <ServiceSocialeCtaSection />
+
+      <AuthorByline />
 
       {/* Pour aller plus loin — cross-linking SEO */}
       <section className="bg-public-beige-warm py-12 px-5 md:px-8 border-t border-public-border-subtle">

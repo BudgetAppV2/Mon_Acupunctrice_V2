@@ -8,7 +8,7 @@ export default function ServiceFertiliteHommeSection() {
         <SectionNumber number="03" align="left" />
         <SectionHeading
           kicker="POUR LES HOMMES AUSSI"
-          title="La fertilit&eacute; masculine, accompagn&eacute;e."
+          title="L&rsquo;acupuncture peut-elle am&eacute;liorer la fertilit&eacute; masculine ?"
           align="left"
         />
 

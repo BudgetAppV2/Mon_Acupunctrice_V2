@@ -12,7 +12,7 @@ export default function ServiceFertiliteCollaborationSection() {
           <SectionNumber number="03" align="left" />
         </Reveal>
         <Reveal>
-          <SectionHeading kicker="COMPL&Eacute;MENT, JAMAIS OPPOSITION" title="J&rsquo;accompagne votre suivi m&eacute;dical." align="left" />
+          <SectionHeading kicker="COMPL&Eacute;MENT, JAMAIS OPPOSITION" title="L&rsquo;acupuncture augmente-t-elle les chances de succ&egrave;s en FIV ?" align="left" />
         </Reveal>
         <Reveal delay={0.15}>
           <div className="mt-8 space-y-6 text-[17px] leading-[1.75] text-public-text-medium">

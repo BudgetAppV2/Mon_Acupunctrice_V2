@@ -51,7 +51,7 @@ export default function ServicePediatrieConditionsSection() {
         </Reveal>
         <SectionHeading
           kicker="LES MOTIFS LES PLUS FR&Eacute;QUENTS"
-          title="Adapt&eacute; &agrave; chaque &acirc;ge."
+          title="&Agrave; quel &acirc;ge un enfant peut-il recevoir de l&rsquo;acupuncture ?"
           align="left"
         />
 

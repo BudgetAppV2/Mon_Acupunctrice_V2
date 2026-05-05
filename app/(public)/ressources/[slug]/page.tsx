@@ -6,6 +6,7 @@ import {
   getAllPublishedRessources,
   getRelatedRessources,
 } from '@/lib/firestore/public-ressources';
+import AuthorByline from '../../_components/AuthorByline';
 import MarkdownRenderer from '../../_components/MarkdownRenderer';
 import RessourceCard from '../../_components/RessourceCard';
 import RessourceFaq from '../../_components/RessourceFaq';
@@ -73,6 +74,15 @@ export default async function RessourcePage({
   // Schema.org : MedicalWebPage + FAQPage (si entries)
   const publishedAtDate = (ressource as unknown as Record<string, { toDate?: () => Date }>).publishedAt?.toDate?.();
   const updatedAtDate = (ressource as unknown as Record<string, { toDate?: () => Date }>).updatedAt?.toDate?.();
+  const breadcrumbLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Accueil', item: 'https://acupuncturejudith.ca' },
+      { '@type': 'ListItem', position: 2, name: 'Ressources', item: 'https://acupuncturejudith.ca/ressources' },
+      { '@type': 'ListItem', position: 3, name: ressource.title, item: `https://acupuncturejudith.ca/ressources/${slug}` },
+    ],
+  };
   const jsonLd = [
     {
       '@context': 'https://schema.org',
@@ -82,6 +92,12 @@ export default async function RessourcePage({
       datePublished: publishedAtDate?.toISOString() ?? '2026-04-15',
       dateModified: (updatedAtDate ?? publishedAtDate)?.toISOString() ?? '2026-04-29',
       medicalAudience: 'Patient',
+      author: {
+        '@type': 'Person',
+        name: 'Judith Dufour-Savard',
+        jobTitle: 'Acupunctrice',
+        memberOf: { '@type': 'Organization', name: 'Ordre des acupuncteurs du Québec' },
+      },
       mainEntity: {
         '@type': 'MedicalTherapy',
         name: ressource.title,
@@ -106,6 +122,10 @@ export default async function RessourcePage({
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
       />
 
       {/* Hero */}
@@ -267,6 +287,9 @@ export default async function RessourcePage({
           </div>
         </section>
       )}
+
+      {/* Auteur */}
+      <AuthorByline />
 
       {/* Retour */}
       <div className="max-w-3xl mx-auto px-5 md:px-8 py-12 text-center">

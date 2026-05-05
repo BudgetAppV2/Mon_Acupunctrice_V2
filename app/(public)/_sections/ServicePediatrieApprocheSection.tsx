@@ -42,7 +42,7 @@ export default function ServicePediatrieApprocheSection() {
         <Reveal>
           <SectionHeading
             kicker="LES ENFANTS NE SONT PAS DES ADULTES EN MINIATURE"
-            title="Des s&eacute;ances adapt&eacute;es, des techniques douces."
+            title="Comment se passe une s&eacute;ance d&rsquo;acupuncture pour un enfant ?"
             align="left"
           />
         </Reveal>

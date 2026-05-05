@@ -69,7 +69,7 @@ export default function ServiceGrossesseBenefitsSection() {
           <SectionNumber number="02" align="left" />
         </Reveal>
         <Reveal>
-          <SectionHeading kicker="TRIMESTRE PAR TRIMESTRE" title="Un soutien qui s'adapte &agrave; chaque &eacute;tape." align="left" />
+          <SectionHeading kicker="TRIMESTRE PAR TRIMESTRE" title="Comment l&rsquo;acupuncture soulage-t-elle les inconforts de grossesse ?" align="left" />
         </Reveal>
         <Reveal delay={0.15}>
           <p className="mt-6 mb-12 text-[17px] leading-relaxed text-public-text-medium max-w-[720px]">

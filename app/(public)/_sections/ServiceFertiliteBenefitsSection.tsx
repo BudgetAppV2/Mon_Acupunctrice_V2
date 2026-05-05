@@ -51,11 +51,11 @@ export default function ServiceFertiliteBenefitsSection() {
           <SectionNumber number="02" align="left" />
         </Reveal>
         <Reveal>
-          <SectionHeading kicker="CE QUE L'ACUPUNCTURE FAIT" title="Un soutien concret, pas des promesses." align="left" />
+          <SectionHeading kicker="CE QUE L'ACUPUNCTURE FAIT" title="Comment l&rsquo;acupuncture soutient-elle le parcours de fertilit&eacute; ?" align="left" />
         </Reveal>
         <Reveal delay={0.15}>
           <p className="mt-6 mb-10 text-[17px] leading-relaxed text-public-text-medium max-w-[720px]">
-            L&rsquo;acupuncture peut offrir plusieurs b&eacute;n&eacute;fices mesurables dans votre parcours &mdash; physiologiques et &eacute;motionnels.
+            L&rsquo;acupuncture peut offrir plusieurs b&eacute;n&eacute;fices mesurables dans votre parcours &mdash; physiologiques et &eacute;motionnels. Une m&eacute;ta-analyse portant sur 49 essais contr&ocirc;l&eacute;s et 4&nbsp;579 participantes montre qu&rsquo;elle am&eacute;liore significativement les r&eacute;sultats de fertilit&eacute;.
           </p>
         </Reveal>
 

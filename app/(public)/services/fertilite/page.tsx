@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import AuthorByline from '../../_components/AuthorByline';
 import ServiceFertiliteHeroSection from '../../_sections/ServiceFertiliteHeroSection';
 import ServiceFertiliteBioSection from '../../_sections/ServiceFertiliteBioSection';
 import ServiceFertiliteBenefitsSection from '../../_sections/ServiceFertiliteBenefitsSection';
@@ -23,6 +24,12 @@ const SCHEMA_ORG = {
   datePublished: '2026-04-15',
   dateModified: '2026-04-29',
   medicalAudience: 'Patient',
+  author: {
+    '@type': 'Person',
+    name: 'Judith Dufour-Savard',
+    jobTitle: 'Acupunctrice',
+    memberOf: { '@type': 'Organization', name: 'Ordre des acupuncteurs du Québec' },
+  },
   about: {
     '@type': 'MedicalCondition',
     name: 'Infertility',
@@ -34,12 +41,26 @@ const SCHEMA_ORG = {
   },
 };
 
+const BREADCRUMB_LD = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Accueil', item: 'https://acupuncturejudith.ca' },
+    { '@type': 'ListItem', position: 2, name: 'Services', item: 'https://acupuncturejudith.ca/services' },
+    { '@type': 'ListItem', position: 3, name: 'Fertilité', item: 'https://acupuncturejudith.ca/services/fertilite' },
+  ],
+};
+
 export default function ServiceFertilitePage() {
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(SCHEMA_ORG) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(BREADCRUMB_LD) }}
       />
       <ServiceFertiliteHeroSection />
       <ServiceFertiliteBioSection />
@@ -49,6 +70,8 @@ export default function ServiceFertilitePage() {
       <ServiceFertiliteTemoignageSection />
       <ServiceFertiliteInfosSection />
       <ServiceFertiliteCtaSection />
+
+      <AuthorByline />
 
       {/* Pour aller plus loin — cross-linking SEO */}
       <section className="bg-public-beige-warm py-12 px-5 md:px-8 border-t border-public-border-subtle">

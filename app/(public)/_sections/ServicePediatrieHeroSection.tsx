@@ -55,6 +55,10 @@ export default function ServicePediatrieHeroSection() {
             </span>
             .
           </h1>
+          {/* Answer block AEO — réponse directe extractible par les LLMs */}
+          <p className="text-[15px] leading-relaxed text-public-text-medium mb-5 max-w-[540px]">
+            L&rsquo;acupuncture p&eacute;diatrique utilise des techniques adapt&eacute;es aux enfants &mdash; shonishin (sans aiguilles), ventouses, aimants &mdash; pour traiter les coliques, les troubles du sommeil, l&rsquo;anxi&eacute;t&eacute; et l&rsquo;&eacute;nur&eacute;sie. Judith Dufour-Savard pratique l&rsquo;acupuncture p&eacute;diatrique &agrave; Rosemont (Montr&eacute;al) et Repentigny.
+          </p>
           <p ref={paragraphRef} className="text-[18px] leading-relaxed text-public-text-medium mb-8" style={{ willChange: 'transform, opacity', opacity: 1 }}>
             Coliques qui &eacute;puisent, sommeil qui dispara&icirc;t, allergies saisonni&egrave;res, anxi&eacute;t&eacute; &agrave; l&rsquo;&eacute;cole. L&rsquo;acupuncture p&eacute;diatrique est beaucoup plus douce que ce qu&rsquo;on imagine &mdash; souvent sans aiguilles pour les b&eacute;b&eacute;s.
           </p>

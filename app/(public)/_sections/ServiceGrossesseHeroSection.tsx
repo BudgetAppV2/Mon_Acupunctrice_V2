@@ -55,6 +55,10 @@ export default function ServiceGrossesseHeroSection() {
             </span>
             .
           </h1>
+          {/* Answer block AEO — réponse directe extractible par les LLMs */}
+          <p className="text-[15px] leading-relaxed text-public-text-medium mb-5 max-w-[540px]">
+            L&rsquo;acupuncture pendant la grossesse soulage les naus&eacute;es, les douleurs lombaires, pr&eacute;pare le col &agrave; l&rsquo;accouchement et peut aider &agrave; la version du b&eacute;b&eacute; en si&egrave;ge. Elle est reconnue comme s&eacute;curitaire par les m&eacute;ta-analyses. Judith Dufour-Savard offre un suivi d&rsquo;acupuncture grossesse &agrave; Rosemont (Montr&eacute;al) et Repentigny.
+          </p>
           <p ref={paragraphRef} className="text-[18px] leading-relaxed text-public-text-medium mb-8" style={{ willChange: 'transform, opacity', opacity: 1 }}>
             Naus&eacute;es qui durent, douleurs au dos, b&eacute;b&eacute; en si&egrave;ge, stress de l&rsquo;accouchement. &Agrave; chaque trimestre, l&rsquo;acupuncture peut &ecirc;tre un alli&eacute; pr&eacute;cieux &mdash; document&eacute; par la recherche, et pratiqu&eacute; ici avec exp&eacute;rience.
           </p>

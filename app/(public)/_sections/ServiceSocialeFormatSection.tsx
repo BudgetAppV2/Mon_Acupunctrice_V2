@@ -27,7 +27,7 @@ export default function ServiceSocialeFormatSection() {
         <SectionNumber number="02" align="left" />
         <SectionHeading
           kicker="LE FORMAT"
-          title="Une s&eacute;ance, en petit groupe, dans un espace apaisant."
+          title="Qu&rsquo;est-ce que l&rsquo;acupuncture sociale et comment &ccedil;a fonctionne ?"
           align="left"
         />
 

@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getAdminFirestore } from '@/lib/firebase-admin';
+import AuthorByline from '../../_components/AuthorByline';
 import MarkdownRenderer from '../../_components/MarkdownRenderer';
 import CtaButton from '../../_components/CtaButton';
 
@@ -78,7 +79,12 @@ export default async function BlogArticlePage({
     '@context': 'https://schema.org',
     '@type': 'BlogPosting',
     headline: post.title,
-    author: { '@type': 'Person', name: post.author },
+    author: {
+      '@type': 'Person',
+      name: 'Judith Dufour-Savard',
+      jobTitle: 'Acupunctrice',
+      memberOf: { '@type': 'Organization', name: 'Ordre des acupuncteurs du Québec' },
+    },
     datePublished: publishedIso,
     dateModified: updatedIso ?? publishedIso,
     image: post.coverImage || undefined,
@@ -86,9 +92,20 @@ export default async function BlogArticlePage({
     description: post.excerpt,
   };
 
+  const breadcrumbLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Accueil', item: 'https://acupuncturejudith.ca' },
+      { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://acupuncturejudith.ca/blog' },
+      { '@type': 'ListItem', position: 3, name: post.title, item: `https://acupuncturejudith.ca/blog/${slug}` },
+    ],
+  };
+
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
 
       <article>
         {/* Cover image — priority for LCP */}
@@ -126,6 +143,9 @@ export default async function BlogArticlePage({
         <div className="max-w-3xl mx-auto px-5 md:px-8 pb-16">
           <MarkdownRenderer content={post.content} />
         </div>
+
+        {/* Auteur */}
+        <AuthorByline />
 
         {/* CTA + retour */}
         <div className="max-w-3xl mx-auto px-5 md:px-8 pb-16 flex flex-col items-center gap-6">
