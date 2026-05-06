@@ -5,16 +5,21 @@
 
 ---
 
-## 🔥 Focus actuel — 7 jours
+## 🔥 Focus actuel — 7 jours (Semaine 1 du plan opérationnel 90j)
 
-À faire prioritairement cette semaine (par ordre) :
+🎯 **Voir `PROOF_GRAPH_OPERATIONAL_PLAN.md` pour le plan complet structuré en 4 chantiers.**
 
-1. ✅ Liens relatifs des docs corrigés (cette session)
-2. ⏳ **Audit linguistique YMYL** de la ressource grossesse pending (`acupuncture-grossesse-montreal.md`) — appliquer le lexique OAQ-friendly du `CREATION_WORKFLOW.md § 3`
-3. 🔥 **Corriger NAP** sur Lumino Santé (FR + EN) : `H2G 1K8` → `H1Y 1G3` — cf. `PROOF_GRAPH_BACKLOG.md` ACT-01
-4. 🔥 **Vérifier NAP** sur HealthDoc + GoRendezVous — cf. ACT-02 et ACT-03
-5. 🆕 **Produire la première page décisionnelle pilote** : `/services/acupuncture-fiv-montreal` (P1)
-6. 📊 **Test mensuel de citations LLMs** initial (baseline) — 5-10 prompts dans ChatGPT/Perplexity, voir si Judith est mentionnée
+À faire prioritairement cette semaine (Chantier 1 = pré-requis pour tous les autres) :
+
+1. ✅ Liens relatifs des docs corrigés (fait)
+2. ✅ Audit linguistique YMYL ressource grossesse (fait)
+3. 🔥 **Créer `ENTITY_SOURCE_OF_TRUTH.md`** avec NAP canonique + 3 bios (courte 300 / moyenne 800 / longue 1500 caractères)
+4. 🔥 **Corriger NAP** sur Lumino FR + EN : `H2G 1K8` → `H1Y 1G3` — cf. `PROOF_GRAPH_OPERATIONAL_PLAN.md` Chantier 1
+5. 🔥 **Vérifier + harmoniser** HealthDoc, GoRendezVous, OAQ, La Source en Soi, GBP, LinkedIn
+6. 🔥 **Préparer lien Google Reviews** + liste segmentée 30 patientes (Chantier 2)
+7. 📊 **Test baseline citations LLMs** — 10 prompts, mesurer combien mentionnent Judith aujourd'hui
+
+⚠️ **Règle d'or** : NE PAS lancer Chantier 4 (pages décisionnelles comme P1 FIV) tant que Chantier 1 (NAP cohérent) n'est pas complet. Une page décisionnelle qui annonce Rosemont H1Y 1G3 alors que Lumino dit encore H2G 1K8 = signal incohérent pour les LLMs.
 
 ---
 
@@ -104,6 +109,12 @@ Lis dans cet ordre, ~30-45 min total :
 | `CURATION_GUIDE.md` | 276 | 2026-05-05 | Termes Freepik par pilier + workflow curation |
 | `../../01_PRODUCT/STRATEGIE/CANVA_TEMPLATES_GUIDE.md` | — | — | Guide Canva (legacy, avant Freepik+Satori) |
 
+### 🚀 Plans opérationnels (le "comment exécuter semaine par semaine")
+
+| Fichier | Lignes | Date | Contenu |
+|---|---|---|---|
+| **`PROOF_GRAPH_OPERATIONAL_PLAN.md`** ⭐ | 491 | 2026-05-06 | Programme opérationnel 90 jours basé sur retour Codex. 4 chantiers (Cohérence d'entité, Avis Judith, Mentions/backlinks, Pages décisionnelles), planning détaillé semaine par semaine, scorecard mensuel, templates emails patientes + partenaires. Complète `PROOF_GRAPH_BACKLOG.md` qui reste le catalogue exhaustif. |
+
 ### 🤝 Reprise de session & briefs CC (le "où on en est")
 
 | Fichier | Lignes | Date | Contenu |
@@ -141,6 +152,9 @@ Lis dans cet ordre, ~30-45 min total :
 | Les scores AEO/SEO actuels du site | `AUDIT_AEO_ACUPUNCTUREJUDITH_2026-05-06.md § A` |
 | Le plan d'action 30/60/90 jours | `AUDIT_AEO § H` |
 | L'analyse concurrentielle | `UBERSUGGEST_COMPETITOR_RAW.md` |
+| Le plan opérationnel proof graph 90 jours | `PROOF_GRAPH_OPERATIONAL_PLAN.md` (par chantier 1-4) |
+| Templates emails patientes (avis Google) | `PROOF_GRAPH_OPERATIONAL_PLAN.md` § Chantier 2 |
+| Templates emails partenaires (backlinks) | `PROOF_GRAPH_OPERATIONAL_PLAN.md` § Chantier 3 |
 | L'historique des décisions de cette session | `HANDOFF.md § "Décisions architecturales"` |
 | Un prompt pour briefer Claude Code | `CC_PROMPT_PIPELINE.md` |
 
@@ -176,16 +190,24 @@ Voir `AUDIT_AEO § G` pour la liste complète. Top priorité haute :
 
 ---
 
-## 🔄 Documents en cours de révision (suite au feedback Codex)
+## ✅ Documents finalisés cette session (6 mai 2026)
 
-À jour au 6 mai 2026, suite à l'audit Codex et au feedback stratégique reçu :
-
-| Document | Action prévue | Status |
+| Document | Description | Status |
 |---|---|---|
-| `CREATION_WORKFLOW.md` | Refonte pour intégrer feedback Codex (FAQ embarquée vs standalone, lexique OAQ-friendly, réordonnancement clusters) | À faire (Chantier A) |
-| **NOUVEAU** `DECISION_PAGES_BACKLOG.md` | Synthèse + planification des pages décisionnelles (basée sur § G Codex) | À faire (Chantier B) |
-| **NOUVEAU** `PROOF_GRAPH_BACKLOG.md` | Liste des actions externes pour autorité (annuaires, backlinks, mentions) | À faire (Chantier B) |
-| `acupuncture-grossesse-montreal.md` | Audit linguistique : adoucir formulations YMYL trop affirmatives | À faire (Chantier C) |
+| `INDEX.md` | Carte de navigation par contexte + glossaire AEO/GEO + Focus 7 jours | ✅ Livré |
+| `CREATION_WORKFLOW.md` v2 | Refonte intégrant feedback Codex (60/40 décisionnel/info, FAQ embarquée vs standalone, lexique OAQ-friendly, réordonnancement clusters FIV/SOPK/endo, calendrier 30/60/90j) | ✅ Livré |
+| `DECISION_PAGES_BACKLOG.md` | 12 pages priorisées (P1-P12) + templates page service décisionnelle / page ressource décisionnelle + lexique spécifique | ✅ Livré |
+| `PROOF_GRAPH_BACKLOG.md` | Catalogue exhaustif 19 actions externes (ACT-01 à ACT-19) priorisées P0-P3 | ✅ Livré |
+| `PROOF_GRAPH_OPERATIONAL_PLAN.md` | **NOUVEAU** Plan opérationnel 90j basé sur retour Codex : 4 chantiers, planning semaine/semaine, scorecard mensuel, templates emails | ✅ Livré |
+| `acupuncture-grossesse-montreal.md` v2 | Audit YMYL : 15 formulations adoucies (passe le test "citation hors contexte LLM") | ✅ Livré |
+
+## 🚧 Documents à créer prochainement
+
+| Document | Description | Priorité |
+|---|---|---|
+| `ENTITY_SOURCE_OF_TRUTH.md` | NAP canonique + 3 bios (300/800/1500 caractères) — prérequis Chantier 1 du plan opérationnel | 🔥 Semaine 1 |
+| Page pilote `/services/acupuncture-fiv-montreal` (P1) | Première page décisionnelle — démonstrateur du nouveau workflow | Semaines 2-4 (après Chantier 1) |
+| `JUDITH_PUBLICATION_GUIDE.md` | Doc utilisatrice pour Judith (workflow Hub, approbation, schema decommenter) | Après production initiale |
 
 ---
 
