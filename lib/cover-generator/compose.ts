@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises';
 import satori from 'satori';
 import { Resvg } from '@resvg/resvg-js';
 import { pickAssets } from './pige';
-import { lineArtToTransparentPng } from './line-art-processor';
+import { lineArtToDataUrl } from './line-art-processor';
 import { analyzePlacementCover, analyzePlacementStory } from './placement-analyzer';
 import { loadFonts, buildSatoriFontConfig } from './fonts';
 import { uploadCoverPng } from './upload';
@@ -30,9 +30,9 @@ export async function generateCovers(input: GenerateCoverInput): Promise<Generat
   // 1. Pige assets
   const { backgroundPath, lineartPath } = await pickAssets(input.pilier, input.excludeAssets);
 
-  // 2. Process en parallèle : line art, placements (cover + story), fonts, bg read
-  const [lineArtPng, placementCover, placementStory, fonts, bgBuffer] = await Promise.all([
-    lineArtToTransparentPng(lineartPath),
+  // 2. Process en parallèle : line art (SVG ou raster), placements (cover + story), fonts, bg read
+  const [laDataUrl, placementCover, placementStory, fonts, bgBuffer] = await Promise.all([
+    lineArtToDataUrl(lineartPath),
     analyzePlacementCover(backgroundPath),
     analyzePlacementStory(backgroundPath),
     loadFonts(),
@@ -40,7 +40,6 @@ export async function generateCovers(input: GenerateCoverInput): Promise<Generat
   ]);
 
   const bgDataUrl = bufferToDataUrl(bgBuffer, 'image/jpeg');
-  const laDataUrl = bufferToDataUrl(lineArtPng, 'image/png');
   const surtitre = SURTITRE_MAP[input.type] || 'Ressource';
   const ctaMode = input.ctaMode || 'ressource';
   const satoriFonts = buildSatoriFontConfig(fonts);

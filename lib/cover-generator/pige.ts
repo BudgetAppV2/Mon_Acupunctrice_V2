@@ -1,4 +1,4 @@
-import { readFile, readdir } from 'node:fs/promises';
+import { readFile, readdir, access } from 'node:fs/promises';
 import path from 'node:path';
 import type { Pilier, AssetMetadata } from './types';
 
@@ -89,10 +89,32 @@ export async function pickAssets(
   // Déterminer le dossier réel du line art sélectionné
   const laDir = await findLineartDir(laAsset.file, pilier);
 
+  // Préférer SVG si disponible (vectoriel, qualité parfaite)
+  // On regarde si un .svg existe avec le même basename que le .jpg pigé
+  const lineartFile = await preferSvgIfExists(laDir, laAsset.file);
+
   return {
     backgroundPath: path.join(BG_DIR, bgFile),
-    lineartPath: path.join(laDir, laAsset.file),
+    lineartPath: path.join(laDir, lineartFile),
   };
+}
+
+/**
+ * Si un .svg existe avec le meme basename que le fichier pige, le preferer.
+ * Permet de migrer progressivement la banque de JPG -> SVG sans casser metadata.json.
+ */
+async function preferSvgIfExists(dir: string, jpgFile: string): Promise<string> {
+  // Skip si le fichier choisi n'est pas un raster
+  if (!jpgFile.match(/\.(jpg|jpeg|png)$/i)) return jpgFile;
+
+  const basename = jpgFile.replace(/\.(jpg|jpeg|png)$/i, '');
+  const svgPath = path.join(dir, `${basename}.svg`);
+  try {
+    await access(svgPath);
+    return `${basename}.svg`;
+  } catch {
+    return jpgFile;
+  }
 }
 
 async function findLineartDir(filename: string, primaryPilier: string): Promise<string> {
