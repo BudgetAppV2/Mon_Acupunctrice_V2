@@ -25,7 +25,7 @@ const SCHEMA_ORG = [
     name: 'Judith Dufour-Savard',
     jobTitle: 'Acupunctrice',
     image: '/site/judith/judith-portrait-01.webp',
-    url: 'https://acupuncturejudith.ca',
+    url: 'https://www.acupuncturejudith.ca',
     dateModified: '2026-04-29',
     worksFor: {
       '@type': 'MedicalClinic',
@@ -49,8 +49,8 @@ const SCHEMA_ORG = [
     '@context': 'https://schema.org',
     '@type': 'Organization',
     name: 'Judith Dufour-Savard — Acupunctrice',
-    url: 'https://acupuncturejudith.ca',
-    logo: 'https://acupuncturejudith.ca/site/judith/judith-portrait-01.webp',
+    url: 'https://www.acupuncturejudith.ca',
+    logo: 'https://www.acupuncturejudith.ca/site/judith/judith-portrait-01.webp',
     description:
       "Acupunctrice membre de l'OAQ spécialisée en fertilité, grossesse, pédiatrie et acupuncture sociale à Montréal (Rosemont) et Repentigny.",
     datePublished: '2026-04-15',

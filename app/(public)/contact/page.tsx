@@ -25,12 +25,12 @@ const JSON_LD = [
   {
     '@context': 'https://schema.org',
     '@type': ['MedicalBusiness', 'LocalBusiness'],
-    '@id': 'https://acupuncturejudith.ca/#business',
+    '@id': 'https://www.acupuncturejudith.ca/#business',
     name: 'Judith Dufour-Savard \u2014 Acupuncture',
-    image: 'https://acupuncturejudith.ca/site/judith/judith-portrait-01.jpg',
+    image: 'https://www.acupuncturejudith.ca/site/judith/judith-portrait-01.jpg',
     telephone: CLINICS.lssi.phoneFull,
     email: CONTACT_EMAIL,
-    url: 'https://acupuncturejudith.ca',
+    url: 'https://www.acupuncturejudith.ca',
     location: [
       {
         '@type': 'Place',
@@ -79,14 +79,14 @@ const JSON_LD = [
   {
     '@context': 'https://schema.org',
     '@type': 'ContactPage',
-    mainEntity: { '@id': 'https://acupuncturejudith.ca/#business' },
+    mainEntity: { '@id': 'https://www.acupuncturejudith.ca/#business' },
   },
   {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Accueil', item: 'https://acupuncturejudith.ca/' },
-      { '@type': 'ListItem', position: 2, name: 'Contact', item: 'https://acupuncturejudith.ca/contact' },
+      { '@type': 'ListItem', position: 1, name: 'Accueil', item: 'https://www.acupuncturejudith.ca/' },
+      { '@type': 'ListItem', position: 2, name: 'Contact', item: 'https://www.acupuncturejudith.ca/contact' },
     ],
   },
 ];
@@ -101,6 +101,7 @@ export default function ContactPage() {
         <div className="max-w-[860px] mx-auto text-center">
           <Reveal>
             <SectionHeading
+              as="h1"
               kicker="CONTACT"
               title="Restons en contact."
               subtitle="Une question avant de r&eacute;server ? Besoin de savoir si l&rsquo;acupuncture est adapt&eacute;e &agrave; votre situation ? &Eacute;crivez-moi ou appelez la clinique &mdash; je vous r&eacute;ponds avec plaisir."

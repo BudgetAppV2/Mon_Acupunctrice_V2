@@ -23,7 +23,7 @@ Allow: /
 User-agent: Applebot-Extended
 Allow: /
 
-Sitemap: https://acupuncturejudith.ca/sitemap.xml
+Sitemap: https://www.acupuncturejudith.ca/sitemap.xml
 
 # Bloquer les routes admin du Hub
 User-agent: *

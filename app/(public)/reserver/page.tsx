@@ -62,7 +62,7 @@ const JSON_LD = [
         },
       },
     ],
-    mainEntityOfPage: { '@id': 'https://acupuncturejudith.ca/#business' },
+    mainEntityOfPage: { '@id': 'https://www.acupuncturejudith.ca/#business' },
     potentialAction: [
       {
         '@type': 'ReserveAction',
@@ -80,8 +80,8 @@ const JSON_LD = [
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Accueil', item: 'https://acupuncturejudith.ca/' },
-      { '@type': 'ListItem', position: 2, name: 'R\u00e9server', item: 'https://acupuncturejudith.ca/reserver' },
+      { '@type': 'ListItem', position: 1, name: 'Accueil', item: 'https://www.acupuncturejudith.ca/' },
+      { '@type': 'ListItem', position: 2, name: 'R\u00e9server', item: 'https://www.acupuncturejudith.ca/reserver' },
     ],
   },
 ];
@@ -100,6 +100,7 @@ export default function ReserverPage() {
         <div className="max-w-[860px] mx-auto text-center relative z-10">
           <Reveal>
             <SectionHeading
+              as="h1"
               kicker="R&Eacute;SERVER"
               title="Prendre rendez-vous."
               subtitle="Je pratique &agrave; deux cliniques. Choisissez celle qui vous convient et r&eacute;servez en ligne &mdash; disponibilit&eacute;s en temps r&eacute;el."

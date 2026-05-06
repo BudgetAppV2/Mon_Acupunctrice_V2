@@ -111,7 +111,7 @@ const JSON_LD = [
     },
     priceRange: '$$',
     paymentAccepted: 'Cash, Credit Card, Debit Card, Interac',
-    mainEntityOfPage: { '@id': 'https://acupuncturejudith.ca/#business' },
+    mainEntityOfPage: { '@id': 'https://www.acupuncturejudith.ca/#business' },
     hasOfferCatalog: {
       '@type': 'OfferCatalog',
       name: 'Services d’acupuncture',
@@ -164,8 +164,8 @@ const JSON_LD = [
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Accueil', item: 'https://acupuncturejudith.ca/' },
-      { '@type': 'ListItem', position: 2, name: 'Tarifs', item: 'https://acupuncturejudith.ca/tarifs' },
+      { '@type': 'ListItem', position: 1, name: 'Accueil', item: 'https://www.acupuncturejudith.ca/' },
+      { '@type': 'ListItem', position: 2, name: 'Tarifs', item: 'https://www.acupuncturejudith.ca/tarifs' },
     ],
   },
 ];
@@ -188,6 +188,7 @@ export default function TarifsPage() {
         <div className="max-w-[860px] mx-auto text-center relative z-10">
           <Reveal>
             <SectionHeading
+              as="h1"
               kicker="TARIFS"
               title="Tarifs transparents, accessibles &agrave; tous."
               subtitle="Les prix de mes s&eacute;ances d&rsquo;acupuncture sont clairs, sans frais cach&eacute;s. Et parce que la sant&eacute; ne devrait pas &ecirc;tre un privil&egrave;ge, j&rsquo;offre aussi de l&rsquo;acupuncture sociale &agrave; tarif libre. Clinique &agrave; Rosemont (Beaubien Est) et &agrave; Repentigny (&Eacute;den Yoga Pilates)."

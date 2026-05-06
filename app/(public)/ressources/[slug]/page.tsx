@@ -78,9 +78,9 @@ export default async function RessourcePage({
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Accueil', item: 'https://acupuncturejudith.ca' },
-      { '@type': 'ListItem', position: 2, name: 'Ressources', item: 'https://acupuncturejudith.ca/ressources' },
-      { '@type': 'ListItem', position: 3, name: ressource.title, item: `https://acupuncturejudith.ca/ressources/${slug}` },
+      { '@type': 'ListItem', position: 1, name: 'Accueil', item: 'https://www.acupuncturejudith.ca' },
+      { '@type': 'ListItem', position: 2, name: 'Ressources', item: 'https://www.acupuncturejudith.ca/ressources' },
+      { '@type': 'ListItem', position: 3, name: ressource.title, item: `https://www.acupuncturejudith.ca/ressources/${slug}` },
     ],
   };
   const jsonLd = [

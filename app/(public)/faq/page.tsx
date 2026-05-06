@@ -71,8 +71,8 @@ export default async function FaqPage() {
       '@context': 'https://schema.org',
       '@type': 'BreadcrumbList',
       itemListElement: [
-        { '@type': 'ListItem', position: 1, name: 'Accueil', item: 'https://acupuncturejudith.ca/' },
-        { '@type': 'ListItem', position: 2, name: 'FAQ', item: 'https://acupuncturejudith.ca/faq' },
+        { '@type': 'ListItem', position: 1, name: 'Accueil', item: 'https://www.acupuncturejudith.ca/' },
+        { '@type': 'ListItem', position: 2, name: 'FAQ', item: 'https://www.acupuncturejudith.ca/faq' },
       ],
     },
   ];
@@ -94,6 +94,7 @@ export default async function FaqPage() {
         <div className="max-w-[860px] mx-auto text-center relative z-10">
           <Reveal>
             <SectionHeading
+              as="h1"
               kicker="FAQ"
               title="Questions fr&eacute;quentes"
               subtitle="Les r&eacute;ponses aux questions que mes patientes me posent le plus souvent. Si votre question n&rsquo;est pas ici, n&rsquo;h&eacute;sitez pas &agrave; me contacter."

@@ -66,6 +66,7 @@ export default async function BlogListPage() {
   return (
     <main className="mx-auto max-w-[1280px] px-5 md:px-8 py-16 md:py-24">
       <SectionHeading
+        as="h1"
         kicker="BLOG"
         title="Articles"
         subtitle="Fertilite, grossesse, pediatrie, acupuncture sociale — par Judith Dufour-Savard, acupunctrice a Montreal."

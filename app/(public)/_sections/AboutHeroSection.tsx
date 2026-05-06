@@ -21,7 +21,7 @@ export default function AboutHeroSection() {
         </div>
 
         <div>
-          <SectionHeading kicker="QUI JE SUIS" title="Je suis Judith." align="left" />
+          <SectionHeading as="h1" kicker="QUI JE SUIS" title="Je suis Judith." align="left" />
           <div className="mt-6 space-y-6 text-[17px] leading-[1.75] text-public-text-medium">
             <p>
               Acupunctrice &agrave; Rosemont et &agrave; Repentigny, j&rsquo;accompagne les femmes, les familles et les enfants

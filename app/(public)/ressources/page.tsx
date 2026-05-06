@@ -40,6 +40,7 @@ export default async function RessourcesIndexPage() {
         <div className="max-w-[960px] mx-auto text-center">
           <Reveal>
             <SectionHeading
+              as="h1"
               kicker="LE GUIDE COMPLET"
               title="Ressources"
               subtitle="Des guides approfondis sur l&rsquo;acupuncture en fertilite, grossesse, pediatrie, acupuncture sociale et sante mentale. Etudes scientifiques recentes, protocoles documentes, et les reponses aux questions qu&rsquo;on me pose le plus souvent."

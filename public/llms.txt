@@ -7,12 +7,12 @@ She practices at La Source en Soi (Rosemont, Montréal) and Éden Yoga Pilates (
 She also offers community acupuncture (acupuncture sociale) at sliding-scale rates.
 
 ## Website
-- Homepage: https://acupuncturejudith.ca
-- Services: https://acupuncturejudith.ca/services/fertilite, grossesse, pediatrie, acupuncture-sociale
-- Resources: https://acupuncturejudith.ca/ressources (evidence-based guides with PubMed citations)
-- Blog: https://acupuncturejudith.ca/blog
-- FAQ: https://acupuncturejudith.ca/faq
-- Booking: https://acupuncturejudith.ca/reserver
+- Homepage: https://www.acupuncturejudith.ca
+- Services: https://www.acupuncturejudith.ca/services/fertilite, grossesse, pediatrie, acupuncture-sociale
+- Resources: https://www.acupuncturejudith.ca/ressources (evidence-based guides with PubMed citations)
+- Blog: https://www.acupuncturejudith.ca/blog
+- FAQ: https://www.acupuncturejudith.ca/faq
+- Booking: https://www.acupuncturejudith.ca/reserver
 
 ## Key Facts
 - Wikidata: https://www.wikidata.org/wiki/Q139677208

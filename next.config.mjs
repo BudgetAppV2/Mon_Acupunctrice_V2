@@ -31,6 +31,13 @@ const nextConfig = {
   },
   async redirects() {
     return [
+      // Canonicalisation www — non-www → www
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: 'acupuncturejudith.ca' }],
+        destination: 'https://www.acupuncturejudith.ca/:path*',
+        permanent: true,
+      },
       // Pages Wix → nouvelles URLs
       { source: '/bienfaits', destination: '/faq', permanent: true },
       { source: '/acupuncture-sociale', destination: '/services/acupuncture-sociale', permanent: true },
@@ -40,6 +47,10 @@ const nextConfig = {
       { source: '/plans-pricing', destination: '/tarifs', permanent: true },
       // Blog : /post/slug → /blog/slug
       { source: '/post/:slug*', destination: '/blog/:slug*', permanent: true },
+      // Blog : slugs accentués (Wix) → ASCII
+      { source: '/blog/b%C3%A9b%C3%A9-si%C3%A8ge-acupuncture', destination: '/blog/bebe-siege-acupuncture', permanent: true },
+      { source: '/blog/pr%C3%A9paration-accouchement-induction-acupuncture', destination: '/blog/preparation-accouchement-induction-acupuncture', permanent: true },
+      { source: '/blog/l-acupuncture-sociale-pratique-essentielle-pour-la-communaut%C3%A9', destination: '/blog/l-acupuncture-sociale-pratique-essentielle-pour-la-communaute', permanent: true },
     ];
   },
   async headers() {

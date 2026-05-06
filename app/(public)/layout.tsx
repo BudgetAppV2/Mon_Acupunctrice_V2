@@ -6,6 +6,7 @@ import './globals-public.css';
 import SiteHeader from './_components/SiteHeader';
 import SiteFooter from './_components/SiteFooter';
 import LenisProvider from './_components/LenisProvider';
+import GlobalJsonLd from './_components/GlobalJsonLd';
 
 // CSS variables consommées par tailwind.config.ts
 // (fontFamily['public-serif'] et fontFamily['public-sans'])
@@ -25,7 +26,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://acupuncturejudith.ca'),
+  metadataBase: new URL('https://www.acupuncturejudith.ca'),
   title: {
     default: 'Judith Dufour-Savard — Acupunctrice à Montréal',
     template: '%s | Judith Dufour-Savard',
@@ -74,6 +75,7 @@ export default function PublicLayout({
 }) {
   return (
     <>
+      <GlobalJsonLd />
       {/* Preload texture papier — <link> direct car ReactDOM.preload() ne fonctionne pas dans Next.js 15 App Router */}
       <link rel="preload" href="/site/textures/paper-japan.avif" as="image" type="image/avif" />
     <div

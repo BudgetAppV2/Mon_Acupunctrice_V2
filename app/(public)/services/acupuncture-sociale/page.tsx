@@ -40,9 +40,9 @@ const BREADCRUMB_LD = {
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
   itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'Accueil', item: 'https://acupuncturejudith.ca' },
-    { '@type': 'ListItem', position: 2, name: 'Services', item: 'https://acupuncturejudith.ca/services' },
-    { '@type': 'ListItem', position: 3, name: 'Acupuncture sociale', item: 'https://acupuncturejudith.ca/services/acupuncture-sociale' },
+    { '@type': 'ListItem', position: 1, name: 'Accueil', item: 'https://www.acupuncturejudith.ca' },
+    { '@type': 'ListItem', position: 2, name: 'Services', item: 'https://www.acupuncturejudith.ca/services' },
+    { '@type': 'ListItem', position: 3, name: 'Acupuncture sociale', item: 'https://www.acupuncturejudith.ca/services/acupuncture-sociale' },
   ],
 };
 

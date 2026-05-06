@@ -12,8 +12,8 @@ const SCHEMA_ORG = {
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
   itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'Accueil', item: 'https://acupuncturejudith.ca/' },
-    { '@type': 'ListItem', position: 2, name: 'Services', item: 'https://acupuncturejudith.ca/services' },
+    { '@type': 'ListItem', position: 1, name: 'Accueil', item: 'https://www.acupuncturejudith.ca/' },
+    { '@type': 'ListItem', position: 2, name: 'Services', item: 'https://www.acupuncturejudith.ca/services' },
   ],
 };
 
@@ -28,6 +28,7 @@ export default function ServicesPage() {
       <section className="bg-gradient-to-b from-public-beige-bg to-public-beige-light py-[68px] md:py-[104px] px-5 md:px-8">
         <div className="max-w-[960px] mx-auto text-center">
           <SectionHeading
+            as="h1"
             kicker="SERVICES"
             title="Ce pour quoi on me consulte."
             subtitle="Chaque parcours est unique. D&eacute;couvrez mes sp&eacute;cialit&eacute;s et trouvez l&rsquo;accompagnement qui vous convient."

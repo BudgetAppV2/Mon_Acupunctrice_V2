@@ -96,9 +96,9 @@ export default async function BlogArticlePage({
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Accueil', item: 'https://acupuncturejudith.ca' },
-      { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://acupuncturejudith.ca/blog' },
-      { '@type': 'ListItem', position: 3, name: post.title, item: `https://acupuncturejudith.ca/blog/${slug}` },
+      { '@type': 'ListItem', position: 1, name: 'Accueil', item: 'https://www.acupuncturejudith.ca' },
+      { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://www.acupuncturejudith.ca/blog' },
+      { '@type': 'ListItem', position: 3, name: post.title, item: `https://www.acupuncturejudith.ca/blog/${slug}` },
     ],
   };
 

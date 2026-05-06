@@ -1,7 +1,7 @@
 import type { MetadataRoute } from 'next';
 import { getAdminFirestore } from '@/lib/firebase-admin';
 
-const BASE_URL = 'https://acupuncturejudith.ca';
+const BASE_URL = 'https://www.acupuncturejudith.ca';
 const STATIC_DATE = new Date('2026-04-29');
 
 export const revalidate = 3600;

@@ -24,7 +24,7 @@ const SCHEMA_ORG = {
     name: 'Judith Dufour-Savard',
     jobTitle: 'Acupunctrice',
     image: '/site/judith/judith-portrait-08.webp',
-    url: 'https://acupuncturejudith.ca/a-propos',
+    url: 'https://www.acupuncturejudith.ca/a-propos',
     alumniOf: {
       '@type': 'EducationalOrganization',
       name: 'College de Rosemont',
