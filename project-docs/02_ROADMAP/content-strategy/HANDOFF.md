@@ -1,283 +1,333 @@
-# HANDOFF — Pipeline Cover Generation (Banque Freepik + Satori)
+# HANDOFF — Pipeline Cover Generation (état post-Phase 1 + SVG)
 
-**Date** : 5 mai 2026 (session intensive)
-**Auteur** : Benoit + Claude
-**Status** : POC validé, prêt pour pipeline production
-**Prochaine session** : implémentation Phase 1-5 via Claude Code
-
----
-
-## 🎯 Contexte stratégique
-
-### Ce qu'on construit
-Un système de **génération automatique de covers visuelles** pour ressources/FAQ/blog du site `acupuncturejudith.ca`. Inputs : un article publié dans Firestore. Outputs : 3 PNG (cover blog, story IG, post FB/OG) générés automatiquement, sauvés dans Firebase Storage, attachés à l'article.
-
-### Pourquoi cette approche (vs alternatives évaluées)
-- **AI génération (DALL-E/gpt-image-2)** : rejeté → coût récurrent ($25-100/mois), qualité variable, risques anatomiques (visages déformés), conformité OAQ incertaine
-- **Banque Freepik + Satori overlay** : retenu → 0$ récurrent, cohérence garantie, conformité totale, 5400+ combinaisons possibles
-
-### Composants déjà livrés (POC validé)
-1. **82 assets Freepik** organisés et taggés (37 backgrounds boho + 45 line art par pilier)
-2. **Pipeline POC fonctionnel** : `content/visual-bank/scripts/poc-compose.mjs` → génère cover 1920×1080 en ~5 sec
-3. **Algorithme placement intelligent** : analyse 3×3 du background, détecte zone vide, place line art au centre/droite
-4. **Suppression background blanc** : Sharp transforme JPG line art → PNG transparent + couleur ink uniforme
-5. **Style guide** : `STYLE_GUIDE_VISUEL.md` documente palette, ESQ, prompts
+**Date** : 6 mai 2026 (session intensive Day 4)
+**Auteur** : Benoit + Claude (Desktop) + Claude Code
+**Status** : ✅ Phase 1 LIVE et fonctionnelle, validée end-to-end
+**Prochaine session** : voir "Décisions ouvertes" en bas du document
 
 ---
 
-## 📦 État actuel — Ce qui est en place
+## 🎯 Vue d'ensemble — Où on en est aujourd'hui
+
+```
+┌──────────────────────────────────────────────────────────────────┐
+│  POST /api/cover/generate                                        │
+│  { contentId, type, titre, pilier, ctaMode? }                    │
+└──────────────────────┬───────────────────────────────────────────┘
+                       │
+                       ▼ ~2-7 secondes
+┌──────────────────────────────────────────────────────────────────┐
+│  1. Pige aléatoire (60s cache metadata)                          │
+│  2. Auto-détection SVG ou JPG (preferSvgIfExists)                │
+│     ├─ SVG (7 fichiers) → lecture directe → data:image/svg+xml  │
+│     └─ JPG (38 fichiers) → chroma key → PNG transparent         │
+│  3. Analyse placement intelligent                                │
+│     ├─ Cover : grid 3x3, biais col+0.30 row+0.10                │
+│     └─ Story : grid 3x4, biais col+0.30 row+0.20, offset +7%    │
+│  4. Génération SVG Satori en parallèle (cover + story)           │
+│  5. Rendu PNG via Resvg                                          │
+│  6. Upload Firebase Storage (URLs publiques)                     │
+└──────────────────────┬───────────────────────────────────────────┘
+                       │
+                       ▼
+   { cover16x9, story9x16, assets, metadata }
+```
+
+**Le pipeline est en production sur `main`. Validé sur 4 piliers (grossesse, fertilite, anxiete-sommeil, pediatrie). Performance 2-7s pour 2 PNG.**
+
+---
+
+## ✅ Ce qui est livré (commits sur main)
+
+```
+542ee21 feat(visual-bank): support SVG vectoriel (hybride SVG+JPG)
+b782fa9 fix(cover-generator): production fixes (storageBucket + serverExternalPackages)
+5130968 feat(cover-generator): Phase 1 — module lib/cover-generator + API route + 2 templates
+e416344 feat(visual-bank): POC story Satori 1080x1920 valide + CC_PROMPT_PIPELINE update
+```
+
+### Module `lib/cover-generator/` (Phase 1)
+
+| Fichier | Role |
+|---|---|
+| `types.ts` | Pilier, CoverFormat, GenerateCoverInput/Output, SatoriElement |
+| `pige.ts` | Pige aleatoire bg + line art par pilier (cache 60s, preferSvgIfExists) |
+| `line-art-processor.ts` | Conversion JPG -> PNG transparent OU lecture SVG direct |
+| `placement-analyzer.ts` | Grille 3x3 (cover) + 3x4 (story avec offset +7%) |
+| `fonts.ts` | Cormorant Italic 500 + Inter 500/600 embarques (cache) |
+| `templates/cover-blog.ts` | Template Satori 1920x1080 (port strict POC) |
+| `templates/story-instagram.ts` | Template Satori 1080x1920 avec ctaMode (port strict POC) |
+| `upload.ts` | Upload Firebase Storage avec storageBucket explicite |
+| `compose.ts` | Orchestrateur parallelise (pige + process + 2 SVG + 2 PNG + upload) |
+
+### API route
+
+`app/api/cover/generate/route.ts` — POST endpoint runtime nodejs avec validation Zod.
 
 ### Banque visuelle
-```
-content/visual-bank/
-├── backgrounds/                    37 boho (JPG + EPS) + metadata.json
-├── lineart/
-│   ├── grossesse/                  5 assets
-│   ├── pediatrie/                  8 assets
-│   ├── fertilite/                  10 assets
-│   ├── anxiete-sommeil/            8 assets
-│   ├── menopause/                  7 assets
-│   ├── acupuncture-sociale/        7 assets
-│   └── transversal/                0 (à compléter plus tard)
-├── _archive-ai/                    20 fichiers .ai (archive Adobe Illustrator)
-├── _poc-output/                    PNGs de test (gitignore)
-├── raw-downloads/                  vide (gitignore)
-└── scripts/
-    ├── tag-and-organize-v2.py      Script de tri Freepik (terminé)
-    ├── poc-compose.mjs             POC Satori (validé)
-    └── batch-test.sh               Génère 6 variations rapides
-```
 
-### Documentation stratégique
-```
-project-docs/02_ROADMAP/content-strategy/
-├── CREATION_WORKFLOW.md            Pipeline content production (6 clusters)
-├── STYLE_GUIDE_VISUEL.md           Audit 11 covers + ESQ + palette officielle
-├── CURATION_GUIDE.md               Termes Freepik + workflow curation
-└── (existants : VISION, ARCHITECTURE, KEYWORD_BACKLOG, etc.)
-```
-
-### Contenu produit
-```
-content/ressources/
-└── acupuncture-grossesse-montreal.md    Cluster 1 hub (3000 mots, 6 PubMed citations)
-                                          [pas encore injecté Firestore]
-```
-
-### Dépendances ajoutées
-- `satori@^0.26.0` (rendering JSX → SVG)
-- `@resvg/resvg-js@^2.6.2` (SVG → PNG)
-- `sharp` déjà présent (transparent BG processing)
-
----
-
-## ✅ Décisions architecturales prises
-
-| Décision | Choix | Justification |
+| Type | Total | Format |
 |---|---|---|
-| Source images | Banque Freepik curatée | 0$, qualité garantie, cohérence |
-| Composition | Satori (server-side) | Inclus Next 15, fonts cohérentes site |
-| Format primaire | JPG (line art) + JPG (bg) | Premium Freepik, qualité suffisante |
-| Format archive | EPS conservé | Récupération SVG vectoriel future |
-| Couleur line art | `#2C2A26` (ink uniforme) | Cohérence inter-articles, lisibilité |
-| Algo placement | Centre prioritaire (+0.30), droite OK (+0.10), gauche évité (-0.20) | Texte en bas-gauche, line art doit pas chevaucher |
-| Texte cover | Cormorant Garamond italique 108px + Inter 32px | Cohérent typographie site |
-| Voile background | Gradient 4%→32% beige | Lisibilité titre garantie |
+| Backgrounds | 78 | JPG boho watercolor |
+| Line art "trait fin" | **7** | **SVG vectoriel** ⭐ (qualite parfaite) |
+| Line art "silhouette" | **38** | JPG monochrome (chroma key) |
+| **Total** | **123** | Hybride |
+
+### Fonts embarquees
+
+`public/fonts/` :
+- `CormorantGaramond-Italic-500.woff2` (93 KB)
+- `Inter-500.woff2` (143 KB)
+- `Inter-600.woff2` (143 KB)
 
 ---
 
-## 🔧 État technique du POC
+## 🎨 Specs visuelles validees (NE PAS MODIFIER sans accord)
 
-### Comment lancer (pour vérifier)
+### Cover blog 1920x1080
+
+| Element | Valeur |
+|---|---|
+| Voile gradient | `linear-gradient(180deg, rgba(245,240,232,0.04) 0%, rgba(245,240,232,0.32) 100%)` |
+| Algo placement | grid 3x3, biais col=1 +0.30, col=2 +0.10, col=0 -0.20, row=1 +0.10, exclude row=2 |
+| Line art | 70% width x 80% height, opacity 0.92, ink #2C2A26 |
+| Surtitre | Inter 500, 32px, letterSpacing 0.2em, uppercase, color #6F8566 |
+| Titre | Cormorant italic 500, 108px, lineHeight 1.05, color #2C2A26 |
+| Bloc titre | left 6%, bottom 8%, maxWidth 78%, gap 18 |
+| Branding | Inter 500, 26px, color #5C5852, position right 4% bottom 4% |
+
+### Story Instagram 1080x1920
+
+| Element | Valeur |
+|---|---|
+| Voile gradient | 5-stop : 0.65/0.10/0.05/0.30/0.75 (haut+bas plus opaque pour lisibilite) |
+| Algo placement | grid 3x4, biais col=1 +0.30, col=2 +0.05, col=0 -0.10, row=1 +0.20, row=2 +0.05 |
+| **Offset crucial** | `yPercent = (best.row + 0.5) * 25 + 7` (+7% pour libérer espace titre) |
+| Line art | 130% width x 80% height (overflow geré par objectFit:contain), opacity 1.0 |
+| Surtitre | Inter 600, 44px, letterSpacing 0.25em |
+| Titre | Cormorant italic 500, **140px**, lineHeight 1.05 |
+| **Bouton CTA** | left 15%, top 70%, width 70%, height 8%, borderRadius 999 |
+| Bouton gradient | 3-stop selon ctaMode (sage ou clay) |
+| Bouton ombre | `0 12px 32px rgba(44,42,38,0.32), 0 4px 12px rgba(44,42,38,0.18), inset 0 1px 0 rgba(255,255,255,0.25)` |
+| Bouton texte | Inter 600, 50px, color #FFFFFF, textShadow `0 2px 4px rgba(0,0,0,0.20)` |
+| Branding | Inter 600, 36px, color #2C2A26, top 90%, centré |
+
+### Modes CTA (story uniquement)
+
+| ctaMode | Gradient bouton | Label | Lien attendu |
+|---|---|---|---|
+| `ressource` (default) | sage `#7E9374 → #6F8566 → #5C7156` | "Lire la suite" | `/ressources/{slug}` |
+| `reservation` | clay `#C47A58 → #B8694A → #A05B3D` | "Réserver une séance" | `/reserver` |
+
+**Note importante** : le bouton visuel est aligné avec le **linkSticker invisible d'instagrapi** (DEFAULT_LINK_COORDS y=0.75 dans `functions-python/main.py`). Cf. `lib/utils/publishHelpers.ts:publishStoryViaInstagrapi`.
+
+---
+
+## 🔄 Migration SVG (Day 4 — innovation)
+
+### Pourquoi
+Les line art rasterises (JPG) etaient pixelises quand etires a 130%x80% sur la story 1080x1920.
+
+### Solution implementee
+Script `content/visual-bank/scripts/convert-eps-to-svg.py` qui :
+1. Convertit EPS Freepik -> PDF (Ghostscript) -> SVG (Inkscape CLI)
+2. **Audit automatique** des paths : stroke-based (trait fin) vs fill-based (blob plein)
+3. **Filtrage** : ne garde que les SVG qui sont de vrais traits fins (stroked >= filled)
+4. Recolore les strokes/fills restants en `#2C2A26` (ink uniforme)
+
+### Pourquoi le filtrage
+4/5 des EPS Freepik "abstract organic shapes" sont des silhouettes pleines (blob). Garder ces SVG produit des taches noires opaques. Les rejeter -> le pipeline tombe sur le JPG (chroma key) qui rend mieux ces images-la.
+
+### Resultat (45 EPS -> 7 SVG conserves)
+
+| Pilier | EPS total | SVG kept | JPG fallback |
+|---|---|---|---|
+| acupuncture-sociale | 7 | 2 | 5 |
+| anxiete-sommeil | 8 | 1 | 7 |
+| fertilite | 10 | 3 | 7 |
+| grossesse | 5 | 1 | 4 |
+| menopause | 7 | 0 | 7 |
+| pediatrie | 8 | 0 | 8 |
+
+### Detection auto au runtime
+`pige.ts` -> `preferSvgIfExists(dir, jpgFile)` substitue le SVG si un fichier `.svg` avec le meme basename existe dans le dossier. Aucune modif `metadata.json` requise.
+
+### Pour ajouter de nouveaux SVG plus tard
+1. Deposer le `.eps` dans `content/visual-bank/lineart/{pilier}/`
+2. Lancer `python3 content/visual-bank/scripts/convert-eps-to-svg.py {pilier}`
+3. Le script auto-decide : KEPT (cree le SVG) ou REJECTED (laisse le JPG)
+4. Aucune modif code requise — la pige le detectera automatiquement
+
+---
+
+## 🔧 Comment tester en local
+
+### Pre-requis
+- `.env.local` avec `FIREBASE_SERVICE_ACCOUNT` (json string) + `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=mon-acupunctrice-hub.firebasestorage.app`
+- `next.config.mjs` avec `serverExternalPackages: ['@resvg/resvg-js', 'sharp', 'satori']` (CRITIQUE)
+
+### Lancer dev server
 ```bash
 cd /Users/benoitarchambault/Desktop/Mon_Acupunctrice_V2
-
-# Génération unique (pige aléatoire)
-node content/visual-bank/scripts/poc-compose.mjs
-
-# Avec args
-node content/visual-bank/scripts/poc-compose.mjs grossesse "Acupuncture pendant la grossesse"
-
-# Batch 6 variations (tous piliers)
-bash content/visual-bank/scripts/batch-test.sh
-
-# Voir les outputs
-open content/visual-bank/_poc-output/
+nohup npm run dev > /tmp/judith-dev.log 2>&1 &
+sleep 10 && tail -5 /tmp/judith-dev.log  # verifier "Ready in X.Xs"
 ```
 
-### Performance mesurée
-- Temps total : **~5 secondes** par image
-- Taille PNG : 250 KB - 2 MB selon complexité bg
-- Fonts chargées via Google Fonts CDN (Cormorant + Inter)
-- Sharp + Resvg : performance acceptable, pas de bottleneck
+### Tester l'API
+```bash
+# Test pilier grossesse mode ressource
+curl -X POST http://localhost:3000/api/cover/generate \
+  -H "Content-Type: application/json" \
+  -d '{
+    "contentId": "test-001",
+    "type": "ressource",
+    "titre": "Acupuncture pendant la grossesse",
+    "pilier": "grossesse"
+  }' -s -w "\nHTTP %{http_code} | %{time_total}s\n"
 
-### Bugs / limitations connues
-1. **Quelques line art ont éléments colorés** dans l'original (rose, jaune) → actuellement convertis en gris pâle. Si gênant, ajouter mode "preserve-color" qui ne touche que le blanc
-2. **Algo placement** sur backgrounds très chargés peut quand même donner placement sub-optimal → solution future : exclure backgrounds avec score zone-vide < threshold
-3. **Pas encore d'anti-répétition** : si on relance le POC 5 fois, peut piger 2 fois le même asset → géré dans pipeline final (champ `usedInArticles[]`)
+# Test mode reservation (bouton clay)
+curl -X POST http://localhost:3000/api/cover/generate \
+  -H "Content-Type: application/json" \
+  -d '{
+    "contentId": "test-002",
+    "type": "ressource",
+    "titre": "FIV à Montréal",
+    "pilier": "fertilite",
+    "ctaMode": "reservation"
+  }'
+```
+
+### Stopper le dev server
+```bash
+lsof -i :3000 -sTCP:LISTEN -t | xargs kill
+```
 
 ---
 
-## 🎯 Prochaines étapes — Pipeline production complet
+## 📐 Decisions architecturales prises
 
-### Phase 1 — API Route + 3 formats (4-5h)
-**Goal** : `POST /api/cover/generate` qui prend `{contentId, type, titre, pilier}` et retourne 3 URLs Firebase Storage.
+| # | Decision | Justification |
+|---|---|---|
+| D1 | Satori + Resvg (vs Canva API) | Local, pas de quota, controle total |
+| D2 | 2 formats Phase 1 (cover + story) | OG 1200x630 differe — pas critique pour Judith court terme |
+| D3 | Templates "non-modifiables" par CC | Eviter qu'il "ameliore" les choix esthetiques valides |
+| D4 | ctaMode controle hors template | Logic dans `useBlogSequence.ts` Phase 4, pas dans le template |
+| D5 | SVG hybride (filtrage auto) | Best of both : trait fin = SVG, blob = JPG chroma key |
+| D6 | Threshold chroma key 235 | Conserve la finesse du trait JPG, pas trop agressif |
+| D7 | placement intelligent (no random) | Evite les chevauchements titre/sujet |
+| D8 | Pige metadata.json (cache 60s) | Performance + future Phase 2 anti-repetition |
+| D9 | storageBucket explicite | getStorage().bucket() sans param echoue avec firebase-admin |
+| D10 | serverExternalPackages | Webpack ne sait pas parser les binaires .node natifs |
 
-**Tasks** :
-- B1.1 : Créer `lib/cover-generator/` module (extracter du POC)
-- B1.2 : 3 templates Satori (cover 1920×1080, story 1080×1920, OG 1200×630)
-- B1.3 : API route `/api/cover/generate` avec validation Zod
-- B1.4 : Upload Firebase Storage avec naming `covers/{contentId}/{format}.png`
-- B1.5 : Retour structuré + cache headers
+---
 
-### Phase 2 — Pige intelligente avec anti-répétition (1-2h)
-**Goal** : éviter les répétitions inter-articles, augmenter la variété.
+## 🚀 Phases restantes
 
-**Tasks** :
-- B2.1 : Charger metadata.json en mémoire (cache 60s)
-- B2.2 : Champ `usedInArticles[]` dans metadata par asset
-- B2.3 : Pondération : -50% si utilisé dans 5 derniers articles, -25% si dans 10 derniers
-- B2.4 : Fallback random pondéré avec seed
-- B2.5 : Endpoint `/api/cover/regenerate` pour relancer avec exclusion des choix précédents
+### Phase 2 — Anti-repetition (1-2h)
+- Champ `usedInArticles[]` dans `metadata.json` par asset
+- Ponderation pige : -50% si utilise dans 5 derniers articles, -25% si dans 10 derniers
+- Endpoint `/api/cover/regenerate` avec exclusion des choix precedents
+- **Quand** : avant de publier en serie regulier
 
-### Phase 3 — Modal Hub /contenu (3-4h)
-**Goal** : UX simple pour Judith, choix entre 4 propositions.
+### Phase 3 — Modal Hub `/contenu` (3-4h)
+- Composant `<CoverGeneratorModal>` dans `components/features/cms/`
+- Bouton "Generer cover" sur chaque card pending
+- Affiche 4 propositions generees en parallele
+- Click sur une = "Approuver" → sauvegarde URL dans Firestore
+- "Plus de variations" = nouvelle pige avec exclusion
+- **Quand** : pour mettre l'outil dans les mains de Judith
 
-**Tasks** :
-- B3.1 : Composant `<CoverGeneratorModal>` dans `components/features/cms/`
-- B3.2 : Bouton "Générer cover" sur chaque card pending
-- B3.3 : Affiche 4 propositions générées en parallèle (4 appels API simultanés)
-- B3.4 : Click sur une = "Approuver" → sauvegarde URL dans Firestore
-- B3.5 : "Plus de variations" = nouvelle pige avec exclusion
-- B3.6 : Loading states + error handling
-
-### Phase 4 — Bridge ressource/blog → séquence sociale (2-3h)
-**Goal** : à l'approbation, optionnellement créer 4 calendarSlots.
-
-**Tasks** :
-- B4.1 : Modal "Créer aussi la séquence sociale ?" après approbation cover
-- B4.2 : Choix : 4 publications / 1 story seule / aucune
-- B4.3 : Adapter `useBlogSequence.ts` pour URLs internes (post-launch Vercel)
-- B4.4 : Génération auto stories aux dates J+0/J+1/J+3/J+7
-- B4.5 : Le cron existant `/api/cron/publish` les publie automatiquement
+### Phase 4 — Bridge ressource/blog → sequence sociale (2-3h)
+- Modal "Creer aussi la sequence sociale ?" apres approbation cover
+- Choix : 4 publications / 1 story seule / aucune
+- Adapter `useBlogSequence.ts` pour URLs internes
+- Generation auto stories aux dates J+0/J+1/J+3/J+7
+- **Logic ctaMode dans la sequence** :
+  - J+0 (decouverte) → `ctaMode: 'ressource'`
+  - J+1 (approfondissement) → `ctaMode: 'ressource'`
+  - J+3 (application) → `ctaMode: 'reservation'` ← BASCULE
+  - J+7 (temoignage) → `ctaMode: 'reservation'`
+- Le cron existant `/api/cron/publish` les publie automatiquement
+- **Quand** : quand on lance les premieres sequences IG
 
 ### Phase 5 — Documentation Judith (1h)
-- B5.1 : `JUDITH_PUBLICATION_GUIDE.md` workflow Hub
-- B5.2 : Screenshots du modal cover generator
-- B5.3 : Exemples de variations générées
-- B5.4 : FAQ "que faire si je n'aime aucune des 4 propositions ?"
-
-**Total Phase 1-5** : 11-15h dev, étalé sur 2-3 sessions Claude Code.
-
----
-
-## 📋 Liste complète des fichiers à créer (Phase 1-5)
-
-### Nouveaux fichiers
-```
-lib/cover-generator/
-├── compose.ts                  # Composition Satori (extracté POC)
-├── pige.ts                     # Algorithme pige intelligente
-├── line-art-processor.ts       # Sharp transform JPG → PNG transparent
-├── placement-analyzer.ts       # Algo 3x3 grid analysis
-├── templates/
-│   ├── cover-blog.ts           # 1920x1080
-│   ├── story-instagram.ts      # 1080x1920
-│   └── post-og.ts              # 1200x630
-├── fonts.ts                    # Charge Cormorant + Inter
-└── types.ts                    # Types TypeScript
-
-app/api/cover/
-├── generate/route.ts           # POST - generation principale
-└── regenerate/route.ts         # POST - relance avec exclusion
-
-components/features/cms/
-├── CoverGeneratorModal.tsx     # Modal 4 propositions
-├── CoverPreview.tsx            # Card individuelle preview
-└── CoverApprovalActions.tsx    # Boutons approuver/relancer
-
-content/visual-bank/
-└── _MANIFEST.json              # Index global tous metadata.json (cache)
-
-scripts/
-└── build-visual-bank-manifest.mjs   # Génère le _MANIFEST.json
-
-project-docs/02_ROADMAP/content-strategy/
-└── JUDITH_PUBLICATION_GUIDE.md  # Doc finale pour Judith
-```
-
-### Fichiers à modifier
-```
-app/api/cms/approve/route.ts    # Trigger generation cover après approbation
-app/(app)/contenu/page.tsx       # Bouton "Générer cover" sur cards
-lib/types/ressource.ts          # Ajouter coverImageUrl + storyImageUrl + ogImageUrl
-lib/types/faq.ts                # Idem
-lib/types/public-blog.ts        # Idem (si pas déjà)
-lib/hooks/useBlogSequence.ts    # Adapter URLs internes (Phase 4)
-package.json                    # +zod si pas présent
-```
+- `JUDITH_PUBLICATION_GUIDE.md` workflow Hub
+- Screenshots du modal cover generator
+- Exemples de variations generees
+- FAQ "que faire si je n'aime aucune des 4 propositions ?"
+- **Quand** : avant remise utilisateur
 
 ---
 
-## ⚠️ Points d'attention pour CC
+## 🤔 Decisions ouvertes pour prochaine session
 
-### 1. Firebase Storage CORS
-Vérifier que le bucket Firebase Storage a les bonnes règles CORS pour servir les images au site public. Tester avec une image pré-générée du POC.
+### Choix #1 — Direction immediate
+- **(a)** Phase 2 (anti-repetition) — meilleur usage du pipeline pour publier en serie
+- **(b)** Direction B (Chantier 1 NAP + ENTITY_SOURCE_OF_TRUTH) — strategie autorite Judith
+- **(c)** Acquisition de plus de line art "trait fin" Freepik pour augmenter ratio SVG/JPG
 
-### 2. Server-only fonts
-Satori en environnement Node a besoin des fonts en buffer. Soit :
-- Télécharger via Google Fonts API (POC actuel — fait au runtime, lent)
-- **Embedded** : sauvegarder les .woff2 dans `public/fonts/` et les lire avec `readFile` (recommandé pour prod)
+### Choix #2 — Format OG 1200x630
+- A reactiver quand on aura besoin du partage Facebook/LinkedIn
+- ~1h CC pour ajouter le 3e template + ajuster compose.ts + API route
+- Pas critique pour Judith court terme (audience IG dominante)
 
-### 3. Edge Runtime ?
-Satori est compatible Edge Runtime, MAIS Sharp non. Donc :
-- API route en Node.js Runtime (pas Edge)
-- Si on veut Edge plus tard, remplacer Sharp par autre lib (jsquash ou native canvas)
-
-### 4. ISR + cache images
-Les images générées sont cachées par Firebase Storage. Si on régénère un cover, l'URL doit changer (timestamp ou hash) pour invalider le cache CDN.
-
-### 5. Tests visuels
-Pour chaque template (cover/story/og), produire 5-10 variations dans `_poc-output/` et review humain avant déploiement. Pas de tests automatisés visuels nécessaires.
+### Choix #3 — Banque visuelle
+- **38/45 line art sont des silhouettes pleines** (mauvais ratio pour SVG)
+- A considerer : aller chercher sur Freepik/Vecteezy des **vrais line art trait fin** pour doubler le ratio
+- Recherche : "minimalist line art woman illustration", "single line drawing", "outline illustration"
 
 ---
 
-## 🗂️ Tableau des transcripts précédents
+## 📂 Fichiers cles a connaitre
 
-Cette session est documentée dans :
-- `/mnt/transcripts/2026-05-05-22-39-09-2026-05-05-day3-content-pipeline.txt` (à confirmer)
+### Pipeline production
+- `lib/cover-generator/` — module complet
+- `app/api/cover/generate/route.ts` — endpoint
+- `next.config.mjs` — `serverExternalPackages` critique
+- `lib/utils/publishHelpers.ts:publishStoryViaInstagrapi` — integration stickers IG
+- `functions-python/main.py` — Cloud Function instagrapi
 
-Sessions précédentes pertinentes :
-- `2026-05-04-day2-launch-content-pipeline.txt` : audit visuel 11 covers, début banque Freepik
+### Banque visuelle
+- `content/visual-bank/backgrounds/` (78 JPG)
+- `content/visual-bank/lineart/{pilier}/` (45 EPS + 45 JPG + 7 SVG)
+- `content/visual-bank/lineart/{pilier}/metadata.json` — index des assets
+- `content/visual-bank/scripts/convert-eps-to-svg.py` — conversion EPS→SVG
+- `content/visual-bank/scripts/poc-compose.mjs` — POC reference cover (legacy)
+- `content/visual-bank/scripts/poc-compose-story.mjs` — POC reference story (legacy)
 
----
-
-## ✅ Checklist commit avant prochaine session
-
-- [ ] `git add` ciblé : visual-bank/ + project-docs/02_ROADMAP/content-strategy/ + content/ressources/acupuncture-grossesse-montreal.md + package.json + package-lock.json
-- [ ] `git commit -m "feat(visual-bank): banque Freepik 82 assets + POC Satori valide + style guide"`
-- [ ] `.gitignore` update : `_poc-output/`, `raw-downloads/`, `_archive-ai/` (lourd, optionnel)
-- [ ] Push origin main
-- [ ] Crée `CC_PROMPT_PIPELINE.md` pour la prochaine session Claude Code
-
----
-
-## 🎯 Démarrage prochaine session
-
-Pour reprendre demain :
-1. Ouvre Claude Code dans le repo
-2. Charge `project-docs/02_ROADMAP/content-strategy/HANDOFF.md`
-3. Charge `project-docs/02_ROADMAP/content-strategy/CC_PROMPT_PIPELINE.md`
-4. Lance Claude Code avec : "Lis HANDOFF et CC_PROMPT_PIPELINE, puis attaque Phase 1"
-5. Suivi via session Claude Desktop (toi + moi) pour les arbitrages
+### Documentation
+- `project-docs/02_ROADMAP/content-strategy/HANDOFF.md` (ce fichier)
+- `project-docs/02_ROADMAP/content-strategy/CC_PROMPT_PIPELINE.md` — brief CC pour Phase 2-5
+- `project-docs/02_ROADMAP/content-strategy/INDEX.md` — carte navigation
+- `project-docs/02_ROADMAP/content-strategy/PROOF_GRAPH_OPERATIONAL_PLAN.md` — Direction B (90j)
 
 ---
 
-## 📊 Métriques fin de session
+## 🎯 Demarrage prochaine session
 
-- **Temps total session** : ~9h (audit + curation + scripts + POC + 3 itérations placement)
-- **Lignes de code écrites** : ~600 lignes (POC compose, tag-organize, batch-test)
-- **Documents stratégiques** : 4 (HANDOFF, CC_PROMPT, STYLE_GUIDE, CURATION_GUIDE)
-- **Assets curatés** : 82 (37 bg + 45 line art)
-- **POC variations testées** : ~12-15
-- **Itérations algo placement** : 3 (initial → centre+vertical → centre+droite+gauche-pénalisée)
+### Pour reprendre le pipeline cover (Phase 2-5)
+1. Lire ce HANDOFF.md (5 min)
+2. Lire `CC_PROMPT_PIPELINE.md` pour les specs strictes (10 min)
+3. Test rapide : lancer dev server + curl pour confirmer pipeline OK (2 min)
+4. Choisir phase a attaquer (cf. Decisions ouvertes Choix #1)
+5. Brief Claude Code avec specs detaillees
+
+### Pour reprendre Direction B (NAP + autorite)
+1. Lire `PROOF_GRAPH_OPERATIONAL_PLAN.md` Chantier 1
+2. Creer `ENTITY_SOURCE_OF_TRUTH.md` (~45 min)
+3. Corriger NAP sur Lumino, HealthDoc, GoRendezVous, OAQ, GBP, LinkedIn
+4. Aucun lien avec le pipeline cover — peut etre fait en parallele
+
+---
+
+## 📊 Metriques fin de session Day 4
+
+- **6 commits** pousses sur main
+- **Pipeline live** valide en 6 tests successifs (HTTP 200)
+- **Performance** : 1.96s a 6.57s (cible <8s, large marge)
+- **2 fixes critiques** identifies et corriges (storageBucket + webpack natifs)
+- **7 SVG** convertis avec succes (auto-filtres parmi 45 EPS)
+- **Zero regression** : tous les piliers fonctionnent (SVG ou JPG fallback)
+- **Bouton CTA aligne** avec linkSticker invisible instagrapi (y=0.75)
+
+**Le pipeline est PRET pour la production.**

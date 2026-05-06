@@ -5,21 +5,37 @@
 
 ---
 
-## 🔥 Focus actuel — 7 jours (Semaine 1 du plan opérationnel 90j)
+## 🔥 État actuel — Day 4 (6 mai 2026, soir)
 
-🎯 **Voir `PROOF_GRAPH_OPERATIONAL_PLAN.md` pour le plan complet structuré en 4 chantiers.**
+### ✅ Pipeline cover generation : LIVE & validé
+Le pipeline `/api/cover/generate` est opérationnel sur `main` (commits `e416344`, `5130968`, `b782fa9`, `542ee21`). Génère cover 1920×1080 + story 1080×1920 en 2-7s avec upload Firebase Storage. Bouton CTA story aligné avec linkSticker instagrapi pour les liens cliquables invisibles. Banque hybride 7 SVG vectoriels + 38 JPG chroma key.
 
-À faire prioritairement cette semaine (Chantier 1 = pré-requis pour tous les autres) :
+🎯 **Voir `HANDOFF.md` pour l'état des lieux complet** (specs validées, phases restantes, démarrage prochaine session).
 
-1. ✅ Liens relatifs des docs corrigés (fait)
-2. ✅ Audit linguistique YMYL ressource grossesse (fait)
-3. 🔥 **Créer `ENTITY_SOURCE_OF_TRUTH.md`** avec NAP canonique + 3 bios (courte 300 / moyenne 800 / longue 1500 caractères)
-4. 🔥 **Corriger NAP** sur Lumino FR + EN : `H2G 1K8` → `H1Y 1G3` — cf. `PROOF_GRAPH_OPERATIONAL_PLAN.md` Chantier 1
-5. 🔥 **Vérifier + harmoniser** HealthDoc, GoRendezVous, OAQ, La Source en Soi, GBP, LinkedIn
-6. 🔥 **Préparer lien Google Reviews** + liste segmentée 30 patientes (Chantier 2)
-7. 📊 **Test baseline citations LLMs** — 10 prompts, mesurer combien mentionnent Judith aujourd'hui
+### 🤔 2 directions au choix pour prochaine session
+
+**Direction A — Suite pipeline cover** (Phase 2-5)
+- Phase 2 : anti-répétition `usedInArticles[]` (1-2h)
+- Phase 3 : Modal Hub `/contenu` 4 propositions (3-4h)
+- Phase 4 : Bridge ressource → séquence sociale 4 slots avec ctaMode (2-3h)
+- Phase 5 : `JUDITH_PUBLICATION_GUIDE.md` (1h)
+- **Quand** : pour mettre l'outil dans les mains de Judith
+
+**Direction B — Stratégie autorité (Plan opérationnel 90j)**
+🎯 **Voir `PROOF_GRAPH_OPERATIONAL_PLAN.md` Chantier 1**
+
+À faire prioritairement (Chantier 1 = pré-requis pour tous les autres) :
+
+1. 🔥 **Créer `ENTITY_SOURCE_OF_TRUTH.md`** avec NAP canonique + 3 bios (courte 300 / moyenne 800 / longue 1500 caractères)
+2. 🔥 **Corriger NAP** sur Lumino FR + EN : `H2G 1K8` → `H1Y 1G3`
+3. 🔥 **Vérifier + harmoniser** HealthDoc, GoRendezVous, OAQ, La Source en Soi, GBP, LinkedIn
+4. 🔥 **Préparer lien Google Reviews** + liste segmentée 30 patientes (Chantier 2)
+5. 📊 **Test baseline citations LLMs** — 10 prompts, mesurer combien mentionnent Judith aujourd'hui
 
 ⚠️ **Règle d'or** : NE PAS lancer Chantier 4 (pages décisionnelles comme P1 FIV) tant que Chantier 1 (NAP cohérent) n'est pas complet. Une page décisionnelle qui annonce Rosemont H1Y 1G3 alors que Lumino dit encore H2G 1K8 = signal incohérent pour les LLMs.
+
+### Les 2 directions sont indépendantes
+Tu peux faire l'une, l'autre, ou les deux en parallèle. Le pipeline cover ne dépend pas du NAP, et le NAP ne dépend pas du pipeline.
 
 ---
 
@@ -109,6 +125,13 @@ Lis dans cet ordre, ~30-45 min total :
 | `CURATION_GUIDE.md` | 276 | 2026-05-05 | Termes Freepik par pilier + workflow curation |
 | `../../01_PRODUCT/STRATEGIE/CANVA_TEMPLATES_GUIDE.md` | — | — | Guide Canva (legacy, avant Freepik+Satori) |
 
+### ⚙️ Pipeline production (le "comment générer une cover/story")
+
+| Fichier | Lignes | Date | Contenu |
+|---|---|---|---|
+| **`HANDOFF.md`** ⭐⭐ | 333 | 2026-05-06 | État des lieux post-Phase 1 + migration SVG. Pipeline live sur main, specs validées, modes CTA, banque hybride 7 SVG + 38 JPG, integration instagrapi, decisions architecturales, 5 phases restantes, demarrage prochaine session. **À LIRE EN PREMIER** pour reprendre le pipeline cover. |
+| `CC_PROMPT_PIPELINE.md` | 398 | 2026-05-05 | Brief structuré Claude Code (utilisé pour Phase 1, à actualiser pour Phase 2-5). Specs strictes par fichier, règle templates non-modifiables. |
+
 ### 🚀 Plans opérationnels (le "comment exécuter semaine par semaine")
 
 | Fichier | Lignes | Date | Contenu |
@@ -153,6 +176,9 @@ Lis dans cet ordre, ~30-45 min total :
 | Le plan d'action 30/60/90 jours | `AUDIT_AEO § H` |
 | L'analyse concurrentielle | `UBERSUGGEST_COMPETITOR_RAW.md` |
 | Le plan opérationnel proof graph 90 jours | `PROOF_GRAPH_OPERATIONAL_PLAN.md` (par chantier 1-4) |
+| L'état du pipeline cover/story (specs, phases) | `HANDOFF.md` (Day 4 état post-Phase 1) |
+| Comment tester l'API cover en local | `HANDOFF.md` § "Comment tester en local" |
+| Specs visuelles validées des 2 templates | `HANDOFF.md` § "Specs visuelles validees" |
 | Templates emails patientes (avis Google) | `PROOF_GRAPH_OPERATIONAL_PLAN.md` § Chantier 2 |
 | Templates emails partenaires (backlinks) | `PROOF_GRAPH_OPERATIONAL_PLAN.md` § Chantier 3 |
 | L'historique des décisions de cette session | `HANDOFF.md § "Décisions architecturales"` |
@@ -200,6 +226,9 @@ Voir `AUDIT_AEO § G` pour la liste complète. Top priorité haute :
 | `PROOF_GRAPH_BACKLOG.md` | Catalogue exhaustif 19 actions externes (ACT-01 à ACT-19) priorisées P0-P3 | ✅ Livré |
 | `PROOF_GRAPH_OPERATIONAL_PLAN.md` | **NOUVEAU** Plan opérationnel 90j basé sur retour Codex : 4 chantiers, planning semaine/semaine, scorecard mensuel, templates emails | ✅ Livré |
 | `acupuncture-grossesse-montreal.md` v2 | Audit YMYL : 15 formulations adoucies (passe le test "citation hors contexte LLM") | ✅ Livré |
+| `HANDOFF.md` Day 4 (refonte) | État des lieux post-Phase 1 + migration SVG. Specs strictes, decisions architecturales, 5 phases restantes | ✅ Livré |
+| `lib/cover-generator/` + API + 2 templates | Pipeline production cover 1920×1080 + story 1080×1920 (Phase 1 + 2 fixes critiques) | ✅ Live sur main |
+| Migration SVG hybride (7 SVG / 38 JPG) | Script `convert-eps-to-svg.py` + filtrage automatique stroke-based | ✅ Livré |
 
 ## 🚧 Documents à créer prochainement
 
