@@ -94,6 +94,24 @@ de la clinique La Source en Soi (1 215 avis 4,9/5 sur Google).
 - Éden Yoga Pilates : 121 Boul. Industriel #225, Repentigny | GRV companyId=141296 eids=192390 stype=Acupuncture
 - Judith : LSSI lun-mar-jeu-ven, Eden mercredi 9h-15h (pas de sociale à Eden)
 
+**Profils sociaux officiels** (utiliser ces URLs exactes partout — schema, footer, llms.txt) :
+- Instagram : `https://www.instagram.com/mon_acupunctrice/`
+- YouTube : `https://www.youtube.com/@JudithDufourSavard`
+- Facebook : `https://www.facebook.com/profile.php?id=61562614934143`
+- LinkedIn : `https://www.linkedin.com/in/judith-dufour-savard-acu/`
+- Wikidata : `https://www.wikidata.org/wiki/Q139677208`
+
+**Domaine canonique** : `https://www.acupuncturejudith.ca` (avec www, redirect 308 non-www → www)
+
+**AEO (AI Engine Optimization)** :
+- Score Framer AEO : 98/100
+- Score CiteRadar : 86/100
+- llms.txt : `public/llms.txt` (statique, sujets publiés seulement)
+- llms-full.txt : `public/llms-full.txt` (auto-généré via `node scripts/generate-llms-full.mjs`)
+- GlobalJsonLd : `app/(public)/_components/GlobalJsonLd.tsx` (WebSite, Person, MedicalBusiness, 2 Places)
+- Pont admin : `AdminFloatingButton.tsx` (visible seulement aux users Firebase Auth connectés)
+- Crawlers AI : 7 autorisés explicitement dans robots.txt (GPTBot, ClaudeBot, PerplexityBot, etc.)
+
 **Pipeline d'injection de contenu** :
 - Source de vérité : fichiers markdown dans `content/` (versionnés git)
 - Template : `content/ressources/_TEMPLATE.md` (frontmatter YAML + sections ##)
@@ -102,6 +120,23 @@ de la clinique La Source en Soi (1 215 avis 4,9/5 sur Google).
 - Retrait : `node content/scripts/retire.mjs <collection> <slug> [--delete]`
 - Workflow : markdown → inject (status pending) → Judith approuve dans Hub → published → ISR
 - Documentation complète : `content/README.md`
+
+**⚠️ RÈGLE CRITIQUE — Cohérence AEO (contenu pending vs déclarations)** :
+Ne JAMAIS déclarer dans le schema JSON-LD (`knowsAbout`, `availableService`), dans `llms.txt`, ou dans `llms-full.txt` un sujet dont la page/ressource n'est PAS encore publiée (status !== published). Les LLMs détectent l'incohérence entre "ce site dit traiter la ménopause" et "la page ménopause retourne 404".
+
+Quand une ressource passe de pending → published (Judith approuve dans le Hub) :
+1. Décommenter la ligne correspondante dans `app/(public)/_components/GlobalJsonLd.tsx` (knowsAbout + availableService)
+2. Ajouter le sujet dans `public/llms.txt` (description + specialties)
+3. Régénérer `llms-full.txt` : `node scripts/generate-llms-full.mjs`
+4. Commiter et pousser
+
+Quand une ressource est retirée (published → draft via retire.mjs) :
+1. Commenter la ligne dans GlobalJsonLd.tsx
+2. Retirer du llms.txt
+3. Régénérer llms-full.txt
+4. Commiter et pousser
+
+Les 5 services de base (fertilité, grossesse, pédiatrie, sociale, stress/anxiété) sont TOUJOURS déclarés — ils ont des pages permanentes. Les sujets additionnels (ménopause, SOPK, douleur chronique, FIV, endométriose, etc.) ne sont ajoutés que quand leur ressource est publiée.
 
 **CMS dans le Hub** :
 - Onglet "Contenu" dans la navigation (5e onglet)
