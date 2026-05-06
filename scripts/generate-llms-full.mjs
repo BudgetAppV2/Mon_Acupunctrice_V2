@@ -36,8 +36,8 @@ sections.push(`# Judith Dufour-Savard — Acupunctrice
 
 > Acupunctrice membre de l'Ordre des acupuncteurs du Québec (OAQ), spécialisée en fertilité, grossesse, pédiatrie, ménopause et acupuncture sociale. Pratique à La Source en Soi (Rosemont, Montréal) et Éden Yoga Pilates (Repentigny).
 
-Site web : https://acupuncturejudith.ca
-Réservation : https://acupuncturejudith.ca/reserver
+Site web : https://www.acupuncturejudith.ca
+Réservation : https://www.acupuncturejudith.ca/reserver
 Téléphone : (514) 750-3735
 `);
 
@@ -46,19 +46,19 @@ sections.push(`## Services
 
 ### Acupuncture et fertilité
 L'acupuncture améliore la fertilité en régulant les cycles menstruels, en augmentant le flux sanguin utérin et en réduisant le stress. Des méta-analyses portant sur 4 579 participantes montrent une amélioration des taux de grossesse en complément de la FIV. Judith accompagne les couples en parcours de fertilité naturelle, en FIV et en IUI.
-- URL : https://acupuncturejudith.ca/services/fertilite
+- URL : https://www.acupuncturejudith.ca/services/fertilite
 
 ### Acupuncture et grossesse
 L'acupuncture pendant la grossesse soulage les nausées, les douleurs lombaires, prépare le col à l'accouchement et peut aider à la version du bébé en siège. Elle est reconnue comme sécuritaire par les méta-analyses. Suivi par trimestre adapté aux besoins de chaque femme.
-- URL : https://acupuncturejudith.ca/services/grossesse
+- URL : https://www.acupuncturejudith.ca/services/grossesse
 
 ### Acupuncture pédiatrique
 L'acupuncture pédiatrique utilise des techniques adaptées aux enfants — shonishin (sans aiguilles), ventouses, aimants, tuina — pour traiter les coliques, les troubles du sommeil, l'anxiété, l'énurésie et le TDAH. Les aiguilles utilisées sont de la grosseur d'un cheveu.
-- URL : https://acupuncturejudith.ca/services/pediatrie
+- URL : https://www.acupuncturejudith.ca/services/pediatrie
 
 ### Acupuncture sociale
 L'acupuncture sociale rend les soins accessibles grâce à un tarif solidaire de 35$ à 60$. Séances de 60 minutes en groupe dans un espace calme à La Source en Soi (Rosemont). Disponible pour toutes les conditions.
-- URL : https://acupuncturejudith.ca/services/acupuncture-sociale
+- URL : https://www.acupuncturejudith.ca/services/acupuncture-sociale
 `);
 
 // Ressources (from content/ directory)
@@ -72,10 +72,12 @@ if (existsSync(ressourcesDir)) {
     for (const file of ressourceFiles) {
       const raw = readFileSync(join(ressourcesDir, file), 'utf-8');
       const { frontmatter: fm, body } = parseFrontmatter(raw);
+      // Ne générer que les ressources publiées
+      if (fm.status && fm.status !== 'published') continue;
       const slug = fm.slug || basename(file, '.md');
-      
+
       sections.push(`### ${fm.title || slug}
-- URL : https://acupuncturejudith.ca/ressources/${slug}
+- URL : https://www.acupuncturejudith.ca/ressources/${slug}
 - Dernière recherche : ${fm.lastResearchedAt || 'non spécifié'}
 - Sources : ${fm.freshnessNote || 'non spécifié'}
 
@@ -98,6 +100,8 @@ if (existsSync(faqDir)) {
     for (const file of faqFiles) {
       const raw = readFileSync(join(faqDir, file), 'utf-8');
       const { frontmatter: fm, body } = parseFrontmatter(raw);
+      // Ne générer que les FAQ publiées
+      if (fm.status && fm.status !== 'published') continue;
       sections.push(`### ${fm.question || fm.title || basename(file, '.md')}
 ${body}
 `);
@@ -119,7 +123,7 @@ sections.push(`## Informations pratiques
 - Éden Yoga Pilates : 121 Boul. Industriel #225, Repentigny, QC (mercredi 9h-15h)
 
 ### Réservation
-- En ligne : https://acupuncturejudith.ca/reserver
+- En ligne : https://www.acupuncturejudith.ca/reserver
 - Téléphone : (514) 750-3735
 
 ### Credentials
@@ -135,10 +139,10 @@ sections.push(`## Informations pratiques
 // Optional section
 sections.push(`## Optional
 
-- [Blog](https://acupuncturejudith.ca/blog) : Articles sur la santé, la grossesse, la fertilité et la pédiatrie
-- [FAQ complète](https://acupuncturejudith.ca/faq) : Réponses aux questions les plus fréquentes
-- [À propos](https://acupuncturejudith.ca/a-propos) : Parcours de Judith Dufour-Savard
-- [Contact](https://acupuncturejudith.ca/contact) : Coordonnées des deux cliniques
+- [Blog](https://www.acupuncturejudith.ca/blog) : Articles sur la santé, la grossesse, la fertilité et la pédiatrie
+- [FAQ complète](https://www.acupuncturejudith.ca/faq) : Réponses aux questions les plus fréquentes
+- [À propos](https://www.acupuncturejudith.ca/a-propos) : Parcours de Judith Dufour-Savard
+- [Contact](https://www.acupuncturejudith.ca/contact) : Coordonnées des deux cliniques
 `);
 
 // Write file

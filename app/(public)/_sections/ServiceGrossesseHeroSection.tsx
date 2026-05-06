@@ -45,7 +45,10 @@ export default function ServiceGrossesseHeroSection() {
           <span ref={kickerRef} className="inline-block text-[11px] font-semibold uppercase tracking-[2.5px] text-public-accent-taupe-dark mb-4" style={{ willChange: 'transform, opacity', opacity: 1 }}>
             GROSSESSE &amp; P&Eacute;RINATALIT&Eacute; &middot; ROSEMONT &amp; REPENTIGNY
           </span>
-          <h1 className="font-public-serif text-[40px] md:text-[56px] font-medium leading-[1.1] tracking-tight text-public-text-dark mb-6">
+          <h1 className="font-public-serif text-[28px] md:text-[34px] font-medium leading-tight text-public-text-dark mb-3">
+            Acupuncture grossesse et p&eacute;rinatalit&eacute; &agrave; Montr&eacute;al
+          </h1>
+          <p className="font-public-serif text-[40px] md:text-[56px] font-medium leading-[1.1] tracking-tight text-public-text-dark mb-6" aria-hidden="true">
             <span ref={h1Line1Ref} className="inline-block" style={{ willChange: 'transform, opacity', opacity: 1 }}>
               Votre grossesse, accompagn&eacute;e en{' '}
             </span>
@@ -54,7 +57,7 @@ export default function ServiceGrossesseHeroSection() {
               <span ref={underlineRef} aria-hidden="true" style={{ position: 'absolute', left: 0, right: 0, bottom: '0.05em', height: 2, backgroundColor: '#B8694A', willChange: 'transform', transform: 'scaleX(0)', transformOrigin: 'left center' }} />
             </span>
             .
-          </h1>
+          </p>
           {/* Answer block AEO — réponse directe extractible par les LLMs */}
           <p className="text-[15px] leading-relaxed text-public-text-medium mb-5 max-w-[540px]">
             L&rsquo;acupuncture pendant la grossesse soulage les naus&eacute;es, les douleurs lombaires, pr&eacute;pare le col &agrave; l&rsquo;accouchement et peut aider &agrave; la version du b&eacute;b&eacute; en si&egrave;ge. Elle est reconnue comme s&eacute;curitaire par les m&eacute;ta-analyses. Judith Dufour-Savard offre un suivi d&rsquo;acupuncture grossesse &agrave; Rosemont (Montr&eacute;al) et Repentigny.

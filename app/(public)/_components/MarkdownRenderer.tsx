@@ -13,9 +13,9 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
         remarkPlugins={[remarkGfm]}
         components={{
           h1: ({ children }) => (
-            <h1 className="font-public-serif text-[34px] md:text-[42px] font-medium leading-tight text-public-text-dark mt-12 mb-4">
+            <h2 className="font-public-serif text-[34px] md:text-[42px] font-medium leading-tight text-public-text-dark mt-12 mb-4">
               {children}
-            </h1>
+            </h2>
           ),
           h2: ({ children }) => (
             <h2 className="font-public-serif text-[28px] md:text-[34px] font-medium leading-tight text-public-text-dark mt-10 mb-4">

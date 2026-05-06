@@ -88,7 +88,7 @@ export default function SiteFooter() {
               <li>&Eacute;den Yoga Pilates &mdash; Repentigny</li>
               <li className="flex gap-4 mt-2">
                 <a
-                  href="https://www.instagram.com/mon_acupunctrice/"
+                  href="https://www.instagram.com/judith.acupuncture/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:opacity-100 transition-opacity"
@@ -96,20 +96,12 @@ export default function SiteFooter() {
                   Instagram
                 </a>
                 <a
-                  href="https://www.facebook.com"
+                  href="https://www.facebook.com/profile.php?id=61562614934143"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:opacity-100 transition-opacity"
                 >
                   Facebook
-                </a>
-                <a
-                  href="https://www.youtube.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:opacity-100 transition-opacity"
-                >
-                  YouTube
                 </a>
               </li>
             </ul>
@@ -125,6 +117,7 @@ export default function SiteFooter() {
         <p className="text-center mt-3">
           <a
             href="/calendrier"
+            rel="nofollow"
             className="text-[10px] opacity-30 hover:opacity-60 transition-opacity"
           >
             Espace admin

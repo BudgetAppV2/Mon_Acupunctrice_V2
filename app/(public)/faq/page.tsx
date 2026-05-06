@@ -50,7 +50,7 @@ function plainText(markdown: string): string {
     .replace(/[#*_`>[\]()]/g, '')
     .replace(/\s+/g, ' ')
     .trim()
-    .slice(0, 500);
+    .slice(0, 2000);
 }
 
 export default async function FaqPage() {

@@ -24,13 +24,16 @@ export default function HeroSection() {
               Acupunctrice &middot; Membre OAQ &middot; Rosemont
             </span>
 
-            <h1 className="font-public-serif text-[48px] md:text-[74px] font-medium leading-[1.05] tracking-tight text-public-text-dark mb-6">
+            <h1 className="font-public-serif text-[28px] md:text-[34px] font-medium leading-tight text-public-text-dark mb-3">
+              Judith Dufour-Savard, acupunctrice &agrave; Rosemont
+            </h1>
+            <p className="font-public-serif text-[48px] md:text-[74px] font-medium leading-[1.05] tracking-tight text-public-text-dark mb-6" aria-hidden="true">
               Venez comme vous{' '}
               <em className="italic underline decoration-public-accent-warm decoration-2 underline-offset-8">
                 &ecirc;tes
               </em>
               .
-            </h1>
+            </p>
 
             <p className="text-[18px] leading-relaxed text-public-text-medium max-w-[520px] mb-8">
               Acupunctrice &agrave; Rosemont et &agrave; Repentigny, j&rsquo;accompagne les femmes et les familles

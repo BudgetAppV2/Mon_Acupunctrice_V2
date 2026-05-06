@@ -35,34 +35,7 @@ const JSON_LD = [
   {
     '@context': 'https://schema.org',
     '@type': 'MedicalBusiness',
-    name: 'Judith Dufour-Savard \u2014 Acupuncture',
-    telephone: CLINICS.lssi.phoneFull,
-    location: [
-      {
-        '@type': 'Place',
-        name: CLINICS.lssi.name,
-        address: {
-          '@type': 'PostalAddress',
-          streetAddress: '2554 rue Beaubien Est',
-          addressLocality: 'Montr\u00e9al',
-          addressRegion: 'QC',
-          postalCode: 'H1Y 1G3',
-          addressCountry: 'CA',
-        },
-      },
-      {
-        '@type': 'Place',
-        name: CLINICS.eden.name,
-        address: {
-          '@type': 'PostalAddress',
-          streetAddress: '121 boul. Industriel #225',
-          addressLocality: 'Repentigny',
-          addressRegion: 'QC',
-          addressCountry: 'CA',
-        },
-      },
-    ],
-    mainEntityOfPage: { '@id': 'https://www.acupuncturejudith.ca/#business' },
+    '@id': 'https://www.acupuncturejudith.ca/#business',
     potentialAction: [
       {
         '@type': 'ReserveAction',

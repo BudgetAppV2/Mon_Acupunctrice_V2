@@ -99,19 +99,7 @@ const JSON_LD = [
   {
     '@context': 'https://schema.org',
     '@type': 'MedicalBusiness',
-    name: 'Judith Dufour-Savard — Acupuncture',
-    telephone: '+1-514-750-3735',
-    address: {
-      '@type': 'PostalAddress',
-      streetAddress: '2554 rue Beaubien Est',
-      addressLocality: 'Montréal',
-      addressRegion: 'QC',
-      postalCode: 'H1Y 1G3',
-      addressCountry: 'CA',
-    },
-    priceRange: '$$',
-    paymentAccepted: 'Cash, Credit Card, Debit Card, Interac',
-    mainEntityOfPage: { '@id': 'https://www.acupuncturejudith.ca/#business' },
+    '@id': 'https://www.acupuncturejudith.ca/#business',
     hasOfferCatalog: {
       '@type': 'OfferCatalog',
       name: 'Services d’acupuncture',
