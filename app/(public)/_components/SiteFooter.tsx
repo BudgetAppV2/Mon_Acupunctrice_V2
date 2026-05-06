@@ -88,12 +88,20 @@ export default function SiteFooter() {
               <li>&Eacute;den Yoga Pilates &mdash; Repentigny</li>
               <li className="flex gap-4 mt-2">
                 <a
-                  href="https://www.instagram.com/judith.acupuncture/"
+                  href="https://www.instagram.com/mon_acupunctrice/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:opacity-100 transition-opacity"
                 >
                   Instagram
+                </a>
+                <a
+                  href="https://www.youtube.com/@JudithDufourSavard"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:opacity-100 transition-opacity"
+                >
+                  YouTube
                 </a>
                 <a
                   href="https://www.facebook.com/profile.php?id=61562614934143"
@@ -113,15 +121,6 @@ export default function SiteFooter() {
           La Source en Soi (Rosemont) &middot; &Eacute;den Yoga Pilates (Repentigny)
           {' · '}
           &copy; 2026 Judith Dufour-Savard
-        </p>
-        <p className="text-center mt-3">
-          <a
-            href="/calendrier"
-            rel="nofollow"
-            className="text-[10px] opacity-30 hover:opacity-60 transition-opacity"
-          >
-            Espace admin
-          </a>
         </p>
       </div>
     </footer>

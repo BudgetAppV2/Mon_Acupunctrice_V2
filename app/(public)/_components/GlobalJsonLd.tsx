@@ -4,6 +4,14 @@
 
 const BASE = 'https://www.acupuncturejudith.ca';
 
+const SAME_AS = [
+  'https://www.wikidata.org/wiki/Q139677208',
+  'https://www.instagram.com/mon_acupunctrice/',
+  'https://www.youtube.com/@JudithDufourSavard',
+  'https://www.facebook.com/profile.php?id=61562614934143',
+  'https://www.linkedin.com/in/judith-dufour-savard-acu/',
+];
+
 const GLOBAL_GRAPH = [
   {
     '@context': 'https://schema.org',
@@ -11,11 +19,6 @@ const GLOBAL_GRAPH = [
     '@id': `${BASE}/#website`,
     name: 'Judith Dufour-Savard — Acupunctrice',
     url: BASE,
-    potentialAction: {
-      '@type': 'SearchAction',
-      target: `${BASE}/faq?q={search_term_string}`,
-      'query-input': 'required name=search_term_string',
-    },
   },
   {
     '@context': 'https://schema.org',
@@ -53,11 +56,7 @@ const GLOBAL_GRAPH = [
       { '@type': 'MedicalClinic', '@id': `${BASE}/#lssi`, name: 'La Source en Soi' },
       { '@type': 'MedicalClinic', '@id': `${BASE}/#eden`, name: 'Éden Yoga Pilates' },
     ],
-    sameAs: [
-      'https://www.wikidata.org/wiki/Q139677208',
-      'https://www.instagram.com/judith.acupuncture/',
-      'https://www.linkedin.com/in/judith-dufour-savard-acu/',
-    ],
+    sameAs: SAME_AS,
   },
   {
     '@context': 'https://schema.org',
@@ -119,8 +118,7 @@ const GLOBAL_GRAPH = [
       },
     ],
     sameAs: [
-      'https://www.wikidata.org/wiki/Q139677208',
-      'https://www.instagram.com/judith.acupuncture/',
+      ...SAME_AS,
       'https://lasourceensoi.com/',
     ],
   },

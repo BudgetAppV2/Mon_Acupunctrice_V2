@@ -25,7 +25,7 @@ export default function HeroSection() {
             </span>
 
             <h1 className="font-public-serif text-[28px] md:text-[34px] font-medium leading-tight text-public-text-dark mb-3">
-              Judith Dufour-Savard, acupunctrice &agrave; Rosemont
+              Judith Dufour-Savard &mdash; Acupunctrice &agrave; Rosemont, Montr&eacute;al
             </h1>
             <p className="font-public-serif text-[48px] md:text-[74px] font-medium leading-[1.05] tracking-tight text-public-text-dark mb-6" aria-hidden="true">
               Venez comme vous{' '}

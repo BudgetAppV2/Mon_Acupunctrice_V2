@@ -47,6 +47,9 @@ next-env.d.ts
 project-docs/02_ROADMAP/migration-wix/MW-A1a_inventaire-wix/artefacts/images/
 
 
+# Old Next.js builds
+.next_old*/
+
 # Visual bank — POC outputs et archives lourdes
 content/visual-bank/_poc-output/
 content/visual-bank/raw-downloads/

@@ -7,6 +7,7 @@ import SiteHeader from './_components/SiteHeader';
 import SiteFooter from './_components/SiteFooter';
 import LenisProvider from './_components/LenisProvider';
 import GlobalJsonLd from './_components/GlobalJsonLd';
+import AdminFloatingButton from './_components/AdminFloatingButton';
 
 // CSS variables consommées par tailwind.config.ts
 // (fontFamily['public-serif'] et fontFamily['public-sans'])
@@ -85,6 +86,7 @@ export default function PublicLayout({
       <LenisProvider />
       <main className="flex-1">{children}</main>
       <SiteFooter />
+      <AdminFloatingButton />
     </div>
     {/* Plausible Analytics — site public uniquement */}
     <Script
