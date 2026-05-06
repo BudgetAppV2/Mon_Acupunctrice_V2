@@ -19,6 +19,9 @@ const withPWA = withPWAInit({
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Libs natives Node a externaliser pour eviter parse webpack des binaires .node
+  // (fixes: ./node_modules/@resvg/resvg-js-darwin-arm64/resvgjs.darwin-arm64.node)
+  serverExternalPackages: ['@resvg/resvg-js', 'sharp', 'satori'],
   images: {
     formats: ['image/avif', 'image/webp'],
     remotePatterns: [

@@ -6,9 +6,12 @@ function ensureAdminApp() {
   const serviceAccount = process.env.FIREBASE_SERVICE_ACCOUNT
     ? JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT)
     : undefined;
-  initializeApp(
-    serviceAccount ? { credential: cert(serviceAccount as ServiceAccount) } : {},
-  );
+  // Storage bucket explicite pour eviter resolution implicite
+  const storageBucket = process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET;
+  initializeApp({
+    ...(serviceAccount ? { credential: cert(serviceAccount as ServiceAccount) } : {}),
+    ...(storageBucket ? { storageBucket } : {}),
+  });
 }
 
 export async function uploadCoverPng(
