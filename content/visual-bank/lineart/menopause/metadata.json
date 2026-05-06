@@ -1,0 +1,139 @@
+{
+  "count": 7,
+  "updated_at": "2026-05-05T20:21:19",
+  "assets": [
+    {
+      "file": "woman-face-face-flower-01.jpg",
+      "type": "lineart",
+      "pilier": "menopause",
+      "archive_eps": "woman-face-face-flower-01.eps",
+      "palette": [
+        "#fbf4ea",
+        "#0b0b0a",
+        "#b3dbc3",
+        "#806861",
+        "#b29163"
+      ],
+      "dominant_color": "#fbf4ea",
+      "dimensions": {
+        "width": 4088,
+        "height": 4064
+      },
+      "format": "square"
+    },
+    {
+      "file": "woman-face-geometric-figure-01.jpg",
+      "type": "lineart",
+      "pilier": "menopause",
+      "archive_eps": "woman-face-geometric-figure-01.eps",
+      "palette": [
+        "#fbf7ef",
+        "#090908",
+        "#b3dac3",
+        "#806867",
+        "#7d7c74"
+      ],
+      "dominant_color": "#fbf7ef",
+      "dimensions": {
+        "width": 4088,
+        "height": 4064
+      },
+      "format": "square"
+    },
+    {
+      "file": "woman-face-geometric-figure-02.jpg",
+      "type": "lineart",
+      "pilier": "menopause",
+      "archive_eps": "woman-face-geometric-figure-02.eps",
+      "palette": [
+        "#fbf1e5",
+        "#0b0a09",
+        "#b3dbc3",
+        "#80685e",
+        "#b79464"
+      ],
+      "dominant_color": "#fbf1e5",
+      "dimensions": {
+        "width": 4088,
+        "height": 4064
+      },
+      "format": "square"
+    },
+    {
+      "file": "woman-orchid-flower-01.jpg",
+      "type": "lineart",
+      "pilier": "menopause",
+      "archive_eps": "woman-orchid-flower-01.eps",
+      "palette": [
+        "#040404",
+        "#848484",
+        "#444444",
+        "#c2c2c2",
+        "#342068"
+      ],
+      "dominant_color": "#040404",
+      "dimensions": {
+        "width": 6000,
+        "height": 4000
+      },
+      "format": "mixed"
+    },
+    {
+      "file": "woman-rsquo-s-body-01.jpg",
+      "type": "lineart",
+      "pilier": "menopause",
+      "archive_eps": "woman-rsquo-s-body-01.eps",
+      "palette": [
+        "#fbf9f9",
+        "#090808",
+        "#929192",
+        "#816e6e",
+        "#7c7c74"
+      ],
+      "dominant_color": "#fbf9f9",
+      "dimensions": {
+        "width": 5001,
+        "height": 5000
+      },
+      "format": "square"
+    },
+    {
+      "file": "women-face-body-single-01.jpg",
+      "type": "lineart",
+      "pilier": "menopause",
+      "archive_eps": "women-face-body-single-01.eps",
+      "palette": [
+        "#f7d14e",
+        "#060606",
+        "#dcdbd9",
+        "#6c6c6c",
+        "#766324"
+      ],
+      "dominant_color": "#f7d14e",
+      "dimensions": {
+        "width": 6500,
+        "height": 5000
+      },
+      "format": "mixed"
+    },
+    {
+      "file": "women-face-body-single-02.jpg",
+      "type": "lineart",
+      "pilier": "menopause",
+      "archive_eps": "women-face-body-single-02.eps",
+      "palette": [
+        "#f9a52b",
+        "#070707",
+        "#d5d3d0",
+        "#747474",
+        "#7c4410"
+      ],
+      "dominant_color": "#f9a52b",
+      "dimensions": {
+        "width": 6500,
+        "height": 5000
+      },
+      "format": "mixed"
+    }
+  ]
+}

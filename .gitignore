@@ -45,3 +45,9 @@ next-env.d.ts
 
 # MW-A1a — images Wix telechargees (binaires trop lourds pour git)
 project-docs/02_ROADMAP/migration-wix/MW-A1a_inventaire-wix/artefacts/images/
+
+
+# Visual bank — POC outputs et archives lourdes
+content/visual-bank/_poc-output/
+content/visual-bank/raw-downloads/
+content/visual-bank/_archive-ai/

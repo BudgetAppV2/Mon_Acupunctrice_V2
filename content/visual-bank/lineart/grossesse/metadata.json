@@ -1,0 +1,101 @@
+{
+  "count": 5,
+  "updated_at": "2026-05-05T20:21:00",
+  "assets": [
+    {
+      "file": "pregnant-mother-01.jpg",
+      "type": "lineart",
+      "pilier": "grossesse",
+      "archive_eps": "pregnant-mother-01.eps",
+      "palette": [
+        "#989898",
+        "#444444",
+        "#040404",
+        "#3c3c3c",
+        "#38201c"
+      ],
+      "dominant_color": "#989898",
+      "dimensions": {
+        "width": 7500,
+        "height": 5000
+      },
+      "format": "mixed"
+    },
+    {
+      "file": "pregnant-woman-colorful-pregnancy-01.jpg",
+      "type": "lineart",
+      "pilier": "grossesse",
+      "archive_eps": "pregnant-woman-colorful-pregnancy-01.eps",
+      "palette": [
+        "#040404",
+        "#fbdbd3",
+        "#c4b49c",
+        "#c5b494",
+        "#ccac9c"
+      ],
+      "dominant_color": "#040404",
+      "dimensions": {
+        "width": 7000,
+        "height": 5000
+      },
+      "format": "mixed"
+    },
+    {
+      "file": "pregnant-woman-healthy-pregnancy-01.jpg",
+      "type": "lineart",
+      "pilier": "grossesse",
+      "archive_eps": "pregnant-woman-healthy-pregnancy-01.eps",
+      "palette": [
+        "#1d1d1c",
+        "#c2c2c1",
+        "#61615f",
+        "#7c7c7c",
+        "#848480"
+      ],
+      "dominant_color": "#1d1d1c",
+      "dimensions": {
+        "width": 5510,
+        "height": 4350
+      },
+      "format": "mixed"
+    },
+    {
+      "file": "pregnant-women-elegant-01.jpg",
+      "type": "lineart",
+      "pilier": "grossesse",
+      "archive_eps": "pregnant-women-elegant-01.eps",
+      "palette": [
+        "#e7d2a5",
+        "#fbdcdc",
+        "#3c3c3a",
+        "#736f6a",
+        "#8d7b74"
+      ],
+      "dominant_color": "#e7d2a5",
+      "dimensions": {
+        "width": 6163,
+        "height": 6154
+      },
+      "format": "square"
+    },
+    {
+      "file": "pregnant-women-silhouettes-motherhood-01.jpg",
+      "type": "lineart",
+      "pilier": "grossesse",
+      "archive_eps": "pregnant-women-silhouettes-motherhood-01.eps",
+      "palette": [
+        "#f7cdcf",
+        "#1e1e1d",
+        "#faf97c",
+        "#716f6f",
+        "#856366"
+      ],
+      "dominant_color": "#f7cdcf",
+      "dimensions": {
+        "width": 8000,
+        "height": 4667
+      },
+      "format": "horizontal"
+    }
+  ]
+}

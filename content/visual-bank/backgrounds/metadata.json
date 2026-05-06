@@ -1,0 +1,672 @@
+{
+  "count": 37,
+  "updated_at": "2026-05-05T20:20:51",
+  "assets": [
+    {
+      "file": "boho-brown-pastel-colours-mountain-01.jpg",
+      "type": "background",
+      "archive_eps": "boho-brown-pastel-colours-mountain-01.eps",
+      "palette": [
+        "#e7cfae",
+        "#8c846c",
+        "#fbede5",
+        "#bcac8c",
+        "#b8a48c"
+      ],
+      "dominant_color": "#e7cfae",
+      "dimensions": {
+        "width": 3743,
+        "height": 2500
+      },
+      "format": "mixed"
+    },
+    {
+      "file": "boho-doodle-01.jpg",
+      "type": "background",
+      "archive_eps": "boho-doodle-01.eps",
+      "palette": [
+        "#f0e8d6",
+        "#a26d2d",
+        "#c3b98e",
+        "#ac8474",
+        "#9c9c74"
+      ],
+      "dominant_color": "#f0e8d6",
+      "dimensions": {
+        "width": 3000,
+        "height": 2000
+      },
+      "format": "mixed"
+    },
+    {
+      "file": "boho-elegant-painted-watercolour-earth-01.jpg",
+      "type": "background",
+      "archive_eps": "boho-elegant-painted-watercolour-earth-01.eps",
+      "palette": [
+        "#f6e5d8",
+        "#dfa593",
+        "#e7bcae",
+        "#e3aba4",
+        "#ebc3bc"
+      ],
+      "dominant_color": "#f6e5d8",
+      "dimensions": {
+        "width": 5000,
+        "height": 3542
+      },
+      "format": "mixed"
+    },
+    {
+      "file": "boho-elegant-painted-watercolour-texture-01.jpg",
+      "type": "background",
+      "archive_eps": "boho-elegant-painted-watercolour-texture-01.eps",
+      "palette": [
+        "#fce4df",
+        "#fbbeb5",
+        "#f4a79e",
+        "#fcc3c4",
+        "#f9acac"
+      ],
+      "dominant_color": "#fce4df",
+      "dimensions": {
+        "width": 5000,
+        "height": 3542
+      },
+      "format": "mixed"
+    },
+    {
+      "file": "boho-green-watercolor-01.jpg",
+      "type": "background",
+      "archive_eps": "boho-green-watercolor-01.eps",
+      "palette": [
+        "#eff2e6",
+        "#658146",
+        "#adc18e",
+        "#7c9574",
+        "#849474"
+      ],
+      "dominant_color": "#eff2e6",
+      "dimensions": {
+        "width": 4900,
+        "height": 3500
+      },
+      "format": "mixed"
+    },
+    {
+      "file": "boho-grunge-paper-01.jpg",
+      "type": "background",
+      "archive_eps": "boho-grunge-paper-01.eps",
+      "palette": [
+        "#f4e9dc",
+        "#e8d2b8",
+        "#dec3a0",
+        "#ebd4c4",
+        "#e3c4ac"
+      ],
+      "dominant_color": "#f4e9dc",
+      "dimensions": {
+        "width": 5000,
+        "height": 3542
+      },
+      "format": "mixed"
+    },
+    {
+      "file": "boho-hand-drawn-minimal-01.jpg",
+      "type": "background",
+      "archive_eps": "boho-hand-drawn-minimal-01.eps",
+      "palette": [
+        "#f7f3e8",
+        "#d9a475",
+        "#ebc4ac",
+        "#eabbaa",
+        "#cce5dc"
+      ],
+      "dominant_color": "#f7f3e8",
+      "dimensions": {
+        "width": 3000,
+        "height": 2000
+      },
+      "format": "mixed"
+    },
+    {
+      "file": "boho-light-peach-01.jpg",
+      "type": "background",
+      "archive_eps": "boho-light-peach-01.eps",
+      "palette": [
+        "#fbd4c8",
+        "#fbaa96",
+        "#fcece2",
+        "#fcf1ed",
+        "#fcaca4"
+      ],
+      "dominant_color": "#fbd4c8",
+      "dimensions": {
+        "width": 3000,
+        "height": 2000
+      },
+      "format": "mixed"
+    },
+    {
+      "file": "boho-lines-are-arranged-order-01.jpg",
+      "type": "background",
+      "archive_eps": "boho-lines-are-arranged-order-01.eps",
+      "palette": [
+        "#f6efea",
+        "#dbc4ac",
+        "#958a7d",
+        "#b4aca4",
+        "#b4a4a4"
+      ],
+      "dominant_color": "#f6efea",
+      "dimensions": {
+        "width": 9939,
+        "height": 7022
+      },
+      "format": "mixed"
+    },
+    {
+      "file": "boho-painted-nature-themed-watercolour-01.jpg",
+      "type": "background",
+      "archive_eps": "boho-painted-nature-themed-watercolour-01.eps",
+      "palette": [
+        "#b3bd99",
+        "#486736",
+        "#618755",
+        "#d9decb",
+        "#6c7b54"
+      ],
+      "dominant_color": "#b3bd99",
+      "dimensions": {
+        "width": 5000,
+        "height": 3542
+      },
+      "format": "mixed"
+    },
+    {
+      "file": "boho-painted-neutrol-toned-watercolour-01.jpg",
+      "type": "background",
+      "archive_eps": "boho-painted-neutrol-toned-watercolour-01.eps",
+      "palette": [
+        "#f2e0d6",
+        "#e4c2b0",
+        "#fbf8f6",
+        "#f9f4eb",
+        "#e3c4bc"
+      ],
+      "dominant_color": "#f2e0d6",
+      "dimensions": {
+        "width": 5000,
+        "height": 3542
+      },
+      "format": "mixed"
+    },
+    {
+      "file": "boho-painted-neutrol-toned-watercolour-02.jpg",
+      "type": "background",
+      "archive_eps": "boho-painted-neutrol-toned-watercolour-02.eps",
+      "palette": [
+        "#f2e0d6",
+        "#e4c2b0",
+        "#fbf8f6",
+        "#f9f4eb",
+        "#e3c4bc"
+      ],
+      "dominant_color": "#f2e0d6",
+      "dimensions": {
+        "width": 5000,
+        "height": 3542
+      },
+      "format": "mixed"
+    },
+    {
+      "file": "boho-painted-watercolor-watercolor-01.jpg",
+      "type": "background",
+      "archive_eps": "boho-painted-watercolor-watercolor-01.eps",
+      "palette": [
+        "#fbdbce",
+        "#fbb08e",
+        "#fbc1a5",
+        "#fcf2ed",
+        "#fbb39c"
+      ],
+      "dominant_color": "#fbdbce",
+      "dimensions": {
+        "width": 7000,
+        "height": 4000
+      },
+      "format": "horizontal"
+    },
+    {
+      "file": "boho-pink-shade-watercolor-01.jpg",
+      "type": "background",
+      "archive_eps": "boho-pink-shade-watercolor-01.eps",
+      "palette": [
+        "#fad8cd",
+        "#ee9f7e",
+        "#f4b69e",
+        "#fcf3ec",
+        "#f3ac94"
+      ],
+      "dominant_color": "#fad8cd",
+      "dimensions": {
+        "width": 8000,
+        "height": 4500
+      },
+      "format": "horizontal"
+    },
+    {
+      "file": "boho-sage-green-grey-watercolor-01.jpg",
+      "type": "background",
+      "archive_eps": "boho-sage-green-grey-watercolor-01.eps",
+      "palette": [
+        "#d6dbd1",
+        "#afbdae",
+        "#97a79c",
+        "#a4aca4",
+        "#a4b29c"
+      ],
+      "dominant_color": "#d6dbd1",
+      "dimensions": {
+        "width": 3840,
+        "height": 2160
+      },
+      "format": "horizontal"
+    },
+    {
+      "file": "boho-soft-earth-tones-01.jpg",
+      "type": "background",
+      "archive_eps": "boho-soft-earth-tones-01.eps",
+      "palette": [
+        "#e5d6c7",
+        "#862b21",
+        "#d47b33",
+        "#936464",
+        "#8c6c64"
+      ],
+      "dominant_color": "#e5d6c7",
+      "dimensions": {
+        "width": 3000,
+        "height": 2000
+      },
+      "format": "mixed"
+    },
+    {
+      "file": "boho-soft-earth-tones-1-01.jpg",
+      "type": "background",
+      "archive_eps": "boho-soft-earth-tones-1-01.eps",
+      "palette": [
+        "#dcc7bc",
+        "#a76242",
+        "#af8979",
+        "#937d6d",
+        "#a5746c"
+      ],
+      "dominant_color": "#dcc7bc",
+      "dimensions": {
+        "width": 3000,
+        "height": 2000
+      },
+      "format": "mixed"
+    },
+    {
+      "file": "boho-soft-watercolor-texture-01.jpg",
+      "type": "background",
+      "archive_eps": "boho-soft-watercolor-texture-01.eps",
+      "palette": [
+        "#fbe4d0",
+        "#fcf4f0",
+        "#fbccab",
+        "#fcf4e3",
+        "#ebc2bc"
+      ],
+      "dominant_color": "#fbe4d0",
+      "dimensions": {
+        "width": 5201,
+        "height": 3901
+      },
+      "format": "mixed"
+    },
+    {
+      "file": "boho-splashed-watercolor-textured-01.jpg",
+      "type": "background",
+      "archive_eps": "boho-splashed-watercolor-textured-01.eps",
+      "palette": [
+        "#9cc3bb",
+        "#eaf5f3",
+        "#cbe3df",
+        "#bbdcd4",
+        "#bcdcdc"
+      ],
+      "dominant_color": "#9cc3bb",
+      "dimensions": {
+        "width": 4834,
+        "height": 3217
+      },
+      "format": "horizontal"
+    },
+    {
+      "file": "boho-terracotta-01.jpg",
+      "type": "background",
+      "archive_eps": "boho-terracotta-01.eps",
+      "palette": [
+        "#b14835",
+        "#fbebdb",
+        "#ebac7c",
+        "#b08474",
+        "#b48c8c"
+      ],
+      "dominant_color": "#b14835",
+      "dimensions": {
+        "width": 5000,
+        "height": 3333
+      },
+      "format": "horizontal"
+    },
+    {
+      "file": "boho-terracotta-02.jpg",
+      "type": "background",
+      "archive_eps": "boho-terracotta-02.eps",
+      "palette": [
+        "#e2ab9e",
+        "#f7d0c7",
+        "#fbe4e1",
+        "#f1c5b9",
+        "#fadcd3"
+      ],
+      "dominant_color": "#e2ab9e",
+      "dimensions": {
+        "width": 3000,
+        "height": 2000
+      },
+      "format": "mixed"
+    },
+    {
+      "file": "boho-terracotta-1-01.jpg",
+      "type": "background",
+      "archive_eps": "boho-terracotta-1-01.eps",
+      "palette": [
+        "#ebe3da",
+        "#8b4f44",
+        "#d4a393",
+        "#a58c84",
+        "#a49886"
+      ],
+      "dominant_color": "#ebe3da",
+      "dimensions": {
+        "width": 3000,
+        "height": 2000
+      },
+      "format": "mixed"
+    },
+    {
+      "file": "boho-tropical-leaf-frame-brown-01.jpg",
+      "type": "background",
+      "archive_eps": "boho-tropical-leaf-frame-brown-01.eps",
+      "palette": [
+        "#f7eae2",
+        "#c3af8e",
+        "#9a8a61",
+        "#919a7b",
+        "#968975"
+      ],
+      "dominant_color": "#f7eae2",
+      "dimensions": {
+        "width": 5001,
+        "height": 3335
+      },
+      "format": "mixed"
+    },
+    {
+      "file": "boho-vecteezy-watercolorbackground-dp1121-01.jpg",
+      "type": "background",
+      "archive_eps": "boho-vecteezy-watercolorbackground-dp1121-01.eps",
+      "palette": [
+        "#e8d2c9",
+        "#f4eeed",
+        "#d0a191",
+        "#d4a49c",
+        "#c4ad9c"
+      ],
+      "dominant_color": "#e8d2c9",
+      "dimensions": {
+        "width": 5208,
+        "height": 3333
+      },
+      "format": "horizontal"
+    },
+    {
+      "file": "boho-watercolor-01.jpg",
+      "type": "background",
+      "archive_eps": "boho-watercolor-01.eps",
+      "palette": [
+        "#f1e8de",
+        "#b4937a",
+        "#d1b49d",
+        "#bd9b8c",
+        "#b3a490"
+      ],
+      "dominant_color": "#f1e8de",
+      "dimensions": {
+        "width": 3000,
+        "height": 2000
+      },
+      "format": "mixed"
+    },
+    {
+      "file": "boho-watercolor-doodle-01.jpg",
+      "type": "background",
+      "archive_eps": "boho-watercolor-doodle-01.eps",
+      "palette": [
+        "#d48c7b",
+        "#f3e3db",
+        "#c48b53",
+        "#8a574f",
+        "#f4bc90"
+      ],
+      "dominant_color": "#d48c7b",
+      "dimensions": {
+        "width": 3000,
+        "height": 2000
+      },
+      "format": "mixed"
+    },
+    {
+      "file": "boho-watercolor-doodle-1-01.jpg",
+      "type": "background",
+      "archive_eps": "boho-watercolor-doodle-1-01.eps",
+      "palette": [
+        "#eab1a0",
+        "#fbeceb",
+        "#ed7868",
+        "#9a959b",
+        "#b77f81"
+      ],
+      "dominant_color": "#eab1a0",
+      "dimensions": {
+        "width": 3000,
+        "height": 2000
+      },
+      "format": "mixed"
+    },
+    {
+      "file": "boho-watercolor-leaves-02.jpg",
+      "type": "background",
+      "archive_eps": "boho-watercolor-leaves-02.eps",
+      "palette": [
+        "#eddad1",
+        "#0e0e0e",
+        "#cea14c",
+        "#cbaa78",
+        "#78615d"
+      ],
+      "dominant_color": "#eddad1",
+      "dimensions": {
+        "width": 3000,
+        "height": 2000
+      },
+      "format": "mixed"
+    },
+    {
+      "file": "boho-watercolor-leaves-copy-space-01.jpg",
+      "type": "background",
+      "archive_eps": "boho-watercolor-leaves-copy-space-01.eps",
+      "palette": [
+        "#fae4d8",
+        "#e07e56",
+        "#8d4031",
+        "#e0897d",
+        "#947c74"
+      ],
+      "dominant_color": "#fae4d8",
+      "dimensions": {
+        "width": 3000,
+        "height": 2000
+      },
+      "format": "mixed"
+    },
+    {
+      "file": "boho-watercolor-shapes-01.jpg",
+      "type": "background",
+      "archive_eps": "boho-watercolor-shapes-01.eps",
+      "palette": [
+        "#dcc2af",
+        "#bb8b62",
+        "#8d6757",
+        "#a6713a",
+        "#8b7465"
+      ],
+      "dominant_color": "#dcc2af",
+      "dimensions": {
+        "width": 3000,
+        "height": 2000
+      },
+      "format": "mixed"
+    },
+    {
+      "file": "boho-watercolor-stains-01.jpg",
+      "type": "background",
+      "archive_eps": "boho-watercolor-stains-01.eps",
+      "palette": [
+        "#f4dac8",
+        "#dabb9f",
+        "#c3a17a",
+        "#cca38e",
+        "#c4c1ac"
+      ],
+      "dominant_color": "#f4dac8",
+      "dimensions": {
+        "width": 3000,
+        "height": 2000
+      },
+      "format": "mixed"
+    },
+    {
+      "file": "boho-watercolor-terracota-01.jpg",
+      "type": "background",
+      "archive_eps": "boho-watercolor-terracota-01.eps",
+      "palette": [
+        "#dabba4",
+        "#a87663",
+        "#b28374",
+        "#eddccd",
+        "#ac8c74"
+      ],
+      "dominant_color": "#dabba4",
+      "dimensions": {
+        "width": 3000,
+        "height": 2000
+      },
+      "format": "mixed"
+    },
+    {
+      "file": "boho-watercolor-terracotta-01.jpg",
+      "type": "background",
+      "archive_eps": "boho-watercolor-terracotta-01.eps",
+      "palette": [
+        "#b5735e",
+        "#fbebe3",
+        "#e38d7c",
+        "#ac7375",
+        "#ab7c74"
+      ],
+      "dominant_color": "#b5735e",
+      "dimensions": {
+        "width": 3000,
+        "height": 2000
+      },
+      "format": "mixed"
+    },
+    {
+      "file": "boho-watercolor-terracotta-04.jpg",
+      "type": "background",
+      "archive_eps": "boho-watercolor-terracotta-04.eps",
+      "palette": [
+        "#f3c398",
+        "#fbeee5",
+        "#ce8058",
+        "#ac806e",
+        "#ac8c76"
+      ],
+      "dominant_color": "#f3c398",
+      "dimensions": {
+        "width": 3000,
+        "height": 2000
+      },
+      "format": "mixed"
+    },
+    {
+      "file": "boho-watercolor-terracotta-1-01.jpg",
+      "type": "background",
+      "archive_eps": "boho-watercolor-terracotta-1-01.eps",
+      "palette": [
+        "#b35f41",
+        "#fbebe3",
+        "#d9a487",
+        "#b87a75",
+        "#a48c94"
+      ],
+      "dominant_color": "#b35f41",
+      "dimensions": {
+        "width": 3000,
+        "height": 2000
+      },
+      "format": "mixed"
+    },
+    {
+      "file": "boho-watercolor-terracotta-2-01.jpg",
+      "type": "background",
+      "archive_eps": "boho-watercolor-terracotta-2-01.eps",
+      "palette": [
+        "#9c5b4c",
+        "#fbe6d9",
+        "#db9465",
+        "#dc937c",
+        "#ac7c77"
+      ],
+      "dominant_color": "#9c5b4c",
+      "dimensions": {
+        "width": 3000,
+        "height": 2000
+      },
+      "format": "mixed"
+    },
+    {
+      "file": "boho-watercolour-red-01.jpg",
+      "type": "background",
+      "archive_eps": "boho-watercolour-red-01.eps",
+      "palette": [
+        "#f2e0e2",
+        "#e1b7bb",
+        "#e4c4c4",
+        "#d8a2a8",
+        "#dbacac"
+      ],
+      "dominant_color": "#f2e0e2",
+      "dimensions": {
+        "width": 8000,
+        "height": 5331
+      },
+      "format": "horizontal"
+    }
+  ]
+}

@@ -1,0 +1,158 @@
+{
+  "count": 8,
+  "updated_at": "2026-05-05T20:21:04",
+  "assets": [
+    {
+      "file": "baby-01.jpg",
+      "type": "lineart",
+      "pilier": "pediatrie",
+      "archive_eps": "baby-01.eps",
+      "palette": [
+        "#040404",
+        "#c0c0c0",
+        "#7c7c7c",
+        "#5a5a5a",
+        "#747474"
+      ],
+      "dominant_color": "#040404",
+      "dimensions": {
+        "width": 6000,
+        "height": 4000
+      },
+      "format": "mixed"
+    },
+    {
+      "file": "baby-02.jpg",
+      "type": "lineart",
+      "pilier": "pediatrie",
+      "archive_eps": "baby-02.eps",
+      "palette": [
+        "#e0e0e0",
+        "#131313",
+        "#636363",
+        "#4c4c4c",
+        "#7c7c7c"
+      ],
+      "dominant_color": "#e0e0e0",
+      "dimensions": {
+        "width": 8867,
+        "height": 5000
+      },
+      "format": "horizontal"
+    },
+    {
+      "file": "baby-basket-outline-sketch-01.jpg",
+      "type": "lineart",
+      "pilier": "pediatrie",
+      "archive_eps": "baby-basket-outline-sketch-01.eps",
+      "palette": [
+        "#e1e1e1",
+        "#050505",
+        "#575757",
+        "#7c7c7c",
+        "#747474"
+      ],
+      "dominant_color": "#e1e1e1",
+      "dimensions": {
+        "width": 7467,
+        "height": 6067
+      },
+      "format": "mixed"
+    },
+    {
+      "file": "family-01.jpg",
+      "type": "lineart",
+      "pilier": "pediatrie",
+      "archive_eps": "family-01.eps",
+      "palette": [
+        "#f2f2eb",
+        "#95754b",
+        "#95a48d",
+        "#868493",
+        "#9694a7"
+      ],
+      "dominant_color": "#f2f2eb",
+      "dimensions": {
+        "width": 3000,
+        "height": 2000
+      },
+      "format": "mixed"
+    },
+    {
+      "file": "happy-mother-day-card-01.jpg",
+      "type": "lineart",
+      "pilier": "pediatrie",
+      "archive_eps": "happy-mother-day-card-01.eps",
+      "palette": [
+        "#f6e8d6",
+        "#050505",
+        "#858381",
+        "#7c7464",
+        "#7c6c64"
+      ],
+      "dominant_color": "#f6e8d6",
+      "dimensions": {
+        "width": 8334,
+        "height": 6250
+      },
+      "format": "mixed"
+    },
+    {
+      "file": "happy-mother-newborn-newborn-01.jpg",
+      "type": "lineart",
+      "pilier": "pediatrie",
+      "archive_eps": "happy-mother-newborn-newborn-01.eps",
+      "palette": [
+        "#040404",
+        "#080404",
+        "#080404",
+        "#080404",
+        "#080404"
+      ],
+      "dominant_color": "#040404",
+      "dimensions": {
+        "width": 5500,
+        "height": 5000
+      },
+      "format": "mixed"
+    },
+    {
+      "file": "mother-child-flowers-01.jpg",
+      "type": "lineart",
+      "pilier": "pediatrie",
+      "archive_eps": "mother-child-flowers-01.eps",
+      "palette": [
+        "#050505",
+        "#c2c2c2",
+        "#7c7c7c",
+        "#5a5a5a",
+        "#747474"
+      ],
+      "dominant_color": "#050505",
+      "dimensions": {
+        "width": 5000,
+        "height": 3500
+      },
+      "format": "mixed"
+    },
+    {
+      "file": "sleeping-baby-face-doodle-01.jpg",
+      "type": "lineart",
+      "pilier": "pediatrie",
+      "archive_eps": "sleeping-baby-face-doodle-01.eps",
+      "palette": [
+        "#8c9ba3",
+        "#040404",
+        "#f7f7f7",
+        "#444444",
+        "#4b4c4c"
+      ],
+      "dominant_color": "#8c9ba3",
+      "dimensions": {
+        "width": 7000,
+        "height": 4667
+      },
+      "format": "mixed"
+    }
+  ]
+}

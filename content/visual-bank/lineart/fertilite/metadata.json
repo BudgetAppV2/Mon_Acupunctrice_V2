@@ -1,0 +1,196 @@
+{
+  "count": 10,
+  "updated_at": "2026-05-05T20:21:13",
+  "assets": [
+    {
+      "file": "baby-embryo-womb-fetus-01.jpg",
+      "type": "lineart",
+      "pilier": "fertilite",
+      "archive_eps": "baby-embryo-womb-fetus-01.eps",
+      "palette": [
+        "#1c1c1c",
+        "#201c1c",
+        "#201c1c",
+        "#201c1c",
+        "#201c1c"
+      ],
+      "dominant_color": "#1c1c1c",
+      "dimensions": {
+        "width": 7001,
+        "height": 5000
+      },
+      "format": "mixed"
+    },
+    {
+      "file": "botanical-single-flower-stem-01.jpg",
+      "type": "lineart",
+      "pilier": "fertilite",
+      "archive_eps": "botanical-single-flower-stem-01.eps",
+      "palette": [
+        "#0f0f0f",
+        "#e4e4e4",
+        "#848484",
+        "#8c8c8c",
+        "#7c7c7c"
+      ],
+      "dominant_color": "#0f0f0f",
+      "dimensions": {
+        "width": 5000,
+        "height": 2727
+      },
+      "format": "horizontal"
+    },
+    {
+      "file": "decorative-iris-flower-invitation-01.jpg",
+      "type": "lineart",
+      "pilier": "fertilite",
+      "archive_eps": "decorative-iris-flower-invitation-01.eps",
+      "palette": [
+        "#241e24",
+        "#c6c4c5",
+        "#666263",
+        "#848384",
+        "#8c8c8c"
+      ],
+      "dominant_color": "#241e24",
+      "dimensions": {
+        "width": 6001,
+        "height": 4001
+      },
+      "format": "mixed"
+    },
+    {
+      "file": "floral-leaves-flowers-01.jpg",
+      "type": "lineart",
+      "pilier": "fertilite",
+      "archive_eps": "floral-leaves-flowers-01.eps",
+      "palette": [
+        "#070707",
+        "#e7e7e7",
+        "#848484",
+        "#7c7c7c",
+        "#747474"
+      ],
+      "dominant_color": "#070707",
+      "dimensions": {
+        "width": 6000,
+        "height": 4500
+      },
+      "format": "mixed"
+    },
+    {
+      "file": "human-uterus-fallopian-tubes-01.jpg",
+      "type": "lineart",
+      "pilier": "fertilite",
+      "archive_eps": "human-uterus-fallopian-tubes-01.eps",
+      "palette": [
+        "#949494",
+        "#444444",
+        "#040404",
+        "#3c3c3c",
+        "#38201c"
+      ],
+      "dominant_color": "#949494",
+      "dimensions": {
+        "width": 6000,
+        "height": 4000
+      },
+      "format": "mixed"
+    },
+    {
+      "file": "newborn-baby-01.jpg",
+      "type": "lineart",
+      "pilier": "fertilite",
+      "archive_eps": "newborn-baby-01.eps",
+      "palette": [
+        "#fbf2e1",
+        "#cc6444",
+        "#e5b48d",
+        "#e3ac84",
+        "#e3a48c"
+      ],
+      "dominant_color": "#fbf2e1",
+      "dimensions": {
+        "width": 4045,
+        "height": 4041
+      },
+      "format": "square"
+    },
+    {
+      "file": "plant-growth-processing-from-01.jpg",
+      "type": "lineart",
+      "pilier": "fertilite",
+      "archive_eps": "plant-growth-processing-from-01.eps",
+      "palette": [
+        "#040404",
+        "#8a8a8a",
+        "#444444",
+        "#7c7c7c",
+        "#3c3c3c"
+      ],
+      "dominant_color": "#040404",
+      "dimensions": {
+        "width": 6000,
+        "height": 4000
+      },
+      "format": "mixed"
+    },
+    {
+      "file": "poppy-watercolor-effect-01.jpg",
+      "type": "lineart",
+      "pilier": "fertilite",
+      "archive_eps": "poppy-watercolor-effect-01.eps",
+      "palette": [
+        "#e4f9e5",
+        "#050605",
+        "#869187",
+        "#747473",
+        "#747d6c"
+      ],
+      "dominant_color": "#e4f9e5",
+      "dimensions": {
+        "width": 6000,
+        "height": 5000
+      },
+      "format": "mixed"
+    },
+    {
+      "file": "pregnant-belly-close-up-01.jpg",
+      "type": "lineart",
+      "pilier": "fertilite",
+      "archive_eps": "pregnant-belly-close-up-01.eps",
+      "palette": [
+        "#fcb4e4",
+        "#fcb4dc",
+        "#040404",
+        "#fcbee1",
+        "#3c8480"
+      ],
+      "dominant_color": "#fcb4e4",
+      "dimensions": {
+        "width": 7000,
+        "height": 4100
+      },
+      "format": "horizontal"
+    },
+    {
+      "file": "woman-holding-pregnancy-test-01.jpg",
+      "type": "lineart",
+      "pilier": "fertilite",
+      "archive_eps": "woman-holding-pregnancy-test-01.eps",
+      "palette": [
+        "#040404",
+        "#080404",
+        "#080404",
+        "#080404",
+        "#080404"
+      ],
+      "dominant_color": "#040404",
+      "dimensions": {
+        "width": 5500,
+        "height": 5000
+      },
+      "format": "mixed"
+    }
+  ]
+}

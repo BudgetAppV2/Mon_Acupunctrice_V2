@@ -1,0 +1,158 @@
+{
+  "count": 8,
+  "updated_at": "2026-05-05T20:21:08",
+  "assets": [
+    {
+      "file": "crescent-moon-star-01.jpg",
+      "type": "lineart",
+      "pilier": "anxiete-sommeil",
+      "archive_eps": "crescent-moon-star-01.eps",
+      "palette": [
+        "#9b9b9b",
+        "#444444",
+        "#040404",
+        "#3c3c3c",
+        "#38201c"
+      ],
+      "dominant_color": "#9b9b9b",
+      "dimensions": {
+        "width": 6000,
+        "height": 4000
+      },
+      "format": "mixed"
+    },
+    {
+      "file": "lotus-flower-02.jpg",
+      "type": "lineart",
+      "pilier": "anxiete-sommeil",
+      "archive_eps": "lotus-flower-02.eps",
+      "palette": [
+        "#050505",
+        "#c0c0c0",
+        "#7c7c7c",
+        "#595959",
+        "#747474"
+      ],
+      "dominant_color": "#050505",
+      "dimensions": {
+        "width": 5000,
+        "height": 2500
+      },
+      "format": "horizontal"
+    },
+    {
+      "file": "lotus-flower-wellness-linear-01.jpg",
+      "type": "lineart",
+      "pilier": "anxiete-sommeil",
+      "archive_eps": "lotus-flower-wellness-linear-01.eps",
+      "palette": [
+        "#9a9a9a",
+        "#444444",
+        "#040404",
+        "#3c3c3c",
+        "#38201c"
+      ],
+      "dominant_color": "#9a9a9a",
+      "dimensions": {
+        "width": 7000,
+        "height": 3500
+      },
+      "format": "horizontal"
+    },
+    {
+      "file": "meditating-figure-lotus-flower-01.jpg",
+      "type": "lineart",
+      "pilier": "anxiete-sommeil",
+      "archive_eps": "meditating-figure-lotus-flower-01.eps",
+      "palette": [
+        "#040404",
+        "#b8b8b8",
+        "#7c7c7c",
+        "#444444",
+        "#747474"
+      ],
+      "dominant_color": "#040404",
+      "dimensions": {
+        "width": 6000,
+        "height": 3000
+      },
+      "format": "horizontal"
+    },
+    {
+      "file": "moonlit-night-clouds-01.jpg",
+      "type": "lineart",
+      "pilier": "anxiete-sommeil",
+      "archive_eps": "moonlit-night-clouds-01.eps",
+      "palette": [
+        "#3c3c44",
+        "#f5f5f7",
+        "#545358",
+        "#595c61",
+        "#545464"
+      ],
+      "dominant_color": "#3c3c44",
+      "dimensions": {
+        "width": 8531,
+        "height": 4781
+      },
+      "format": "horizontal"
+    },
+    {
+      "file": "single-vesak-day-lotus-01.jpg",
+      "type": "lineart",
+      "pilier": "anxiete-sommeil",
+      "archive_eps": "single-vesak-day-lotus-01.eps",
+      "palette": [
+        "#040404",
+        "#c3c3c3",
+        "#7c7c7c",
+        "#575757",
+        "#747474"
+      ],
+      "dominant_color": "#040404",
+      "dimensions": {
+        "width": 8192,
+        "height": 5000
+      },
+      "format": "horizontal"
+    },
+    {
+      "file": "two-hands-holding-blooming-01.jpg",
+      "type": "lineart",
+      "pilier": "anxiete-sommeil",
+      "archive_eps": "two-hands-holding-blooming-01.eps",
+      "palette": [
+        "#241d23",
+        "#aea8ac",
+        "#5c555c",
+        "#938c8c",
+        "#5c5454"
+      ],
+      "dominant_color": "#241d23",
+      "dimensions": {
+        "width": 5000,
+        "height": 3200
+      },
+      "format": "horizontal"
+    },
+    {
+      "file": "woman-sitting-meditation-yoga-01.jpg",
+      "type": "lineart",
+      "pilier": "anxiete-sommeil",
+      "archive_eps": "woman-sitting-meditation-yoga-01.eps",
+      "palette": [
+        "#040404",
+        "#a3a3a3",
+        "#7c7c7c",
+        "#444444",
+        "#3c3c3c"
+      ],
+      "dominant_color": "#040404",
+      "dimensions": {
+        "width": 7000,
+        "height": 3500
+      },
+      "format": "horizontal"
+    }
+  ]
+}

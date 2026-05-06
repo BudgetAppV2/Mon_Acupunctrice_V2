@@ -1,0 +1,139 @@
+{
+  "count": 7,
+  "updated_at": "2026-05-05T20:20:56",
+  "assets": [
+    {
+      "file": "four-people-sitting-circle-01.jpg",
+      "type": "lineart",
+      "pilier": "acupuncture-sociale",
+      "archive_eps": "four-people-sitting-circle-01.eps",
+      "palette": [
+        "#929292",
+        "#444444",
+        "#040404",
+        "#3c3c3c",
+        "#38201c"
+      ],
+      "dominant_color": "#929292",
+      "dimensions": {
+        "width": 6000,
+        "height": 3000
+      },
+      "format": "horizontal"
+    },
+    {
+      "file": "friends-holding-outline-best-01.jpg",
+      "type": "lineart",
+      "pilier": "acupuncture-sociale",
+      "archive_eps": "friends-holding-outline-best-01.eps",
+      "palette": [
+        "#e3e3e3",
+        "#070707",
+        "#747474",
+        "#8e8e8e",
+        "#7c7c7c"
+      ],
+      "dominant_color": "#e3e3e3",
+      "dimensions": {
+        "width": 6250,
+        "height": 4168
+      },
+      "format": "mixed"
+    },
+    {
+      "file": "group-businessman-businesswoman-creating-01.jpg",
+      "type": "lineart",
+      "pilier": "acupuncture-sociale",
+      "archive_eps": "group-businessman-businesswoman-creating-01.eps",
+      "palette": [
+        "#241e24",
+        "#c1bec0",
+        "#848384",
+        "#747474",
+        "#5d5859"
+      ],
+      "dominant_color": "#241e24",
+      "dimensions": {
+        "width": 6001,
+        "height": 4001
+      },
+      "format": "mixed"
+    },
+    {
+      "file": "holding-hands-helping-01.jpg",
+      "type": "lineart",
+      "pilier": "acupuncture-sociale",
+      "archive_eps": "holding-hands-helping-01.eps",
+      "palette": [
+        "#040404",
+        "#baa383",
+        "#efedea",
+        "#5e543a",
+        "#5c4c3c"
+      ],
+      "dominant_color": "#040404",
+      "dimensions": {
+        "width": 7000,
+        "height": 3500
+      },
+      "format": "horizontal"
+    },
+    {
+      "file": "opened-four-hands-together-01.jpg",
+      "type": "lineart",
+      "pilier": "acupuncture-sociale",
+      "archive_eps": "opened-four-hands-together-01.eps",
+      "palette": [
+        "#040404",
+        "#c1c1c1",
+        "#7c7c7c",
+        "#595959",
+        "#747474"
+      ],
+      "dominant_color": "#040404",
+      "dimensions": {
+        "width": 7667,
+        "height": 5367
+      },
+      "format": "mixed"
+    },
+    {
+      "file": "teamwork-unity-interlocking-hands-01.jpg",
+      "type": "lineart",
+      "pilier": "acupuncture-sociale",
+      "archive_eps": "teamwork-unity-interlocking-hands-01.eps",
+      "palette": [
+        "#a9a2a6",
+        "#241e23",
+        "#5c555c",
+        "#5c5454",
+        "#545454"
+      ],
+      "dominant_color": "#a9a2a6",
+      "dimensions": {
+        "width": 5000,
+        "height": 3200
+      },
+      "format": "horizontal"
+    },
+    {
+      "file": "vector-hand-drawn-01.jpg",
+      "type": "lineart",
+      "pilier": "acupuncture-sociale",
+      "archive_eps": "vector-hand-drawn-01.eps",
+      "palette": [
+        "#e4e4e4",
+        "#2d2d2d",
+        "#8c8c8c",
+        "#b4b4b4",
+        "#848484"
+      ],
+      "dominant_color": "#e4e4e4",
+      "dimensions": {
+        "width": 4550,
+        "height": 2600
+      },
+      "format": "horizontal"
+    }
+  ]
+}
