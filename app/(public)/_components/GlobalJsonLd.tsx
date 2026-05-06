@@ -48,7 +48,7 @@ const GLOBAL_GRAPH = [
       'Fertilité',
       'Grossesse',
       'Pédiatrie',
-      'Ménopause',
+      // 'Ménopause', — ajouté quand la ressource sera publiée
       'Acupuncture sociale',
       'Médecine traditionnelle chinoise',
     ],
@@ -75,7 +75,7 @@ const GLOBAL_GRAPH = [
       { '@type': 'MedicalTherapy', name: 'Acupuncture en grossesse' },
       { '@type': 'MedicalTherapy', name: 'Acupuncture pédiatrique' },
       { '@type': 'MedicalTherapy', name: 'Acupuncture sociale' },
-      { '@type': 'MedicalTherapy', name: 'Acupuncture pour la ménopause' },
+      // { '@type': 'MedicalTherapy', name: 'Acupuncture pour la ménopause' }, — ajouté quand la ressource sera publiée
     ],
     areaServed: [
       { '@type': 'City', name: 'Montréal' },
