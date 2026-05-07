@@ -69,6 +69,10 @@ const nextConfig = {
       { source: '/plans-pricing', destination: '/tarifs', permanent: true },
       // Blog : /post/slug → /blog/slug
       { source: '/post/:slug*', destination: '/blog/:slug*', permanent: true },
+      // Blog : anciennes pages catégories Wix (auto-générées) → /blog
+      // Capture toutes les URLs /blog/categories/* legacy (santé-générale, enfant,
+      // acupuncture-pour-tous, etc.) repérées dans GSC comme 404.
+      { source: '/blog/categories/:slug*', destination: '/blog', permanent: true },
       // Blog : slugs accentués (Wix) → ASCII
       { source: '/blog/b%C3%A9b%C3%A9-si%C3%A8ge-acupuncture', destination: '/blog/bebe-siege-acupuncture', permanent: true },
       { source: '/blog/pr%C3%A9paration-accouchement-induction-acupuncture', destination: '/blog/preparation-accouchement-induction-acupuncture', permanent: true },
