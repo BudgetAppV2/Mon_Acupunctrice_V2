@@ -104,16 +104,12 @@ const GLOBAL_GRAPH = [
           latitude: NAP.lssi.geo.latitude,
           longitude: NAP.lssi.geo.longitude,
         },
-        // ⚠️ aggregateRating est attaché au Place LSSI globalement, pas à
-        // Judith. Données externes (Google Reviews de la clinique).
-        // À actualiser périodiquement, ou retirer une fois la fiche GBP
-        // de Judith elle-même atteignant 20+ avis (Chantier 2 du plan op).
-        aggregateRating: {
-          '@type': 'AggregateRating',
-          ratingValue: '4.9',
-          reviewCount: '1215',
-          bestRating: '5',
-        },
+        // ⚠️ aggregateRating volontairement retiré (audit Codex 2026-05-07).
+        // Les avis 4.9/1215 sont attachés à la clinique LSSI (toutes disciplines
+        // confondues), pas à Judith. Les LLMs peuvent attribuer ce rating à
+        // Judith par mauvaise lecture du graphe. À ré-introduire avec les
+        // avis spécifiques à Judith quand sa fiche GBP atteindra 20+ avis
+        // (Chantier 2 du plan op — actuellement à 6/20).
       },
       {
         '@type': 'Place',

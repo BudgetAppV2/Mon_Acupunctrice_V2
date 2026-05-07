@@ -127,19 +127,21 @@ Toute mise à jour identité/NAP/spécialités/bios/profils externes part de ce 
 **⚠️ RÈGLE CRITIQUE — Cohérence AEO (contenu pending vs déclarations)** :
 Ne JAMAIS déclarer dans le schema JSON-LD (`knowsAbout`, `availableService`), dans `llms.txt`, ou dans `llms-full.txt` un sujet dont la page/ressource n'est PAS encore publiée (status !== published). Les LLMs détectent l'incohérence entre "ce site dit traiter la ménopause" et "la page ménopause retourne 404".
 
-Quand une ressource passe de pending → published (Judith approuve dans le Hub) :
-1. Décommenter la ligne correspondante dans `app/(public)/_components/GlobalJsonLd.tsx` (knowsAbout + availableService)
-2. Ajouter le sujet dans `public/llms.txt` (description + specialties)
-3. Régénérer `llms-full.txt` : `node scripts/generate-llms-full.mjs`
-4. Commiter et pousser
+Workflow concret depuis le refactor v1.7 (commit `0b268b7`) :
 
-Quand une ressource est retirée (published → draft via retire.mjs) :
-1. Commenter la ligne dans GlobalJsonLd.tsx
-2. Retirer du llms.txt
-3. Régénérer llms-full.txt
-4. Commiter et pousser
+1. **Source canonique exécutable** : `lib/entity-canonical.mjs` exporte `PILIERS` (4 piliers permanents : fertilité, grossesse, pédiatrie, acupuncture sociale) et `EMERGING_SPECIALTIES` (spécialités hors piliers, désactivées par défaut, ex: ménopause).
 
-Les 5 services de base (fertilité, grossesse, pédiatrie, sociale, stress/anxiété) sont TOUJOURS déclarés — ils ont des pages permanentes. Les sujets additionnels (ménopause, SOPK, douleur chronique, FIV, endométriose, etc.) ne sont ajoutés que quand leur ressource est publiée.
+2. **Activer une nouvelle spécialité** (quand sa page/ressource est publiée) :
+   - Si c'est un nouveau pilier permanent → ajouter une entrée dans `PILIERS` (entity-canonical.mjs)
+   - Si c'est une spécialité émergente → déplacer l'entrée de `EMERGING_SPECIALTIES` vers `PILIERS`, ou flagger `activated: true`
+   - Régénérer les deux fichiers exposés : `node scripts/generate-llms.mjs && node scripts/generate-llms-full.mjs`
+   - Le JSON-LD est automatiquement à jour (importe `PILIERS` à chaque build Next.js)
+   - Mettre à jour le SOT (`ENTITY_SOURCE_OF_TRUTH.md`) en parallèle (discipline humaine)
+   - Commiter et pousser
+
+3. **Désactiver une spécialité** : opération inverse — déplacer de `PILIERS` vers `EMERGING_SPECIALTIES`, régénérer, commiter.
+
+**Les 4 piliers permanents sont** : fertilité, grossesse & périnatalité, pédiatrie, acupuncture sociale. Toute autre spécialité (ménopause, SOPK, FIV comme spécialité autonome, endométriose, douleur chronique, stress/anxiété, etc.) doit avoir une page publiée AVANT d'apparaître dans le schema, llms.txt ou llms-full.txt.
 
 **CMS dans le Hub** :
 - Onglet "Contenu" dans la navigation (5e onglet)

@@ -97,6 +97,7 @@ export interface Contact {
 export interface SameAs {
   readonly social: readonly string[];
   readonly business: readonly string[];
+  readonly authority: readonly string[];
   readonly gbpReviewLink: string;
   readonly gbpShareUrl: string;
 }

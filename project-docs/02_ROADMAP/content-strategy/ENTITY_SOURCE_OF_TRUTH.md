@@ -11,6 +11,7 @@
 - `public/llms.txt` (index pour LLMs — généré par `scripts/generate-llms.mjs` depuis le module canonique)
 - `public/llms-full.txt` (contenu complet — généré par `scripts/generate-llms-full.mjs` depuis le module canonique)
 - `CLAUDE.md` (règle critique cohérence AEO + résumé NAP)
+- **Note** : `SAMEAS.authority` dans entity-canonical est volontairement vide — en attente de : Lumino (Sun Life), GoRendezVous profil public, page équipe LSSI corrigée, HealthDoc, profil OAQ public
 
 ---
 
@@ -446,6 +447,7 @@ Une page décisionnelle qui annonce *"Acupunctrice à Rosemont, H1Y 1G3"* alors 
 | 1.5 | 2026-05-07 | Benoit + Claude | Session matinale. Cohérence interne avec le repo : §3 ajout d'un flag de divergence sur les coordonnées géo LSSI (rdvUrl.ts dit 45.5501/-73.5832, le SOT et GlobalJsonLd.tsx disent 45.5408/-73.5823 — à trancher) ; §4 ajout des coordonnées géo Éden (45.7422, -73.4515) et des identifiants GoRendezVous Éden (companyId=141296, eids=192390, stype=Acupuncture) précédemment manquants. Cross-refs étendues à `rdvUrl.ts` et `llms-full.txt`. Note sur le script `generate-llms-full.mjs` : à auditer car mentionne ménopause (non publiée — viole la règle critique) et omet le numéro OAQ A-008-24. |
 | 1.6 | 2026-05-07 | Benoit + Claude | Lien d'avis court GBP de Judith documenté : `https://g.page/r/CQt_EeseQ8U_EBM/review`. **Cela débloque le Chantier 2** du plan opérationnel (objectif 20-25 avis Judith sur 90 jours via demandes structurées aux patientes). Ligne 1.7 du tableau §9 reste en ✅, action restante uniquement le déploiement opérationnel du Chantier 2. |
 | 1.7 | 2026-05-07 | Benoit + Claude | Refactor architectural majeur : extraction des constantes identité/NAP/bios/spécialités vers le module canonique exécutable `lib/entity-canonical.mjs` + types `lib/entity-canonical.d.ts`. Quatre consommateurs migrés : `GlobalJsonLd.tsx`, `rdvUrl.ts`, `generate-llms-full.mjs`, et nouveau `generate-llms.mjs` (régénère `public/llms.txt`). Divergence géo LSSI tranchée définitivement à 45.5408/-73.5823 (la valeur 45.5501/-73.5832 anciennement dans rdvUrl.ts était trop au nord pour la rue Beaubien Est). Le SOT reste la documentation primaire ; le module est la version exécutable. |
+| 1.8 | 2026-05-07 | Benoit + Claude + Codex | Audit Codex passé. Vague 1 quick wins appliqués : (a) cleanup `CLAUDE.md` — workflow obsolète "décommenter dans GlobalJsonLd.tsx" remplacé par le nouveau workflow basé sur `EMERGING_SPECIALTIES` dans entity-canonical, et la mention erronée de "5 services incluant stress/anxiété" corrigée vers les 4 piliers réels ; (b) `aggregateRating` du Place LSSI retiré du JSON-LD pour éviter l'ambiguïté Judith vs clinique (à ré-introduire au Chantier 2 quand Judith aura 20+ avis sur sa fiche GBP — actuellement à 6) ; (c) ajout d'un placeholder `SAMEAS.authority: []` dans entity-canonical pour préparer l'intégration future des profils d'autorité (OAQ public, Lumino, GoRendezVous, page équipe LSSI). Vagues 2 (anti-drift script) et 3 (refonte @graph + provider/founder) reportées — voir `project-docs/HANDOFF_CC_VAGUE1_QUICK_WINS.md` pour le détail. |
 
 ---
 
