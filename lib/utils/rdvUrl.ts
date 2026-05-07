@@ -1,49 +1,67 @@
 // URLs de reservation directes vers le profil de Judith dans chaque clinique
+//
+// 📌 Source canonique de NAP / contact : `lib/entity-canonical.mjs`
+//    Toute mise à jour d'adresse, téléphone, géo, ou URL GoRendezVous
+//    se fait là-bas et est répercutée automatiquement ici.
+// 📌 Documentation primaire : `project-docs/02_ROADMAP/content-strategy/ENTITY_SOURCE_OF_TRUTH.md`
+
+import { NAP, CONTACT } from '@/lib/entity-canonical.mjs';
+
 export type Clinic = 'lssi' | 'eden';
 
 type Platform = 'instagram' | 'facebook' | 'youtube' | 'blog' | 'story' | 'bio';
 type Medium = 'reel' | 'caption' | 'article' | 'story' | 'description' | 'link';
 
+// Pour les valeurs UI (jours capitalisés, format affiché à l'utilisateur),
+// on les construit à partir des données canoniques (lowercase, anglicisée)
+// + un peu de mise en forme. Cela évite la divergence tout en respectant
+// les conventions d'affichage du site.
+function capitalizeFirst(s: string): string {
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
 export const CLINICS = {
   lssi: {
-    name: 'La Source en Soi',
-    shortName: 'Rosemont',
-    address: '2554 rue Beaubien Est, Montr\u00e9al, QC H1Y 1G3',
-    addressShort: '2554 rue Beaubien Est',
-    city: 'Montr\u00e9al',
-    region: 'Rosemont\u2013La Petite-Patrie',
-    phone: '514 750-3735',
-    phoneFull: '+1-514-750-3735',
-    siteUrl: 'https://lasourceensoi.com/',
-    grvSlug: 'lasourceensoi',
-    grvUrl: 'https://www.gorendezvous.com/lasourceensoi?companyId=104074&eids=175708',
-    mapsQuery: '2554+rue+Beaubien+Est+Montreal+QC+H1Y+1G3',
-    days: 'Lundi, mardi, jeudi, vendredi',
-    services: ['Acupuncture classique', 'Acupuncture sociale'],
-    hasSociale: true,
-    postalCode: 'H1Y 1G3',
-    geo: { latitude: 45.5501, longitude: -73.5832 },
+    name: NAP.lssi.name,
+    shortName: NAP.lssi.neighborhood,
+    address: `${NAP.lssi.streetAddress}, ${NAP.lssi.addressLocality}, ${NAP.lssi.addressRegion} ${NAP.lssi.postalCode}`,
+    addressShort: NAP.lssi.streetAddress,
+    city: NAP.lssi.addressLocality,
+    region: NAP.lssi.borough,
+    phone: CONTACT.phoneLocal,
+    phoneFull: CONTACT.phone,
+    siteUrl: NAP.lssi.siteUrl,
+    grvSlug: NAP.lssi.grvSlug,
+    grvUrl: NAP.lssi.grvUrl,
+    mapsQuery: NAP.lssi.mapsQuery,
+    days: capitalizeFirst(NAP.lssi.daysLabel),
+    services: [...NAP.lssi.services],
+    hasSociale: NAP.lssi.hasSocialAcupuncture,
+    postalCode: NAP.lssi.postalCode,
+    // Géolocalisation : valeur tranchée à 45.5408/-73.5823 dans entity-canonical
+    // (la valeur 45.5501/-73.5832 anciennement ici a été corrigée — cf. SOT v1.7).
+    geo: NAP.lssi.geo,
   },
   eden: {
-    name: '\u00c9den Yoga Pilates',
-    shortName: 'Repentigny',
-    address: '121 boul. Industriel #225, Repentigny, QC',
-    addressShort: '121 boul. Industriel #225',
-    city: 'Repentigny',
-    region: 'Repentigny',
+    name: NAP.eden.name,
+    shortName: NAP.eden.addressLocality,
+    address: `${NAP.eden.streetAddressFull}, ${NAP.eden.addressLocality}, ${NAP.eden.addressRegion} ${NAP.eden.postalCode}`,
+    addressShort: NAP.eden.streetAddressFull,
+    city: NAP.eden.addressLocality,
+    region: NAP.eden.addressLocality,
     phone: '',
     phoneFull: '',
-    siteUrl: 'https://edenyogapilates.ca/',
-    grvSlug: 'edenyogapilates',
-    grvUrl: 'https://www.gorendezvous.com/edenyogapilates?companyId=141296&eids=192390&stype=Acupuncture',
-    mapsQuery: 'Eden+Yoga+Pilates+121+boul+Industriel+225+Repentigny+QC',
-    days: 'Mercredi, 9 h \u2013 15 h',
-    services: ['Acupuncture classique'],
-    hasSociale: false,
-    postalCode: '',
-    geo: { latitude: 45.7422, longitude: -73.4515 },
+    siteUrl: NAP.eden.siteUrl,
+    grvSlug: NAP.eden.grvSlug,
+    grvUrl: NAP.eden.grvUrl,
+    mapsQuery: NAP.eden.mapsQuery,
+    days: capitalizeFirst(NAP.eden.daysLabel),
+    services: [...NAP.eden.services],
+    hasSociale: NAP.eden.hasSocialAcupuncture,
+    postalCode: NAP.eden.postalCode,
+    geo: NAP.eden.geo,
   },
-} as const;
+};
 
 export function getRdvUrl(opts?: {
   source?: Platform;

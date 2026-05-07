@@ -1,108 +1,113 @@
 // Graphe JSON-LD global — présent sur toutes les pages publiques via layout.tsx
 // Contient les entités stables : WebSite, Person, MedicalBusiness, Place×2
 // Les pages individuelles ajoutent leurs propres schemas (BreadcrumbList, FAQPage, etc.)
+//
+// 📌 Source canonique : `lib/entity-canonical.mjs` (toute valeur identitaire vient de là).
+// 📌 Documentation primaire : `project-docs/02_ROADMAP/content-strategy/ENTITY_SOURCE_OF_TRUTH.md`
 
-const BASE = 'https://www.acupuncturejudith.ca';
+import { ENTITY, NAP, CONTACT, SAMEAS, PILIERS } from '@/lib/entity-canonical.mjs';
 
-const SAME_AS = [
-  'https://www.wikidata.org/wiki/Q139677208',
-  'https://www.instagram.com/mon_acupunctrice/',
-  'https://www.youtube.com/@JudithDufourSavard',
-  'https://www.facebook.com/profile.php?id=61562614934143',
-  'https://www.linkedin.com/in/judith-dufour-savard-acu/',
-];
+const BASE = CONTACT.website;
+const PORTRAIT = `${BASE}${ENTITY.portraitImagePath}`;
 
 const GLOBAL_GRAPH = [
   {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     '@id': `${BASE}/#website`,
-    name: 'Judith Dufour-Savard — Acupunctrice',
+    name: ENTITY.websiteName,
     url: BASE,
   },
   {
     '@context': 'https://schema.org',
     '@type': 'Person',
     '@id': `${BASE}/#judith`,
-    name: 'Judith Dufour-Savard',
-    alternateName: 'Judith Dufour-Savard, Ac.',
-    jobTitle: 'Acupunctrice',
+    name: ENTITY.name,
+    alternateName: ENTITY.alternateName,
+    jobTitle: ENTITY.jobTitleShort,
     identifier: {
       '@type': 'PropertyValue',
-      propertyID: 'OAQ',
+      propertyID: ENTITY.oaqAcronym,
       name: "Numéro d'inscription à l'Ordre des acupuncteurs du Québec",
-      value: 'A-008-24',
+      value: ENTITY.oaqNumber,
     },
     url: BASE,
-    image: `${BASE}/site/judith/judith-portrait-01.webp`,
+    image: PORTRAIT,
     memberOf: {
       '@type': 'Organization',
-      name: "Ordre des acupuncteurs du Québec",
-      url: 'https://o-a-q.org',
+      name: ENTITY.oaqName,
+      url: ENTITY.oaqUrl,
     },
     hasCredential: {
       '@type': 'EducationalOccupationalCredential',
-      name: "Diplôme d'études collégiales en acupuncture",
+      name: ENTITY.diplomaLong,
       credentialCategory: 'degree',
       recognizedBy: {
         '@type': 'EducationalOrganization',
-        name: 'Collège de Rosemont',
+        name: ENTITY.school,
       },
     },
+    // knowsAbout : "Acupuncture" générique + les 4 piliers actifs + MTC.
+    // ⚠️ Les spécialités niveau 3 (émergentes, ex: ménopause) ne sont PAS
+    // listées ici tant que la page correspondante n'est pas publiée.
+    // Cf. EMERGING_SPECIALTIES dans entity-canonical.mjs.
     knowsAbout: [
       'Acupuncture',
-      'Fertilité',
-      'Grossesse',
-      'Pédiatrie',
-      // 'Ménopause', — ajouté quand la ressource sera publiée
-      'Acupuncture sociale',
+      ...PILIERS.map((p) => p.name),
       'Médecine traditionnelle chinoise',
     ],
     workLocation: [
-      { '@type': 'MedicalClinic', '@id': `${BASE}/#lssi`, name: 'La Source en Soi' },
-      { '@type': 'MedicalClinic', '@id': `${BASE}/#eden`, name: 'Éden Yoga Pilates' },
+      { '@type': 'MedicalClinic', '@id': `${BASE}/#lssi`, name: NAP.lssi.name },
+      { '@type': 'MedicalClinic', '@id': `${BASE}/#eden`, name: NAP.eden.name },
     ],
-    sameAs: SAME_AS,
+    sameAs: [...SAMEAS.social],
   },
   {
     '@context': 'https://schema.org',
     '@type': ['MedicalBusiness', 'LocalBusiness'],
     '@id': `${BASE}/#business`,
-    name: 'Judith Dufour-Savard — Acupuncture',
-    alternateName: 'Acupuncture Judith',
+    name: ENTITY.businessName,
+    alternateName: ENTITY.businessAlternateName,
     url: BASE,
-    telephone: '+1-514-750-3735',
-    email: 'info@acupuncturejudith.ca',
-    image: `${BASE}/site/judith/judith-portrait-01.webp`,
+    telephone: CONTACT.phone,
+    email: CONTACT.email,
+    image: PORTRAIT,
+    // medicalSpecialty : enum schema.org en anglais (Acupuncture, Integrative Medicine).
+    // Volontairement séparé des libellés français (knowsAbout / availableService).
     medicalSpecialty: ['Acupuncture', 'Integrative Medicine'],
     priceRange: '$$',
-    availableService: [
-      { '@type': 'MedicalTherapy', name: 'Acupuncture en fertilité' },
-      { '@type': 'MedicalTherapy', name: 'Acupuncture en grossesse' },
-      { '@type': 'MedicalTherapy', name: 'Acupuncture pédiatrique' },
-      { '@type': 'MedicalTherapy', name: 'Acupuncture sociale' },
-      // { '@type': 'MedicalTherapy', name: 'Acupuncture pour la ménopause' }, — ajouté quand la ressource sera publiée
-    ],
+    availableService: PILIERS.map((p) => ({
+      '@type': 'MedicalTherapy',
+      name: p.labelLong,
+    })),
     areaServed: [
-      { '@type': 'City', name: 'Montréal' },
-      { '@type': 'City', name: 'Repentigny' },
-      { '@type': 'AdministrativeArea', name: 'Rosemont—La Petite-Patrie' },
+      { '@type': 'City', name: NAP.lssi.addressLocality },
+      { '@type': 'City', name: NAP.eden.addressLocality },
+      { '@type': 'AdministrativeArea', name: NAP.lssi.borough },
     ],
     employee: { '@id': `${BASE}/#judith` },
     location: [
       {
         '@type': 'Place',
         '@id': `${BASE}/#lssi`,
-        name: 'La Source en Soi',
+        name: NAP.lssi.name,
         address: {
           '@type': 'PostalAddress',
-          streetAddress: '2554 rue Beaubien Est',
-          addressLocality: 'Montréal',
-          addressRegion: 'QC',
-          postalCode: 'H1Y 1G3',
-          addressCountry: 'CA',
+          streetAddress: NAP.lssi.streetAddress,
+          addressLocality: NAP.lssi.addressLocality,
+          addressRegion: NAP.lssi.addressRegion,
+          postalCode: NAP.lssi.postalCode,
+          addressCountry: NAP.lssi.addressCountry,
         },
-        geo: { '@type': 'GeoCoordinates', latitude: 45.5408, longitude: -73.5823 },
+        geo: {
+          '@type': 'GeoCoordinates',
+          latitude: NAP.lssi.geo.latitude,
+          longitude: NAP.lssi.geo.longitude,
+        },
+        // ⚠️ aggregateRating est attaché au Place LSSI globalement, pas à
+        // Judith. Données externes (Google Reviews de la clinique).
+        // À actualiser périodiquement, ou retirer une fois la fiche GBP
+        // de Judith elle-même atteignant 20+ avis (Chantier 2 du plan op).
         aggregateRating: {
           '@type': 'AggregateRating',
           ratingValue: '4.9',
@@ -113,22 +118,23 @@ const GLOBAL_GRAPH = [
       {
         '@type': 'Place',
         '@id': `${BASE}/#eden`,
-        name: 'Éden Yoga Pilates',
+        name: NAP.eden.name,
         address: {
           '@type': 'PostalAddress',
-          streetAddress: '121 boulevard Industriel, local 225',
-          addressLocality: 'Repentigny',
-          addressRegion: 'QC',
-          postalCode: 'J6A 7K4',
-          addressCountry: 'CA',
+          streetAddress: NAP.eden.streetAddressFull,
+          addressLocality: NAP.eden.addressLocality,
+          addressRegion: NAP.eden.addressRegion,
+          postalCode: NAP.eden.postalCode,
+          addressCountry: NAP.eden.addressCountry,
+        },
+        geo: {
+          '@type': 'GeoCoordinates',
+          latitude: NAP.eden.geo.latitude,
+          longitude: NAP.eden.geo.longitude,
         },
       },
     ],
-    sameAs: [
-      ...SAME_AS,
-      'https://lasourceensoi.com/',
-      'https://share.google/ncO1Alzja10AmsUfR',
-    ],
+    sameAs: [...SAMEAS.social, ...SAMEAS.business],
   },
 ];
 

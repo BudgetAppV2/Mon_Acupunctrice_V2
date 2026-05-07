@@ -4,11 +4,12 @@
 **Statut** : ✅ Source canonique active — toute divergence externe doit être corrigée vers ce fichier
 **Source** : `PROOF_GRAPH_OPERATIONAL_PLAN.md` Chantier 1, livrable principal
 **Cross-refs internes** :
-- `app/(public)/_components/GlobalJsonLd.tsx` (schema JSON-LD du site — doit refléter ce fichier)
+- `lib/entity-canonical.mjs` + `lib/entity-canonical.d.ts` (**source canonique runtime** — module ESM partagé par tous les consommateurs code)
+- `app/(public)/_components/GlobalJsonLd.tsx` (schema JSON-LD du site — consomme le module canonique)
 - `app/(public)/a-propos/page.tsx` (page À propos — doit refléter ce fichier)
-- `lib/utils/rdvUrl.ts` (constantes `CLINICS` consommées par le code applicatif — doit refléter ce fichier)
-- `public/llms.txt` (index pour LLMs, créé 2026-05-07 — doit refléter ce fichier)
-- `public/llms-full.txt` (contenu complet généré par `scripts/generate-llms-full.mjs` — script à auditer car contient ménopause non encore publiée et omet le numéro OAQ)
+- `lib/utils/rdvUrl.ts` (constantes `CLINICS` — consomme le module canonique)
+- `public/llms.txt` (index pour LLMs — généré par `scripts/generate-llms.mjs` depuis le module canonique)
+- `public/llms-full.txt` (contenu complet — généré par `scripts/generate-llms-full.mjs` depuis le module canonique)
 - `CLAUDE.md` (règle critique cohérence AEO + résumé NAP)
 
 ---
@@ -142,9 +143,9 @@ pays_iso: "CA"
 # Géolocalisation
 latitude: 45.5408
 longitude: -73.5823
-# ⚠️ DIVERGENCE À RÉSOUDRE : `lib/utils/rdvUrl.ts` indique 45.5501, -73.5832 pour la même adresse.
-# Vérifier sur Google Maps quelle est la coordonnée précise de 2554 rue Beaubien Est, Montréal,
-# puis aligner les 3 sources : ce fichier, `GlobalJsonLd.tsx` et `rdvUrl.ts`.
+# ✅ Géolocalisation tranchée v1.7 : la valeur 45.5501/-73.5832 anciennement
+# dans rdvUrl.ts a été corrigée vers 45.5408/-73.5823. Les 4 consommateurs
+# (entity-canonical.mjs, rdvUrl.ts, GlobalJsonLd.tsx, scripts llms*) sont alignés.
 
 # Jours de pratique de Judith à LSSI
 jours_pratique: ["lundi", "mardi", "jeudi", "vendredi"]
@@ -444,6 +445,7 @@ Une page décisionnelle qui annonce *"Acupunctrice à Rosemont, H1Y 1G3"* alors 
 | 1.4 | 2026-05-06 | Benoit + Claude | Bio longue §7.3 enrichie d'un 4e paragraphe court mentionnant l'engagement AAQ (siège passé au CA) — formulation neutre qui reste valide même après démission. Bio passée de ~1500 à ~1700 caractères. Bio courte et moyenne inchangées (mention AAQ trop longue à intégrer sans alourdir). |
 | 1.5 | 2026-05-07 | Benoit + Claude | Session matinale. Cohérence interne avec le repo : §3 ajout d'un flag de divergence sur les coordonnées géo LSSI (rdvUrl.ts dit 45.5501/-73.5832, le SOT et GlobalJsonLd.tsx disent 45.5408/-73.5823 — à trancher) ; §4 ajout des coordonnées géo Éden (45.7422, -73.4515) et des identifiants GoRendezVous Éden (companyId=141296, eids=192390, stype=Acupuncture) précédemment manquants. Cross-refs étendues à `rdvUrl.ts` et `llms-full.txt`. Note sur le script `generate-llms-full.mjs` : à auditer car mentionne ménopause (non publiée — viole la règle critique) et omet le numéro OAQ A-008-24. |
 | 1.6 | 2026-05-07 | Benoit + Claude | Lien d'avis court GBP de Judith documenté : `https://g.page/r/CQt_EeseQ8U_EBM/review`. **Cela débloque le Chantier 2** du plan opérationnel (objectif 20-25 avis Judith sur 90 jours via demandes structurées aux patientes). Ligne 1.7 du tableau §9 reste en ✅, action restante uniquement le déploiement opérationnel du Chantier 2. |
+| 1.7 | 2026-05-07 | Benoit + Claude | Refactor architectural majeur : extraction des constantes identité/NAP/bios/spécialités vers le module canonique exécutable `lib/entity-canonical.mjs` + types `lib/entity-canonical.d.ts`. Quatre consommateurs migrés : `GlobalJsonLd.tsx`, `rdvUrl.ts`, `generate-llms-full.mjs`, et nouveau `generate-llms.mjs` (régénère `public/llms.txt`). Divergence géo LSSI tranchée définitivement à 45.5408/-73.5823 (la valeur 45.5501/-73.5832 anciennement dans rdvUrl.ts était trop au nord pour la rue Beaubien Est). Le SOT reste la documentation primaire ; le module est la version exécutable. |
 
 ---
 

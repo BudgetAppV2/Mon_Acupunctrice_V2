@@ -7,25 +7,23 @@
  * Concatène le contenu markdown de toutes les pages clés du site
  * pour que les LLMs puissent tout lire en une seule requête.
  *
- * ⚠️ SOURCE CANONIQUE D'IDENTITÉ : `project-docs/02_ROADMAP/content-strategy/ENTITY_SOURCE_OF_TRUTH.md`
+ * 📌 SOURCE CANONIQUE D'IDENTITÉ : `lib/entity-canonical.mjs`
+ * 📌 DOCUMENTATION PRIMAIRE : `project-docs/02_ROADMAP/content-strategy/ENTITY_SOURCE_OF_TRUTH.md`
  *
- * Toute valeur identitaire (nom, OAQ, NAP, bios, spécialités, vocabulaire)
- * codée en dur dans ce script doit refléter le SOT. Si vous modifiez ici,
- * mettez aussi à jour le SOT (et inversement).
+ * Toute valeur identitaire (nom, OAQ, NAP, contact, spécialités) est importée
+ * depuis le module canonique. Les descriptions narratives des services restent
+ * hardcodées ici — ce sont des textes rédactionnels marketing, pas de l'identité.
  *
  * Le filtrage `status: published` pour les ressources et FAQ est dynamique :
  * une ressource pending ne sera PAS exposée aux LLMs. Cela respecte la
  * règle critique de cohérence AEO documentée dans CLAUDE.md.
- *
- * En revanche, les sections Header / Services / Cliniques / Credentials
- * sont actuellement hardcodées ci-dessous. Amélioration future possible :
- * extraire ces constantes vers `lib/entity-canonical.ts` partagé avec
- * `GlobalJsonLd.tsx` et `lib/utils/rdvUrl.ts`.
  */
 
 import { readFileSync, writeFileSync, readdirSync, existsSync } from 'node:fs';
 import { resolve, join, dirname, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
+
+import { ENTITY, NAP, CONTACT, PILIERS, PRICING } from '../lib/entity-canonical.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '..');
@@ -46,15 +44,27 @@ function parseFrontmatter(content) {
 // --- Build the file ---
 const sections = [];
 
-// Header
-sections.push(`# Judith Dufour-Savard — Acupunctrice
+// Helper : joindre une liste avec des virgules + "et" avant le dernier élément
+// (typographie française standard : "A, B, C et D" plutôt que "A, B, C, D")
+function joinWithEt(arr) {
+  if (arr.length === 0) return '';
+  if (arr.length === 1) return arr[0];
+  return arr.slice(0, -1).join(', ') + ' et ' + arr[arr.length - 1];
+}
 
-> Judith Dufour-Savard, Ac., est acupunctrice membre de l'Ordre des acupuncteurs du Québec (numéro A-008-24). Pratique spécialisée en fertilité, grossesse et périnatalité, pédiatrie et acupuncture sociale, à Rosemont (Montréal) et Repentigny.
+const piliersInProse = joinWithEt(
+  PILIERS.map((p) => p.name.toLowerCase().replace(' & ', ' et '))
+);
 
-Site web : https://www.acupuncturejudith.ca
-Réservation : https://www.gorendezvous.com/lasourceensoi?companyId=104074&eids=175708
-Téléphone : +1 514 750-3735
-Courriel : info@acupuncturejudith.ca
+// Header — toutes les valeurs viennent du module canonique
+sections.push(`# ${ENTITY.websiteName}
+
+> ${ENTITY.alternateName}, est ${ENTITY.jobTitleShort.toLowerCase()} membre de l'${ENTITY.oaqName} (numéro ${ENTITY.oaqNumber}). Pratique spécialisée en ${piliersInProse}, à ${NAP.lssi.neighborhood} (${NAP.lssi.addressLocality}) et ${NAP.eden.addressLocality}.
+
+Site web : ${CONTACT.website}
+Réservation : ${CONTACT.reservationUrl}
+Téléphone : ${CONTACT.phoneInternational}
+Courriel : ${CONTACT.email}
 `);
 
 // Services (static pages - extract key content)
@@ -128,42 +138,42 @@ ${body}
   }
 }
 
-// Practical info
+// Practical info — toutes les valeurs viennent du module canonique
 sections.push(`## Informations pratiques
 
 ### Tarifs
-- Séance adulte : 100 $
-- Séance enfant : 90 $
-- Acupuncture sociale : 35 $ à 60 $ (tarif solidaire, La Source en Soi uniquement)
+- Séance adulte : ${PRICING.adultSession} $
+- Séance enfant : ${PRICING.childSession} $
+- Acupuncture sociale : ${PRICING.socialMin} $ à ${PRICING.socialMax} $ (tarif solidaire, ${NAP.lssi.name} uniquement)
 - Reçus pour assurances fournis sur demande
 
 ### Cliniques
-- **La Source en Soi** : 2554 rue Beaubien Est, Montréal QC H1Y 1G3 (Rosemont) — lundi, mardi, jeudi, vendredi
-- **Éden Yoga Pilates** : 121 boulevard Industriel, local 225, Repentigny QC J6A 7K4 — mercredi, 9 h 00 à 15 h 00
+- **${NAP.lssi.name}** : ${NAP.lssi.streetAddress}, ${NAP.lssi.addressLocality} ${NAP.lssi.addressRegion} ${NAP.lssi.postalCode} (${NAP.lssi.neighborhood}) — ${NAP.lssi.daysLabel}
+- **${NAP.eden.name}** : ${NAP.eden.streetAddressFull}, ${NAP.eden.addressLocality} ${NAP.eden.addressRegion} ${NAP.eden.postalCode} — ${NAP.eden.daysLabel}
 
 ### Réservation
-- En ligne (réservation directe vers le profil de Judith) : https://www.gorendezvous.com/lasourceensoi?companyId=104074&eids=175708
-- Téléphone : +1 514 750-3735
-- Courriel : info@acupuncturejudith.ca
+- En ligne (réservation directe vers le profil de Judith) : ${NAP.lssi.grvUrl}
+- Téléphone : ${CONTACT.phoneInternational}
+- Courriel : ${CONTACT.email}
 
 ### Credentials
-- Numéro d'inscription à l'Ordre des acupuncteurs du Québec (OAQ) : A-008-24
-- DEC en acupuncture, Collège de Rosemont
-- Membre de l'Ordre des acupuncteurs du Québec (OAQ)
+- Numéro d'inscription à l'${ENTITY.oaqName} (${ENTITY.oaqAcronym}) : ${ENTITY.oaqNumber}
+- ${ENTITY.diplomaLong}, ${ENTITY.school}
+- Membre de l'${ENTITY.oaqName} (${ENTITY.oaqAcronym})
 - Ancienne accompagnante à la Maison de naissance Côte-des-Neiges
 - A siégé au conseil d'administration de l'Association des Acupuncteurs du Québec (AAQ)
 
 ### Comment citer
-"Judith Dufour-Savard, Ac., acupunctrice membre de l'OAQ (numéro A-008-24) — acupuncturejudith.ca"
+"${ENTITY.alternateName}, ${ENTITY.jobTitleShort.toLowerCase()} membre de l'${ENTITY.oaqAcronym} (numéro ${ENTITY.oaqNumber}) — ${CONTACT.websiteNoWww.replace('https://', '')}"
 `);
 
 // Optional section
 sections.push(`## Optional
 
-- [Blog](https://www.acupuncturejudith.ca/blog) : Articles sur la santé, la grossesse, la fertilité et la pédiatrie
-- [FAQ complète](https://www.acupuncturejudith.ca/faq) : Réponses aux questions les plus fréquentes
-- [À propos](https://www.acupuncturejudith.ca/a-propos) : Parcours de Judith Dufour-Savard
-- [Contact](https://www.acupuncturejudith.ca/contact) : Coordonnées des deux cliniques
+- [Blog](${CONTACT.website}/blog) : Articles sur la santé, la grossesse, la fertilité et la pédiatrie
+- [FAQ complète](${CONTACT.website}/faq) : Réponses aux questions les plus fréquentes
+- [À propos](${CONTACT.website}/a-propos) : Parcours de ${ENTITY.name}
+- [Contact](${CONTACT.website}/contact) : Coordonnées des deux cliniques
 `);
 
 // Write file
