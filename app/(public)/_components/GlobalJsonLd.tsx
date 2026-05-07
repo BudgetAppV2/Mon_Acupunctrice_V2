@@ -27,6 +27,12 @@ const GLOBAL_GRAPH = [
     name: 'Judith Dufour-Savard',
     alternateName: 'Judith Dufour-Savard, Ac.',
     jobTitle: 'Acupunctrice',
+    identifier: {
+      '@type': 'PropertyValue',
+      propertyID: 'OAQ',
+      name: "Numéro d'inscription à l'Ordre des acupuncteurs du Québec",
+      value: 'A-008-24',
+    },
     url: BASE,
     image: `${BASE}/site/judith/judith-portrait-01.webp`,
     memberOf: {
@@ -110,9 +116,10 @@ const GLOBAL_GRAPH = [
         name: 'Éden Yoga Pilates',
         address: {
           '@type': 'PostalAddress',
-          streetAddress: '121 Boul. Industriel #225',
+          streetAddress: '121 boulevard Industriel, local 225',
           addressLocality: 'Repentigny',
           addressRegion: 'QC',
+          postalCode: 'J6A 7K4',
           addressCountry: 'CA',
         },
       },
@@ -120,6 +127,7 @@ const GLOBAL_GRAPH = [
     sameAs: [
       ...SAME_AS,
       'https://lasourceensoi.com/',
+      'https://share.google/ncO1Alzja10AmsUfR',
     ],
   },
 ];

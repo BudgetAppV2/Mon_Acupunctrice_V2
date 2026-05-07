@@ -52,6 +52,13 @@ export default function AboutParcoursSection() {
             ce qu&rsquo;elle est aujourd&rsquo;hui : un soin centr&eacute; sur la femme, la famille,
             et les transitions de vie.
           </p>
+          <p>
+            Avec les ann&eacute;es, j&rsquo;ai aussi eu envie de m&rsquo;impliquer au-del&agrave; de
+            ma pratique en clinique. J&rsquo;ai si&eacute;g&eacute; au conseil d&rsquo;administration
+            de l&rsquo;Association des Acupuncteurs du Qu&eacute;bec, o&ugrave; j&rsquo;ai contribu&eacute;
+            aux r&eacute;flexions qui font &eacute;voluer la profession. C&rsquo;est une exp&eacute;rience
+            qui m&rsquo;a beaucoup appris, et qui m&rsquo;a fait voir le m&eacute;tier sous un autre angle.
+          </p>
         </div>
         </Reveal>
       </div>

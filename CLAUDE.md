@@ -89,10 +89,13 @@ de la clinique La Source en Soi (1 215 avis 4,9/5 sur Google).
 - ✅ Eden Yoga Pilates : 2e clinique intégrée (18 fichiers)
 - ✅ Corrections Judith : 53 corrections appliquées (tarifs, terminologie, formulations)
 
+**📌 Source canonique d'entité** : `project-docs/02_ROADMAP/content-strategy/ENTITY_SOURCE_OF_TRUTH.md` (SOT v1.5+).
+Toute mise à jour identité/NAP/spécialités/bios/profils externes part de ce fichier. En cas de divergence avec le résumé ci-dessous, le SOT fait foi.
+
 **Deux cliniques** :
-- La Source en Soi : 2554 Beaubien E, Rosemont, MTL | GRV companyId=104074 eids=175708
-- Éden Yoga Pilates : 121 Boul. Industriel #225, Repentigny | GRV companyId=141296 eids=192390 stype=Acupuncture
-- Judith : LSSI lun-mar-jeu-ven, Eden mercredi 9h-15h (pas de sociale à Eden)
+- La Source en Soi : 2554 rue Beaubien Est, Montréal QC H1Y 1G3 (Rosemont) | GRV companyId=104074 eids=175708
+- Éden Yoga Pilates : 121 boulevard Industriel local 225, Repentigny QC J6A 7K4 | GRV companyId=141296 eids=192390 stype=Acupuncture
+- Judith : LSSI lun-mar-jeu-ven, Éden mercredi 9h-15h (pas d'acupuncture sociale à Éden)
 
 **Profils sociaux officiels** (utiliser ces URLs exactes partout — schema, footer, llms.txt) :
 - Instagram : `https://www.instagram.com/mon_acupunctrice/`

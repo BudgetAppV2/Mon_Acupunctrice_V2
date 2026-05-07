@@ -6,8 +6,10 @@
 **Cross-refs internes** :
 - `app/(public)/_components/GlobalJsonLd.tsx` (schema JSON-LD du site — doit refléter ce fichier)
 - `app/(public)/a-propos/page.tsx` (page À propos — doit refléter ce fichier)
-- `public/llms.txt` (index pour LLMs — doit refléter ce fichier)
-- `CLAUDE.md` (règle critique cohérence AEO)
+- `lib/utils/rdvUrl.ts` (constantes `CLINICS` consommées par le code applicatif — doit refléter ce fichier)
+- `public/llms.txt` (index pour LLMs, créé 2026-05-07 — doit refléter ce fichier)
+- `public/llms-full.txt` (contenu complet généré par `scripts/generate-llms-full.mjs` — script à auditer car contient ménopause non encore publiée et omet le numéro OAQ)
+- `CLAUDE.md` (règle critique cohérence AEO + résumé NAP)
 
 ---
 
@@ -140,6 +142,9 @@ pays_iso: "CA"
 # Géolocalisation
 latitude: 45.5408
 longitude: -73.5823
+# ⚠️ DIVERGENCE À RÉSOUDRE : `lib/utils/rdvUrl.ts` indique 45.5501, -73.5832 pour la même adresse.
+# Vérifier sur Google Maps quelle est la coordonnée précise de 2554 rue Beaubien Est, Montréal,
+# puis aligner les 3 sources : ce fichier, `GlobalJsonLd.tsx` et `rdvUrl.ts`.
 
 # Jours de pratique de Judith à LSSI
 jours_pratique: ["lundi", "mardi", "jeudi", "vendredi"]
@@ -173,6 +178,16 @@ pays_iso: "CA"
 # Site web officiel de la clinique
 url_clinique: "https://edenyogapilates.ca/"
 url_clinique_alt: "https://edensantemieuxetre.com/"
+
+# Géolocalisation (depuis lib/utils/rdvUrl.ts)
+latitude: 45.7422
+longitude: -73.4515
+
+# Identifiants externes liés à Éden (depuis lib/utils/rdvUrl.ts)
+gorendezvous_company_id: "141296"
+gorendezvous_employee_id: "192390"
+gorendezvous_stype: "Acupuncture"
+gorendezvous_url: "https://www.gorendezvous.com/edenyogapilates?companyId=141296&eids=192390&stype=Acupuncture"
 
 # Jours de pratique de Judith à Éden
 jours_pratique: ["mercredi"]
@@ -426,6 +441,7 @@ Une page décisionnelle qui annonce *"Acupunctrice à Rosemont, H1Y 1G3"* alors 
 | 1.2 | 2026-05-06 | Benoit + Claude | Correction §4 : nom canonique = `Éden Yoga Pilates` (revert). Ajout §1 affiliations : Judith est administratrice du CA de l'**AAQ** — découverte majeure non documentée dans le schema. GBP confirmée existante (lien Knowledge Graph fourni par Benoit) ; URL Maps canonique encore à récupérer. Profils §9 réorganisés : nouvelle ligne 1.10 pour AAQ, schema JSON-LD passé en ⚠️ (manque `memberOf` AAQ + `sameAs` AAQ). |
 | 1.3 | 2026-05-06 | Benoit + Claude | Précision AAQ : Judith **a démissionné récemment** du CA — passé en `Ancienne administratrice` dans §1, mention historique dans §9 ligne 1.10, recommandation schema modifiée en `alumniOf` ou `affiliation` (pas `memberOf`). GBP : URL share fournie (`share.google/ncO1Alzja10AmsUfR`) — ligne 1.7 passée en ✅ existence confirmée. Lien d'avis court GBP toujours à récupérer pour débloquer le Chantier 2. |
 | 1.4 | 2026-05-06 | Benoit + Claude | Bio longue §7.3 enrichie d'un 4e paragraphe court mentionnant l'engagement AAQ (siège passé au CA) — formulation neutre qui reste valide même après démission. Bio passée de ~1500 à ~1700 caractères. Bio courte et moyenne inchangées (mention AAQ trop longue à intégrer sans alourdir). |
+| 1.5 | 2026-05-07 | Benoit + Claude | Session matinale. Cohérence interne avec le repo : §3 ajout d'un flag de divergence sur les coordonnées géo LSSI (rdvUrl.ts dit 45.5501/-73.5832, le SOT et GlobalJsonLd.tsx disent 45.5408/-73.5823 — à trancher) ; §4 ajout des coordonnées géo Éden (45.7422, -73.4515) et des identifiants GoRendezVous Éden (companyId=141296, eids=192390, stype=Acupuncture) précédemment manquants. Cross-refs étendues à `rdvUrl.ts` et `llms-full.txt`. Note sur le script `generate-llms-full.mjs` : à auditer car mentionne ménopause (non publiée — viole la règle critique) et omet le numéro OAQ A-008-24. |
 
 ---
 
