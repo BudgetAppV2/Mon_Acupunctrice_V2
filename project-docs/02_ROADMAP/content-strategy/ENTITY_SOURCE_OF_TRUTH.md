@@ -250,9 +250,10 @@ lasourceensoi_url: "https://lasourceensoi.com/"
 
 # Google Business Profile de Judith
 gbp_share_url: "https://share.google/ncO1Alzja10AmsUfR"
-# Note : récupérer aussi le lien d'avis court depuis GBP (Outils marketing → Lien d'avis)
-# pour pouvoir le partager aux patientes (Chantier 2 du plan op).
-gbp_avis_short_link: "[À RÉCUPÉRER par Benoit/Judith dans GBP]"
+gbp_avis_short_link: "https://g.page/r/CQt_EeseQ8U_EBM/review"
+# Le lien d'avis court ci-dessus ouvre directement le formulaire d'avis Google
+# pour la fiche de Judith. À utiliser dans les emails de demande d'avis aux
+# patientes (Chantier 2 du plan op — objectif 20-25 avis sur 90 jours).
 ```
 
 ---
@@ -442,6 +443,7 @@ Une page décisionnelle qui annonce *"Acupunctrice à Rosemont, H1Y 1G3"* alors 
 | 1.3 | 2026-05-06 | Benoit + Claude | Précision AAQ : Judith **a démissionné récemment** du CA — passé en `Ancienne administratrice` dans §1, mention historique dans §9 ligne 1.10, recommandation schema modifiée en `alumniOf` ou `affiliation` (pas `memberOf`). GBP : URL share fournie (`share.google/ncO1Alzja10AmsUfR`) — ligne 1.7 passée en ✅ existence confirmée. Lien d'avis court GBP toujours à récupérer pour débloquer le Chantier 2. |
 | 1.4 | 2026-05-06 | Benoit + Claude | Bio longue §7.3 enrichie d'un 4e paragraphe court mentionnant l'engagement AAQ (siège passé au CA) — formulation neutre qui reste valide même après démission. Bio passée de ~1500 à ~1700 caractères. Bio courte et moyenne inchangées (mention AAQ trop longue à intégrer sans alourdir). |
 | 1.5 | 2026-05-07 | Benoit + Claude | Session matinale. Cohérence interne avec le repo : §3 ajout d'un flag de divergence sur les coordonnées géo LSSI (rdvUrl.ts dit 45.5501/-73.5832, le SOT et GlobalJsonLd.tsx disent 45.5408/-73.5823 — à trancher) ; §4 ajout des coordonnées géo Éden (45.7422, -73.4515) et des identifiants GoRendezVous Éden (companyId=141296, eids=192390, stype=Acupuncture) précédemment manquants. Cross-refs étendues à `rdvUrl.ts` et `llms-full.txt`. Note sur le script `generate-llms-full.mjs` : à auditer car mentionne ménopause (non publiée — viole la règle critique) et omet le numéro OAQ A-008-24. |
+| 1.6 | 2026-05-07 | Benoit + Claude | Lien d'avis court GBP de Judith documenté : `https://g.page/r/CQt_EeseQ8U_EBM/review`. **Cela débloque le Chantier 2** du plan opérationnel (objectif 20-25 avis Judith sur 90 jours via demandes structurées aux patientes). Ligne 1.7 du tableau §9 reste en ✅, action restante uniquement le déploiement opérationnel du Chantier 2. |
 
 ---
 
