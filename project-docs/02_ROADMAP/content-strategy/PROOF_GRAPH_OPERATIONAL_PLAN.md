@@ -2,7 +2,8 @@
 
 **Date** : 6 mai 2026
 **Source** : Retour Codex 2026-05-06 sur le `PROOF_GRAPH_BACKLOG.md`
-**Statut** : Plan exécutable (vs catalogue)
+**Statut** : Plan exécutable (vs catalogue) — **Chantier 1.1 ✅ livré le 6 mai 2026 soir**
+**Source canonique d'entité** : voir [`ENTITY_SOURCE_OF_TRUTH.md`](./ENTITY_SOURCE_OF_TRUTH.md) (livrable du Chantier 1.1)
 
 ---
 
@@ -100,17 +101,19 @@ bio_longue_1500: |
 
 | # | Action | Effort | Status |
 |---|---|---|---|
-| 1.1 | Créer `ENTITY_SOURCE_OF_TRUTH.md` avec les 3 bios | 45 min | ⬜ |
-| 1.2 | Corriger Lumino FR + EN (code postal `H1Y 1G3`) | 15 min | ⬜ |
-| 1.3 | Vérifier + harmoniser HealthDoc | 15 min | ⬜ |
+| 1.1 | Créer `ENTITY_SOURCE_OF_TRUTH.md` avec les 3 bios | 45 min | ✅ Livré 2026-05-06 (v1.4) |
+| 1.2 | Corriger Lumino FR + EN (code postal `H1Y 1G3`) | 15 min | ⚠️ Profil non revendiqué — action prérequise : revendiquer (`luminohealth.sunlife.ca/.../judith-dufour-savard-1007631-1001446/`) |
+| 1.3 | Vérifier + harmoniser HealthDoc | 15 min | ⬜ Pas de profil existant — décision : créer ? |
 | 1.4 | Vérifier + harmoniser GoRendezVous | 10 min | ⬜ |
 | 1.5 | Vérifier OAQ (fiche publique) | 15 min + délai | ⬜ |
-| 1.6 | Vérifier La Source en Soi (page équipe) | 10 min | ⬜ |
-| 1.7 | Vérifier Google Business Profile (vraie fiche) | 15 min | ⬜ |
+| 1.6 | Vérifier La Source en Soi (page équipe) | 10 min | ⚠️ Divergence : utilise `infertilité` (banni dans vocab canonique). Action : envoyer bio courte canonique à LSSI. |
+| 1.7 | Vérifier Google Business Profile (vraie fiche) | 15 min | ✅ Existence confirmée (`share.google/ncO1Alzja10AmsUfR`). Reste à récupérer : lien d'avis court (Outils marketing GBP) — débloque le Chantier 2. |
 | 1.8 | Vérifier LinkedIn | 10 min | ⬜ |
-| 1.9 | Compléter `sameAs` dans schema JSON-LD du site | 20 min | ⬜ |
+| 1.9 | Compléter `sameAs` dans schema JSON-LD du site | 20 min | ⚠️ Décision prise dans `ENTITY_SOURCE_OF_TRUTH.md` v1.3 : ne pas ajouter AAQ dans `memberOf` (mandat terminé). `sameAs` actuel déjà aligné. |
 
 **Total estimé Semaine 1 : ~3h sur 1-2 jours.**
+
+> 📍 **Détails par profil** : voir le tableau `§9 Profils externes à harmoniser` du [`ENTITY_SOURCE_OF_TRUTH.md`](./ENTITY_SOURCE_OF_TRUTH.md), qui contient les URLs exactes, statuts détaillés et notes spécifiques pour chaque ligne ci-dessus.
 
 ### KPIs Chantier 1
 

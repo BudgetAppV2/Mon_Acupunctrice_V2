@@ -1,6 +1,6 @@
 # INDEX — Stratégie de Contenu acupuncturejudith.ca
 
-**Dernière mise à jour** : 6 mai 2026
+**Dernière mise à jour** : 6 mai 2026 (session soir — Chantier 1.1 livré)
 **But de ce document** : carte de navigation pour tous les documents stratégiques de production de contenu. Si tu cherches quelque chose, commence ici.
 
 ---
@@ -26,11 +26,12 @@ Le pipeline `/api/cover/generate` est opérationnel sur `main` (commits `e416344
 
 À faire prioritairement (Chantier 1 = pré-requis pour tous les autres) :
 
-1. 🔥 **Créer `ENTITY_SOURCE_OF_TRUTH.md`** avec NAP canonique + 3 bios (courte 300 / moyenne 800 / longue 1500 caractères)
-2. 🔥 **Corriger NAP** sur Lumino FR + EN : `H2G 1K8` → `H1Y 1G3`
-3. 🔥 **Vérifier + harmoniser** HealthDoc, GoRendezVous, OAQ, La Source en Soi, GBP, LinkedIn
-4. 🔥 **Préparer lien Google Reviews** + liste segmentée 30 patientes (Chantier 2)
-5. 📊 **Test baseline citations LLMs** — 10 prompts, mesurer combien mentionnent Judith aujourd'hui
+1. ✅ **`ENTITY_SOURCE_OF_TRUTH.md` créé** (Chantier 1.1) — NAP canonique + 3 bios (300/800/1500) + spécialités 3 niveaux + vocabulaire canonique + checklist 12 profils externes + protocole de mise à jour. v1.4. Découverte importante intégrée : ancienne administratrice du CA de l'AAQ (signal d'autorité).
+2. 🔥 **Revendiquer le profil Lumino** (5 min, gratuit) — débloque l'édition de bio + spécialités + photo. Levier #1 du Chantier 1.
+3. 🔥 **Récupérer le lien d'avis court GBP** — débloque entièrement le Chantier 2 (objectif 20-25 avis Judith d'ici 90j).
+4. 🔥 **Envoyer à LSSI la bio canonique** pour remplacer la version actuelle qui utilise `infertilité` (banni dans le vocab canonique).
+5. 🔥 **Vérifier + harmoniser** GoRendezVous, OAQ, LinkedIn, Facebook business.
+6. 📊 **Test baseline citations LLMs** — 10 prompts, mesurer combien mentionnent Judith aujourd'hui.
 
 ⚠️ **Règle d'or** : NE PAS lancer Chantier 4 (pages décisionnelles comme P1 FIV) tant que Chantier 1 (NAP cohérent) n'est pas complet. Une page décisionnelle qui annonce Rosemont H1Y 1G3 alors que Lumino dit encore H2G 1K8 = signal incohérent pour les LLMs.
 
@@ -137,6 +138,7 @@ Lis dans cet ordre, ~30-45 min total :
 | Fichier | Lignes | Date | Contenu |
 |---|---|---|---|
 | **`PROOF_GRAPH_OPERATIONAL_PLAN.md`** ⭐ | 491 | 2026-05-06 | Programme opérationnel 90 jours basé sur retour Codex. 4 chantiers (Cohérence d'entité, Avis Judith, Mentions/backlinks, Pages décisionnelles), planning détaillé semaine par semaine, scorecard mensuel, templates emails patientes + partenaires. Complète `PROOF_GRAPH_BACKLOG.md` qui reste le catalogue exhaustif. |
+| **`ENTITY_SOURCE_OF_TRUTH.md`** ⭐ | ~480 | 2026-05-06 | **Source canonique active** — livrable du Chantier 1.1. Identité, OAQ A-008-24, anciennes affiliations (AAQ), spécialités à 3 niveaux (piliers / sous-thèmes / émergentes), NAP des 2 lieux, coordonnées, sameAs, 3 bios (300/800/1700 caractères), vocabulaire canonique avec termes OAQ-friendly, checklist des 12 profils externes à harmoniser, protocole de mise à jour. **Toute correction sur un profil externe doit venir d'ici.** v1.4. |
 
 ### 🤝 Reprise de session & briefs CC (le "où on en est")
 
@@ -176,6 +178,10 @@ Lis dans cet ordre, ~30-45 min total :
 | Le plan d'action 30/60/90 jours | `AUDIT_AEO § H` |
 | L'analyse concurrentielle | `UBERSUGGEST_COMPETITOR_RAW.md` |
 | Le plan opérationnel proof graph 90 jours | `PROOF_GRAPH_OPERATIONAL_PLAN.md` (par chantier 1-4) |
+| Le NAP canonique de Judith / les 3 bios / le vocabulaire OAQ-friendly | `ENTITY_SOURCE_OF_TRUTH.md` |
+| L'orthographe correcte du nom, l'adresse exacte, le code postal, le numéro OAQ | `ENTITY_SOURCE_OF_TRUTH.md § 1, 3, 4` |
+| Quels profils externes corriger en priorité (Lumino, GBP, etc.) | `ENTITY_SOURCE_OF_TRUTH.md § 9` |
+| Comment maintenir la cohérence quand on publie une nouvelle page | `ENTITY_SOURCE_OF_TRUTH.md § 10 (protocole de mise à jour)` |
 | L'état du pipeline cover/story (specs, phases) | `HANDOFF.md` (Day 4 état post-Phase 1) |
 | Comment tester l'API cover en local | `HANDOFF.md` § "Comment tester en local" |
 | Specs visuelles validées des 2 templates | `HANDOFF.md` § "Specs visuelles validees" |
@@ -229,14 +235,15 @@ Voir `AUDIT_AEO § G` pour la liste complète. Top priorité haute :
 | `HANDOFF.md` Day 4 (refonte) | État des lieux post-Phase 1 + migration SVG. Specs strictes, decisions architecturales, 5 phases restantes | ✅ Livré |
 | `lib/cover-generator/` + API + 2 templates | Pipeline production cover 1920×1080 + story 1080×1920 (Phase 1 + 2 fixes critiques) | ✅ Live sur main |
 | Migration SVG hybride (7 SVG / 38 JPG) | Script `convert-eps-to-svg.py` + filtrage automatique stroke-based | ✅ Livré |
+| **`ENTITY_SOURCE_OF_TRUTH.md`** | **NOUVEAU** Source canonique d'entité Judith (Chantier 1.1 du PROOF_GRAPH_OPERATIONAL_PLAN). Identité, NAP des 2 lieux, 3 bios, spécialités à 3 niveaux, vocabulaire OAQ-friendly, checklist 12 profils externes, protocole de mise à jour. v1.4. Découverte : ancienne administratrice CA AAQ. | ✅ Livré |
 
 ## 🚧 Documents à créer prochainement
 
 | Document | Description | Priorité |
 |---|---|---|
-| `ENTITY_SOURCE_OF_TRUTH.md` | NAP canonique + 3 bios (300/800/1500 caractères) — prérequis Chantier 1 du plan opérationnel | 🔥 Semaine 1 |
-| Page pilote `/services/acupuncture-fiv-montreal` (P1) | Première page décisionnelle — démonstrateur du nouveau workflow | Semaines 2-4 (après Chantier 1) |
+| Page pilote `/services/acupuncture-fiv-montreal` (P1) | Première page décisionnelle — démonstrateur du nouveau workflow | Semaines 2-4 (après Chantier 1 complet) |
 | `JUDITH_PUBLICATION_GUIDE.md` | Doc utilisatrice pour Judith (workflow Hub, approbation, schema decommenter) | Après production initiale |
+| `PROOF_GRAPH_TRACKING.md` (ou Google Sheet) | Tableau de bord hebdomadaire pour suivre le scorecard mensuel des 4 chantiers | Après Chantier 1 complet |
 
 ---
 

@@ -1,8 +1,10 @@
 # HANDOFF — Pipeline Cover Generation (état post-Phase 1 + SVG)
 
-**Date** : 6 mai 2026 (session intensive Day 4)
+**Date** : 6 mai 2026 (session intensive Day 4 + session soir Direction B)
 **Auteur** : Benoit + Claude (Desktop) + Claude Code
-**Status** : ✅ Phase 1 LIVE et fonctionnelle, validée end-to-end
+**Status** :
+- ✅ Phase 1 LIVE et fonctionnelle (Direction A)
+- ✅ Direction B amorcée — Chantier 1.1 livré : [`ENTITY_SOURCE_OF_TRUTH.md`](./ENTITY_SOURCE_OF_TRUTH.md) v1.4
 **Prochaine session** : voir "Décisions ouvertes" en bas du document
 
 ---
@@ -263,7 +265,7 @@ lsof -i :3000 -sTCP:LISTEN -t | xargs kill
 
 ### Choix #1 — Direction immediate
 - **(a)** Phase 2 (anti-repetition) — meilleur usage du pipeline pour publier en serie
-- **(b)** Direction B (Chantier 1 NAP + ENTITY_SOURCE_OF_TRUTH) — strategie autorite Judith
+- **(b)** Direction B (Chantier 1 NAP + ENTITY_SOURCE_OF_TRUTH) — strategie autorite Judith → ✅ **AMORCÉE le 2026-05-06 soir**. Chantier 1.1 livré (ENTITY_SOURCE_OF_TRUTH.md v1.4). Reste 1.2 → 1.9 (cf. PROOF_GRAPH_OPERATIONAL_PLAN.md mis à jour).
 - **(c)** Acquisition de plus de line art "trait fin" Freepik pour augmenter ratio SVG/JPG
 
 ### Choix #2 — Format OG 1200x630
@@ -299,7 +301,8 @@ lsof -i :3000 -sTCP:LISTEN -t | xargs kill
 - `project-docs/02_ROADMAP/content-strategy/HANDOFF.md` (ce fichier)
 - `project-docs/02_ROADMAP/content-strategy/CC_PROMPT_PIPELINE.md` — brief CC pour Phase 2-5
 - `project-docs/02_ROADMAP/content-strategy/INDEX.md` — carte navigation
-- `project-docs/02_ROADMAP/content-strategy/PROOF_GRAPH_OPERATIONAL_PLAN.md` — Direction B (90j)
+- `project-docs/02_ROADMAP/content-strategy/PROOF_GRAPH_OPERATIONAL_PLAN.md` — Direction B (90j), Chantier 1.1 ✅ livré
+- **`project-docs/02_ROADMAP/content-strategy/ENTITY_SOURCE_OF_TRUTH.md`** ⭐ — source canonique d'entité Judith (NAP, bios, vocabulaire, profils externes) — v1.4, livré 2026-05-06 soir
 
 ---
 
@@ -313,9 +316,14 @@ lsof -i :3000 -sTCP:LISTEN -t | xargs kill
 5. Brief Claude Code avec specs detaillees
 
 ### Pour reprendre Direction B (NAP + autorite)
-1. Lire `PROOF_GRAPH_OPERATIONAL_PLAN.md` Chantier 1
-2. Creer `ENTITY_SOURCE_OF_TRUTH.md` (~45 min)
-3. Corriger NAP sur Lumino, HealthDoc, GoRendezVous, OAQ, GBP, LinkedIn
+1. ✅ Lire `PROOF_GRAPH_OPERATIONAL_PLAN.md` Chantier 1 (statut 1.1 livré, 1.2-1.9 en cours)
+2. ✅ Creer `ENTITY_SOURCE_OF_TRUTH.md` (livré 2026-05-06 soir, v1.4)
+3. ⬜ **Actions externes restantes (par ordre d'impact)** :
+   - 🔥 Revendiquer le profil Lumino (5 min) → débloque édition bio/spécialités/photo
+   - 🔥 Récupérer le lien d'avis court GBP (Outils marketing) → débloque tout le Chantier 2
+   - 🔥 Envoyer la bio canonique courte à LSSI (corrige `infertilité` → `fertilité`)
+   - ⬜ Décider de créer un profil HealthDoc ou pas
+   - ⬜ Vérifier OAQ, GoRendezVous, LinkedIn, Facebook business
 4. Aucun lien avec le pipeline cover — peut etre fait en parallele
 
 ---
