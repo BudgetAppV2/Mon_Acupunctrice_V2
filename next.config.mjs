@@ -22,6 +22,25 @@ const nextConfig = {
   // Libs natives Node a externaliser pour eviter parse webpack des binaires .node
   // (fixes: ./node_modules/@resvg/resvg-js-darwin-arm64/resvgjs.darwin-arm64.node)
   serverExternalPackages: ['@resvg/resvg-js', 'sharp', 'satori'],
+
+  // Vercel Output File Tracing : exclure de la fonction serverless les assets
+  // de la banque visuelle qui ne sont JAMAIS lus au runtime.
+  // Le runtime cover-generator lit uniquement .jpg (backgrounds via pige.ts)
+  // et .svg / .png (lineart via line-art-processor.ts). Les .eps sont des
+  // sources Adobe Illustrator conservées en repo mais jamais touchées en prod.
+  // Sans ces exclusions, la fonction api/cover/generate atteint 375 MB
+  // (limite Vercel = 300 MB).
+  outputFileTracingExcludes: {
+    '*': [
+      'content/visual-bank/_archive-ai/**',
+      'content/visual-bank/_poc-output/**',
+      'content/visual-bank/raw-downloads/**',
+      'content/visual-bank/scripts/**',
+      'content/visual-bank/**/*.eps',
+      'content/visual-bank/**/.DS_Store',
+    ],
+  },
+
   images: {
     formats: ['image/avif', 'image/webp'],
     remotePatterns: [
