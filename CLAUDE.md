@@ -119,10 +119,30 @@ Toute mise à jour identité/NAP/spécialités/bios/profils externes part de ce 
 - Source de vérité : fichiers markdown dans `content/` (versionnés git)
 - Template : `content/ressources/_TEMPLATE.md` (frontmatter YAML + sections ##)
 - Injection : `node content/scripts/inject.mjs content/ressources/fichier.md [--dry-run]`
+- Injection blog : `node content/scripts/inject.mjs content/blog/mon-article.md [--dry-run]`
 - Audit fraîcheur : `node content/scripts/audit-freshness.mjs`
 - Retrait : `node content/scripts/retire.mjs <collection> <slug> [--delete]`
-- Workflow : markdown → inject (status pending) → Judith approuve dans Hub → published → ISR
 - Documentation complète : `content/README.md`
+
+**Workflow contenu unifié (depuis M1, mai 2026)** :
+
+Les 3 types de contenus publics (blog, ressources, FAQ) suivent maintenant
+le même cycle :
+
+1. **Création** :
+   - Blog : Hub `/blogue` (Tiptap) → `/api/blog/publish` → status `pending`
+   - Blog batch : `node content/scripts/inject.mjs content/blog/<slug>.md`
+   - Ressources : `node content/scripts/inject.mjs content/ressources/<slug>.md`
+   - FAQ : Hub `/contenu/faq/new` → status `pending`
+
+2. **Review** : Hub `/contenu` liste tous les pending de toutes collections.
+   Judith approuve via bouton → `/api/cms/approve` → status `published` +
+   `revalidatePath` ISR.
+
+3. **Bridge social (M2 — à venir)** : checkbox "créer aussi la séquence
+   sociale" au moment de l'approbation (default coché pour blog, décoché
+   pour ressources/FAQ). Crée 4 calendarSlots J+0/J+1/J+3/J+7. Le cron
+   `/api/cron/publish` les sortira ensuite.
 
 **⚠️ RÈGLE CRITIQUE — Cohérence AEO (contenu pending vs déclarations)** :
 Ne JAMAIS déclarer dans le schema JSON-LD (`knowsAbout`, `availableService`), dans `llms.txt`, ou dans `llms-full.txt` un sujet dont la page/ressource n'est PAS encore publiée (status !== published). Les LLMs détectent l'incohérence entre "ce site dit traiter la ménopause" et "la page ménopause retourne 404".

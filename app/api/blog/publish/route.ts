@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { revalidatePath } from 'next/cache';
 import { getAdminFirestore } from '@/lib/firebase-admin';
 import { getRdvUrl, slugify } from '@/lib/utils/rdvUrl';
 import { htmlToMarkdownText } from '@/lib/utils/ricosConverter';
@@ -62,24 +61,22 @@ export async function POST(request: NextRequest) {
       author: 'Judith Dufour-Savard',
       category: category || 'Acupuncture',
       tags: [],
-      status: 'published',
+      status: 'pending',
       relatedServices: [],
       relatedFaqs: [],
       relatedArticles: [],
       faqs: faqs || [],
-      publishedAt: FieldValue.serverTimestamp(),
+      // publishedAt sera set par /api/cms/approve quand Judith approuve
       updatedAt: FieldValue.serverTimestamp(),
       createdAt: FieldValue.serverTimestamp(),
     });
-
-    // Revalidate ISR pages
-    revalidatePath('/blog');
-    revalidatePath(`/blog/${slug}`);
 
     return NextResponse.json({
       success: true,
       postId: slug,
       postUrl: `/blog/${slug}`,
+      status: 'pending',
+      reviewUrl: '/contenu',
     });
   } catch (err) {
     const msg = err instanceof Error ? err.message : 'Erreur publication';

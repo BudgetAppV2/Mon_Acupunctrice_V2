@@ -45,7 +45,7 @@ interface PublishBlogParams {
 export function usePublishBlog() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [result, setResult] = useState<{ postId: string; postUrl: string } | null>(null);
+  const [result, setResult] = useState<{ postId: string; postUrl: string; status?: string; reviewUrl?: string } | null>(null);
 
   const publish = useCallback(async (params: PublishBlogParams) => {
     setLoading(true);
@@ -61,7 +61,7 @@ export function usePublishBlog() {
         const data = await res.json().catch(() => ({})) as { error?: string };
         throw new Error(data.error || 'Publication echouee');
       }
-      const data = await res.json() as { postId: string; postUrl: string };
+      const data = await res.json() as { postId: string; postUrl: string; status?: string; reviewUrl?: string };
       setResult(data);
       return data;
     } catch (err) {

@@ -35,9 +35,9 @@ export default function BloguePage() {
           const result = await publish(article);
           if (result) {
             setShowEditor(false);
-            setSuccess(result.postUrl);
+            setSuccess(result.reviewUrl || '/contenu');
             refresh();
-            setTimeout(() => setSuccess(null), 5000);
+            setTimeout(() => setSuccess(null), 8000);
           }
         }}
       />
@@ -57,11 +57,11 @@ export default function BloguePage() {
 
       <div className="px-4 pt-4 space-y-3">
         {success && (
-          <div className="bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-3">
-            <p className="text-sm text-emerald-700 font-medium">Article publie avec succes</p>
-            <a href={success} target="_blank" rel="noopener noreferrer"
-              className="flex items-center gap-1 text-xs text-emerald-600 mt-1">
-              <ArrowTopRightOnSquareIcon className="w-3.5 h-3.5" /> Voir sur le blog
+          <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3">
+            <p className="text-sm text-amber-700 font-medium">Article soumis pour review</p>
+            <a href={success}
+              className="flex items-center gap-1 text-xs text-amber-600 mt-1">
+              <ArrowTopRightOnSquareIcon className="w-3.5 h-3.5" /> Voir dans le Hub
             </a>
           </div>
         )}

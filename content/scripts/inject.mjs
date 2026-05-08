@@ -7,6 +7,7 @@
  *   node content/scripts/inject.mjs content/ressources/*.md          # injecte tout
  *   node content/scripts/inject.mjs content/ressources/*.md --dry-run # prévisualise
  *   node content/scripts/inject.mjs content/faq/*.md --collection=faqs
+ *   node content/scripts/inject.mjs content/blog/mon-article.md      # blog (auto-detect)
  * 
  * Le script :
  * 1. Parse le frontmatter YAML (métadonnées)
@@ -155,7 +156,7 @@ function parseSections(body) {
 }
 
 // --- Build Firestore document ---
-function buildDocument(fm, sections, collection) {
+function buildDocument(fm, sections, collection, body) {
   const now = Timestamp.now();
   
   if (collection === 'ressources') {
@@ -216,6 +217,29 @@ function buildDocument(fm, sections, collection) {
     };
   }
   
+  if (collection === 'publicBlog') {
+    const slug = fm.slug || '';
+    const excerpt = fm.excerpt || body.replace(/[#\-*]/g, '').trim().slice(0, 160);
+    return {
+      title: fm.title || '',
+      slug,
+      content: body,
+      excerpt,
+      coverImage: fm.coverImage || fm.heroImageUrl || '',
+      author: fm.author || 'Judith Dufour-Savard',
+      category: fm.category || 'Acupuncture',
+      tags: fm.tags || [],
+      status: fm.status || 'pending',
+      relatedServices: fm.relatedServices || [],
+      relatedFaqs: fm.relatedFaqs || [],
+      relatedArticles: fm.relatedArticles || [],
+      faqs: fm.faqs || [],
+      updatedAt: now,
+      createdAt: now,
+      publishedAt: fm.status === 'published' ? now : null,
+    };
+  }
+
   throw new Error(`Unknown collection: ${collection}`);
 }
 
@@ -227,13 +251,14 @@ async function main() {
   const files = args.filter(a => !a.startsWith('--'));
   
   if (files.length === 0) {
-    console.log('Usage: node content/scripts/inject.mjs <file.md> [--dry-run] [--collection=ressources|faqs]');
+    console.log('Usage: node content/scripts/inject.mjs <file.md> [--dry-run] [--collection=ressources|faqs|publicBlog]');
     process.exit(1);
   }
   
   // Detect collection from file path or arg
   const defaultCollection = collectionArg
     ? collectionArg.split('=')[1]
+    : files[0].includes('/blog/') ? 'publicBlog'
     : files[0].includes('/faq/') ? 'faqs' : 'ressources';
   
   if (!dryRun) {
@@ -262,7 +287,7 @@ async function main() {
       const { frontmatter: fm, body } = parseFrontmatter(raw);
       const sections = parseSections(body);
       const collection = fm.collection || defaultCollection;
-      const doc = buildDocument(fm, sections, collection);
+      const doc = buildDocument(fm, sections, collection, body);
       const docId = fm.slug || basename(filePath, '.md');
       
       if (dryRun) {
