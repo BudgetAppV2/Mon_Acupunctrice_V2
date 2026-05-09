@@ -144,6 +144,27 @@ le même cycle :
    pour ressources/FAQ). Crée 4 calendarSlots J+0/J+1/J+3/J+7. Le cron
    `/api/cron/publish` les sortira ensuite.
 
+**Workflow trash (M1.5, mai 2026)** :
+
+Cycle complet du contenu, du draft à la suppression :
+
+  draft (markdown source ou Tiptap save)
+     ↓ inject.mjs ou Hub Tiptap publish
+  pending (visible dans Hub /contenu)
+     ↓ /api/cms/approve (bouton Approuver)
+  published (live sur le site public, ISR active)
+     ↓ /api/cms/unpublish (bouton Depublier)
+  pending (re-visible dans /contenu, re-approuvable en 1 clic)
+     ↓ /api/cms/delete (bouton Supprimer + confirmation forte "SUPPRIMER")
+  [destruction irreversible du doc Firestore]
+
+Restriction `delete` : autorise uniquement depuis `status === 'pending'`. Pour
+supprimer un live post, il faut d'abord cliquer "Depublier" (qui repasse en
+pending), puis "Supprimer". Workflow en 2 etapes pour eviter les accidents.
+
+Confirmation forte : modal qui demande de taper le mot SUPPRIMER avant que
+le bouton de validation ne devienne actif.
+
 **⚠️ RÈGLE CRITIQUE — Cohérence AEO (contenu pending vs déclarations)** :
 Ne JAMAIS déclarer dans le schema JSON-LD (`knowsAbout`, `availableService`), dans `llms.txt`, ou dans `llms-full.txt` un sujet dont la page/ressource n'est PAS encore publiée (status !== published). Les LLMs détectent l'incohérence entre "ce site dit traiter la ménopause" et "la page ménopause retourne 404".
 

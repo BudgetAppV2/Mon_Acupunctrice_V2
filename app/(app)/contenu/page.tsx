@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { PlusIcon } from '@heroicons/react/24/outline';
 import ContentReviewCard, { type ContentType } from '@/components/features/cms/ContentReviewCard';
+import DeleteConfirmModal from '@/components/features/cms/DeleteConfirmModal';
 import type { PublicationStatus } from '@/lib/types/faq';
 import { useAuthStore } from '@/lib/store/useAuthStore';
 
@@ -36,6 +37,7 @@ export default function ContenuPage() {
   const [loading, setLoading] = useState(true);
   const [typeFilter, setTypeFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
+  const [deleteTarget, setDeleteTarget] = useState<{ id: string; type: ContentType; title: string } | null>(null);
   const user = useAuthStore((s) => s.user);
 
   const refresh = useCallback(async () => {
@@ -82,6 +84,21 @@ export default function ContenuPage() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id, type, uid: user?.uid }),
     });
+    refresh();
+  };
+
+  const handleDelete = async (id: string, type: string) => {
+    const res = await fetch('/api/cms/delete', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, type, uid: user?.uid }),
+    });
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({})) as { error?: string };
+      alert(`Erreur : ${data.error || 'Suppression echouee'}`);
+      return;
+    }
+    setDeleteTarget(null);
     refresh();
   };
 
@@ -158,6 +175,10 @@ export default function ContenuPage() {
                     className="text-[11px] font-medium text-amber-600 bg-amber-50 px-2.5 py-1 rounded-md">
                     Commenter
                   </button>
+                  <button onClick={() => setDeleteTarget({ id: item.id, type: item.type, title: item.title })}
+                    className="text-[11px] font-medium text-red-600 bg-red-50 px-2.5 py-1 rounded-md ml-auto">
+                    Supprimer
+                  </button>
                 </div>
               )}
               {item.status === 'published' && (
@@ -171,6 +192,14 @@ export default function ContenuPage() {
             </div>
           ))}
         </div>
+      )}
+
+      {deleteTarget && (
+        <DeleteConfirmModal
+          title={deleteTarget.title}
+          onConfirm={() => handleDelete(deleteTarget.id, deleteTarget.type)}
+          onCancel={() => setDeleteTarget(null)}
+        />
       )}
     </div>
   );
