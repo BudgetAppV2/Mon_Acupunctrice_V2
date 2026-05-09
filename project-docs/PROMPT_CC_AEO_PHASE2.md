@@ -74,7 +74,7 @@ grep -rn "\.jpg" app/(public)/ --include="*.tsx" | grep -v node_modules
 
 ### 3C. Profils sociaux cohérents
 Le schema `sameAs` DOIT utiliser les URLs exactes des profils officiels :
-- Instagram : `https://www.instagram.com/judith.acupuncture/`
+- Instagram : `https://www.instagram.com/mon_acupunctrice/`
 - Facebook : `https://www.facebook.com/profile.php?id=61562614934143`
 - LinkedIn : `https://www.linkedin.com/in/judith-dufour-savard-acu/`
 - Wikidata : `https://www.wikidata.org/wiki/Q139677208`
