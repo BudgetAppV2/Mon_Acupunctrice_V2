@@ -8,9 +8,17 @@ function getAdminApp() {
     ? JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT)
     : undefined;
 
-  return initializeApp(
-    serviceAccount ? { credential: cert(serviceAccount as ServiceAccount) } : {},
-  );
+  // M2A bugfix : storageBucket doit être inclus dans l'init globale.
+  // Sinon, race condition : si firebase-admin.ts est importé en premier
+  // (par un endpoint Firestore), upload.ts voit getApps().length > 0 et
+  // bypass son propre init → l'app n'a jamais de bucket → tous les uploads
+  // Storage échouent avec "Bucket name not specified or invalid".
+  const storageBucket = process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET;
+
+  return initializeApp({
+    ...(serviceAccount ? { credential: cert(serviceAccount as ServiceAccount) } : {}),
+    ...(storageBucket ? { storageBucket } : {}),
+  });
 }
 
 /** Firestore via Admin SDK — bypass les security rules (server-side only) */
