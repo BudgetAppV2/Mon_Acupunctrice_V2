@@ -46,6 +46,7 @@ export async function GET(request: NextRequest) {
           selectedImageId: d.selectedImageId || null,
           regenerationCount: d.regenerationCount || 0,
           coverImage: d.coverImage || null,
+          storyImage: d.storyImage || null,
         });
       });
     } else {

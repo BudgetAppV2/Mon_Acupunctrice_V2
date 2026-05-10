@@ -85,10 +85,10 @@ export default function ImageProposalsModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
-      <div className="bg-white rounded-2xl w-full max-w-md max-h-[90vh] flex flex-col overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-2 sm:p-4">
+      <div className="bg-white rounded-2xl w-full max-w-xl max-h-[95vh] sm:max-h-[90vh] flex flex-col overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-100">
+        <div className="flex items-center justify-between p-3 sm:p-4 border-b border-gray-100">
           <div className="flex-1 min-w-0">
             <h3 className="text-sm font-semibold text-gray-900 truncate">
               Choisir une image
@@ -105,7 +105,7 @@ export default function ImageProposalsModal({
         </div>
 
         {/* Body */}
-        <div className="flex-1 flex flex-col items-center justify-center p-4 min-h-[300px]">
+        <div className="flex-1 flex flex-col items-center justify-center p-3 sm:p-4 min-h-[420px]">
           {isSelecting ? (
             <div className="flex flex-col items-center gap-2">
               <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-sage" />

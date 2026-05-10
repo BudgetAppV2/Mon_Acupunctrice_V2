@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
-import { PlusIcon } from '@heroicons/react/24/outline';
+import { PlusIcon, ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
 import ContentReviewCard, { type ContentType } from '@/components/features/cms/ContentReviewCard';
 import DeleteConfirmModal from '@/components/features/cms/DeleteConfirmModal';
 import ImageProposalsModal from '@/components/features/cms/ImageProposalsModal';
@@ -202,7 +202,14 @@ export default function ContenuPage() {
                     </button>
                   )}
                   {item.selectedImageId && item.coverImage && (
-                    <img src={item.coverImage} alt="" className="w-12 h-7 rounded object-cover border border-gray-200" />
+                    <img src={item.coverImage} alt="Cover sélectionnée" className="w-20 h-12 rounded object-cover border border-gray-200" />
+                  )}
+                  {item.type === 'blog' && (
+                    <a href={`/blog/${item.id}`} target="_blank" rel="noopener noreferrer"
+                      className="text-[11px] font-medium text-gray-600 bg-gray-100 px-2.5 py-1 rounded-md inline-flex items-center gap-1 hover:bg-gray-200">
+                      <ArrowTopRightOnSquareIcon className="w-3 h-3" />
+                      Aperçu
+                    </a>
                   )}
                   <button onClick={() => handleApprove(item.id, item.type)}
                     className="text-[11px] font-medium text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-md">
@@ -220,6 +227,13 @@ export default function ContenuPage() {
               )}
               {item.status === 'published' && (
                 <div className="flex gap-2 mt-1 ml-4">
+                  {item.type === 'blog' && (
+                    <a href={`/blog/${item.id}`} target="_blank" rel="noopener noreferrer"
+                      className="text-[11px] font-medium text-gray-600 bg-gray-100 px-2.5 py-1 rounded-md inline-flex items-center gap-1 hover:bg-gray-200">
+                      <ArrowTopRightOnSquareIcon className="w-3 h-3" />
+                      Aperçu
+                    </a>
+                  )}
                   <button onClick={() => handleUnpublish(item.id, item.type)}
                     className="text-[11px] font-medium text-gray-600 bg-gray-100 px-2.5 py-1 rounded-md hover:bg-gray-200">
                     Retirer du site

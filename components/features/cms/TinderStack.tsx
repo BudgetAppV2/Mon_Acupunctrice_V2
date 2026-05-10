@@ -177,9 +177,9 @@ export default function TinderStack({
   }
 
   return (
-    <div className="flex flex-col items-center gap-4">
+    <div className="flex flex-col items-center gap-4 w-full">
       {/* Card stack */}
-      <div className="relative w-full aspect-[16/9] max-w-[360px]">
+      <div className="relative w-full aspect-[16/9] max-w-full sm:max-w-[480px]">
         <AnimatePresence mode="popLayout">
           {visibleCards.map((proposal, index) => (
             <SwipeCard
@@ -194,7 +194,7 @@ export default function TinderStack({
       </div>
 
       {/* Hint */}
-      <div className="flex justify-between w-full max-w-[360px] text-[10px] text-gray-400 px-2">
+      <div className="flex justify-between w-full max-w-full sm:max-w-[480px] text-[10px] text-gray-400 px-2">
         <span>Refuser</span>
         <span>{currentIndex + 1} / {proposals.length}</span>
         <span>Accepter</span>
