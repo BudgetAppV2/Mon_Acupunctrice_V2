@@ -22,7 +22,9 @@ export async function uploadCoverPng(
 ): Promise<string> {
   ensureAdminApp();
   const bucket = getStorage().bucket();
-  const filename = `${prefix}/${contentId}/${format}-${Date.now()}.png`;
+  // Préfixe `public/` pour rester cohérent avec le pattern des covers existantes
+  // et avec les Storage Rules qui autorisent la lecture publique sous public/.
+  const filename = `public/${prefix}/${contentId}/${format}-${Date.now()}.png`;
   const file = bucket.file(filename);
 
   await file.save(pngBuffer, {
@@ -33,5 +35,10 @@ export async function uploadCoverPng(
   });
 
   await file.makePublic();
-  return `https://storage.googleapis.com/${bucket.name}/${filename}`;
+  // URL au format Firebase Storage REST API (compatible avec next.config images
+  // remotePatterns qui whitelist firebasestorage.googleapis.com/v0/b/**).
+  // L'URL directe storage.googleapis.com/<bucket>/<path> retourne 403 même
+  // après makePublic() pour les buckets Firebase Storage.
+  const encodedPath = encodeURIComponent(filename);
+  return `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodedPath}?alt=media`;
 }
