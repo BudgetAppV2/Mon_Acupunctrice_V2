@@ -1,0 +1,37 @@
+{
+  "count": 5,
+  "updated_at": "2026-05-10T16:00:00",
+  "note": "Pilier transversal — assets neutres (botaniques génériques, lotus) utilisés comme fallback quand le pilier cible a peu d'assets ou quand detectPilierFromCategory ne match pas. Sources : fertilite (4) + anxiete-sommeil (1).",
+  "assets": [
+    {
+      "file": "botanical-single-flower-stem-01.jpg",
+      "type": "lineart",
+      "pilier": "transversal",
+      "format": "mixed"
+    },
+    {
+      "file": "floral-leaves-flowers-01.jpg",
+      "type": "lineart",
+      "pilier": "transversal",
+      "format": "mixed"
+    },
+    {
+      "file": "plant-growth-processing-from-01.jpg",
+      "type": "lineart",
+      "pilier": "transversal",
+      "format": "mixed"
+    },
+    {
+      "file": "decorative-iris-flower-invitation-01.svg",
+      "type": "lineart",
+      "pilier": "transversal",
+      "format": "mixed"
+    },
+    {
+      "file": "lotus-flower-02.jpg",
+      "type": "lineart",
+      "pilier": "transversal",
+      "format": "mixed"
+    }
+  ]
+}
