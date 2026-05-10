@@ -43,6 +43,10 @@ export interface GenerateCoverInput {
   pilier: Pilier;
   ctaMode?: 'ressource' | 'reservation';
   excludeAssets?: { backgrounds?: string[]; lineart?: string[] };
+  // M2A: bypass pige aléatoire avec un combo précis
+  forceAssets?: { backgroundPath: string; lineartPath: string };
+  // M2A: préfixe Storage (default 'covers', proposals utilise 'proposals')
+  uploadPrefix?: string;
 }
 
 export interface GenerateCoverOutput {

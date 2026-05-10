@@ -18,10 +18,11 @@ export async function uploadCoverPng(
   pngBuffer: Buffer,
   contentId: string,
   format: 'cover16x9' | 'story9x16',
+  prefix = 'covers',
 ): Promise<string> {
   ensureAdminApp();
   const bucket = getStorage().bucket();
-  const filename = `covers/${contentId}/${format}-${Date.now()}.png`;
+  const filename = `${prefix}/${contentId}/${format}-${Date.now()}.png`;
   const file = bucket.file(filename);
 
   await file.save(pngBuffer, {

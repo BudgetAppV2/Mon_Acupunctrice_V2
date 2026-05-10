@@ -42,6 +42,10 @@ export async function GET(request: NextRequest) {
           excerpt: d.excerpt || d.reponse?.slice(0, 120) || d.shortAnswer?.slice(0, 120) || '',
           updatedAt: d.updatedAt?.toDate?.()?.toISOString() || null,
           reviewComment: d.reviewComment || null,
+          imageProposals: d.imageProposals || null,
+          selectedImageId: d.selectedImageId || null,
+          regenerationCount: d.regenerationCount || 0,
+          coverImage: d.coverImage || null,
         });
       });
     } else {

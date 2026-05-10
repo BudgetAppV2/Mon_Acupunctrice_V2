@@ -302,6 +302,20 @@ async function main() {
         // Upsert (merge to preserve createdAt on existing docs)
         await db.collection(collection).doc(docId).set(doc, { merge: true });
         console.log(`✅ ${basename(filePath)} → ${collection}/${docId} (${doc.status})`);
+
+        // M2A: fire-and-forget génération des 4 propositions visuelles
+        const typeForApi = collection === 'publicBlog' ? 'blog' : (collection === 'faqs' ? 'faq' : 'ressource');
+        const baseUrl = process.env.SITE_URL || 'https://www.acupuncturejudith.ca';
+        fetch(`${baseUrl}/api/cover/generate-proposals`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            slug: docId,
+            type: typeForApi,
+            titre: doc.title || doc.question || '',
+            pilier: fm.pilier || 'transversal',
+          }),
+        }).catch((err) => console.error('[inject] generate-proposals fire-and-forget failed:', err.message));
       }
       
       injected++;

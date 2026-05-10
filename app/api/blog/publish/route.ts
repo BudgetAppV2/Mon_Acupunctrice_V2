@@ -3,6 +3,7 @@ import { getAdminFirestore } from '@/lib/firebase-admin';
 import { getRdvUrl, slugify } from '@/lib/utils/rdvUrl';
 import { htmlToMarkdownText } from '@/lib/utils/ricosConverter';
 import { FieldValue } from 'firebase-admin/firestore';
+import { detectPilierFromCategory } from '@/lib/utils/detectPilier';
 
 interface FaqItem { question: string; answer: string }
 
@@ -16,6 +17,7 @@ export async function POST(request: NextRequest) {
       ctaUrl?: string;
       faqs?: FaqItem[];
       coverImageUrl?: string;
+      pilier?: string;
     };
     const { title, content, category, coverImageUrl } = body;
 
@@ -70,6 +72,46 @@ export async function POST(request: NextRequest) {
       updatedAt: FieldValue.serverTimestamp(),
       createdAt: FieldValue.serverTimestamp(),
     });
+
+    // M2A: hybrid sync/async cover generation (A5)
+    const pilier = (body.pilier as string) || detectPilierFromCategory(category);
+    let firstProposal = null;
+    try {
+      const { generateCovers } = await import('@/lib/cover-generator/compose');
+      const result = await generateCovers({
+        contentId: `${slug}/p1`,
+        type: 'blog',
+        titre: title,
+        pilier: pilier as 'transversal',
+        uploadPrefix: 'proposals',
+      });
+      firstProposal = {
+        proposalId: 'p1',
+        coverUrl: result.cover16x9,
+        storyUrl: result.story9x16,
+        combo: { backgroundFile: result.assets.backgroundFile, lineartFile: result.assets.lineartFile },
+        generatedAt: result.metadata.generatedAt,
+      };
+      await docRef.update({ imageProposals: [firstProposal], regenerationCount: 0 });
+    } catch (coverErr) {
+      console.error('[blog/publish] First cover generation failed:', coverErr);
+    }
+
+    // 3 alternatives async (fire-and-forget)
+    fetch(new URL('/api/cover/generate-proposals', request.url).toString(), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        slug,
+        type: 'blog',
+        titre: title,
+        pilier,
+        count: 3,
+        startIndex: 2,
+        excludeBgs: firstProposal ? [firstProposal.combo.backgroundFile] : [],
+        excludeLas: firstProposal ? [firstProposal.combo.lineartFile] : [],
+      }),
+    }).catch(() => { /* silent — async generation */ });
 
     return NextResponse.json({
       success: true,

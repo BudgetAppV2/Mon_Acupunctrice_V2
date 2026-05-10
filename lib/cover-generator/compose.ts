@@ -27,8 +27,10 @@ function bufferToDataUrl(buf: Buffer, mime: string): string {
 }
 
 export async function generateCovers(input: GenerateCoverInput): Promise<GenerateCoverOutput> {
-  // 1. Pige assets
-  const { backgroundPath, lineartPath } = await pickAssets(input.pilier, input.excludeAssets);
+  // 1. Pige assets (or use forced combo for M2A proposals)
+  const { backgroundPath, lineartPath } = input.forceAssets
+    ? input.forceAssets
+    : await pickAssets(input.pilier, input.excludeAssets);
 
   // 2. Process en parallèle : line art (SVG ou raster), placements (cover + story), fonts, bg read
   const [laDataUrl, placementCover, placementStory, fonts, bgBuffer] = await Promise.all([
@@ -85,9 +87,10 @@ export async function generateCovers(input: GenerateCoverInput): Promise<Generat
   ]);
 
   // 5. Upload en parallèle
+  const prefix = input.uploadPrefix || 'covers';
   const [cover16x9Url, story9x16Url] = await Promise.all([
-    uploadCoverPng(coverPng, input.contentId, 'cover16x9'),
-    uploadCoverPng(storyPng, input.contentId, 'story9x16'),
+    uploadCoverPng(coverPng, input.contentId, 'cover16x9', prefix),
+    uploadCoverPng(storyPng, input.contentId, 'story9x16', prefix),
   ]);
 
   return {

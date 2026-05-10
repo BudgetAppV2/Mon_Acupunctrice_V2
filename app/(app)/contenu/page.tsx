@@ -5,7 +5,9 @@ import Link from 'next/link';
 import { PlusIcon } from '@heroicons/react/24/outline';
 import ContentReviewCard, { type ContentType } from '@/components/features/cms/ContentReviewCard';
 import DeleteConfirmModal from '@/components/features/cms/DeleteConfirmModal';
+import ImageProposalsModal from '@/components/features/cms/ImageProposalsModal';
 import type { PublicationStatus } from '@/lib/types/faq';
+import type { ProposalResult } from '@/lib/cover-generator/variations';
 import { useAuthStore } from '@/lib/store/useAuthStore';
 
 interface ContentItem {
@@ -16,6 +18,10 @@ interface ContentItem {
   excerpt: string;
   updatedAt: string | null;
   reviewComment: string | null;
+  imageProposals: ProposalResult[] | null;
+  selectedImageId: string | null;
+  regenerationCount: number;
+  coverImage: string | null;
 }
 
 const TYPE_FILTERS: { value: string; label: string }[] = [
@@ -38,6 +44,11 @@ export default function ContenuPage() {
   const [typeFilter, setTypeFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; type: ContentType; title: string } | null>(null);
+  const [proposalsTarget, setProposalsTarget] = useState<{
+    contentRef: { type: string; slug: string; titre: string };
+    proposals: ProposalResult[];
+    regenerationCount: number;
+  } | null>(null);
   const user = useAuthStore((s) => s.user);
 
   const refresh = useCallback(async () => {
@@ -56,6 +67,23 @@ export default function ContenuPage() {
   }, [typeFilter, statusFilter]);
 
   useEffect(() => { refresh(); }, [refresh]);
+
+  const handleOpenProposals = (item: ContentItem) => {
+    if (!item.imageProposals || item.imageProposals.length === 0) {
+      alert('Generation des propositions visuelles en cours... Reessayez dans 30 secondes.');
+      return;
+    }
+    setProposalsTarget({
+      contentRef: { type: item.type, slug: item.id, titre: item.title },
+      proposals: item.imageProposals,
+      regenerationCount: item.regenerationCount || 0,
+    });
+  };
+
+  const handleProposalSelected = () => {
+    setProposalsTarget(null);
+    refresh();
+  };
 
   const handleApprove = async (id: string, type: string) => {
     await fetch('/api/cms/approve', {
@@ -166,7 +194,16 @@ export default function ContenuPage() {
                 reviewComment={item.reviewComment || undefined}
               />
               {item.status === 'pending' && (
-                <div className="flex gap-2 mt-1 ml-4">
+                <div className="flex flex-wrap gap-2 mt-1 ml-4">
+                  {!item.selectedImageId && (
+                    <button onClick={() => handleOpenProposals(item)}
+                      className="text-[11px] font-medium text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-md">
+                      {item.imageProposals && item.imageProposals.length > 0 ? 'Choisir image' : 'Generation...'}
+                    </button>
+                  )}
+                  {item.selectedImageId && item.coverImage && (
+                    <img src={item.coverImage} alt="" className="w-12 h-7 rounded object-cover border border-gray-200" />
+                  )}
                   <button onClick={() => handleApprove(item.id, item.type)}
                     className="text-[11px] font-medium text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-md">
                     Approuver
@@ -199,6 +236,17 @@ export default function ContenuPage() {
           title={deleteTarget.title}
           onConfirm={() => handleDelete(deleteTarget.id, deleteTarget.type)}
           onCancel={() => setDeleteTarget(null)}
+        />
+      )}
+
+      {proposalsTarget && (
+        <ImageProposalsModal
+          isOpen={true}
+          onClose={() => setProposalsTarget(null)}
+          contentRef={proposalsTarget.contentRef}
+          proposals={proposalsTarget.proposals}
+          regenerationCount={proposalsTarget.regenerationCount}
+          onSelected={handleProposalSelected}
         />
       )}
     </div>
