@@ -27,6 +27,11 @@ export default function CameraOverlay({ onClose, targetTrackId }: Props) {
       return;
     }
     mountedRef.current = true;
+    // iOS 17+: switch AudioSession to play-and-record so getUserMedia can capture audio
+    if ('audioSession' in navigator) {
+      (navigator as unknown as Record<string, { type: string }>).audioSession.type = 'play-and-record';
+      console.log('[CAMERA] Set audioSession.type = play-and-record');
+    }
     console.log('[CAMERA] startWebcam called');
     startWebcam().then(() => {
       console.log('[CAMERA] startWebcam resolved OK');
@@ -37,6 +42,11 @@ export default function CameraOverlay({ onClose, targetTrackId }: Props) {
     return () => {
       console.log('[CAMERA] cleanup called');
       cleanup();
+      // Restore AudioSession to playback mode
+      if ('audioSession' in navigator) {
+        (navigator as unknown as Record<string, { type: string }>).audioSession.type = 'playback';
+        console.log('[CAMERA] Restored audioSession.type = playback');
+      }
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [startWebcam, cleanup]);
