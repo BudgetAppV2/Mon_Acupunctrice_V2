@@ -38,7 +38,7 @@ export function useVideoExport() {
       console.log('[DIAG] iOS:', isIOS, '| VideoEncoder:', typeof VideoEncoder !== 'undefined', '| rVFC:', 'requestVideoFrameCallback' in HTMLVideoElement.prototype);
       console.log('[DIAG] File:', s.videoFile.name, (s.videoFile.size / 1024 / 1024).toFixed(1) + 'MB', s.videoFile.type);
       console.log('[DIAG] Trim:', s.trimStart.toFixed(1) + 's →', s.trimEnd.toFixed(1) + 's (' + (s.trimEnd - s.trimStart).toFixed(1) + 's)');
-      if (performance.memory) {
+      if ('memory' in performance) {
         const m = (performance as unknown as { memory: { usedJSHeapSize: number; jsHeapSizeLimit: number } }).memory;
         console.log('[DIAG] Memory:', (m.usedJSHeapSize / 1024 / 1024).toFixed(0) + 'MB /', (m.jsHeapSizeLimit / 1024 / 1024).toFixed(0) + 'MB');
       }
