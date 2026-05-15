@@ -31,12 +31,26 @@ export function useVideoExport() {
     setError(null);
 
     try {
+      // --- Debug mobile ---
+      const ua = navigator.userAgent;
+      const isIOS = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+      console.log('[DIAG] Device:', ua);
+      console.log('[DIAG] iOS:', isIOS, '| VideoEncoder:', typeof VideoEncoder !== 'undefined', '| rVFC:', 'requestVideoFrameCallback' in HTMLVideoElement.prototype);
+      console.log('[DIAG] File:', s.videoFile.name, (s.videoFile.size / 1024 / 1024).toFixed(1) + 'MB', s.videoFile.type);
+      console.log('[DIAG] Trim:', s.trimStart.toFixed(1) + 's →', s.trimEnd.toFixed(1) + 's (' + (s.trimEnd - s.trimStart).toFixed(1) + 's)');
+      if (performance.memory) {
+        const m = (performance as unknown as { memory: { usedJSHeapSize: number; jsHeapSizeLimit: number } }).memory;
+        console.log('[DIAG] Memory:', (m.usedJSHeapSize / 1024 / 1024).toFixed(0) + 'MB /', (m.jsHeapSizeLimit / 1024 / 1024).toFixed(0) + 'MB');
+      }
+
       if (!supportsWebCodecs) {
         throw new Error('Ton navigateur ne supporte pas l\'export video. Utilise Safari 17+ ou Chrome.');
       }
 
+      console.log('[DIAG] Loading fonts...');
       for (const o of s.overlays) await loadFont(o.fontFamily);
       if (s.subtitleFontFamily && s.subtitleFontFamily !== 'Inter') await loadFont(s.subtitleFontFamily);
+      console.log('[DIAG] Fonts OK. Starting export...');
       const filterCss = FILTERS.find(f => f.id === s.filter)?.css ?? 'none';
 
       setState('exporting');
@@ -61,8 +75,10 @@ export function useVideoExport() {
       );
 
       // Upload resumable avec progression
+      console.log('[DIAG] Export blob:', (blob.size / 1024 / 1024).toFixed(1) + 'MB');
       setState('uploading');
       const userId = getFirebaseAuth().currentUser?.uid;
+      console.log('[DIAG] Uploading as user:', userId?.slice(0, 8) + '...');
       const storage = getFirebaseStorage();
       const storageRef = ref(storage, `videos/${userId}/${s.itemId}/export.mp4`);
       const videoUrl = await new Promise<string>((resolve, reject) => {
@@ -93,6 +109,9 @@ export function useVideoExport() {
 
       setState('done');
     } catch (err) {
+      console.error('[DIAG] EXPORT FAILED:', err);
+      console.error('[DIAG] Error type:', err?.constructor?.name, '| message:', err instanceof Error ? err.message : String(err));
+      if (err instanceof Error && err.stack) console.error('[DIAG] Stack:', err.stack);
       setState('error');
       const msg = err instanceof Error ? err.message : 'Export echoue';
       if (msg.includes('memory') || msg.includes('OOM') || msg.includes('allocation')) {

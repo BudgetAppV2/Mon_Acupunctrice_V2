@@ -91,10 +91,20 @@ export async function exportWithWebCodecs(
   });
 
   // Video : CanvasSource gere VideoEncoder en interne
-  const canvasSource = new CanvasSource(canvas, {
-    codec: 'avc', bitrate: BITRATE, bitrateMode: 'variable',
-    hardwareAcceleration: 'prefer-hardware', latencyMode: 'quality',
-  });
+  console.log('[EXPORT] 2.5/7 Creating CanvasSource (avc, ' + (BITRATE/1e6) + 'Mbps, prefer-hardware)...');
+  let canvasSource: CanvasSource;
+  try {
+    canvasSource = new CanvasSource(canvas, {
+      codec: 'avc', bitrate: BITRATE, bitrateMode: 'variable',
+      hardwareAcceleration: 'prefer-hardware', latencyMode: 'quality',
+    });
+  } catch (e) {
+    console.warn('[EXPORT] 2.5/7 Hardware encoder failed, trying software...', e);
+    canvasSource = new CanvasSource(canvas, {
+      codec: 'avc', bitrate: BITRATE, bitrateMode: 'variable',
+      hardwareAcceleration: 'prefer-software', latencyMode: 'quality',
+    });
+  }
   output.addVideoTrack(canvasSource);
 
   // Audio : transmux (desktop) ou AudioBufferSource fallback (iOS)
@@ -167,6 +177,8 @@ export async function exportWithWebCodecs(
     await canvasSource.add(t - trimStart, frameDur);
     onProgress(Math.round(i / totalFrames * 90));
 
+    // Log progression toutes les 90 frames (~3s de video)
+    if (i % 90 === 0 && i > 0) console.log('[EXPORT] 4/7 Frame ' + i + '/' + totalFrames + ' (' + Math.round(i / totalFrames * 100) + '%)');
     if (i % 3 === 0) await new Promise(r => setTimeout(r, 0));
   }
   canvasSource.close();
@@ -204,10 +216,12 @@ export async function exportWithWebCodecs(
 
   // Fallback : remplir le AudioBufferSource pre-ajoute
   if (audioFallbackSource) {
-    console.log('[EXPORT] 6/7 AudioBufferSource fallback: decoding audio...');
+    console.log('[EXPORT] 6/7 AudioBufferSource fallback: decoding audio (' + (file.size / 1024 / 1024).toFixed(1) + 'MB file)...');
     try {
       const ac = new AudioContext({ sampleRate: 48000 });
+      console.log('[EXPORT] 6/7 Reading file into ArrayBuffer...');
       const arrayBuf = await file.arrayBuffer();
+      console.log('[EXPORT] 6/7 ArrayBuffer OK (' + (arrayBuf.byteLength / 1024 / 1024).toFixed(1) + 'MB), decoding...');
       const decoded = await ac.decodeAudioData(arrayBuf);
       await ac.close();
       if (decoded.numberOfChannels >= 1) {
