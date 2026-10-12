@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     absolute: 'Acupuncture Montreal | Judith Dufour-Savard, Ac. — Rosemont & Repentigny',
   },
   description:
-    'Acupunctrice a Montreal, specialisee en fertilite, grossesse et acupuncture sociale. Clinique La Source en Soi a Rosemont. 4,9/5 sur Google.',
+    'Acupunctrice a Montreal, specialisee en fertilite, grossesse et acupuncture sociale. Chez Les Vagues, communautes therapeutiques, a Rosemont, et a Repentigny.',
 };
 
 export const revalidate = 3600;

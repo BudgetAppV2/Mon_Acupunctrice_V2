@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { PRICING } from '@/lib/entity-canonical.mjs';
 import Link from 'next/link';
 import CtaButton from '../_components/CtaButton';
 import CtaBotanicalDeco from '../_components/CtaBotanicalDeco';
@@ -11,7 +12,7 @@ import HoverLift from '../_components/animations/HoverLift';
 export const metadata: Metadata = {
   title: 'Tarifs — Acupuncture Rosemont et Repentigny',
   description:
-    'Tarifs transparents. Consultation privee 100 $/h, acupuncture sociale 35-60 $. Rosemont et Repentigny. Recu pour assurances.',
+    `Tarifs transparents. Consultation privee ${PRICING.adultSession} $/h, acupuncture sociale ${PRICING.socialMin}-${PRICING.socialMax} $. Rosemont et Repentigny. Recu pour assurances.`,
 };
 
 const GRV_URL = '/reserver';
@@ -20,17 +21,17 @@ const OFFERS = [
   {
     kicker: 'CONSULTATION PRIVÉE',
     bg: 'bg-white',
-    price: '100 $ <span class="text-[16px] font-normal text-public-text-medium">/ s&eacute;ance de 60 min</span>',
+    price: `${PRICING.adultSession} $ <span class="text-[16px] font-normal text-public-text-medium">/ s&eacute;ance de 60 min</span>`,
     desc: 'S&eacute;ance individuelle, en cabinet priv&eacute;. &Eacute;change approfondi, &eacute;valuation compl&egrave;te, plan d&rsquo;accompagnement personnalis&eacute;.',
     indications:
-      '<strong>Indications</strong> : fertilit&eacute;, grossesse, sant&eacute; mentale, douleurs, bien-&ecirc;tre g&eacute;n&eacute;ral.<br/><span class="inline-block mt-2 text-public-text-medium"><strong>Tarif p&eacute;diatrique</strong> : 90 $ pour les enfants de 0 &agrave; 17 ans.</span>',
+      `<strong>Indications</strong> : fertilit&eacute;, grossesse, sant&eacute; mentale, douleurs, bien-&ecirc;tre g&eacute;n&eacute;ral.<br/><span class="inline-block mt-2 text-public-text-medium"><strong>Tarif p&eacute;diatrique</strong> : ${PRICING.childSession} $ pour les enfants de 0 &agrave; 17 ans.</span>`,
     ctaHref: '/reserver',
     ctaLabel: 'Prendre rendez-vous',
   },
   {
     kicker: 'ACUPUNCTURE SOCIALE',
     bg: 'bg-public-beige-light',
-    price: '35 $ &agrave; 60 $ <span class="text-[16px] font-normal text-public-text-medium">/ tarif libre</span>',
+    price: `${PRICING.socialMin} $ &agrave; ${PRICING.socialMax} $ <span class="text-[16px] font-normal text-public-text-medium">/ tarif libre</span>`,
     desc: 'S&eacute;ance en petit groupe, dans un espace partag&eacute; chaleureux. 60 minutes. Habill&eacute;(e), points distaux.',
     indications:
       '<strong>Indications</strong> : stress, anxi&eacute;t&eacute;, insomnie, sommeil, d&eacute;tente g&eacute;n&eacute;rale.',
@@ -71,17 +72,17 @@ const FAQ_TARIFS = [
   {
     question: 'Quel est le tarif d’une première séance ?',
     answer:
-      'Une première séance coûte 100 $ et dure 60 minutes. Ce tarif inclut l’échange initial approfondi, l’évaluation complète, le premier traitement et le plan d’accompagnement personnalisé.',
+      `Une première séance coûte ${PRICING.adultSession} $ et dure 60 minutes. Ce tarif inclut l’échange initial approfondi, l’évaluation complète, le premier traitement et le plan d’accompagnement personnalisé.`,
   },
   {
     question: 'Quel est le tarif pour une séance pédiatrique ?',
     answer:
-      'Une séance pour enfant ou adolescent (0 à 17 ans) coûte 90 $ et dure 60 minutes. Le tarif inclut l’échange avec l’enfant et le parent, l’évaluation et le traitement adapté à l’âge (techniques douces, souvent sans aiguilles pour les plus petits).',
+      `Une séance pour enfant ou adolescent (0 à 17 ans) coûte ${PRICING.childSession} $ et dure 60 minutes. Le tarif inclut l’échange avec l’enfant et le parent, l’évaluation et le traitement adapté à l’âge (techniques douces, souvent sans aiguilles pour les plus petits).`,
   },
   {
     question: 'Qu’est-ce que l’acupuncture sociale ?',
     answer:
-      'L’acupuncture sociale est une séance en format de petit groupe, à tarif libre entre 35 $ et 60 $ selon vos moyens. C’est la même acupuncture — même formation, mêmes aiguilles stériles — simplement dans un format qui rend les soins accessibles à tous.',
+      `L’acupuncture sociale est une séance en format de petit groupe, à tarif libre entre ${PRICING.socialMin} $ et ${PRICING.socialMax} $ selon vos moyens. C’est la même acupuncture — même formation, mêmes aiguilles stériles — simplement dans un format qui rend les soins accessibles à tous.`,
   },
   {
     question: 'Puis-je payer par Interac ou par carte ?',
@@ -108,7 +109,7 @@ const JSON_LD = [
           '@type': 'Offer',
           name: 'Consultation privée d’acupuncture',
           description: 'Séance individuelle de 60 minutes en cabinet privé',
-          price: '100',
+          price: String(PRICING.adultSession),
           priceCurrency: 'CAD',
           eligibleDuration: { '@type': 'QuantitativeValue', value: 60, unitCode: 'MIN' },
         },
@@ -116,18 +117,18 @@ const JSON_LD = [
           '@type': 'Offer',
           name: 'Consultation pédiatrique d’acupuncture',
           description: 'Séance pour enfants de 0 à 17 ans, 60 minutes',
-          price: '90',
+          price: String(PRICING.childSession),
           priceCurrency: 'CAD',
           eligibleDuration: { '@type': 'QuantitativeValue', value: 60, unitCode: 'MIN' },
         },
         {
           '@type': 'Offer',
           name: 'Acupuncture sociale',
-          description: 'Séance en petit groupe, tarif libre 35-60 CAD',
+          description: `Séance en petit groupe, tarif libre ${PRICING.socialMin}-${PRICING.socialMax} CAD`,
           priceSpecification: {
             '@type': 'PriceSpecification',
-            minPrice: '35',
-            maxPrice: '60',
+            minPrice: String(PRICING.socialMin),
+            maxPrice: String(PRICING.socialMax),
             priceCurrency: 'CAD',
           },
           eligibleDuration: {

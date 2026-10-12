@@ -23,7 +23,7 @@ export default function ServiceFertiliteBioSection() {
         <Reveal delay={0.15}>
           <div className="mt-8 space-y-6 text-[17px] leading-[1.75] text-public-text-medium">
             <p>
-              Je suis Judith Dufour-Savard, acupunctrice &agrave; La Source en Soi, sur Beaubien Est
+              Je suis Judith Dufour-Savard, acupunctrice chez Les Vagues, communaut&eacute;s th&eacute;rapeutiques, sur Beaubien Est
               &agrave; Rosemont. J&rsquo;ai travaill&eacute; &agrave; la Maison de naissance C&ocirc;te-des-Neiges
               avant ma pratique, et je suis m&egrave;re de trois enfants. Quand je vous &eacute;coute me
               parler de votre parcours de fertilit&eacute;, je ne le fais pas juste comme professionnelle

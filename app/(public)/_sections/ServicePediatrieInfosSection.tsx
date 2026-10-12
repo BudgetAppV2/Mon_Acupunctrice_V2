@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { PRICING } from '@/lib/entity-canonical.mjs';
 import SectionNumber from '../_components/SectionNumber';
 import SectionHeading from '../_components/SectionHeading';
 import Reveal from '../_components/animations/Reveal';
@@ -27,7 +28,7 @@ export default function ServicePediatrieInfosSection() {
           <HoverLift><InfoCard
             icon={<DollarIcon />}
             title="Tarifs"
-            text="90 $ la s&eacute;ance."
+            text={`${PRICING.childSession} $ la s&eacute;ance.`}
           /></HoverLift>
           <HoverLift><InfoCard
             icon={<ShieldIcon />}

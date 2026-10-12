@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import { PRICING } from '@/lib/entity-canonical.mjs';
 import { useRef } from 'react';
 import { useGSAP } from '@gsap/react';
 import { gsap } from 'gsap';
@@ -60,7 +61,7 @@ export default function ServiceSocialeHeroSection() {
           </p>
           {/* Answer block AEO — réponse directe extractible par les LLMs */}
           <p className="text-[15px] leading-relaxed text-public-text-medium mb-5 max-w-[540px]">
-            L&rsquo;acupuncture sociale rend les soins accessibles gr&acirc;ce &agrave; un tarif solidaire de 35&nbsp;$ &agrave; 60&nbsp;$. Les s&eacute;ances de 60 minutes se font en groupe dans un espace calme. Judith Dufour-Savard offre l&rsquo;acupuncture sociale &agrave; La Source en Soi &agrave; Rosemont (Montr&eacute;al).
+            L&rsquo;acupuncture sociale rend les soins accessibles gr&acirc;ce &agrave; un tarif solidaire de {PRICING.socialMin}&nbsp;$ &agrave; {PRICING.socialMax}&nbsp;$. Les s&eacute;ances de 60 minutes se font en groupe dans un espace calme. Judith Dufour-Savard offre l&rsquo;acupuncture sociale chez Les Vagues, communaut&eacute;s th&eacute;rapeutiques, &agrave; Rosemont (Montr&eacute;al).
           </p>
           <p ref={paragraphRef} className="text-[18px] leading-relaxed text-public-text-medium mb-8" style={{ willChange: 'transform, opacity', opacity: 1 }}>
             Des s&eacute;ances d&rsquo;acupuncture en petit groupe, &agrave; tarif r&eacute;duit, pour que personne ne soit exclu pour des raisons financi&egrave;res. C&rsquo;est la m&ecirc;me rigueur, la m&ecirc;me formation, la m&ecirc;me qualit&eacute; de soin &mdash; juste sans la barri&egrave;re du co&ucirc;t.
@@ -77,7 +78,7 @@ export default function ServiceSocialeHeroSection() {
         <div ref={photoRef} className="max-w-[420px] mx-auto md:max-w-none" style={{ willChange: 'transform, clip-path', clipPath: 'inset(0 0 100% 0)' }}>
           <Image
                 src="/site/judith/judith-portrait-03.webp"
-                alt="Espace acupuncture sociale La Source en Soi"
+                alt="Judith Dufour-Savard, acupunctrice, qui offre l’acupuncture sociale à Rosemont"
                 width={1600}
                 height={2400}
                 priority

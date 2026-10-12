@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { PRICING } from '@/lib/entity-canonical.mjs';
 import Link from 'next/link';
 import AuthorByline from '../../_components/AuthorByline';
 import ServiceSocialeHeroSection from '../../_sections/ServiceSocialeHeroSection';
@@ -12,7 +13,7 @@ import ServiceSocialeCtaSection from '../../_sections/ServiceSocialeCtaSection';
 export const metadata: Metadata = {
   title: 'Acupuncture sociale',
   description:
-    'Acupuncture a tarif reduit en format communautaire a Rosemont. Sliding scale 35-60 $, accessible a tous. La Source en Soi.',
+    `Acupuncture a tarif reduit en format communautaire a Rosemont. Sliding scale ${PRICING.socialMin}-${PRICING.socialMax} $, accessible a tous. Les Vagues, communautes therapeutiques.`,
 };
 
 const SCHEMA_ORG = {

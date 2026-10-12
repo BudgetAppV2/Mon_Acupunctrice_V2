@@ -14,7 +14,7 @@ export const revalidate = 3600;
 export const metadata: Metadata = {
   title: 'Questions frequentes — Acupuncture a Rosemont, Montreal',
   description:
-    'Reponses aux questions les plus courantes sur l’acupuncture en fertilite, grossesse, anxiete. Membre OAQ, La Source en Soi, Rosemont.',
+    'Reponses aux questions les plus courantes sur l’acupuncture en fertilite, grossesse, anxiete. Membre OAQ, Les Vagues, communautes therapeutiques, Rosemont.',
 };
 
 const CATEGORY_LABELS: Record<FaqCategory, string> = {

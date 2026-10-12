@@ -1,6 +1,7 @@
 'use client';
 
 import SectionNumber from '../_components/SectionNumber';
+import { PRICING } from '@/lib/entity-canonical.mjs';
 import SectionHeading from '../_components/SectionHeading';
 import Reveal from '../_components/animations/Reveal';
 import StaggerChildren from '../_components/animations/StaggerChildren';
@@ -26,7 +27,7 @@ export default function ServiceGrossesseInfosSection() {
           <HoverLift><InfoCard
             icon={<DollarIcon />}
             title="Tarifs"
-            text="100 $ la s&eacute;ance d'une heure."
+            text={`${PRICING.adultSession} $ la s&eacute;ance d'une heure.`}
           /></HoverLift>
           <HoverLift><InfoCard
             icon={<ReceiptIcon />}

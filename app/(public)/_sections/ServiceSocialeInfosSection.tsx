@@ -5,6 +5,9 @@ import SectionHeading from '../_components/SectionHeading';
 import Reveal from '../_components/animations/Reveal';
 import StaggerChildren from '../_components/animations/StaggerChildren';
 import HoverLift from '../_components/animations/HoverLift';
+import { NAP, PRICING } from '@/lib/entity-canonical.mjs';
+
+const SOCIAL_SLOTS = NAP.lesvagues.schedule.filter((s) => s.type === 'sociale');
 
 export default function ServiceSocialeInfosSection() {
   return (
@@ -26,7 +29,7 @@ export default function ServiceSocialeInfosSection() {
           <InfoCard
             icon={<DollarIcon />}
             title="Tarifs"
-            text="Tarif libre : <strong>35 $ &agrave; 60 $</strong>, sliding scale, selon vos moyens."
+            text={`Tarif libre : <strong>${PRICING.socialMin} $ &agrave; ${PRICING.socialMax} $</strong>, sliding scale, selon vos moyens.`}
           />
           <InfoCard
             icon={<ReceiptIcon />}
@@ -45,10 +48,17 @@ export default function ServiceSocialeInfosSection() {
             (m&ecirc;me syst&egrave;me que le priv&eacute;). S&eacute;lectionnez le service
             &laquo;&nbsp;acupuncture sociale&nbsp;&raquo; lors de votre r&eacute;servation.
           </p>
+          <h4 className="mt-5 text-[15px] font-semibold text-public-text-dark">Horaires de l&rsquo;acupuncture sociale</h4>
+          <ul className="mt-2 space-y-1 text-[15px] text-public-text-medium">
+            {SOCIAL_SLOTS.map((s) => (
+              <li key={`${s.day}-${s.opens}`}>
+                <span className="capitalize">{s.day}</span> : {s.opens}&ndash;{s.closes}
+              </li>
+            ))}
+          </ul>
           <p className="mt-3 text-[13px] text-public-text-light italic">
-            Ce service est offert uniquement &agrave; la clinique La Source en Soi, &agrave; Rosemont.
+            Ce service est offert uniquement chez {NAP.lesvagues.name}, &agrave; Rosemont.
           </p>
-          {/* TODO Judith : confirmer les horaires specifiques (ex: jeudi soir, samedi matin) et si drop-in possible. Par defaut on documente "sur rendez-vous". */}
         </div>
         </Reveal>
       </div>
