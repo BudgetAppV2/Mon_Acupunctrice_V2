@@ -72,6 +72,8 @@ const content2 = `## Lieux de pratique
 - **Adresse** : ${NAP.lesvagues.streetAddress}, ${NAP.lesvagues.addressLocality} (${NAP.lesvagues.addressRegion}) ${NAP.lesvagues.postalCode}
 - **Quartier** : ${NAP.lesvagues.neighborhood}, arrondissement ${NAP.lesvagues.borough}
 - **Jours** : ${NAP.lesvagues.daysLabel}
+- **Acupuncture sociale** : ${NAP.lesvagues.schedule.filter((s) => s.type === 'sociale').map((s) => `${s.day} ${s.opens}–${s.closes}`).join(', ')}
+- **Site de la clinique** : ${NAP.lesvagues.siteUrl}
 - **Réservation directe** : ${NAP.lesvagues.grvUrl}
 
 ### ${NAP.eden.name} (${NAP.eden.addressLocality}) — clinique secondaire
@@ -82,7 +84,7 @@ const content2 = `## Lieux de pratique
 
 ## Coordonnées
 
-- **Téléphone** : ${CONTACT.phoneInternational}
+- **Téléphone (appel ou texto)** : ${CONTACT.phoneInternational}
 - **Courriel** : ${CONTACT.email}
 
 ## Pages clés du site
@@ -105,7 +107,7 @@ ${SAMEAS.social.filter((u) => !u.includes('wikidata')).map((u) => {
 
 ## Optional
 
-- [Page équipe à La Source en Soi](${NAP.lesvagues.siteUrl}equipe/judith-dufour-savard/) — bio publiée par la clinique principale
+- [${NAP.lesvagues.name}](${NAP.lesvagues.siteUrl}) — site de la clinique principale
 
 `;
 
@@ -138,8 +140,8 @@ Québec (AAQ).
 
 ## Locations
 
-- **${NAP.lesvagues.name}** (primary clinic) — ${NAP.lesvagues.streetAddress}, ${NAP.lesvagues.addressLocality} ${NAP.lesvagues.addressRegion} ${NAP.lesvagues.postalCode} — Mon, Tue, Thu, Fri
-- **${NAP.eden.name}** (secondary) — ${NAP.eden.streetAddressFull}, ${NAP.eden.addressLocality} ${NAP.eden.addressRegion} ${NAP.eden.postalCode} — Wed 9am–3pm
+- **${NAP.lesvagues.name}** (primary clinic) — ${NAP.lesvagues.streetAddress}, ${NAP.lesvagues.addressLocality} ${NAP.lesvagues.addressRegion} ${NAP.lesvagues.postalCode} — ${NAP.lesvagues.daysLabelEn}
+- **${NAP.eden.name}** (secondary) — ${NAP.eden.streetAddressFull}, ${NAP.eden.addressLocality} ${NAP.eden.addressRegion} ${NAP.eden.postalCode} — ${NAP.eden.daysLabelEn}
 
 ## Contact
 
