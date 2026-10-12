@@ -1,5 +1,7 @@
 # Handoff CC — Milestone 1.5 : Suppression définitive depuis le Hub
 
+> ⚠️ **Note d'obsolescence** : LSSI n'est plus d'actualité depuis octobre 2026 — voir `docs/MIGRATION_LES_VAGUES.md`.
+
 **Date** : 2026-05-08 (soirée)
 **Contexte** : extension du M1 (commit `4e4e2f6` déployé en prod). Le test du workflow review a révélé un gap : on peut dépublier (`published → pending` via `/api/cms/unpublish`) mais on ne peut pas SUPPRIMER définitivement un contenu depuis le Hub. Cela bloque le nettoyage des posts de test (actuellement 2 en pending dans `publicBlog` : `test` et `ping-test-dont-publish`).
 

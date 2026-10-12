@@ -1,5 +1,7 @@
 # Handoff Claude Desktop — 29 avril 2026 (mis à jour fin de session)
 
+> ⚠️ **Note d'obsolescence** : LSSI n'est plus d'actualité depuis octobre 2026 — voir `docs/MIGRATION_LES_VAGUES.md`.
+
 ## Projet : Mon Acupunctrice Hub V2 — Migration Wix + Stratégie SEO/GEO
 
 ### Repo

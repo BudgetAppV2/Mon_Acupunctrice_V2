@@ -1,5 +1,5 @@
 /**
- * Template "La Source en Soi" for the image editor.
+ * Template "Les Vagues" for the image editor.
  * Reproduces the Canva story design with Fabric.js objects.
  * Each element is individually editable and draggable.
  */
@@ -18,7 +18,7 @@ export const PALETTE = {
   white: '#FFFFFF',
 };
 
-export const LOGO_URL = '/images/logo-la-source-en-soi.png';
+export const LOGO_URL = '/images/logo-les-vagues.png';
 
 const W = 1080;
 const H = 1920;
@@ -95,10 +95,10 @@ export function getTemplateObjects(): Record<string, unknown>[] {
       width: 800, editable: true, selectable: true,
     },
 
-    // "@LASOURCEENSOI"
+    // "@LESVAGUES.BEAUBIEN"
     {
       type: 'textbox', left: W / 2, top: 1530, originX: 'center', originY: 'center',
-      text: '@LASOURCEENSOI',
+      text: '@LESVAGUES.BEAUBIEN',
       fontFamily: 'Mulish', fontSize: 52, fontWeight: '600', fill: PALETTE.darkGreen,
       textAlign: 'center', charSpacing: 60,
       width: 700, editable: true, selectable: true,

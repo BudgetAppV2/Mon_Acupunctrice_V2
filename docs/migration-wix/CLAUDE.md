@@ -47,8 +47,8 @@ Ces décisions ont été prises et validées. Ne pas les re-débattre dans chaqu
 
 ### Positionnement & contenu
 
-- **Emprunt de réputation La Source en Soi** : Judith n'a pas de Google Business Profile en propre. La clinique La Source en Soi en a une à **4,9/5 avec ~1 215 avis**. Toutes les pages du site doivent mentionner la clinique et afficher ce signal de confiance (voir plan §8.1b).
-- **Schema.org** : `Person` (Judith) + `MedicalClinic` (La Source en Soi), reliés par `Person.worksFor`. Pas de `LocalBusiness` autonome pour Judith (fragmenterait le signal NAP).
+- **~~Emprunt de réputation La Source en Soi~~ (obsolète, octobre 2026)** : Judith pratique maintenant chez **Les Vagues, communautés thérapeutiques** (2395 rue Beaubien Est, Rosemont). Les avis et la note de LSSI (4,9/5, 1 215 avis) ne doivent plus apparaître nulle part. Signal de confiance = GBP praticien de Judith (R6).
+- **Schema.org** : `Person` (Judith) + `MedicalBusiness` + 2 `Place` (`#lesvagues`, `#eden`) émis par `GlobalJsonLd.tsx` depuis `lib/entity-canonical.mjs`. `Person.workLocation` pointe vers ces deux lieux ; plus de `worksFor` ni d'`aggregateRating` de clinique.
 - **Funnel Go Rendez-Vous** : la page `/reserver` est une **landing de confiance** qui explique à l'utilisateur qu'il va atterrir sur la page de la clinique et doit sélectionner Judith manuellement. Pas un simple bouton (voir plan §9.1).
 - **Tonalité** : vouvoiement par défaut sur le site, "je" de Judith comme signature personnelle. Tutoiement réservé à Instagram. Guide de ton détaillé dans `docs/migration-wix/01-strategie/GUIDE_DE_TON.md` (à produire en milestone M3).
 - **Claire Thomas** (rédactrice co-autrice) continue à collaborer pour les articles de fond du blog. Sa voix est préservée.
@@ -95,7 +95,7 @@ La v4 définit 6 composants nommés dans `app/(public)/_components/` :
 | Composant v4 | Fichier React | Rôle |
 |---|---|---|
 | `judith-header` | `<SiteHeader />` | Header sticky, logo serif, nav, CTA Réserver |
-| `judith-footer` | `<SiteFooter />` | Footer 4 colonnes + mention "En partenariat avec La Source en Soi ★ 4,9/5" |
+| `judith-footer` | `<SiteFooter />` | Footer 4 colonnes + adresses Les Vagues et Éden (sans note d'avis) |
 | `judith-cta-button` | `<CtaButton />` | Bouton Réserver (variantes : primary, secondary, lg, sticky mobile) |
 | `judith-pilier-card` | `<PilierCard />` | Carte pilier avec image, titre, description, état featured |
 | `judith-testimonial` | `<TestimonialCard />` | Carte témoignage (citation serif italique + avatar) |
@@ -147,9 +147,9 @@ Pages secondaires à envisager plus tard : `/communaute` (rôle d'influenceuse),
 
 **8 photos Eric Bates Images** de Judith sont dans `~/Documents/Judith_SEO_GEO/05_maquettes/nouveau-site/assets/photos_Judith/Croped/`. Actif visuel central, à migrer vers Firebase Storage sous `/public/site/judith/` (ou équivalent défini en milestone).
 
-**1 215 avis Google sur La Source en Soi** : pas de widget API, sélection manuelle de 3-5 avis récents pour la page `/reserver` (attribution claire : "Avis Google sur la clinique La Source en Soi").
+**Avis Google** : les avis de La Source en Soi ont été retirés du site (octobre 2026). Ne pas en réafficher ; seuls des avis du GBP de Judith pourront être utilisés (voir R7).
 
-**Backlink existant** : `lasourceensoi.com/equipe/judith-dufour-savard/` pointe actuellement vers le site Wix. À préserver lors du switch DNS.
+**Backlink** : l'ancien backlink `lasourceensoi.com/equipe/judith-dufour-savard/` disparaîtra avec le départ de LSSI. Viser une page équipe sur lesvaguesct.com.
 
 ---
 
@@ -171,7 +171,7 @@ Pages secondaires à envisager plus tard : `/communaute` (rôle d'influenceuse),
 
 - **Lire le plan éditorial v0.3** si le milestone est ambigu
 - **Respecter le vouvoiement** + "je" de Judith dans tous les textes générés
-- **Mentionner La Source en Soi** dans toutes les pages (contenu + meta + schema)
+- **Mentionner Les Vagues, communautés thérapeutiques** (nom complet) quand le lieu est pertinent — lire NAP et horaires depuis `lib/entity-canonical.mjs`, jamais en dur
 - **Utiliser les tokens v4** pour les couleurs, pas de valeurs hardcoded
 - **Mobile-first** à 375px
 - **Server Components par défaut**, Client Components si nécessaire
@@ -226,8 +226,8 @@ Si tu as besoin d'une nouvelle dépendance (parser Ricos JSON, markdown renderer
 
 ## Rappels importants
 
-- **Judith** : Dufour-Savard (pas Dufourd, pas Dufour Savard sans trait d'union). Instagram `@mon_acupunctrice`. Clinique `La Source en Soi` à Rosemont, Montréal.
-- **Go Rendez-Vous** : `https://gorendezvous.com/lasourceensoi`, companyId `104074`, employeeId `7556837` (pour référence — pas utilisé en deep-link, la stratégie est landing de confiance).
+- **Judith** : Dufour-Savard (pas Dufourd, pas Dufour Savard sans trait d'union). Instagram `@mon_acupunctrice`. Clinique principale `Les Vagues, communautés thérapeutiques` à Rosemont, Montréal ; Éden Yoga Pilates à Repentigny le jeudi.
+- **Go Rendez-Vous** : Les Vagues companyId `106503`, employeeId `196572` — URL complète dans `lib/entity-canonical.mjs` (le slug GRV ne s'affiche jamais en texte).
 - **Le site Wix actuel reste en production** jusqu'au milestone de switch DNS. Ne rien casser dessus pendant le développement.
 - **On build sur staging Vercel** (`mon-acupunctrice-v2.vercel.app` ou un sous-domaine preview) avant de basculer `acupuncturejudith.ca`.
 

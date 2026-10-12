@@ -2,21 +2,23 @@
 
 À cocher au fur et à mesure. Ordre du plus simple au plus complexe.
 
+> **🔄 Mise à jour 12 octobre 2026** : Judith a quitté La Source en Soi pour **Les Vagues, communautés thérapeutiques** (2395 rue Beaubien Est, Rosemont). NAP, horaires, descriptions et téléphone ci-dessous sont à jour. Toute fiche déjà créée avec l'ancienne adresse (2554 Beaubien Est, H1Y 1G3) doit être corrigée. Voir `docs/MIGRATION_LES_VAGUES.md`.
+
 ## NAP universel (à utiliser PARTOUT, identique au caractère près)
 
 ```
 Nom         : Judith Dufour-Savard, Ac.
-Téléphone   : 514-750-3735
+Téléphone   : 514-882-1922
 Email       : jdufoursavard@gmail.com
 Site web    : https://acupuncturejudith.ca
 Numéro OAQ  : A-008-24
 ```
 
-### Adresse principale (LSSI Rosemont)
+### Adresse principale (Les Vagues, Rosemont)
 ```
-La Source en Soi
-2554 rue Beaubien Est
-Montréal, QC  H1Y 1G3
+Les Vagues, communautés thérapeutiques
+2395 rue Beaubien Est
+Montréal, QC  H2G 1N3
 Canada
 ```
 
@@ -28,13 +30,14 @@ Repentigny, QC  J6A 7K4
 Canada
 ```
 
-### Horaires (à valider avec Judith après launch — pour l ' instant on met ces estimés)
+### Horaires (confirmés octobre 2026 — mardi 13h00 – 21h00 si une seule plage par jour)
 ```
-Lundi    : 9h00 – 12h00      (LSSI Rosemont)
-Mardi    : 13h00 – 19h30     (LSSI Rosemont)
-Mercredi : 9h00 – 15h00      (Éden Repentigny)
-Jeudi    : 8h30 – 13h30      (LSSI Rosemont)
-Vendredi : 8h30 – 11h00      (LSSI Rosemont)
+Lundi    : 8h30 – 15h00      (Les Vagues, Rosemont — séances privées)
+Mardi    : 13h00 – 17h00     (Les Vagues, Rosemont — acupuncture sociale)
+           18h00 – 21h00     (Les Vagues, Rosemont — séances privées)
+Mercredi : 8h30 – 11h30      (Les Vagues, Rosemont — acupuncture sociale)
+Jeudi    : 9h00 – 15h00      (Éden Repentigny)
+Vendredi : 8h30 – 12h00      (Les Vagues, Rosemont — acupuncture sociale)
 Samedi   : Fermé
 Dimanche : Fermé
 ```
@@ -50,12 +53,12 @@ Acupunctrice à Montréal et Repentigny — Fertilité, grossesse, pédiatrie
 
 ### Courte (Pages Jaunes, listings — ~250 caractères)
 ```
-Judith Dufour-Savard, Ac. (OAQ A-008-24) accompagne ses patientes en fertilité, grossesse, pédiatrie et santé mentale. Pratique à La Source en Soi (Rosemont) et à Éden Yoga Pilates (Repentigny).
+Judith Dufour-Savard, Ac. (OAQ A-008-24) accompagne ses patientes en fertilité, grossesse, pédiatrie et santé mentale. Pratique chez Les Vagues, communautés thérapeutiques (Rosemont) et à Éden Yoga Pilates (Repentigny).
 ```
 
 ### Moyenne (Bing Places, listings standards — ~500 caractères)
 ```
-Judith Dufour-Savard est acupunctrice membre en règle de l Ordre des acupuncteurs du Québec (numéro de membre A-008-24). Elle accompagne ses patientes dans les enjeux de fertilité, grossesse, périnatalité, pédiatrie, ménopause, anxiété et insomnie. Sa pratique combine acupuncture classique, moxibustion et auriculothérapie, avec une approche personnalisée fondée sur la médecine chinoise traditionnelle. Cabinets à La Source en Soi (Rosemont, Montréal) du lundi au vendredi sauf mercredi, et à Éden Yoga Pilates (Repentigny) le mercredi.
+Judith Dufour-Savard est acupunctrice membre en règle de l Ordre des acupuncteurs du Québec (numéro de membre A-008-24). Elle accompagne ses patientes dans les enjeux de fertilité, grossesse, périnatalité, pédiatrie, ménopause, anxiété et insomnie. Sa pratique combine acupuncture classique, moxibustion et auriculothérapie, avec une approche personnalisée fondée sur la médecine chinoise traditionnelle. Cabinets chez Les Vagues, communautés thérapeutiques (Rosemont, Montréal) les lundis, mardis, mercredis et vendredis, et à Éden Yoga Pilates (Repentigny) le jeudi.
 ```
 
 ### Longue (GBP, Yelp, Lumino — ~750 caractères)
@@ -64,7 +67,7 @@ Judith Dufour-Savard est acupunctrice membre en règle de l Ordre des acupuncteu
 
 Son approche s appuie sur la médecine chinoise traditionnelle et intègre l acupuncture classique, la moxibustion, l auriculothérapie et les ventouses selon les besoins. Chaque traitement est personnalisé après une évaluation complète incluant prise du pouls et observation de la langue.
 
-Judith pratique à deux endroits : La Source en Soi à Rosemont (Montréal) du lundi au vendredi sauf mercredi, et à Éden Yoga Pilates à Repentigny le mercredi. Réservation en ligne via acupuncturejudith.ca.
+Judith pratique à deux endroits : chez Les Vagues, communautés thérapeutiques, à Rosemont (Montréal) les lundis, mardis, mercredis et vendredis, avec des plages d acupuncture sociale à tarif réduit, et à Éden Yoga Pilates à Repentigny le jeudi. Réservation en ligne via acupuncturejudith.ca.
 ```
 
 ### Catégorie primaire à utiliser
@@ -127,14 +130,14 @@ URL : https://www.bingplaces.com/
 Action :
 1. Sign in (compte Microsoft, peut être créé ou utilisé Outlook si Judith en a un)
 2. Vérifier d abord si une fiche existe déjà (Bing peut auto-importer depuis GBP). Search Add Business > entrer Judith Dufour-Savard Montréal.
-3. Si oui : Claim this business > validation par téléphone (514-750-3735)
+3. Si oui : Claim this business > validation par téléphone (514-882-1922)
 4. Si non : Créer une nouvelle fiche
 
 Champs à remplir :
 - Nom : Judith Dufour-Savard, Ac.
 - Catégorie : Acupuncture (sous Health > Alternative Health)
-- Adresse : LSSI (2554 Beaubien Est, Montréal, QC, H1Y 1G3)
-- Téléphone : 514-750-3735
+- Adresse : Les Vagues, communautés thérapeutiques (2395 rue Beaubien Est, Montréal, QC, H2G 1N3)
+- Téléphone : 514-882-1922
 - Site web : https://acupuncturejudith.ca
 - Description : utiliser la version MOYENNE (~500 caractères)
 - Heures : voir tableau au-dessus
@@ -158,15 +161,15 @@ Action :
 Champs :
 - Business name : Judith Dufour-Savard, Ac.
 - Catégorie : Acupuncture (sous Health & Medical > Traditional Chinese Medicine)
-- Adresse : LSSI (Rosemont)
-- Téléphone : 514-750-3735
+- Adresse : Les Vagues, communautés thérapeutiques (2395 rue Beaubien Est, Montréal, QC, H2G 1N3)
+- Téléphone : 514-882-1922
 - Site web : https://acupuncturejudith.ca
 - Description : utiliser la version LONGUE (~750 caractères, Yelp permet 2500)
 - Heures : voir tableau au-dessus
 - Photos : 5-8 photos
 - Services : copier la liste de services depuis la section descriptions ci-dessus
 
-Validation : email + appel/SMS sur 514-750-3735
+Validation : email + appel/SMS sur 514-882-1922
 Délai : immédiat après validation
 
 ---
@@ -185,8 +188,8 @@ Action :
 Champs :
 - Nom : Judith Dufour-Savard, Ac.
 - Catégorie : Acupuncture (sous Santé > Médecines alternatives)
-- Adresse : LSSI (2554 Beaubien Est, Montréal, QC, H1Y 1G3)
-- Téléphone : 514-750-3735
+- Adresse : Les Vagues, communautés thérapeutiques (2395 rue Beaubien Est, Montréal, QC, H2G 1N3)
+- Téléphone : 514-882-1922
 - Site web : https://acupuncturejudith.ca
 - Description : utiliser MOYENNE (~500 caractères)
 
@@ -203,12 +206,14 @@ URL : https://lumino.sunlife.ca/fr/professionnel-de-la-sante/inscription
 
 Si l URL ne fonctionne pas, chercher : Lumino Santé professionnel inscription dans Google.
 
+⚠️ Un profil non revendiqué existe déjà, rattaché à la clinique « la-source-en-soi-centre » (`luminohealth.sunlife.ca/en/health-care-provider-profile/acupuncturist/la-source-en-soi-centre/judith-dufour-savard-1007631-1001446/`). Revendiquer ce profil plutôt que d en créer un nouveau, puis corriger le rattachement vers Les Vagues + Éden (support Lumino si le changement de clinique n est pas éditable).
+
 Champs :
 - Numéro OAQ : A-008-24 (essentiel pour validation)
 - Nom complet : Judith Dufour-Savard, Ac.
 - Spécialité : Acupuncteur
-- Adresse(s) : Les 2 (LSSI + Éden)
-- Téléphone : 514-750-3735
+- Adresse(s) : Les 2 (Les Vagues + Éden)
+- Téléphone : 514-882-1922
 - Email : jdufoursavard@gmail.com
 - Site web : https://acupuncturejudith.ca
 - Description : MOYENNE ou LONGUE
@@ -234,23 +239,23 @@ Action :
 Champs :
 - Nom : Judith Dufour-Savard, Ac.
 - Catégorie : Acupuncture (sous Health > Alternative & Holistic Health)
-- Adresse principale : LSSI
-- Téléphone : 514-750-3735
+- Adresse principale : Les Vagues, communautés thérapeutiques (2395 rue Beaubien Est, Montréal, QC, H2G 1N3)
+- Téléphone : 514-882-1922
 - Site web : https://acupuncturejudith.ca
 - Description : ULTRA-COURTE (max ~300 caractères pour Apple Maps)
 
-Validation : appel téléphonique automatique sur 514-750-3735 (Annie LSSI doit confirmer)
+Validation : appel téléphonique automatique sur 514-882-1922 (cellulaire de Judith)
 Délai : 3-7 jours
 
 ---
 
-### [ ] 8. Medimap — via LSSI (~5 min)
+### [ ] 8. Medimap — via Les Vagues (~5 min)
 
 Medimap référence des cliniques, pas des praticiens individuels.
 
 Action :
-1. Vérifier d abord si La Source en Soi a une fiche Medimap : https://medimap.ca/search?q=la+source+en+soi+montreal
-2. Si oui : envoyer un message à Annie (LSSI) pour demander d ajouter Judith dans les services/praticiens listés
+1. Vérifier d abord si Les Vagues a une fiche Medimap : https://medimap.ca/search?q=les+vagues+montreal
+2. Si oui : demander à la clinique d ajouter Judith dans les services/praticiens listés
 3. Si non : faible priorité, à reporter post-launch
 
 ---

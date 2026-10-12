@@ -243,7 +243,7 @@ Calibrée par les 53 corrections appliquées dans `b2af0c4` et la ressource mén
 - Justifier scientifiquement (méta-analyses, ECR, sans citation lourde dans une FAQ courte)
 - Personnel : « dans ma pratique », « plusieurs de mes patientes », « mon approche »
 - Concret : chiffres, fréquences (« 1 à 2 séances/semaine pendant 6 semaines »)
-- Mentionner les 2 cliniques quand pertinent (LSSI Rosemont + Éden Repentigny)
+- Mentionner les 2 cliniques quand pertinent : Les Vagues, communautés thérapeutiques (Rosemont) + Éden (Repentigny, jeudi)
 - Pédagogique : expliquer les mécanismes sans jargon
 - Caveat médical à la fin : « consultez aussi votre médecin », « complète, ne remplace pas »
 

@@ -190,7 +190,7 @@ export default function ColorPanel({ canvas }: Props) {
         </div>
       </>)}
 
-      <p className="text-[10px] text-white/40 mb-1">La Source en Soi</p>
+      <p className="text-[10px] text-white/40 mb-1">Les Vagues</p>
       <div className="flex flex-wrap gap-1.5 mb-3">
         {BRAND.map((c) => <Swatch key={c} color={c} onClick={apply} />)}
       </div>

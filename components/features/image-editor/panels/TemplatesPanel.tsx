@@ -73,7 +73,7 @@ export default function TemplatesPanel({ canvas }: Props) {
         <button onClick={loadFabric}
           className="aspect-[9/16] rounded-lg border border-white/10 hover:border-teal-400 transition-colors overflow-hidden flex flex-col items-center justify-center gap-1"
           style={{ background: `linear-gradient(135deg, ${PALETTE.lightMint}, ${PALETTE.turquoise})` }}>
-          <span className="text-[9px] font-medium text-gray-700 px-1 text-center leading-tight">La Source en Soi</span>
+          <span className="text-[9px] font-medium text-gray-700 px-1 text-center leading-tight">Les Vagues</span>
         </button>
         {/* Blank */}
         <button onClick={loadBlank}

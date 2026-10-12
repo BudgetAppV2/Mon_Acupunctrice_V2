@@ -53,8 +53,11 @@ Lire dans cet ordre :
 
 On migre le site public de Judith (`acupuncturejudith.ca`) depuis Wix vers
 une section publique du Hub V2 (Next.js/Vercel). Objectif : unifier
-l'écosystème, reprendre le contrôle SEO, exploiter la réputation massive
-de la clinique La Source en Soi (1 215 avis 4,9/5 sur Google).
+l'écosystème, reprendre le contrôle SEO.
+
+> **Octobre 2026** : Judith a quitté La Source en Soi (LSSI) pour Les Vagues,
+> communautés thérapeutiques. Toute mention LSSI ailleurs dans la doc est
+> historique — voir `docs/MIGRATION_LES_VAGUES.md`.
 
 **Documentation de la migration** :
 - Plan éditorial stratégique : `docs/migration-wix/01-strategie/PLAN_EDITORIAL_SEO_GEO_v0.3.md`
@@ -75,7 +78,7 @@ de la clinique La Source en Soi (1 215 avis 4,9/5 sur Google).
 - R3 : Analytics → Plausible Cloud 9$/mois
 - R4 : Éditeur CMS → textarea markdown + preview
 - R5 : Bilingue → NON pour l'instant (data-driven après 2-3 mois)
-- R6 : GBP → UN SEUL GBP praticien (multi-site), adresse principale LSSI
+- R6 : GBP → UN SEUL GBP praticien (multi-site), adresse principale 2395 rue Beaubien Est, Montréal QC H2G 1N3 (Les Vagues)
 - R7 : Avis Google → zone grise OAQ, courriel envoyé pour clarification
 - R8 : Domaines → garder 3 (acupuncturejudith.ca, grossesseacupuncture.ca, mon-acupunctrice.ca), expirer judithdufoursavardacu.com
 
@@ -85,7 +88,7 @@ de la clinique La Source en Soi (1 215 avis 4,9/5 sur Google).
 - ✅ MW-E1 : CMS FAQ (CRUD + MarkdownField réutilisable)
 - ✅ MW-E2 : CMS Ressources (formulaire multi-section, citations, FAQ)
 - ✅ MW-E4 : Workflow validation Judith (approve/comment/submit, badge pending)
-- ✅ GRV : centralisation URLs dans lib/utils/rdvUrl.ts (LSSI + Eden)
+- ✅ GRV : centralisation URLs dans lib/utils/rdvUrl.ts (Les Vagues + Eden)
 - ✅ Eden Yoga Pilates : 2e clinique intégrée (18 fichiers)
 - ✅ Corrections Judith : 53 corrections appliquées (tarifs, terminologie, formulations)
 
@@ -93,9 +96,12 @@ de la clinique La Source en Soi (1 215 avis 4,9/5 sur Google).
 Toute mise à jour identité/NAP/spécialités/bios/profils externes part de ce fichier. En cas de divergence avec le résumé ci-dessous, le SOT fait foi.
 
 **Deux cliniques** :
-- La Source en Soi : 2554 rue Beaubien Est, Montréal QC H1Y 1G3 (Rosemont) | GRV companyId=104074 eids=175708
+- **Les Vagues, communautés thérapeutiques** (principale) : 2395 rue Beaubien Est, Montréal QC H2G 1N3 (Rosemont) | GRV slug `bhavanalaclinique` companyId=106503 eids=196572
+  - Toujours écrire le nom complet « Les Vagues, communautés thérapeutiques ». Le slug GRV ne doit JAMAIS apparaître comme texte visible, dans llms*.txt ou dans le JSON-LD (URL seulement).
+  - Pas de téléphone clinique : utiliser celui de Judith, 514 882-1922 (appel ou texto). Instagram clinique : @lesvagues.beaubien
 - Éden Yoga Pilates : 121 boulevard Industriel local 225, Repentigny QC J6A 7K4 | GRV companyId=141296 eids=192390 stype=Acupuncture
-- Judith : LSSI lun-mar-jeu-ven, Éden mercredi 9h-15h (pas d'acupuncture sociale à Éden)
+- Judith : Les Vagues lun-mar-mer-ven (acupuncture sociale mar/mer/ven), Éden jeudi 9h-15h (pas d'acupuncture sociale à Éden)
+- Horaires détaillés et tarifs : `lib/entity-canonical.mjs` (`NAP.lesvagues.schedule`, `PRICING`)
 
 **Profils sociaux officiels** (utiliser ces URLs exactes partout — schema, footer, llms.txt) :
 - Instagram : `https://www.instagram.com/mon_acupunctrice/`

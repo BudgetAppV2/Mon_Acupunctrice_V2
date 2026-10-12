@@ -1,5 +1,7 @@
 # Passation — Éditeur Vidéo Pro : Collaboration ChatGPT (DA) + Claude Code (Dev)
 
+> ⚠️ **Note d'obsolescence** : LSSI n'est plus d'actualité depuis octobre 2026 — voir `docs/MIGRATION_LES_VAGUES.md`.
+
 ## Contexte pour la prochaine instance
 
 Mon Acupunctrice Hub V2 est une PWA (Next.js 15, Firebase, Vercel) pour Judith,

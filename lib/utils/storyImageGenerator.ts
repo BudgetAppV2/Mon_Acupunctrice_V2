@@ -1,5 +1,5 @@
 /** Genere une image 1080x1920 pour les stories Instagram.
- * Design brande "La Source en Soi" avec CTA GoRendezVous.
+ * Design brande "Les Vagues, communautés thérapeutiques" avec CTA GoRendezVous.
  * Supporte une image de fond optionnelle (Canva) en mode cover.
  * Utilise Canvas API cote client — ne pas appeler dans le cron.
  */
@@ -66,7 +66,7 @@ function drawBranding(ctx: CanvasRenderingContext2D) {
   ctx.shadowBlur = 8;
   ctx.font = 'bold 42px Inter, sans-serif';
   ctx.fillStyle = '#FFFFFF';
-  ctx.fillText('LA SOURCE EN SOI', W / 2, 280);
+  ctx.fillText('LES VAGUES', W / 2, 280);
 
   ctx.shadowBlur = 4;
   ctx.font = '28px Inter, sans-serif';

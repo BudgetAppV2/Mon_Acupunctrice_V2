@@ -1,5 +1,7 @@
 # Handoff CC — Vague 1 quick wins (post-audit Codex)
 
+> ⚠️ **Note d'obsolescence** : LSSI n'est plus d'actualité depuis octobre 2026 — voir `docs/MIGRATION_LES_VAGUES.md`.
+
 **Date** : 2026-05-07 (fin d'après-midi)
 **Contexte** : Codex a audité le Chantier 1 AEO et a remonté 5 risques + 7 quick wins. On exécute la **Vague 1** maintenant (~30 min). Vagues 2 et 3 documentées en bas pour plus tard.
 
