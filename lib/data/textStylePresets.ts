@@ -3,7 +3,7 @@
  *
  * Source : 6 Codex presets from subtitle-lab/fabric-presets/votre-texte-paragraphe2.presets.json
  *          (pro fonts mapped to Google Fonts equivalents)
- *        + 6 La Source en Soi / wellness presets
+ *        + 6 Les Vagues / wellness presets
  *
  * Coordinates are in the preset's natural space. addPreset() in TextPanel
  * dynamically scales them to fit ~60% of the 1080x1920 canvas.
@@ -117,7 +117,7 @@ const CODEX_PRESETS: TextStylePreset[] = [
 ];
 
 // ---------------------------------------------------------------------------
-// 6 La Source en Soi / wellness presets (Google Fonts native)
+// 6 Les Vagues / wellness presets (Google Fonts native)
 // ---------------------------------------------------------------------------
 
 const WELLNESS_PRESETS: TextStylePreset[] = [
@@ -147,11 +147,11 @@ const WELLNESS_PRESETS: TextStylePreset[] = [
     ],
   },
   {
-    id: 'la-source-brand',
-    name: 'La Source en Soi',
+    id: 'les-vagues-brand',
+    name: 'Les Vagues',
     elements: [
-      { type: 'textbox', text: 'La Source', fontFamily: 'Antic Slab', fontSize: 52, fontWeight: 400, fill: '#5C7A5F', top: 150, left: 120, width: 300, textAlign: 'center' },
-      { type: 'textbox', text: 'EN SOI', fontFamily: 'Mulish', fontSize: 38, fontWeight: 800, fill: '#7EBEC5', top: 215, left: 120, width: 300, textAlign: 'center', charSpacing: 400 },
+      { type: 'textbox', text: 'Les Vagues', fontFamily: 'Antic Slab', fontSize: 52, fontWeight: 400, fill: '#5C7A5F', top: 150, left: 120, width: 300, textAlign: 'center' },
+      { type: 'textbox', text: 'COMMUNAUTÉS\nTHÉRAPEUTIQUES', fontFamily: 'Mulish', fontSize: 20, fontWeight: 800, fill: '#7EBEC5', top: 215, left: 120, width: 300, textAlign: 'center', charSpacing: 300 },
     ],
   },
   {

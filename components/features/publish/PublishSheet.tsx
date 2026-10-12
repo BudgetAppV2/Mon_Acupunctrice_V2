@@ -103,7 +103,7 @@ export default function PublishSheet({ isOpen, onClose, item }: Props) {
               <ArrowUpOnSquareIcon className="w-5 h-5" />
               {sharing ? 'Chargement...' : 'Partager en Story'}
             </button>
-            <p className="text-xs text-gray-400 text-center">Ajoute le tag @lasourceensoi dans Instagram</p>
+            <p className="text-xs text-gray-400 text-center">Ajoute le tag @lesvagues.beaubien dans Instagram</p>
           </>
         )}
         {fbError && <p className="text-xs text-red-500">{fbError}</p>}
