@@ -150,7 +150,7 @@ export async function publishStoryViaInstagrapi(
     videoUrl: item.videoUrl || null,
     imageUrl: item.coverImageUrl || item.storyImageUrl || null,
     caption: item.caption || '',
-    clinicUsername: options?.clinicUsername || 'lasourceensoi',
+    clinicUsername: options?.clinicUsername || 'lesvagues.beaubien',
     linkUrl: options?.linkUrl || 'https://acupuncturejudith.ca/reserver',
     hashtags: options?.hashtags || ['acupuncture'],
   };
