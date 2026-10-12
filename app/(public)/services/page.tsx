@@ -5,7 +5,7 @@ import PilierCard from '../_components/PilierCard';
 export const metadata: Metadata = {
   title: 'Services — Acupuncture a Rosemont, Montreal',
   description:
-    'Mes services d’acupuncture a Rosemont : fertilite, grossesse et perinatalite, pediatrie, acupuncture sociale. La Source en Soi, Beaubien Est.',
+    'Mes services d’acupuncture a Rosemont : fertilite, grossesse et perinatalite, pediatrie, acupuncture sociale. Les Vagues, communautes therapeutiques, Beaubien Est.',
 };
 
 const SCHEMA_ORG = {

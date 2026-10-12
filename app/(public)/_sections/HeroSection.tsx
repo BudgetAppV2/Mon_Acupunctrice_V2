@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import { NAP } from '@/lib/entity-canonical.mjs';
 import GrainOverlay from '../_components/GrainOverlay';
 import WatermarkText from '../_components/WatermarkText';
 import CtaButton from '../_components/CtaButton';
@@ -62,7 +63,7 @@ export default function HeroSection() {
               </span>
               <span className="flex items-center gap-2.5">
                 <MapPinIcon />
-                2554 Beaubien Est
+                {NAP.lesvagues.streetAddress}
               </span>
             </div>
           </div>
@@ -71,7 +72,7 @@ export default function HeroSection() {
           <div className="max-w-[420px] md:max-w-none mx-auto md:mx-0">
             <Image
               src="/site/judith/judith-portrait-01.webp"
-              alt="Judith Dufour Savard, acupunctrice, dans son cabinet a La Source en Soi a Rosemont"
+              alt="Portrait de Judith Dufour-Savard, acupunctrice à Rosemont, Montréal"
               width={1600}
               height={2400}
               priority

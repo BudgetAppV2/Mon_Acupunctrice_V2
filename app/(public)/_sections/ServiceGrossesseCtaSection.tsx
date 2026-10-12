@@ -40,7 +40,7 @@ export default function ServiceGrossesseCtaSection() {
           </CtaButton>
         </div>
         <p className="mt-4 text-[13px] text-white/60">
-          Disponible &agrave; Rosemont (La Source en Soi) et &agrave; Repentigny (&Eacute;den Yoga Pilates).
+          Disponible &agrave; Rosemont (Les Vagues, communaut&eacute;s th&eacute;rapeutiques) et &agrave; Repentigny (&Eacute;den Yoga Pilates).
         </p>
         <div className="mt-4 text-center">
           <Link href="/faq" className="text-[14px] text-white/70 underline underline-offset-4 hover:text-white transition-colors">

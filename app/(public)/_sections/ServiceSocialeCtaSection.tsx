@@ -5,6 +5,7 @@ import Reveal from '../_components/animations/Reveal';
 import MagneticButton from '../_components/animations/MagneticButton';
 import FloatingDeco from '../_components/animations/FloatingDeco';
 import CtaButton from '../_components/CtaButton';
+import { getRdvUrl } from '@/lib/utils/rdvUrl';
 
 export default function ServiceSocialeCtaSection() {
   return (
@@ -32,7 +33,7 @@ export default function ServiceSocialeCtaSection() {
         <div className="flex flex-col sm:flex-row justify-center gap-4 items-center">
           <MagneticButton range={120} strength={0.4}>
             <div className="shimmer-cta rounded-md">
-              <CtaButton variant="white" size="lg" href="https://www.gorendezvous.com/lasourceensoi?companyId=104074&eids=175708">R&eacute;server une s&eacute;ance sociale</CtaButton>
+              <CtaButton variant="white" size="lg" href={getRdvUrl({ clinic: 'lesvagues' })}>R&eacute;server une s&eacute;ance sociale</CtaButton>
             </div>
           </MagneticButton>
           <CtaButton variant="secondary" href="/contact" className="text-white/80 hover:text-white">
@@ -40,7 +41,7 @@ export default function ServiceSocialeCtaSection() {
           </CtaButton>
         </div>
         <p className="mt-4 text-[13px] text-white/60">
-          Disponible uniquement &agrave; Rosemont (La Source en Soi).
+          Disponible uniquement &agrave; Rosemont, chez Les Vagues, communaut&eacute;s th&eacute;rapeutiques.
         </p>
         <div className="mt-4 text-center">
           <Link href="/faq" className="text-[14px] text-white/70 underline underline-offset-4 hover:text-white transition-colors">

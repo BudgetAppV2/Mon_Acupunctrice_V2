@@ -3,6 +3,7 @@
 import SectionNumber from '../_components/SectionNumber';
 import SectionHeading from '../_components/SectionHeading';
 import Reveal from '../_components/animations/Reveal';
+import { PRICING } from '@/lib/entity-canonical.mjs';
 
 const STEPS = [
   { n: 1, label: 'Accueil', text: "On échange sur comment vous allez, vos symptômes du jour" },
@@ -17,7 +18,7 @@ const DIFFERENCES = [
   { label: 'Tenue', social: 'Habillé(e)', prive: 'Tenue adaptée' },
   { label: 'Points', social: 'Distaux', prive: 'Tout le corps' },
   { label: 'Durée', social: '60 min', prive: '60 min' },
-  { label: 'Tarif', social: '35-60 $', prive: 'Standard' },
+  { label: 'Tarif', social: `${PRICING.socialMin}-${PRICING.socialMax} $`, prive: 'Standard' },
 ];
 
 export default function ServiceSocialeFormatSection() {

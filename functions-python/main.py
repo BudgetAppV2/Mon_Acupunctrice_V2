@@ -19,7 +19,7 @@ from google.cloud import storage
 # Config
 STORAGE_BUCKET = os.environ.get("STORAGE_BUCKET", "mon-acupunctrice-hub.firebasestorage.app")
 SESSION_BLOB = os.environ.get("SESSION_BLOB", "instagrapi/session.json")
-DEFAULT_CLINIC = os.environ.get("DEFAULT_CLINIC", "lasourceensoi")
+DEFAULT_CLINIC = os.environ.get("DEFAULT_CLINIC", "lesvagues.beaubien")
 DEFAULT_LINK = os.environ.get("DEFAULT_LINK", "https://acupuncturejudith.ca")
 
 # Default sticker coordinates (aligned with Judith's Canva template 1080x1920)

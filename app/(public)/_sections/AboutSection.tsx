@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import SectionNumber from '../_components/SectionNumber';
 import SectionHeading from '../_components/SectionHeading';
+import { NAP } from '@/lib/entity-canonical.mjs';
 import CtaButton from '../_components/CtaButton';
 import Reveal from '../_components/animations/Reveal';
 
@@ -24,7 +25,7 @@ export default function AboutSection() {
 
         <div>
           <Reveal scaleFrom={0.7} delay={0.1} duration={0.8}>
-            <SectionNumber number="04" align="left" />
+            <SectionNumber number="03" align="left" />
           </Reveal>
           <Reveal>
             <SectionHeading kicker="QUI JE SUIS" title="Je suis Judith." align="left" />
@@ -50,7 +51,7 @@ export default function AboutSection() {
           <Reveal delay={0.4}>
           <div className="flex flex-wrap gap-3 my-7">
             <Badge icon={<ShieldIcon />} label="Membre OAQ" />
-            <Badge icon={<BuildingIcon />} label="La Source en Soi" />
+            <Badge icon={<BuildingIcon />} label={NAP.lesvagues.name} />
             <Badge icon={<HeartIcon />} label="M&egrave;re de 3 enfants" />
           </div>
 

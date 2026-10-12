@@ -56,10 +56,15 @@ const piliersInProse = joinWithEt(
   PILIERS.map((p) => p.name.toLowerCase().replace(' & ', ' et '))
 );
 
+const SOCIAL_HOURS = NAP.lesvagues.schedule
+  .filter((s) => s.type === 'sociale')
+  .map((s) => `le ${s.day} de ${s.opens} à ${s.closes}`)
+  .join(', ');
+
 // Header — toutes les valeurs viennent du module canonique
 sections.push(`# ${ENTITY.websiteName}
 
-> ${ENTITY.alternateName}, est ${ENTITY.jobTitleShort.toLowerCase()} membre de l'${ENTITY.oaqName} (numéro ${ENTITY.oaqNumber}). Pratique spécialisée en ${piliersInProse}, à ${NAP.lssi.neighborhood} (${NAP.lssi.addressLocality}) et ${NAP.eden.addressLocality}.
+> ${ENTITY.alternateName}, est ${ENTITY.jobTitleShort.toLowerCase()} membre de l'${ENTITY.oaqName} (numéro ${ENTITY.oaqNumber}). Pratique spécialisée en ${piliersInProse}, à ${NAP.lesvagues.neighborhood} (${NAP.lesvagues.addressLocality}) et ${NAP.eden.addressLocality}.
 
 Site web : ${CONTACT.website}
 Réservation : ${CONTACT.reservationUrl}
@@ -86,7 +91,7 @@ L'acupuncture pédiatrique utilise des techniques douces et adaptées à l'âge 
 - URL : https://www.acupuncturejudith.ca/services/pediatrie
 
 ### Acupuncture sociale
-L'acupuncture sociale rend les soins plus accessibles grâce à un tarif solidaire de 35 $ à 60 $. Les séances ont lieu en groupe dans un espace calme à La Source en Soi (Rosemont, Montréal). Elle est offerte uniquement à La Source en Soi (pas à Éden Yoga Pilates).
+L'acupuncture sociale rend les soins plus accessibles grâce à un tarif solidaire de ${PRICING.socialMin} $ à ${PRICING.socialMax} $. Les séances ont lieu en groupe dans un espace calme chez ${NAP.lesvagues.name} (${NAP.lesvagues.neighborhood}, ${NAP.lesvagues.addressLocality}), ${SOCIAL_HOURS}. Elle est offerte uniquement chez ${NAP.lesvagues.name} (pas à ${NAP.eden.name}).
 - URL : https://www.acupuncturejudith.ca/services/acupuncture-sociale
 `);
 
@@ -144,16 +149,16 @@ sections.push(`## Informations pratiques
 ### Tarifs
 - Séance adulte : ${PRICING.adultSession} $
 - Séance enfant : ${PRICING.childSession} $
-- Acupuncture sociale : ${PRICING.socialMin} $ à ${PRICING.socialMax} $ (tarif solidaire, ${NAP.lssi.name} uniquement)
+- Acupuncture sociale : ${PRICING.socialMin} $ à ${PRICING.socialMax} $ (tarif solidaire, ${NAP.lesvagues.name} uniquement)
 - Reçus pour assurances fournis sur demande
 
 ### Cliniques
-- **${NAP.lssi.name}** : ${NAP.lssi.streetAddress}, ${NAP.lssi.addressLocality} ${NAP.lssi.addressRegion} ${NAP.lssi.postalCode} (${NAP.lssi.neighborhood}) — ${NAP.lssi.daysLabel}
+- **${NAP.lesvagues.name}** : ${NAP.lesvagues.streetAddress}, ${NAP.lesvagues.addressLocality} ${NAP.lesvagues.addressRegion} ${NAP.lesvagues.postalCode} (${NAP.lesvagues.neighborhood}) — ${NAP.lesvagues.daysLabel}
 - **${NAP.eden.name}** : ${NAP.eden.streetAddressFull}, ${NAP.eden.addressLocality} ${NAP.eden.addressRegion} ${NAP.eden.postalCode} — ${NAP.eden.daysLabel}
 
 ### Réservation
-- En ligne (réservation directe vers le profil de Judith) : ${NAP.lssi.grvUrl}
-- Téléphone : ${CONTACT.phoneInternational}
+- En ligne (réservation directe vers le profil de Judith) : ${NAP.lesvagues.grvUrl}
+- Téléphone (appel ou texto) : ${CONTACT.phoneInternational}
 - Courriel : ${CONTACT.email}
 
 ### Credentials

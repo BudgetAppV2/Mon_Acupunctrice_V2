@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     template: '%s | Judith Dufour-Savard',
   },
   description:
-    'Acupunctrice à Montréal, spécialisée en fertilité, grossesse, pédiatrie et acupuncture sociale. En partenariat avec la clinique La Source en Soi à Rosemont.',
+    'Acupunctrice à Montréal, spécialisée en fertilité, grossesse, pédiatrie et acupuncture sociale. Chez Les Vagues, communautés thérapeutiques, à Rosemont.',
   robots: { index: true, follow: true },
   alternates: {
     canonical: './',
@@ -47,7 +47,7 @@ export const metadata: Metadata = {
         url: '/site/judith/judith-portrait-01.webp',
         width: 1200,
         height: 630,
-        alt: 'Judith Dufour-Savard, acupunctrice à Rosemont',
+        alt: 'Portrait de Judith Dufour-Savard, acupunctrice à Rosemont, Montréal',
       },
     ],
   },

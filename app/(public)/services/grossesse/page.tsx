@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { PRICING } from '@/lib/entity-canonical.mjs';
 import Link from 'next/link';
 import AuthorByline from '../../_components/AuthorByline';
 import ServiceGrossesseHeroSection from '../../_sections/ServiceGrossesseHeroSection';
@@ -12,7 +13,7 @@ import ServiceGrossesseCtaSection from '../../_sections/ServiceGrossesseCtaSecti
 export const metadata: Metadata = {
   title: 'Acupuncture grossesse',
   description:
-    'Acupunctrice a Rosemont specialisee en grossesse : nausees, douleurs, version du siege (moxibustion), preparation accouchement. 60 min, 100 $. La Source en Soi.',
+    `Acupunctrice a Rosemont specialisee en grossesse : nausees, douleurs, version du siege (moxibustion), preparation accouchement. 60 min, ${PRICING.adultSession} $. Les Vagues, communautes therapeutiques.`,
 };
 
 const SCHEMA_ORG = {

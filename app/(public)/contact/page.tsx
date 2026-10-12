@@ -10,14 +10,14 @@ import Reveal from '../_components/animations/Reveal';
 export const metadata: Metadata = {
   title: 'Contact — Acupuncture Rosemont et Repentigny',
   description:
-    'Contactez Judith Dufour-Savard, acupunctrice \u00e0 Rosemont (La Source en Soi) et Repentigny (\u00c9den Yoga Pilates). Par t\u00e9l\u00e9phone, courriel ou en personne.',
+    'Contactez Judith Dufour-Savard, acupunctrice \u00e0 Rosemont (Les Vagues, communaut\u00e9s th\u00e9rapeutiques) et Repentigny (\u00c9den Yoga Pilates). Par t\u00e9l\u00e9phone, texto, courriel ou en personne.',
 };
 
 // TODO Judith: email a completer (placeholder suggere info@acupuncturejudith.ca)
 const CONTACT_EMAIL = 'info@acupuncturejudith.ca';
 
-const MAPS_LSSI_EMBED = `https://www.google.com/maps?q=${CLINICS.lssi.mapsQuery}&output=embed`;
-const MAPS_LSSI_DIR = `https://maps.google.com/?daddr=${CLINICS.lssi.mapsQuery}`;
+const MAPS_VAGUES_EMBED = `https://www.google.com/maps?q=${CLINICS.lesvagues.mapsQuery}&output=embed`;
+const MAPS_VAGUES_DIR = `https://maps.google.com/?daddr=${CLINICS.lesvagues.mapsQuery}`;
 const MAPS_EDEN_EMBED = `https://www.google.com/maps?q=${CLINICS.eden.mapsQuery}&output=embed`;
 const MAPS_EDEN_DIR = `https://maps.google.com/?daddr=${CLINICS.eden.mapsQuery}`;
 
@@ -50,7 +50,7 @@ export default function ContactPage() {
               as="h1"
               kicker="CONTACT"
               title="Restons en contact."
-              subtitle="Une question avant de r&eacute;server ? Besoin de savoir si l&rsquo;acupuncture est adapt&eacute;e &agrave; votre situation ? &Eacute;crivez-moi ou appelez la clinique &mdash; je vous r&eacute;ponds avec plaisir."
+              subtitle="Une question avant de r&eacute;server ? Besoin de savoir si l&rsquo;acupuncture est adapt&eacute;e &agrave; votre situation ? &Eacute;crivez-moi, appelez-moi ou textez-moi &mdash; je vous r&eacute;ponds avec plaisir."
             />
           </Reveal>
         </div>
@@ -59,19 +59,19 @@ export default function ContactPage() {
       {/* Deux cliniques */}
       <section className="bg-white py-[68px] md:py-[88px] px-5 md:px-8">
         <div className="max-w-[1080px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* LSSI */}
+          {/* Les Vagues */}
           <div className="bg-public-beige-light rounded-[14px] p-8 md:p-10 border border-public-border-subtle">
             <h2 className="font-public-serif text-[28px] md:text-[32px] font-medium text-public-text-dark mb-2">
-              {CLINICS.lssi.name}
+              {CLINICS.lesvagues.name}
             </h2>
             <p className="text-[16px] text-public-text-medium leading-relaxed mb-6">
-              {CLINICS.lssi.addressShort}<br />
-              Montr&eacute;al, QC &nbsp; {CLINICS.lssi.postalCode}
+              {CLINICS.lesvagues.addressShort}<br />
+              Montr&eacute;al, QC &nbsp; {CLINICS.lesvagues.postalCode}
             </p>
             <dl className="space-y-3 text-[15px] text-public-text-medium">
               <div className="flex items-start gap-3">
                 <PhoneIcon />
-                <span><strong>T&eacute;l&eacute;phone</strong> : <TrackedLink href={`tel:${CLINICS.lssi.phoneFull}`} event="Contact telephone" className="underline underline-offset-2 hover:text-public-accent-warm">{CLINICS.lssi.phone}</TrackedLink></span>
+                <span><strong>T&eacute;l&eacute;phone ou texto</strong> : <TrackedLink href={`tel:${CLINICS.lesvagues.phoneFull}`} event="Contact telephone" className="underline underline-offset-2 hover:text-public-accent-warm">{CLINICS.lesvagues.phone}</TrackedLink></span>
               </div>
               <div className="flex items-start gap-3">
                 <MailIcon />
@@ -79,23 +79,32 @@ export default function ContactPage() {
               </div>
               <div className="flex items-start gap-3">
                 <GlobeIcon />
-                <span><strong>Site clinique</strong> : <a href={CLINICS.lssi.siteUrl} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-public-accent-warm">lasourceensoi.com</a></span>
+                <span><strong>Site clinique</strong> : <a href={CLINICS.lesvagues.siteUrl} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-public-accent-warm">lesvaguesct.com</a></span>
               </div>
               <div className="flex items-start gap-3">
                 <CalendarIcon />
-                <span><strong>Jours</strong> : {CLINICS.lssi.days}</span>
+                <span>
+                  <strong>Horaires</strong> :
+                  <ul className="mt-1 space-y-0.5">
+                    {CLINICS.lesvagues.schedule.map((s) => (
+                      <li key={`${s.day}-${s.opens}`}>
+                        <span className="capitalize">{s.day}</span> {s.opens}&ndash;{s.closes}
+                        {s.type === 'sociale' && ' (acupuncture sociale)'}
+                      </li>
+                    ))}
+                  </ul>
+                </span>
               </div>
               <div className="flex items-start gap-3">
                 <PinIcon />
-                <span>M&eacute;tro Beaubien (ligne orange) &mdash; 10 minutes &agrave; pied. Stationnement sur rue.</span>
+                <span>{CLINICS.lesvagues.access}</span>
               </div>
             </dl>
-            <div className="mt-4 inline-flex items-center gap-2 bg-white px-4 py-2 rounded-full border border-public-border-subtle text-[13px] font-medium text-public-text-dark">
-              <StarIcon />
-              4,9/5 sur 1 215 avis Google
-            </div>
+            <p className="mt-4 text-[13px] text-public-text-light">
+              Anciennement &agrave; la clinique La Source en Soi (2024&ndash;2026).
+            </p>
             <div className="mt-6">
-              <CtaButton variant="primary" size="lg" href={CLINICS.lssi.grvUrl}>R&eacute;server &agrave; Rosemont</CtaButton>
+              <CtaButton variant="primary" size="lg" href={CLINICS.lesvagues.grvUrl}>R&eacute;server &agrave; Rosemont</CtaButton>
             </div>
           </div>
 
@@ -139,15 +148,15 @@ export default function ContactPage() {
           <SectionHeading kicker="ACC&Egrave;S" title="Se rendre aux cliniques." align="left" />
           <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <h3 className="font-public-serif text-[18px] font-semibold text-public-text-dark mb-3">Rosemont &mdash; La Source en Soi</h3>
+              <h3 className="font-public-serif text-[18px] font-semibold text-public-text-dark mb-3">Rosemont &mdash; Les Vagues, communaut&eacute;s th&eacute;rapeutiques</h3>
               <iframe
-                src={MAPS_LSSI_EMBED}
+                src={MAPS_VAGUES_EMBED}
                 width="100%" height={300} style={{ border: 0 }} loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-                title="Carte Google Maps — La Source en Soi"
+                title="Carte Google Maps — Les Vagues, communautés thérapeutiques"
                 className="rounded-[14px] shadow-public-sm w-full"
               />
-              <a href={MAPS_LSSI_DIR} target="_blank" rel="noopener noreferrer" className="inline-block mt-3 text-[14px] font-medium text-public-accent-warm underline underline-offset-4 hover:text-public-accent-warm-soft">
+              <a href={MAPS_VAGUES_DIR} target="_blank" rel="noopener noreferrer" className="inline-block mt-3 text-[14px] font-medium text-public-accent-warm underline underline-offset-4 hover:text-public-accent-warm-soft">
                 Itin&eacute;raire &rarr;
               </a>
             </div>
@@ -234,13 +243,6 @@ function PinIcon() {
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.6} stroke="currentColor" className="w-5 h-5 text-public-accent-warm shrink-0 mt-0.5">
       <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
       <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
-    </svg>
-  );
-}
-function StarIcon() {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-public-accent-warm">
-      <path fillRule="evenodd" clipRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354l-4.627 2.828c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.006Z" />
     </svg>
   );
 }

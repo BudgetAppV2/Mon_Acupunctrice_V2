@@ -7,18 +7,19 @@ import AboutCliniqueSection from '../_sections/AboutCliniqueSection';
 import AboutSpecialitesSection from '../_sections/AboutSpecialitesSection';
 import CtaButton from '../_components/CtaButton';
 import CtaBotanicalDeco from '../_components/CtaBotanicalDeco';
+import { NAP, CONTACT } from '@/lib/entity-canonical.mjs';
 
 export const metadata: Metadata = {
   title: 'A propos',
   description:
-    'Judith Dufour-Savard, acupunctrice a Montreal et Repentigny. Parcours : regie et eclairage, maison de naissance, DEC en acupuncture au College de Rosemont. Membre OAQ. La Source en Soi (Rosemont) et Eden Yoga Pilates (Repentigny).',
+    'Judith Dufour-Savard, acupunctrice a Montreal et Repentigny. Parcours : regie et eclairage, maison de naissance, DEC en acupuncture au College de Rosemont. Membre OAQ. Les Vagues, communautes therapeutiques (Rosemont) et Eden Yoga Pilates (Repentigny).',
 };
 
 const SCHEMA_ORG = {
   '@context': 'https://schema.org',
   '@type': 'AboutPage',
   datePublished: '2026-04-15',
-  dateModified: '2026-04-29',
+  dateModified: '2026-10-12',
   mainEntity: {
     '@type': 'Person',
     name: 'Judith Dufour-Savard',
@@ -33,24 +34,13 @@ const SCHEMA_ORG = {
       '@type': 'Organization',
       name: 'Ordre des acupuncteurs du Quebec',
     },
-    worksFor: {
-      '@type': 'MedicalClinic',
-      name: 'La Source en Soi',
-      url: 'https://lasourceensoi.com/',
-      address: {
-        '@type': 'PostalAddress',
-        streetAddress: '2554 rue Beaubien Est',
-        addressLocality: 'Montreal',
-        addressRegion: 'QC',
-        addressCountry: 'CA',
-      },
-      telephone: '514-750-3735',
-      aggregateRating: {
-        '@type': 'AggregateRating',
-        ratingValue: '4.9',
-        reviewCount: '1215',
-      },
-    },
+    telephone: CONTACT.phone,
+    // Références vers les Place du graphe global (GlobalJsonLd) — pas de NAP
+    // dupliqué ici, et pas d'aggregateRating (avis de clinique ≠ avis de Judith).
+    workLocation: [
+      { '@type': 'MedicalClinic', '@id': `${CONTACT.website}/#lesvagues`, name: NAP.lesvagues.name },
+      { '@type': 'MedicalClinic', '@id': `${CONTACT.website}/#eden`, name: NAP.eden.name },
+    ],
   },
 };
 
@@ -70,7 +60,7 @@ export default function AboutPage() {
       {/* Badges credentials */}
       <section className="bg-public-beige-light py-12 px-5 md:px-8">
         <div className="max-w-[780px] mx-auto flex flex-wrap justify-center gap-4">
-          {['Membre OAQ', 'La Source en Soi', 'Mère de 3 enfants'].map((badge) => (
+          {['Membre OAQ', NAP.lesvagues.name, 'Mère de 3 enfants'].map((badge) => (
             <span
               key={badge}
               className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-[13px] font-medium text-public-text-medium shadow-public-sm border border-public-border-subtle"

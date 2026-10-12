@@ -37,7 +37,7 @@ const content = `# ${ENTITY.websiteName}
 
 > ${ENTITY.alternateName}, est ${ENTITY.jobTitleShort.toLowerCase()} membre de l'${ENTITY.oaqName} (numéro ${ENTITY.oaqNumber}).
 > Pratique spécialisée en ${piliersFr},
-> à ${NAP.lssi.neighborhood} (${NAP.lssi.addressLocality}) et ${NAP.eden.addressLocality}.
+> à ${NAP.lesvagues.neighborhood} (${NAP.lesvagues.addressLocality}) et ${NAP.eden.addressLocality}.
 
 Ce site est le site officiel de ${ENTITY.alternateName} — acupunctrice
 diplômée du ${ENTITY.diploma} au ${ENTITY.school}, ancienne accompagnante à la Maison de
@@ -67,12 +67,14 @@ ${ENTITY.name} concentre sa pratique sur quatre piliers :
 
 const content2 = `## Lieux de pratique
 
-### ${NAP.lssi.name} (${NAP.lssi.neighborhood}, ${NAP.lssi.addressLocality}) — clinique principale
+### ${NAP.lesvagues.name} (${NAP.lesvagues.neighborhood}, ${NAP.lesvagues.addressLocality}) — clinique principale
 
-- **Adresse** : ${NAP.lssi.streetAddress}, ${NAP.lssi.addressLocality} (${NAP.lssi.addressRegion}) ${NAP.lssi.postalCode}
-- **Quartier** : ${NAP.lssi.neighborhood}, arrondissement ${NAP.lssi.borough}
-- **Jours** : ${NAP.lssi.daysLabel}
-- **Réservation directe** : ${NAP.lssi.grvUrl}
+- **Adresse** : ${NAP.lesvagues.streetAddress}, ${NAP.lesvagues.addressLocality} (${NAP.lesvagues.addressRegion}) ${NAP.lesvagues.postalCode}
+- **Quartier** : ${NAP.lesvagues.neighborhood}, arrondissement ${NAP.lesvagues.borough}
+- **Jours** : ${NAP.lesvagues.daysLabel}
+- **Acupuncture sociale** : ${NAP.lesvagues.schedule.filter((s) => s.type === 'sociale').map((s) => `${s.day} ${s.opens}–${s.closes}`).join(', ')}
+- **Site de la clinique** : ${NAP.lesvagues.siteUrl}
+- **Réservation directe** : ${NAP.lesvagues.grvUrl}
 
 ### ${NAP.eden.name} (${NAP.eden.addressLocality}) — clinique secondaire
 
@@ -82,7 +84,7 @@ const content2 = `## Lieux de pratique
 
 ## Coordonnées
 
-- **Téléphone** : ${CONTACT.phoneInternational}
+- **Téléphone (appel ou texto)** : ${CONTACT.phoneInternational}
 - **Courriel** : ${CONTACT.email}
 
 ## Pages clés du site
@@ -105,7 +107,7 @@ ${SAMEAS.social.filter((u) => !u.includes('wikidata')).map((u) => {
 
 ## Optional
 
-- [Page équipe à La Source en Soi](${NAP.lssi.siteUrl}equipe/judith-dufour-savard/) — bio publiée par la clinique principale
+- [${NAP.lesvagues.name}](${NAP.lesvagues.siteUrl}) — site de la clinique principale
 
 `;
 
@@ -116,7 +118,7 @@ const contentEn = `---
 
 > ${ENTITY.alternateName}, is an acupuncturist and member of the
 > ${ENTITY.oaqName} (license #${ENTITY.oaqNumber}). She practices in
-> ${NAP.lssi.neighborhood}, ${NAP.lssi.addressLocality} and ${NAP.eden.addressLocality},
+> ${NAP.lesvagues.neighborhood}, ${NAP.lesvagues.addressLocality} and ${NAP.eden.addressLocality},
 > with a focus on fertility, pregnancy and perinatal care, pediatrics,
 > and community-based ("social") acupuncture.
 
@@ -138,15 +140,15 @@ Québec (AAQ).
 
 ## Locations
 
-- **${NAP.lssi.name}** (primary clinic) — ${NAP.lssi.streetAddress}, ${NAP.lssi.addressLocality} ${NAP.lssi.addressRegion} ${NAP.lssi.postalCode} — Mon, Tue, Thu, Fri
-- **${NAP.eden.name}** (secondary) — ${NAP.eden.streetAddressFull}, ${NAP.eden.addressLocality} ${NAP.eden.addressRegion} ${NAP.eden.postalCode} — Wed 9am–3pm
+- **${NAP.lesvagues.name}** (primary clinic) — ${NAP.lesvagues.streetAddress}, ${NAP.lesvagues.addressLocality} ${NAP.lesvagues.addressRegion} ${NAP.lesvagues.postalCode} — ${NAP.lesvagues.daysLabelEn}
+- **${NAP.eden.name}** (secondary) — ${NAP.eden.streetAddressFull}, ${NAP.eden.addressLocality} ${NAP.eden.addressRegion} ${NAP.eden.postalCode} — ${NAP.eden.daysLabelEn}
 
 ## Contact
 
 - **Website (primary, French)** : ${CONTACT.website}
 - **Phone** : ${CONTACT.phoneInternational}
 - **Email** : ${CONTACT.email}
-- **Booking** : ${NAP.lssi.grvUrl}
+- **Booking** : ${NAP.lesvagues.grvUrl}
 `;
 
 // --- Write file ---

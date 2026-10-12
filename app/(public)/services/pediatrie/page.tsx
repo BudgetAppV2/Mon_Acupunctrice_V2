@@ -1,18 +1,18 @@
 import type { Metadata } from 'next';
+import { PRICING } from '@/lib/entity-canonical.mjs';
 import Link from 'next/link';
 import AuthorByline from '../../_components/AuthorByline';
 import ServicePediatrieHeroSection from '../../_sections/ServicePediatrieHeroSection';
 import ServicePediatrieBioSection from '../../_sections/ServicePediatrieBioSection';
 import ServicePediatrieConditionsSection from '../../_sections/ServicePediatrieConditionsSection';
 import ServicePediatrieApprocheSection from '../../_sections/ServicePediatrieApprocheSection';
-import ServicePediatrieTemoignageSection from '../../_sections/ServicePediatrieTemoignageSection';
 import ServicePediatrieInfosSection from '../../_sections/ServicePediatrieInfosSection';
 import ServicePediatrieCtaSection from '../../_sections/ServicePediatrieCtaSection';
 
 export const metadata: Metadata = {
   title: 'Acupuncture pediatrique',
   description:
-    'Acupunctrice a Rosemont specialisee en pediatrie : coliques bebe, sommeil, allergies, anxiete enfant, TDAH. Aiguilles ultra-fines, shino shin, aimants. 90 $, La Source en Soi.',
+    `Acupunctrice a Rosemont specialisee en pediatrie : coliques bebe, sommeil, allergies, anxiete enfant, TDAH. Aiguilles ultra-fines, shino shin, aimants. ${PRICING.childSession} $, Les Vagues, communautes therapeutiques.`,
 };
 
 const SCHEMA_ORG = {
@@ -66,7 +66,6 @@ export default function ServicePediatriePage() {
       <ServicePediatrieBioSection />
       <ServicePediatrieConditionsSection />
       <ServicePediatrieApprocheSection />
-      <ServicePediatrieTemoignageSection />
       <ServicePediatrieInfosSection />
       <ServicePediatrieCtaSection />
 
@@ -100,7 +99,7 @@ export default function ServicePediatriePage() {
                 href="/services/acupuncture-sociale"
                 className="text-public-accent-warm underline underline-offset-4 hover:text-public-accent-warm-soft transition-colors"
               >
-                Acupuncture sociale (35-60 $) pour les familles &rarr;
+                Acupuncture sociale ({PRICING.socialMin}-{PRICING.socialMax} $) pour les familles &rarr;
               </Link>
             </li>
             <li>

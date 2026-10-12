@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { PRICING } from '@/lib/entity-canonical.mjs';
 import Reveal from '../_components/animations/Reveal';
 import StaggerChildren from '../_components/animations/StaggerChildren';
 import HoverLift from '../_components/animations/HoverLift';
@@ -34,7 +35,7 @@ export default function ServiceFertiliteInfosSection() {
               <div className="flex justify-center mb-4"><DollarIcon /></div>
               <h3 className="font-public-serif text-[20px] font-semibold mb-2 text-public-text-dark">Tarifs</h3>
               <p className="text-[14px] text-public-text-medium">
-                <span className="font-public-serif text-[28px] font-medium text-public-accent-warm">100&nbsp;$</span>
+                <span className="font-public-serif text-[28px] font-medium text-public-accent-warm">{PRICING.adultSession}&nbsp;$</span>
                 <span className="block mt-1">la s&eacute;ance d&rsquo;une heure.</span>
               </p>
             </div>

@@ -4,6 +4,7 @@ import Reveal from '../_components/animations/Reveal';
 import MagneticButton from '../_components/animations/MagneticButton';
 import FloatingDeco from '../_components/animations/FloatingDeco';
 import CtaButton from '../_components/CtaButton';
+import { NAP, CONTACT } from '@/lib/entity-canonical.mjs';
 
 export default function CtaFinalSection() {
   return (
@@ -42,15 +43,15 @@ export default function CtaFinalSection() {
         <div className="mt-12 pt-6 border-t border-white/20 flex flex-col md:flex-row justify-center gap-4 md:gap-8 text-[14px] opacity-80">
           <span className="flex items-center justify-center gap-2">
             <MapPinIcon />
-            Rosemont &mdash; La Source en Soi
+            Rosemont &mdash; {NAP.lesvagues.name}
           </span>
           <span className="flex items-center justify-center gap-2">
             <MapPinIcon />
-            Repentigny &mdash; &Eacute;den Yoga Pilates
+            Repentigny &mdash; {NAP.eden.name}
           </span>
           <span className="flex items-center justify-center gap-2">
             <PhoneIcon />
-            514 750-3735
+            {CONTACT.phoneLocal}
           </span>
         </div>
       </Reveal>
