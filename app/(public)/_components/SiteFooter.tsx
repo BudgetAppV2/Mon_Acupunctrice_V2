@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { NAP } from '@/lib/entity-canonical.mjs';
 
 const SERVICES = [
   { href: '/services/fertilite', label: 'Fertilite' },
@@ -84,8 +85,8 @@ export default function SiteFooter() {
               Cliniques
             </h4>
             <ul className="flex flex-col gap-2.5 text-[13px] opacity-85">
-              <li>La Source en Soi &mdash; Rosemont</li>
-              <li>&Eacute;den Yoga Pilates &mdash; Repentigny</li>
+              <li>{NAP.lesvagues.name} &mdash; Rosemont</li>
+              <li>{NAP.eden.name} &mdash; Repentigny</li>
               <li className="flex gap-4 mt-2">
                 <a
                   href="https://www.instagram.com/mon_acupunctrice/"
@@ -118,7 +119,7 @@ export default function SiteFooter() {
 
         {/* Bottom bar */}
         <p className="text-center text-xs opacity-60 mt-8">
-          La Source en Soi (Rosemont) &middot; &Eacute;den Yoga Pilates (Repentigny)
+          {NAP.lesvagues.name} (Rosemont) &middot; {NAP.eden.name} (Repentigny)
           {' · '}
           &copy; 2026 Judith Dufour-Savard
         </p>

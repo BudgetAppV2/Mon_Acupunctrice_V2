@@ -20,7 +20,7 @@ export default async function BlogPreviewSection() {
   return (
     <section className="bg-public-beige-light py-[68px] md:py-[104px] px-5 md:px-8">
       <div className="max-w-[1280px] mx-auto">
-        <SectionNumber number="05" />
+        <SectionNumber number="04" />
         <SectionHeading
           kicker="LE CARNET"
           title="Derniers articles"

@@ -29,8 +29,8 @@ export default function AboutHeroSection() {
               &mdash; et aussi, tout simplement, les maux du quotidien.
             </p>
             <p>
-              Mon cabinet principal est &agrave; La Source en Soi, sur Beaubien Est &agrave; Rosemont.
-              Je pratique aussi le mercredi &agrave; &Eacute;den Yoga Pilates, &agrave; Repentigny.
+              Mon cabinet principal est chez Les Vagues, communaut&eacute;s th&eacute;rapeutiques, sur Beaubien Est &agrave; Rosemont.
+              Je pratique aussi le jeudi &agrave; &Eacute;den Yoga Pilates, &agrave; Repentigny.
               Deux lieux chaleureux et familiaux, o&ugrave; chaque personne est accueillie dans ce qu&rsquo;elle vit, maintenant.
             </p>
           </div>

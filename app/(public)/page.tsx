@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import HeroSection from './_sections/HeroSection';
 import PiliersSection from './_sections/PiliersSection';
 import ApprocheSection from './_sections/ApprocheSection';
-import TemoignagesSection from './_sections/TemoignagesSection';
 import AboutSection from './_sections/AboutSection';
 import BlogPreviewSection from './_sections/BlogPreviewSection';
 import SocialSection from './_sections/SocialSection';
@@ -24,7 +23,6 @@ export default function PublicHomePage() {
       <HeroSection />
       <PiliersSection />
       <ApprocheSection />
-      <TemoignagesSection />
       <AboutSection />
       <BlogPreviewSection />
       <SocialSection />
