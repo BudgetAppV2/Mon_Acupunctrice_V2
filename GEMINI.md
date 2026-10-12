@@ -64,7 +64,7 @@ est de transformer l'éditeur de base en un éditeur de qualité professionnelle
 - YouTube Shorts ✅ via API route
 - Stories → Web Share API (navigator.share files) remplace API Graph
   - Judith partage vers Instagram via la share sheet iOS native
-  - Elle peut ajouter le sticker mention @lasourceensoi dans l'app Instagram
+  - Elle peut ajouter le sticker mention @lesvagues.beaubien dans l'app Instagram
   - Le flow blog (cron) continue de publier les stories images via API Graph
 - Captions multi-plateformes (IG/FB/YT) générées depuis la transcription
 
@@ -231,12 +231,12 @@ lib/
 
 ## Profil de Judith
 
-- Acupunctrice solo à La Source en Soi (Rosemont, Montréal)
+- Acupunctrice chez Les Vagues, communautés thérapeutiques (Rosemont, Montréal) et à Éden Yoga Pilates (Repentigny, jeudi)
 - À l'aise devant la caméra, publie ~2x/semaine
 - N'aime PAS les suggestions de contenu par IA — veut une STRUCTURE
 - Les 4 styles : Enseigner / Connecter / Aider / Inspirer
 - Site Wix : acupuncturejudith.ca (redirige depuis mon-acupunctrice.ca)
-- Go Rendez-Vous : lasourceensoi, employeeId 7556837
+- Go Rendez-Vous : companyId 106503, employeeId 196572 (Les Vagues) — URL dans `lib/entity-canonical.mjs`
 - Utilise le Hub depuis son iPhone (Safari iOS PWA)
 
 ---

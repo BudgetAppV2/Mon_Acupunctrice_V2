@@ -227,16 +227,30 @@ Légende **Type** : ADR adresse · TÉL téléphone · HOR horaires/jours · RDV
 
 | Lot | Contenu | Validation |
 |---|---|---|
-| **L0 — Données et décisions** | Remplir §5. Trancher le pilier sociale, le sort d'Éden et les avis. | Benoit + Judith |
-| **L1 — Gel des fuites actives** ✅ 2026-10-12 | Firestore : 0 post planifié ; 7 articles `publicBlog` (`content`) + 1 `contentItem` publié migrés vers le GRV Vagues via `scripts/migrate-rdv-url.mjs` (8 docs, 9 champs). Tag Instagram `lesvagues.beaubien` (`publishHelpers.ts`, `functions-python/main.py`). | Relance du script = 0 changement |
-| **L2 — Source canonique (atomique)** | `entity-canonical.mjs` + `.d.ts` + SOT, `rdvUrl.ts` (clé renommée), `GlobalJsonLd.tsx`, `contact/page.tsx`, `reserver/page.tsx`, `a-propos/page.tsx` (NAP en dur + retrait de `aggregateRating`), `ServiceSocialeCtaSection` (URL GRV en dur). | `npm run build` OK, Rich Results Test sur `/` et `/a-propos` |
-| **L3 — Texte public global** | Header, footer, `layout.tsx` (OG), Hero, AboutHero, AboutClinique, CtaFinal, Temoignages, badges. | Relecture mobile 375px de toutes les pages |
-| **L4 — Pages services et tarifs** | Métadonnées et JSON-LD de `/services/*`, `/tarifs`, `/faq`, `/`, sections Hero/Cta/Infos/Bio. Pilier sociale selon L0 (+ redirection et sitemap si retrait). | Relecture de Judith (terminologie OAQ) |
-| **L5 — AEO** | Gabarits `generate-llms.mjs` (page équipe, jours EN) et `generate-llms-full.mjs` (l. 89), puis régénération des deux fichiers. | `grep -i "source en soi\|beaubien\|750-3735\|104074"` sur `public/` = 0 |
-| **L6 — Contenu Firestore** | Réécrire `content/ressources/*`, `content/faq/*`, `scripts/seo-geo/source-resources/*` → injecter → approbation de Judith dans `/contenu`. Audit des blogs et FAQ créés dans le Hub. | Pages ressources et FAQ en ligne sans mention LSSI |
-| **L7 — Hub interne** | `publishHelpers`, `PublishSheet`, `storyImageGenerator`, templates et logo de l'éditeur d'image, presets, scripts de test .py. | Judith génère une story test |
+| **L0 — Données et décisions** ✅ 2026-10-12 | Remplir §5. Trancher le pilier sociale, le sort d'Éden et les avis. | Benoit + Judith |
+| **L1 — Gel des fuites actives** ✅ `8fe0d49` | Firestore : 0 post planifié ; 7 articles `publicBlog` (`content`) + 1 `contentItem` publié migrés vers le GRV Vagues via `scripts/migrate-rdv-url.mjs` (8 docs, 9 champs). Tag Instagram `lesvagues.beaubien` (`publishHelpers.ts`, `functions-python/main.py`). | Relance du script = 0 changement |
+| **L2 — Source canonique (atomique)** ✅ `4f62279` | `entity-canonical.mjs` + `.d.ts` + SOT, `rdvUrl.ts` (clé renommée), `GlobalJsonLd.tsx`, `contact/page.tsx`, `reserver/page.tsx`, `a-propos/page.tsx` (NAP en dur + retrait de `aggregateRating`), `ServiceSocialeCtaSection` (URL GRV en dur). | `npm run build` OK, Rich Results Test sur `/` et `/a-propos` |
+| **L3 — Texte public global** ✅ `3e45d6b` | Header, footer, `layout.tsx` (OG), Hero, AboutHero, AboutClinique, CtaFinal, Temoignages, badges. | Relecture mobile 375px de toutes les pages |
+| **L4 — Pages services et tarifs** ✅ `b18ec2c` | Métadonnées et JSON-LD de `/services/*`, `/tarifs`, `/faq`, `/`, sections Hero/Cta/Infos/Bio. Pilier sociale selon L0 (+ redirection et sitemap si retrait). | Relecture de Judith (terminologie OAQ) |
+| **L5 — AEO** ✅ `4273a41` | Gabarits `generate-llms.mjs` (page équipe, jours EN) et `generate-llms-full.mjs` (l. 89), puis régénération des deux fichiers. | `grep -i "source en soi\|beaubien\|750-3735\|104074"` sur `public/` = 0 |
+| **L6 — Contenu Firestore** ⏸ en attente de Judith (§7) | Réécrire `content/ressources/*`, `content/faq/*`, `scripts/seo-geo/source-resources/*` → injecter → approbation de Judith dans `/contenu`. Audit des blogs et FAQ créés dans le Hub. | Pages ressources et FAQ en ligne sans mention LSSI |
+| **L7 — Hub interne** ✅ `bfff91b` (logo provisoire, §7) | `publishHelpers`, `PublishSheet`, `storyImageGenerator`, templates et logo de l'éditeur d'image, presets, scripts de test .py. | Judith génère une story test |
 | **L8 — Hors repo** | GBP, GRV, Wikidata, 8 annuaires, réseaux sociaux, Plausible, Search Console, demandes à LSSI. Dans l'ordre du §4.9. | Checklist du kit annuaires mise à jour |
-| **L9 — Docs** | `CLAUDE.md`, `GEMINI.md`, `docs/migration-wix/CLAUDE.md`, `content/README.md`, `ANNUAIRES_KIT`/`PLAYBOOK`, stratégie mots-clés locaux. Note d'obsolescence en tête des handoffs. | — |
+| **L9 — Docs** ✅ | `CLAUDE.md`, `GEMINI.md`, `docs/migration-wix/CLAUDE.md`, `content/README.md`, `ANNUAIRES_KIT`/`PLAYBOOK`, stratégie mots-clés locaux. Note d'obsolescence en tête des handoffs. | — |
 | **L10 — Sécurité** (hors migration, à traiter séparément) | `app/api/cms/approve/route.ts` : la route accepte un POST **sans authentification** (n'importe qui peut publier un contenu `pending` ou déclencher le nettoyage Storage de M2A). Elle **réécrit aussi `publishedAt`** à chaque appel, ce qui fausse les dates des articles déjà publiés (re-approbation, revalidation). Vérifier aussi `unpublish`, `delete`, `comment`, `submit`. | Appel sans jeton → 401 ; re-approbation qui conserve `publishedAt` |
 
 **Contrôle final suggéré** : refaire la recherche initiale (`source en soi|sourceensoi|lssi|beaubien|750-3735|104074|175708|rosemont`) sur `app/ components/ lib/ public/ scripts/ content/`. Seules doivent rester les mentions volontaires (« Collège de Rosemont », éventuel « anciennement à… »).
+
+## 7. Points de relecture ouverts (après L1–L5, L7, L9)
+
+| # | Point | Bloque | Qui |
+|---|---|---|---|
+| 1 | **Durée de l'acupuncture sociale** : `/reserver` annonce « 30 à 45 minutes », la page `/services/acupuncture-sociale` « 60 minutes ». Incohérence antérieure à la migration, à trancher avant de réécrire l'article de blog sur l'acupuncture sociale. | L6 | Judith |
+| 2 | **Témoignages** : la section témoignages de l'accueil et le témoignage de la page pédiatrie ont été retirés (avis LSSI). `TestimonialCard.tsx` est conservé mais inutilisé. À réintroduire seulement avec des avis du GBP de Judith. | — | Judith / Benoit |
+| 3 | **Équipe des Vagues** : `AboutCliniqueSection` décrivait l'équipe de LSSI (ostéopathes, doulas…), remplacée par un paragraphe neutre. Les ressources `scripts/seo-geo/source-resources/01` et `02` décrivent aussi l'« écosystème » LSSI. Composition réelle de l'équipe des Vagues à fournir. | L6 | Judith |
+| 4 | **Logo** : `public/images/logo-les-vagues.png` est un PNG transparent 400×400 provisoire (le template « Les Vagues » de l'éditeur d'image n'affiche donc aucun logo). Remplacer par le vrai logo de la clinique, fond transparent, même nom de fichier. | — | Judith / Les Vagues |
+| 5 | **Code postal** : OpenStreetMap géocode le 2395 Beaubien Est en H1Y 1G2 ; publié H2G 1N3 (donnée confirmée, identique au GBP). Vérifier sur Postes Canada avant L8. | L8 | Benoit |
+| 6 | **Relecture mobile 375 px** non faite en L3/L4 (redimensionnement Chrome impossible). | Déploiement | Benoit |
+| 7 | **Lumino** : profil rattaché à « la-source-en-soi-centre » — revendiquer puis corriger (procédure dans le kit annuaires). | L8 | Benoit / Judith |
+| 8 | **Variable `DEFAULT_CLINIC`** de la Cloud Function `publish-story-instagrapi` à passer à `lesvagues.beaubien` (commande gcloud fournie en L1). | Stories | Benoit |
+

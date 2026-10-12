@@ -1,5 +1,7 @@
 # Handoff — Finalisation refactor entity-canonical.mjs
 
+> ⚠️ **Note d'obsolescence** : LSSI n'est plus d'actualité depuis octobre 2026 — voir `docs/MIGRATION_LES_VAGUES.md`.
+
 **Date** : 2026-05-07 (après-midi)
 **Contexte** : refactor architectural pour extraire les constantes identité/NAP/bios vers un module partagé. Travail commencé par Claude (chat web) ce matin, transféré à Claude Code pour finalisation.
 

@@ -1,5 +1,7 @@
 # Handoff CC — Milestone 1 : Workflow blog uniformisé
 
+> ⚠️ **Note d'obsolescence** : LSSI n'est plus d'actualité depuis octobre 2026 — voir `docs/MIGRATION_LES_VAGUES.md`.
+
 **Date** : 2026-05-08
 **Contexte** : reprise du travail de robustesse sur le pipeline de contenu (Hub admin) après le Chantier 1 AEO. Diagnostic complet effectué le 6 mai, décisions stratégiques prises ce jour. M1 démarre la séquence en 3 milestones (M1 indépendant, M2 et M3 pour plus tard).
 

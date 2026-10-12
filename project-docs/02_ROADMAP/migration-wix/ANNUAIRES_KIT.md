@@ -3,6 +3,8 @@
 Date cible : 3 mai 2026 (jour du switch DNS). À soumettre simultanément pour un pic de backlinks.*
 
 > **🔄 Mise à jour 29 avril 2026** : données récupérées par Claude in Chrome (`ANNUAIRES_KIT_DATA.md` à côté de ce fichier). Liste de plateformes révisée — passage de 12 à 8 actions concrètes pour 10 fiches utiles.
+>
+> **🔄 Mise à jour 12 octobre 2026** : Judith a quitté La Source en Soi pour **Les Vagues, communautés thérapeutiques** (2395 rue Beaubien Est, Rosemont). NAP, horaires, descriptions et téléphone ci-dessous sont à jour. Toute fiche déjà créée avec l'ancienne adresse (2554 Beaubien Est, H1Y 1G3) doit être corrigée. Voir `docs/MIGRATION_LES_VAGUES.md`.
 
 ---
 
@@ -13,7 +15,7 @@ Date cible : 3 mai 2026 (jour du switch DNS). À soumettre simultanément pour u
 | Nom légal complet | Judith Dufour-Savard | ✓ |
 | Nom professionnel à utiliser partout | **Judith Dufour-Savard, Ac.** | ✓ |
 | Numéro OAQ (membre #) | **A-008-24** | ✓ Répertoire OAQ |
-| Téléphone pro principal | `<À CONFIRMER avec Judith>` | 💬 (LSSI = 514 750-3735, ou perso ?) |
+| Téléphone pro principal | **514 882-1922** (cellulaire de Judith, appel ou texto) | ✓ Oct. 2026 — Les Vagues n'a pas de numéro public |
 | Email pro | jdufoursavard@gmail.com | 💬 Judith (à confirmer si autre) |
 | Site web officiel | https://acupuncturejudith.ca | ✓ |
 | Année admission OAQ | 2024 (probable, suffixe « -24 ») | 💬 Judith (à confirmer) |
@@ -23,14 +25,16 @@ Date cible : 3 mai 2026 (jour du switch DNS). À soumettre simultanément pour u
 
 ### Adresses
 
-**Principale — La Source en Soi (Rosemont, Montréal)**
+**Principale — Les Vagues, communautés thérapeutiques (Rosemont, Montréal)**
 ```
-La Source en Soi
-2554 rue Beaubien Est
-Montréal, QC  H1Y 1G3
+Les Vagues, communautés thérapeutiques
+2395 rue Beaubien Est
+Montréal, QC  H2G 1N3
 Canada
-Téléphone : 514 750-3735
+Téléphone : 514 882-1922 (Judith)
 ```
+
+⚠️ Code postal : OpenStreetMap géocode le 2395 Beaubien Est en H1Y 1G2. On garde **H2G 1N3** (identique à la fiche Google), mais vérifier sur Postes Canada avant de soumettre les fiches.
 
 **Secondaire — Éden Yoga Pilates (Repentigny)**
 ```
@@ -41,23 +45,24 @@ Canada
 Téléphone Éden : 514 815-1035
 ```
 
-### Horaires Judith (estimés depuis Go Rendez-Vous, à valider avec Judith)
+### Horaires Judith (confirmés octobre 2026)
 
 ```
-Lundi    : 9h00 – ~12h00     (LSSI Rosemont)
-Mardi    : 13h00 – 19h30     (LSSI Rosemont)
-Mercredi : 9h00 – 15h00      (Éden Repentigny, dernier patient 14h)
-Jeudi    : 8h30 – ~13h30     (LSSI Rosemont)
-Vendredi : 8h30 – ~11h00     (LSSI Rosemont)
+Lundi    : 8h30 – 15h00      (Les Vagues, Rosemont — séances privées)
+Mardi    : 13h00 – 17h00     (Les Vagues, Rosemont — acupuncture sociale)
+           18h00 – 21h00     (Les Vagues, Rosemont — séances privées)
+Mercredi : 8h30 – 11h30      (Les Vagues, Rosemont — acupuncture sociale)
+Jeudi    : 9h00 – 15h00      (Éden Repentigny)
+Vendredi : 8h30 – 12h00      (Les Vagues, Rosemont — acupuncture sociale)
 Samedi   : Fermé
 Dimanche : Fermé
 ```
 
-⚠️ Ces heures sont estimées depuis les disponibilités GRV de la semaine 4-8 mai 2026. **Les heures de fin sont des minimums** (vu les derniers créneaux disponibles). Judith doit confirmer ses horaires fixes réels.
+Source canonique : `NAP.lesvagues.schedule` et `NAP.eden.schedule` dans `lib/entity-canonical.mjs`. Les annuaires qui n'acceptent qu'une plage par jour : mardi 13h00 – 21h00.
 
 ### URLs de réservation
 
-- LSSI : `https://www.gorendezvous.com/lasourceensoi?companyId=104074&eids=175708`
+- Les Vagues : `https://www.gorendezvous.com/bhavanalaclinique?companyId=106503&eids=196572` (le slug GRV est un nom technique — ne jamais l'écrire comme nom de clinique)
 - Éden : `https://www.gorendezvous.com/edenyogapilates?companyId=141296&eids=192390&stype=Acupuncture`
 - **Page unifiée** : `https://acupuncturejudith.ca/reserver`
 
@@ -75,15 +80,15 @@ Dimanche : Fermé
 
 ### Description COURTE (150-250 caractères)
 
-> Judith Dufour-Savard, Ac. (OAQ A-008-24) accompagne ses patientes en fertilité, grossesse, pédiatrie et santé mentale. Pratique à La Source en Soi (Rosemont) et à Éden Yoga Pilates (Repentigny).
+> Judith Dufour-Savard, Ac. (OAQ A-008-24) accompagne ses patientes en fertilité, grossesse, pédiatrie et santé mentale. Pratique chez Les Vagues, communautés thérapeutiques (Rosemont) et à Éden Yoga Pilates (Repentigny).
 
-(212 caractères)
+(219 caractères)
 
 ### Description MOYENNE (400-500 caractères)
 
-> Judith Dufour-Savard est acupunctrice membre en règle de l'Ordre des acupuncteurs du Québec (numéro de membre A-008-24). Elle accompagne ses patientes dans les enjeux de fertilité, grossesse, périnatalité, pédiatrie, ménopause, anxiété et insomnie. Sa pratique combine acupuncture classique, moxibustion et auriculothérapie, avec une approche personnalisée fondée sur la médecine chinoise traditionnelle. Cabinets à La Source en Soi (Rosemont, Montréal) du lundi au vendredi sauf mercredi, et à Éden Yoga Pilates (Repentigny) le mercredi.
+> Judith Dufour-Savard est acupunctrice membre en règle de l'Ordre des acupuncteurs du Québec (numéro de membre A-008-24). Elle accompagne ses patientes dans les enjeux de fertilité, grossesse, périnatalité, pédiatrie, ménopause, anxiété et insomnie. Sa pratique combine acupuncture classique, moxibustion et auriculothérapie, avec une approche personnalisée fondée sur la médecine chinoise traditionnelle. Cabinets chez Les Vagues, communautés thérapeutiques (Rosemont, Montréal) les lundis, mardis, mercredis et vendredis, et à Éden Yoga Pilates (Repentigny) le jeudi.
 
-(534 caractères — raccourcir si nécessaire)
+(568 caractères — raccourcir si nécessaire)
 
 ### Description LONGUE (700-750 caractères) — pour Google Business Profile, Lumino
 
@@ -91,13 +96,13 @@ Dimanche : Fermé
 >
 > Son approche s'appuie sur la médecine chinoise traditionnelle et intègre l'acupuncture classique, la moxibustion, l'auriculothérapie et les ventouses selon les besoins. Chaque traitement est personnalisé après une évaluation complète incluant prise du pouls et observation de la langue.
 >
-> Judith pratique à deux endroits : La Source en Soi à Rosemont (Montréal) du lundi au vendredi sauf mercredi, et à Éden Yoga Pilates à Repentigny le mercredi. Réservation en ligne via acupuncturejudith.ca.
+> Judith pratique à deux endroits : chez Les Vagues, communautés thérapeutiques, à Rosemont (Montréal) les lundis, mardis, mercredis et vendredis, avec des plages d'acupuncture sociale à tarif réduit, et à Éden Yoga Pilates à Repentigny le jeudi. Réservation en ligne via acupuncturejudith.ca.
 
-(871 caractères — raccourcir au besoin)
+(966 caractères — raccourcir au besoin)
 
 ### Bio personnelle (annuaires qui demandent un texte « About »)
 
-> Acupunctrice membre de l'OAQ (A-008-24), Judith Dufour-Savard pratique à Montréal (Rosemont) et à Repentigny. Sa pratique se concentre sur l'accompagnement des femmes — fertilité, grossesse, post-partum, pédiatrie, ménopause — avec une approche qui combine la rigueur scientifique et l'écoute clinique. Elle pratique aussi l'acupuncture sociale à La Source en Soi pour rendre les soins accessibles.
+> Acupunctrice membre de l'OAQ (A-008-24), Judith Dufour-Savard pratique à Montréal (Rosemont) et à Repentigny. Sa pratique se concentre sur l'accompagnement des femmes — fertilité, grossesse, post-partum, pédiatrie, ménopause — avec une approche qui combine la rigueur scientifique et l'écoute clinique. Elle pratique aussi l'acupuncture sociale chez Les Vagues, communautés thérapeutiques, pour rendre les soins accessibles.
 
 ---
 
@@ -120,7 +125,7 @@ Dimanche : Fermé
 5. Acupuncture pour l'anxiété et le stress
 6. Acupuncture pour l'insomnie
 7. Acupuncture pour la douleur chronique
-8. Acupuncture sociale (LSSI uniquement)
+8. Acupuncture sociale (Les Vagues uniquement)
 9. Moxibustion
 10. Auriculothérapie
 11. Ventouses thérapeutiques
@@ -182,14 +187,14 @@ acupuncture, acupunctrice, médecine chinoise, fertilité, grossesse, périnatal
 #### Fiche 5 — OAQ (Ordre des acupuncteurs du Québec)
 - **DA** : ~40 mais EXTRÊMEMENT crédible
 - **URL** : https://o-a-q.org / portail membre
-- **Statut existence** : ✅ Existe — `A-008-24`, lieu d'exercice LSSI confirmé, acupuncture en groupe : oui
-- **Action requise** : Mettre à jour le champ « site web » → https://acupuncturejudith.ca (peut nécessiter de se connecter au portail OAQ)
+- **Statut existence** : ✅ Existe — `A-008-24`, acupuncture en groupe : oui. Lieu d'exercice encore inscrit : La Source en Soi (à corriger)
+- **Action requise** : Remplacer le lieu d'exercice par Les Vagues, communautés thérapeutiques (2395 rue Beaubien Est) et mettre à jour le champ « site web » → https://acupuncturejudith.ca (portail OAQ)
 - **Note** : Le répertoire OAQ ne donne pas de page dédiée par membre. Le backlink est implicite via le résultat de recherche, mais reste très crédible aux yeux de Google car .org officiel.
 
 #### Fiche 6 — Lumino Santé (Sun Life)
 - **DA** : 54 — **HAUTE VALEUR pour les patientes Sun Life** (assurance collective)
 - **URL inscription** : https://lumino.sunlife.ca/fr/professionnel-de-la-sante/inscription (à vérifier — site en transition)
-- **Statut existence** : ❓ Non vérifié (site en restructuration)
+- **Statut existence** : ⚠️ Profil non revendiqué, rattaché à la clinique « la-source-en-soi-centre » (URL `luminohealth.sunlife.ca/en/health-care-provider-profile/acupuncturist/la-source-en-soi-centre/judith-dufour-savard-1007631-1001446/`). **À corriger** : revendiquer le profil, puis changer le rattachement vers Les Vagues (2395 Beaubien Est) et Éden. Si Lumino ne permet pas de changer de clinique, demander le transfert au support
 - **Champs requis** : Numéro OAQ A-008-24, spécialité, adresses, téléphone, description, photo
 - **Description max** : ~500-1000 caractères → utiliser MOYENNE ou LONGUE
 - **Catégorie** : ✅ « Acupuncturiste » (médecine traditionnelle chinoise)
@@ -198,11 +203,11 @@ acupuncture, acupunctrice, médecine chinoise, fertilité, grossesse, périnatal
 - **Frais** : Gratuit pour fiche de base
 - **⚠️ Priorité haute** : très utilisé par les patientes avec assurance Sun Life pour trouver des praticiens couverts par leur plan.
 
-#### Fiche 7 — Medimap (via clinique LSSI)
+#### Fiche 7 — Medimap (via Les Vagues)
 - **DA** : 39
 - **URL** : https://medimap.ca/for-clinics
 - **Statut existence** : ❌ Pas de profil individuel possible — Medimap indexe des cliniques, pas des praticiens
-- **Stratégie** : Vérifier si La Source en Soi a une fiche Medimap. Si oui, demander à Annie de mentionner Judith dans les services. Si non, faible priorité.
+- **Stratégie** : Vérifier si Les Vagues a une fiche Medimap. Si oui, demander à la clinique d'ajouter Judith dans les praticiens. Si non, faible priorité.
 - **Note** : Alternative — créer une fiche clinique « Judith Dufour-Savard Ac. » pour la pratique privée. À évaluer post-launch.
 
 ### 🟡 Niveau 3 — Annuaires généralistes (1 inscription = 3 fiches !)
@@ -237,10 +242,10 @@ Initialement listés comme « 12 plateformes » dans le LAUNCH_PLAN, ces deux on
 
 ### J-7 (préparation finale, lundi 26 ou mardi 27 avril)
 - [ ] Confirmer avec Judith :
-  - [ ] Téléphone pro à utiliser sur les annuaires (LSSI 514 750-3735, ou perso ?)
+  - [x] Téléphone pro à utiliser sur les annuaires : 514 882-1922 (Judith)
   - [ ] Email pro (jdufoursavard@gmail.com confirmé ?)
   - [ ] Logo perso disponible ?
-  - [ ] Heures fixes réelles à LSSI (les estimations CiC sont des minimums)
+  - [x] Heures fixes réelles chez Les Vagues (confirmées octobre 2026)
   - [ ] Année de début de pratique exacte
 - [ ] Préparer 10 photos haute résolution dans un dossier de soumission (sélectionner depuis `/Users/benoitarchambault/Dropbox (Compte personnel)/Judith/`)
 - [ ] Tester acupuncturejudith.ca/reserver
@@ -260,7 +265,7 @@ Soumettre les fiches dans cet ordre (priorité décroissante) :
 | 5 | Pages Jaunes (= 411 + Canpages auto) | 15-20 min | 1 inscription, 3 fiches |
 | 6 | OAQ — mise à jour site web | 5 min | Juste corriger le champ URL |
 | 7 | GBP — Post « Site live » | 5 min | Communication |
-| 8 | Medimap — vérifier si LSSI y est | 10 min | Si oui, demander à Annie |
+| 8 | Medimap — vérifier si Les Vagues y est | 10 min | Si oui, demander à la clinique |
 
 **Temps total estimé** : ~2h pour 8 actions et 10+ fiches actives.
 
@@ -279,8 +284,8 @@ Google détecte les pics de mentions et les interprète comme un signal de perti
 ### NAP Consistency (Name, Address, Phone)
 Google compare les NAP entre les annuaires pour valider qu'il s'agit de la même entreprise. **Utiliser exactement les mêmes valeurs partout** :
 - **Nom** : `Judith Dufour-Savard, Ac.` (avec virgule et « Ac. » abrégé pour OAQ)
-- **Adresse principale** : `2554 rue Beaubien Est, Montréal, QC, H1Y 1G3` (format identique)
-- **Téléphone** : un seul numéro pour toutes les fiches (à confirmer avec Judith)
+- **Adresse principale** : `2395 rue Beaubien Est, Montréal, QC, H2G 1N3` (format identique)
+- **Téléphone** : `514 882-1922` sur toutes les fiches
 
 Toute variation crée du bruit et dilue le signal SEO.
 
@@ -300,7 +305,7 @@ Les détails complets de la recherche CiC sont dans `ANNUAIRES_KIT_DATA.md` à c
 Avant de déclarer ce kit prêt à exécuter le 3 mai, vérifier que :
 
 - [ ] Toutes les valeurs marquées « 💬 Judith » sont confirmées
-- [ ] Les heures à LSSI ont été validées par Judith (pas juste les estimations CiC)
+- [x] Les heures chez Les Vagues ont été validées par Judith (octobre 2026)
 - [ ] La photo professionnelle principale est sélectionnée et redimensionnée si nécessaire
 - [ ] Le site acupuncturejudith.ca/reserver fonctionne en production
 - [ ] La fiche GBP est totalement à jour (description, services, photos, lien réservation)
