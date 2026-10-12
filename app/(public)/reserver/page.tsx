@@ -10,7 +10,7 @@ import Reveal from '../_components/animations/Reveal';
 export const metadata: Metadata = {
   title: 'Prendre rendez-vous — Acupuncture Rosemont et Repentigny',
   description:
-    'R\u00e9servez votre s\u00e9ance d\u2019acupuncture \u00e0 Rosemont (La Source en Soi) ou \u00e0 Repentigny (\u00c9den Yoga Pilates). Disponibilit\u00e9s en temps r\u00e9el via Go Rendez-Vous.',
+    'R\u00e9servez votre s\u00e9ance d\u2019acupuncture \u00e0 Rosemont (Les Vagues, communaut\u00e9s th\u00e9rapeutiques) ou \u00e0 Repentigny (\u00c9den Yoga Pilates). Disponibilit\u00e9s en temps r\u00e9el via Go Rendez-Vous.',
 };
 
 // TODO Judith: email a completer (placeholder suggere info@acupuncturejudith.ca)
@@ -39,7 +39,7 @@ const JSON_LD = [
     potentialAction: [
       {
         '@type': 'ReserveAction',
-        target: CLINICS.lssi.grvUrl,
+        target: CLINICS.lesvagues.grvUrl,
         result: { '@type': 'Reservation', name: 'S\u00e9ance d\u2019acupuncture \u2014 Rosemont' },
       },
       {
@@ -86,25 +86,25 @@ export default function ReserverPage() {
       <section className="bg-white py-[68px] md:py-[88px] px-5 md:px-8">
         <div className="max-w-[1080px] mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* La Source en Soi */}
+            {/* Les Vagues */}
             <div className="bg-public-beige-light rounded-[14px] p-8 border border-public-border-subtle flex flex-col">
               <span className="inline-block text-[11px] font-semibold uppercase tracking-[2.5px] text-public-accent-taupe-dark mb-2">
                 ROSEMONT &mdash; MONTR&Eacute;AL
               </span>
               <h2 className="font-public-serif text-[26px] md:text-[30px] font-medium text-public-text-dark mb-1">
-                {CLINICS.lssi.name}
+                {CLINICS.lesvagues.name}
               </h2>
-              <p className="text-[14px] text-public-text-medium mb-4">{CLINICS.lssi.addressShort}, Montr&eacute;al</p>
+              <p className="text-[14px] text-public-text-medium mb-4">{CLINICS.lesvagues.addressShort}, Montr&eacute;al</p>
 
               <dl className="space-y-2 text-[14px] text-public-text-medium mb-6">
-                <div className="flex gap-2"><dt className="font-semibold shrink-0">Jours :</dt><dd>{CLINICS.lssi.days}</dd></div>
+                <div className="flex gap-2"><dt className="font-semibold shrink-0">Jours :</dt><dd>{CLINICS.lesvagues.days}</dd></div>
                 <div className="flex gap-2"><dt className="font-semibold shrink-0">Services :</dt><dd>Acupuncture classique + sociale</dd></div>
-                <div className="flex gap-2"><dt className="font-semibold shrink-0">T&eacute;l. :</dt><dd><a href={`tel:${CLINICS.lssi.phoneFull}`} className="underline underline-offset-2 hover:text-public-accent-warm">{CLINICS.lssi.phone}</a></dd></div>
+                <div className="flex gap-2"><dt className="font-semibold shrink-0">T&eacute;l. / texto :</dt><dd><a href={`tel:${CLINICS.lesvagues.phoneFull}`} className="underline underline-offset-2 hover:text-public-accent-warm">{CLINICS.lesvagues.phone}</a></dd></div>
               </dl>
 
               <div className="mt-auto">
                 <TrackedLink
-                  href={CLINICS.lssi.grvUrl}
+                  href={CLINICS.lesvagues.grvUrl}
                   event="Reservation Rosemont"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -146,7 +146,7 @@ export default function ReserverPage() {
           </div>
 
           <p className="mt-6 text-center text-[13px] text-public-text-light">
-            Les deux syst&egrave;mes <strong>Go Rendez-Vous</strong> affichent les disponibilit&eacute;s
+            Les deux agendas <strong>Go Rendez-Vous</strong> affichent les disponibilit&eacute;s
             en temps r&eacute;el. Vous recevez un courriel de confirmation imm&eacute;diat.
           </p>
         </div>
@@ -160,7 +160,7 @@ export default function ReserverPage() {
             <div className="bg-white rounded-[14px] p-6 border border-public-border-subtle">
               <h3 className="font-public-serif text-[20px] font-semibold mb-2 text-public-text-dark">Par t&eacute;l&eacute;phone</h3>
               <p className="text-[14px] text-public-text-medium leading-relaxed">
-                {CLINICS.lssi.phone} &mdash; Appelez La Source en Soi et demandez Judith Dufour-Savard.
+                {CLINICS.lesvagues.phone} &mdash; Appelez ou textez Judith directement.
                 Message vocal disponible si je suis en s&eacute;ance.
               </p>
             </div>
@@ -174,7 +174,7 @@ export default function ReserverPage() {
             <div className="bg-white rounded-[14px] p-6 border border-public-border-subtle">
               <h3 className="font-public-serif text-[20px] font-semibold mb-2 text-public-text-dark">En clinique</h3>
               <p className="text-[14px] text-public-text-medium leading-relaxed">
-                Rosemont : {CLINICS.lssi.addressShort} (m&eacute;tro Beaubien).<br />
+                Rosemont : {CLINICS.lesvagues.addressShort} (m&eacute;tro Beaubien, puis bus 18).<br />
                 Repentigny : {CLINICS.eden.addressShort}.
               </p>
             </div>
@@ -207,7 +207,7 @@ export default function ReserverPage() {
         <div className="max-w-[620px] mx-auto relative z-10">
           <h2 className="font-public-serif text-[28px] md:text-[40px] font-medium mb-4">Pr&ecirc;te ?</h2>
           <div className="flex flex-col sm:flex-row justify-center gap-4 items-center mt-4">
-            <CtaButton variant="white" size="lg" href={CLINICS.lssi.grvUrl}>Rosemont</CtaButton>
+            <CtaButton variant="white" size="lg" href={CLINICS.lesvagues.grvUrl}>Rosemont</CtaButton>
             <CtaButton variant="white" size="lg" href={CLINICS.eden.grvUrl}>Repentigny</CtaButton>
           </div>
           <Link href="/tarifs" className="mt-6 inline-block text-white/80 hover:text-white underline underline-offset-4 text-[14px]">

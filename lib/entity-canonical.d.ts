@@ -51,6 +51,13 @@ export interface Geo {
   readonly longitude: number;
 }
 
+export interface ScheduleSlot {
+  readonly day: string;
+  readonly opens: string;
+  readonly closes: string;
+  readonly type: 'prive' | 'sociale';
+}
+
 export interface Clinic {
   readonly name: string;
   readonly nameShort?: string;
@@ -66,6 +73,9 @@ export interface Clinic {
   readonly geo: Geo;
   readonly daysOfPractice: readonly string[];
   readonly daysLabel: string;
+  readonly daysLabelEn: string;
+  readonly schedule: readonly ScheduleSlot[];
+  readonly access?: string;
   readonly hours?: string;
   readonly hasSocialAcupuncture: boolean;
   readonly services: readonly string[];
@@ -76,11 +86,12 @@ export interface Clinic {
   readonly grvUrl: string;
   readonly siteUrl: string;
   readonly siteUrlAlt?: string;
+  readonly instagram?: string;
   readonly mapsQuery: string;
 }
 
 export interface NapMap {
-  readonly lssi: Clinic;
+  readonly lesvagues: Clinic;
   readonly eden: Clinic;
 }
 

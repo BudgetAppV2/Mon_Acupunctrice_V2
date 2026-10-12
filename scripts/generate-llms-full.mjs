@@ -59,7 +59,7 @@ const piliersInProse = joinWithEt(
 // Header — toutes les valeurs viennent du module canonique
 sections.push(`# ${ENTITY.websiteName}
 
-> ${ENTITY.alternateName}, est ${ENTITY.jobTitleShort.toLowerCase()} membre de l'${ENTITY.oaqName} (numéro ${ENTITY.oaqNumber}). Pratique spécialisée en ${piliersInProse}, à ${NAP.lssi.neighborhood} (${NAP.lssi.addressLocality}) et ${NAP.eden.addressLocality}.
+> ${ENTITY.alternateName}, est ${ENTITY.jobTitleShort.toLowerCase()} membre de l'${ENTITY.oaqName} (numéro ${ENTITY.oaqNumber}). Pratique spécialisée en ${piliersInProse}, à ${NAP.lesvagues.neighborhood} (${NAP.lesvagues.addressLocality}) et ${NAP.eden.addressLocality}.
 
 Site web : ${CONTACT.website}
 Réservation : ${CONTACT.reservationUrl}
@@ -144,15 +144,15 @@ sections.push(`## Informations pratiques
 ### Tarifs
 - Séance adulte : ${PRICING.adultSession} $
 - Séance enfant : ${PRICING.childSession} $
-- Acupuncture sociale : ${PRICING.socialMin} $ à ${PRICING.socialMax} $ (tarif solidaire, ${NAP.lssi.name} uniquement)
+- Acupuncture sociale : ${PRICING.socialMin} $ à ${PRICING.socialMax} $ (tarif solidaire, ${NAP.lesvagues.name} uniquement)
 - Reçus pour assurances fournis sur demande
 
 ### Cliniques
-- **${NAP.lssi.name}** : ${NAP.lssi.streetAddress}, ${NAP.lssi.addressLocality} ${NAP.lssi.addressRegion} ${NAP.lssi.postalCode} (${NAP.lssi.neighborhood}) — ${NAP.lssi.daysLabel}
+- **${NAP.lesvagues.name}** : ${NAP.lesvagues.streetAddress}, ${NAP.lesvagues.addressLocality} ${NAP.lesvagues.addressRegion} ${NAP.lesvagues.postalCode} (${NAP.lesvagues.neighborhood}) — ${NAP.lesvagues.daysLabel}
 - **${NAP.eden.name}** : ${NAP.eden.streetAddressFull}, ${NAP.eden.addressLocality} ${NAP.eden.addressRegion} ${NAP.eden.postalCode} — ${NAP.eden.daysLabel}
 
 ### Réservation
-- En ligne (réservation directe vers le profil de Judith) : ${NAP.lssi.grvUrl}
+- En ligne (réservation directe vers le profil de Judith) : ${NAP.lesvagues.grvUrl}
 - Téléphone : ${CONTACT.phoneInternational}
 - Courriel : ${CONTACT.email}
 

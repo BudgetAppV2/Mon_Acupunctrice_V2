@@ -32,6 +32,7 @@ const GLOBAL_GRAPH = [
       value: ENTITY.oaqNumber,
     },
     url: BASE,
+    telephone: CONTACT.phone,
     image: PORTRAIT,
     memberOf: {
       '@type': 'Organization',
@@ -57,7 +58,7 @@ const GLOBAL_GRAPH = [
       'Médecine traditionnelle chinoise',
     ],
     workLocation: [
-      { '@type': 'MedicalClinic', '@id': `${BASE}/#lssi`, name: NAP.lssi.name },
+      { '@type': 'MedicalClinic', '@id': `${BASE}/#lesvagues`, name: NAP.lesvagues.name },
       { '@type': 'MedicalClinic', '@id': `${BASE}/#eden`, name: NAP.eden.name },
     ],
     sameAs: [...SAMEAS.social],
@@ -81,35 +82,33 @@ const GLOBAL_GRAPH = [
       name: p.labelLong,
     })),
     areaServed: [
-      { '@type': 'City', name: NAP.lssi.addressLocality },
+      { '@type': 'City', name: NAP.lesvagues.addressLocality },
       { '@type': 'City', name: NAP.eden.addressLocality },
-      { '@type': 'AdministrativeArea', name: NAP.lssi.borough },
+      { '@type': 'AdministrativeArea', name: NAP.lesvagues.borough },
     ],
     employee: { '@id': `${BASE}/#judith` },
     location: [
       {
         '@type': 'Place',
-        '@id': `${BASE}/#lssi`,
-        name: NAP.lssi.name,
+        '@id': `${BASE}/#lesvagues`,
+        name: NAP.lesvagues.name,
         address: {
           '@type': 'PostalAddress',
-          streetAddress: NAP.lssi.streetAddress,
-          addressLocality: NAP.lssi.addressLocality,
-          addressRegion: NAP.lssi.addressRegion,
-          postalCode: NAP.lssi.postalCode,
-          addressCountry: NAP.lssi.addressCountry,
+          streetAddress: NAP.lesvagues.streetAddress,
+          addressLocality: NAP.lesvagues.addressLocality,
+          addressRegion: NAP.lesvagues.addressRegion,
+          postalCode: NAP.lesvagues.postalCode,
+          addressCountry: NAP.lesvagues.addressCountry,
         },
         geo: {
           '@type': 'GeoCoordinates',
-          latitude: NAP.lssi.geo.latitude,
-          longitude: NAP.lssi.geo.longitude,
+          latitude: NAP.lesvagues.geo.latitude,
+          longitude: NAP.lesvagues.geo.longitude,
         },
-        // ⚠️ aggregateRating volontairement retiré (audit Codex 2026-05-07).
-        // Les avis 4.9/1215 sont attachés à la clinique LSSI (toutes disciplines
-        // confondues), pas à Judith. Les LLMs peuvent attribuer ce rating à
-        // Judith par mauvaise lecture du graphe. À ré-introduire avec les
-        // avis spécifiques à Judith quand sa fiche GBP atteindra 20+ avis
-        // (Chantier 2 du plan op — actuellement à 6/20).
+        // Pas de telephone ici : aucun numéro de clinique publié (celui de
+        // Judith est sur Person/business). Pas d'aggregateRating non plus :
+        // à introduire seulement avec les avis de la fiche GBP de Judith,
+        // quand elle atteindra 20+ avis (Chantier 2 du plan op).
       },
       {
         '@type': 'Place',

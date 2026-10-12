@@ -1,6 +1,7 @@
 # ENTITY SOURCE OF TRUTH — Judith Dufour-Savard
 
 **Date création** : 6 mai 2026
+**Version** : 1.9 (2026-10-12)
 **Statut** : ✅ Source canonique active — toute divergence externe doit être corrigée vers ce fichier
 **Source** : `PROOF_GRAPH_OPERATIONAL_PLAN.md` Chantier 1, livrable principal
 **Cross-refs internes** :
@@ -11,13 +12,13 @@
 - `public/llms.txt` (index pour LLMs — généré par `scripts/generate-llms.mjs` depuis le module canonique)
 - `public/llms-full.txt` (contenu complet — généré par `scripts/generate-llms-full.mjs` depuis le module canonique)
 - `CLAUDE.md` (règle critique cohérence AEO + résumé NAP)
-- **Note** : `SAMEAS.authority` dans entity-canonical est volontairement vide — en attente de : Lumino (Sun Life), GoRendezVous profil public, page équipe LSSI corrigée, HealthDoc, profil OAQ public
+- **Note** : `SAMEAS.authority` dans entity-canonical est volontairement vide — en attente de : Lumino (Sun Life), GoRendezVous profil public, page équipe Les Vagues, HealthDoc, profil OAQ public
 
 ---
 
 ## ⚠️ Règle d'or
 
-Toutes les sources externes (Lumino, HealthDoc, GoRendezVous, OAQ, GBP, LinkedIn, La Source en Soi, etc.)
+Toutes les sources externes (Lumino, HealthDoc, GoRendezVous, OAQ, GBP, LinkedIn, Les Vagues, Éden, etc.)
 **doivent dire exactement la même chose** que ce fichier. Un LLM qui détecte une incohérence (code postal,
 spécialité, nom, téléphone) baisse son niveau de confiance et hésite à recommander Judith.
 
@@ -128,40 +129,55 @@ piliers:
 
 ## 3. NAP — Lieu principal (canonique)
 
+> **Depuis octobre 2026** : Judith a quitté La Source en Soi (LSSI, 2554 Beaubien Est, GRV 104074/175708)
+> pour **Les Vagues, communautés thérapeutiques**. Clé runtime : `NAP.lesvagues`.
+> Mention historique autorisée **uniquement** sur /a-propos et /contact : « Anciennement à la clinique La Source en Soi (2024–2026) ».
+
 ```yaml
-nom_clinique: "La Source en Soi"
-nom_clinique_court: "LSSI"
-adresse_rue: "2554 rue Beaubien Est"
+nom_clinique: "Les Vagues, communautés thérapeutiques"   # toujours le nom complet, jamais « Les Vagues » seul
+adresse_rue: "2395 rue Beaubien Est"
 adresse_complement: ""
 ville: "Montréal"
 quartier: "Rosemont"
 arrondissement: "Rosemont—La Petite-Patrie"
 region: "QC"
-code_postal: "H1Y 1G3"
+code_postal: "H2G 1N3"
 pays: "Canada"
 pays_iso: "CA"
 
-# Géolocalisation
-latitude: 45.5408
-longitude: -73.5823
-# ✅ Géolocalisation tranchée v1.7 : la valeur 45.5501/-73.5832 anciennement
-# dans rdvUrl.ts a été corrigée vers 45.5408/-73.5823. Les 4 consommateurs
-# (entity-canonical.mjs, rdvUrl.ts, GlobalJsonLd.tsx, scripts llms*) sont alignés.
+# Géolocalisation (fiche GBP de Judith, déjà à cette adresse)
+latitude: 45.5481818
+longitude: -73.5924854
 
-# Jours de pratique de Judith à LSSI
-jours_pratique: ["lundi", "mardi", "jeudi", "vendredi"]
+# Accès (distance métro Beaubien → clinique ≈ 1,8 km : ne pas écrire « X minutes à pied »)
+acces: "Métro Beaubien (ligne orange), puis bus 18 Beaubien vers l'est. Stationnement sur rue."
 
-# Identifiants externes liés à LSSI
-gorendezvous_company_id: "104074"
-gorendezvous_employee_id: "175708"
-gorendezvous_url: "https://www.gorendezvous.com/lasourceensoi?companyId=104074&eids=175708"
-url_clinique: "https://lasourceensoi.com/"
+# Horaires de Judith aux Vagues
+jours_pratique: ["lundi", "mardi", "mercredi", "vendredi"]
+horaires:
+  - "lundi 8 h 30–15 h (privé)"
+  - "mardi 13 h–17 h (acupuncture sociale)"
+  - "mardi 18 h–21 h (privé)"
+  - "mercredi 8 h 30–11 h 30 (acupuncture sociale)"
+  - "vendredi 8 h 30–12 h (acupuncture sociale)"
+acupuncture_sociale: true
+
+# Téléphone de clinique : aucun publié → utiliser le cellulaire de Judith (§5)
+
+# Identifiants externes
+# ⚠️ Le GRV est géré par la maison mère (slug « bhavanalaclinique »). Ce nom ne doit JAMAIS
+# apparaître en texte visible, llms ou JSON-LD — seulement dans l'URL.
+gorendezvous_company_id: "106503"
+gorendezvous_employee_id: "196572"
+gorendezvous_url: "https://www.gorendezvous.com/bhavanalaclinique?companyId=106503&eids=196572"
+url_clinique: "https://lesvaguesct.com/"
+instagram_clinique: "lesvagues.beaubien"
 ```
 
 **Format canonique pour citations courtes** :
 - Ultra-court : `Rosemont, Montréal`
-- Court : `La Source en Soi, 2554 Beaubien Est, Rosemont`
-- Long : `La Source en Soi, 2554 rue Beaubien Est, Montréal (Rosemont), H1Y 1G3`
+- Court : `Les Vagues, communautés thérapeutiques, 2395 Beaubien Est, Rosemont`
+- Long : `Les Vagues, communautés thérapeutiques, 2395 rue Beaubien Est, Montréal (Rosemont), H2G 1N3`
 
 ---
 
@@ -192,7 +208,7 @@ gorendezvous_stype: "Acupuncture"
 gorendezvous_url: "https://www.gorendezvous.com/edenyogapilates?companyId=141296&eids=192390&stype=Acupuncture"
 
 # Jours de pratique de Judith à Éden
-jours_pratique: ["mercredi"]
+jours_pratique: ["jeudi"]   # depuis octobre 2026 (auparavant mercredi)
 horaire: "9h00 à 15h00"
 note: "Pas d'acupuncture sociale offerte à Éden."
 ```
@@ -209,9 +225,11 @@ note: "Pas d'acupuncture sociale offerte à Éden."
 ## 5. Coordonnées canoniques
 
 ```yaml
-telephone: "+1-514-750-3735"
-telephone_format_local: "514 750-3735"
-telephone_format_international: "+1 514 750-3735"
+# Cellulaire de Judith (appel ou texto). Remplace le 514 750-3735 de LSSI depuis octobre 2026.
+# JSON-LD : sur Person et le business, jamais sur la Place des Vagues.
+telephone: "+1-514-882-1922"
+telephone_format_local: "514 882-1922"
+telephone_format_international: "+1 514 882-1922"
 
 email: "info@acupuncturejudith.ca"
 
@@ -219,7 +237,7 @@ site_web: "https://www.acupuncturejudith.ca"
 site_web_sans_www: "https://acupuncturejudith.ca"
 
 # URL de réservation directe — toujours utiliser celle-ci dans CTA, profils externes, signatures
-reservation: "https://www.gorendezvous.com/lasourceensoi?companyId=104074&eids=175708"
+reservation: "https://www.gorendezvous.com/bhavanalaclinique?companyId=106503&eids=196572"
 ```
 
 **Note redirection** : `mon-acupunctrice.ca` redirige vers `acupuncturejudith.ca` (legacy Wix).
@@ -248,7 +266,7 @@ wikidata_id: "Q139677208"
 wikidata_url: "https://www.wikidata.org/wiki/Q139677208"
 
 # Lien associé (clinique principale)
-lasourceensoi_url: "https://lasourceensoi.com/"
+lesvagues_url: "https://lesvaguesct.com/"
 
 # Google Business Profile de Judith
 gbp_share_url: "https://share.google/ncO1Alzja10AmsUfR"
@@ -269,66 +287,29 @@ gbp_avis_short_link: "https://g.page/r/CQt_EeseQ8U_EBM/review"
 ### 7.1 Bio courte (~300 caractères) — pour annuaires, signatures, profils sociaux brefs
 
 ```text
-Judith Dufour-Savard, Ac., est acupunctrice membre de l'OAQ (A-008-24).
-Elle pratique à La Source en Soi (Rosemont, Montréal) et à Éden Yoga
-Pilates (Repentigny). Spécialisée en fertilité, grossesse et périnatalité,
-pédiatrie et acupuncture sociale. Ancienne accompagnante à la Maison de
-naissance Côte-des-Neiges.
+Judith Dufour-Savard, Ac., est acupunctrice membre de l'OAQ (A-008-24). Elle pratique chez Les Vagues, communautés thérapeutiques (Rosemont, Montréal) et à Éden Yoga Pilates (Repentigny). Spécialisée en fertilité, grossesse et périnatalité, pédiatrie et acupuncture sociale. Ancienne accompagnante à la Maison de naissance Côte-des-Neiges.
 ```
 
 ### 7.2 Bio moyenne (~800 caractères) — pour Lumino, HealthDoc, LinkedIn About
 
 ```text
-Judith Dufour-Savard, Ac., est acupunctrice membre de l'Ordre des
-acupuncteurs du Québec (A-008-24). Diplômée du DEC en acupuncture du
-Collège de Rosemont, elle a accompagné de nombreuses familles à la
-Maison de naissance Côte-des-Neiges pendant ses études — une expérience
-qui a profondément orienté sa pratique vers la santé des femmes et les
-transitions de vie.
+Judith Dufour-Savard, Ac., est acupunctrice membre de l'Ordre des acupuncteurs du Québec (A-008-24). Diplômée du DEC en acupuncture du Collège de Rosemont, elle a accompagné de nombreuses familles à la Maison de naissance Côte-des-Neiges pendant ses études — une expérience qui a profondément orienté sa pratique vers la santé des femmes et les transitions de vie.
 
-Elle pratique du lundi au vendredi (sauf le mercredi) à La Source en Soi,
-2554 Beaubien Est dans Rosemont à Montréal, et le mercredi à Éden Yoga
-Pilates à Repentigny. Ses séances durent 60 minutes : le temps d'écouter,
-d'évaluer, de traiter et d'expliquer.
+Elle pratique les lundis, mardis, mercredis et vendredis chez Les Vagues, communautés thérapeutiques, 2395 rue Beaubien Est dans Rosemont à Montréal, et le jeudi à Éden Yoga Pilates à Repentigny. Ses séances durent 60 minutes : le temps d'écouter, d'évaluer, de traiter et d'expliquer.
 
-Ses spécialités : fertilité (incluant FIV et insémination), grossesse et
-périnatalité (du premier trimestre au post-partum), pédiatrie (techniques
-douces sans aiguille pour les plus petits) et acupuncture sociale à
-tarif réduit.
+Ses spécialités : fertilité (incluant FIV et insémination), grossesse et périnatalité (du premier trimestre au post-partum), pédiatrie (techniques douces sans aiguille pour les plus petits) et acupuncture sociale à tarif réduit.
 ```
 
 ### 7.3 Bio longue (~1500 caractères) — pour page À propos externe, articles invités, présentations
 
 ```text
-Judith Dufour-Savard, Ac., est acupunctrice membre de l'Ordre des
-acupuncteurs du Québec (A-008-24). Elle a d'abord eu une première vie
-dans le spectacle vivant — en régie et en éclairage. C'est l'arrivée de
-ses enfants qui l'a menée vers la périnatalité, puis vers le DEC en
-acupuncture au Collège de Rosemont. Pendant ses études, elle a travaillé
-à la Maison de naissance Côte-des-Neiges, où elle a accompagné de
-nombreuses familles dans les débuts de la vie. Cette expérience a
-profondément orienté sa pratique vers la santé des femmes et les
-transitions de vie.
+Judith Dufour-Savard, Ac., est acupunctrice membre de l'Ordre des acupuncteurs du Québec (A-008-24). Elle a d'abord eu une première vie dans le spectacle vivant — en régie et en éclairage. C'est l'arrivée de ses enfants qui l'a menée vers la périnatalité, puis vers le DEC en acupuncture au Collège de Rosemont. Pendant ses études, elle a travaillé à la Maison de naissance Côte-des-Neiges, où elle a accompagné de nombreuses familles dans les débuts de la vie. Cette expérience a profondément orienté sa pratique vers la santé des femmes et les transitions de vie.
 
-Aujourd'hui, elle pratique à Rosemont (La Source en Soi, 2554 Beaubien
-Est) du lundi au vendredi sauf le mercredi, jour où elle reçoit à Éden
-Yoga Pilates à Repentigny. Ses séances durent 60 minutes : le temps
-d'écouter, d'évaluer, de traiter et d'expliquer.
+Aujourd'hui, elle pratique à Rosemont, chez Les Vagues, communautés thérapeutiques (2395 rue Beaubien Est), les lundis, mardis, mercredis et vendredis, et le jeudi à Éden Yoga Pilates à Repentigny. Ses séances durent 60 minutes : le temps d'écouter, d'évaluer, de traiter et d'expliquer.
 
-Sa pratique se concentre sur quatre piliers. La fertilité, incluant le
-soutien en FIV, en insémination, et pour des conditions comme le SOPK
-et l'endométriose. La grossesse et la périnatalité, du premier trimestre
-au post-partum (nausées, douleurs, préparation à l'accouchement,
-moxibustion pour bébé en siège). La pédiatrie, avec des techniques
-adaptées et souvent sans aiguille pour les plus petits (aimants,
-shōnishin). Et l'acupuncture sociale, des soins à tarif réduit pour
-rendre la santé accessible.
+Sa pratique se concentre sur quatre piliers. La fertilité, incluant le soutien en FIV, en insémination, et pour des conditions comme le SOPK et l'endométriose. La grossesse et la périnatalité, du premier trimestre au post-partum (nausées, douleurs, préparation à l'accouchement, moxibustion pour bébé en siège). La pédiatrie, avec des techniques adaptées et souvent sans aiguille pour les plus petits (aimants, shōnishin). Et l'acupuncture sociale, des soins à tarif réduit pour rendre la santé accessible.
 
-Au-delà de sa pratique clinique, Judith s'est engagée dans le
-rayonnement de la profession en siégeant au conseil d'administration de
-l'Association des Acupuncteurs du Québec (AAQ) à titre d'administratrice.
-Elle se forme continuellement auprès de professionnels experts dans
-leur domaine.
+Au-delà de sa pratique clinique, Judith s'est engagée dans le rayonnement de la profession en siégeant au conseil d'administration de l'Association des Acupuncteurs du Québec (AAQ) à titre d'administratrice. Elle se forme continuellement auprès de professionnels experts dans leur domaine.
 ```
 
 ### 7.4 Variante 1re personne (référence — site /a-propos)
@@ -378,9 +359,9 @@ doivent rester identiques au présent fichier ; seule la voix change.
 | 1.2a | Lumino EN | [`/health-care-provider-profile/.../judith-dufour-savard-1007631-1001446/`](https://luminohealth.sunlife.ca/en/health-care-provider-profile/acupuncturist/la-source-en-soi-centre/judith-dufour-savard-1007631-1001446/) | ⚠️ non-revendiqué | NAP cohérent (H1Y 1G3 ✅). Profil affiche "Is this you? Sign up for your free profile" → **action prioritaire** : revendiquer le profil pour pouvoir éditer bio + spécialités + photo. |
 | 1.2b | Lumino FR | _(même URL avec `/fr/` au lieu de `/en/`)_ | ⚠️ non-revendiqué | Lumino utilise une URL bilingue. Revendiquer 1.2a active aussi la version FR. |
 | 1.3 | HealthDoc (healthdoc.ca) | _(profil inexistant)_ | ⬜ opportunité | Aucun profil Judith trouvé. **Décision à prendre** : créer un profil ? D'autres acupuncteur·trices québécois y figurent (ex. Geneviève Perron-Dufour, Julie Savard). Quick win possible pour le proof graph. |
-| 1.4 | GoRendezVous | `companyId=104074&eids=175708` | ⬜ | Vérifier bio, photo, spécialités, et que le bouton mène bien au profil Judith (pas LSSI globale). |
+| 1.4 | GoRendezVous | Les Vagues `companyId=106503&eids=196572` (+ Éden `141296/192390`) | ⬜ | Vérifier bio, photo, spécialités, et que le bouton mène bien au profil Judith. Ancien profil LSSI `104074/175708` : à faire désactiver par LSSI. |
 | 1.5 | OAQ — fiche publique | A-008-24 | ⬜ | Vérifier sur le registre OAQ (`o-a-q.org`) que les infos publiques correspondent. Modifications via OAQ — délai possible. |
-| 1.6 | La Source en Soi — page équipe | [`lasourceensoi.com/equipe/judith-dufour-savard/`](https://lasourceensoi.com/equipe/judith-dufour-savard/) | ⬜ divergences détectées | Bio actuelle utilise `infertilité` (au lieu de `fertilité`) et ne mentionne pas les spécialités piliers de façon structurée. **Action** : envoyer à LSSI une bio courte ou moyenne canonique pour remplacer la version actuelle. |
+| 1.6 | La Source en Soi — page équipe (ancienne clinique) | `lasourceensoi.com/equipe/judith-dufour-savard/` | ⬜ à retirer | Depuis octobre 2026 : demander à LSSI de retirer la page ou de rediriger. Plus citée dans llms.txt. |
 | 1.7 | Google Business Profile (Judith) | [`share.google/ncO1Alzja10AmsUfR`](https://share.google/ncO1Alzja10AmsUfR) | ✅ existence confirmée | Fiche GBP propre à Judith, distincte de LSSI. **Encore à récupérer** : (a) lien d'avis court depuis GBP (Outils marketing → Lien d'avis) — débloque le Chantier 2 ; (b) optionnellement, URL Google Maps directe (`maps.app.goo.gl/...`) pour un `sameAs` plus parlant. |
 | 1.8 | LinkedIn | [`linkedin.com/in/judith-dufour-savard-acu/`](https://www.linkedin.com/in/judith-dufour-savard-acu/) | ⬜ | Bio About + Experience + Skills + Featured (lien `acupuncturejudith.ca`). Photo de profil à harmoniser avec celle du site. |
 | 1.9 | Facebook business | [`profile.php?id=61562614934143`](https://www.facebook.com/profile.php?id=61562614934143) | ⚠️ vs profil perso | À distinguer du profil personnel `facebook.com/judith.dufoursavard/`. S'assurer que le `sameAs` du schema pointe bien vers la **page business** (id 615...) et pas le profil perso. |
@@ -390,7 +371,7 @@ doivent rester identiques au présent fichier ; seule la voix change.
 
 ### Note critique GBP (Chantier 1.7 et Chantier 2)
 
-La note `aggregateRating 4.9 / 1215 avis` actuellement dans `GlobalJsonLd.tsx` est celle de **La Source en Soi** dans son ensemble — pas de Judith spécifiquement.
+La note 4.9 / 1215 avis était celle de **La Source en Soi** (ancienne clinique) — retirée du site et du schema en octobre 2026. Seuls les avis de la fiche GBP de Judith pourront alimenter un `aggregateRating`.
 
 Pour le Chantier 2 (objectif 20-25 avis Judith d'ici 90 jours), il faut **impérativement** :
 1. Confirmer que la fiche GBP propre à Judith est bien créée et publiée (URL à inscrire ligne 1.7).
@@ -429,9 +410,9 @@ Pour le Chantier 2 (objectif 20-25 avis Judith d'ici 90 jours), il faut **impér
 
 ⚠️ **Ne JAMAIS publier une page décisionnelle avant que le Chantier 1 soit à 100% pour le sujet de la page.**
 
-Exemple : avant de publier `/services/acupuncture-fiv-montreal`, s'assurer que les profils Lumino + LinkedIn + GBP mentionnent bien la FIV comme sous-thème de fertilité et utilisent le bon code postal H1Y 1G3.
+Exemple : avant de publier `/services/acupuncture-fiv-montreal`, s'assurer que les profils Lumino + LinkedIn + GBP mentionnent bien la FIV comme sous-thème de fertilité et utilisent le bon code postal H2G 1N3.
 
-Une page décisionnelle qui annonce *"Acupunctrice à Rosemont, H1Y 1G3"* alors que Lumino dit encore un autre code postal = mauvais signal pour les LLMs.
+Une page décisionnelle qui annonce *"Acupunctrice à Rosemont, H2G 1N3"* alors que Lumino dit encore un autre code postal = mauvais signal pour les LLMs.
 
 ---
 
@@ -449,6 +430,7 @@ Une page décisionnelle qui annonce *"Acupunctrice à Rosemont, H1Y 1G3"* alors 
 | 1.7 | 2026-05-07 | Benoit + Claude | Refactor architectural majeur : extraction des constantes identité/NAP/bios/spécialités vers le module canonique exécutable `lib/entity-canonical.mjs` + types `lib/entity-canonical.d.ts`. Quatre consommateurs migrés : `GlobalJsonLd.tsx`, `rdvUrl.ts`, `generate-llms-full.mjs`, et nouveau `generate-llms.mjs` (régénère `public/llms.txt`). Divergence géo LSSI tranchée définitivement à 45.5408/-73.5823 (la valeur 45.5501/-73.5832 anciennement dans rdvUrl.ts était trop au nord pour la rue Beaubien Est). Le SOT reste la documentation primaire ; le module est la version exécutable. |
 | 1.8 | 2026-05-07 | Benoit + Claude + Codex | Audit Codex passé. Vague 1 quick wins appliqués : (a) cleanup `CLAUDE.md` — workflow obsolète "décommenter dans GlobalJsonLd.tsx" remplacé par le nouveau workflow basé sur `EMERGING_SPECIALTIES` dans entity-canonical, et la mention erronée de "5 services incluant stress/anxiété" corrigée vers les 4 piliers réels ; (b) `aggregateRating` du Place LSSI retiré du JSON-LD pour éviter l'ambiguïté Judith vs clinique (à ré-introduire au Chantier 2 quand Judith aura 20+ avis sur sa fiche GBP — actuellement à 6) ; (c) ajout d'un placeholder `SAMEAS.authority: []` dans entity-canonical pour préparer l'intégration future des profils d'autorité (OAQ public, Lumino, GoRendezVous, page équipe LSSI). Vagues 2 (anti-drift script) et 3 (refonte @graph + provider/founder) reportées — voir `project-docs/HANDOFF_CC_VAGUE1_QUICK_WINS.md` pour le détail. |
 
+| 1.9 | 2026-10-12 | Benoit + Claude | **Changement de clinique principale** : La Source en Soi → Les Vagues, communautés thérapeutiques (2395 rue Beaubien Est, H2G 1N3, GRV 106503/196572). Téléphone canonique = cellulaire de Judith 514 882-1922. Éden passe au jeudi. Tarifs : adulte 105 $, sociale 35–65 $. Avis LSSI (4,9/1 215 + 3 témoignages) retirés. Clé runtime `NAP.lssi` → `NAP.lesvagues`. |
 ---
 
 ## 🔗 Documents associés

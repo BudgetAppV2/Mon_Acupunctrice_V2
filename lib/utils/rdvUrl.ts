@@ -7,7 +7,7 @@
 
 import { NAP, CONTACT } from '@/lib/entity-canonical.mjs';
 
-export type Clinic = 'lssi' | 'eden';
+export type Clinic = 'lesvagues' | 'eden';
 
 type Platform = 'instagram' | 'facebook' | 'youtube' | 'blog' | 'story' | 'bio';
 type Medium = 'reel' | 'caption' | 'article' | 'story' | 'description' | 'link';
@@ -21,26 +21,27 @@ function capitalizeFirst(s: string): string {
 }
 
 export const CLINICS = {
-  lssi: {
-    name: NAP.lssi.name,
-    shortName: NAP.lssi.neighborhood,
-    address: `${NAP.lssi.streetAddress}, ${NAP.lssi.addressLocality}, ${NAP.lssi.addressRegion} ${NAP.lssi.postalCode}`,
-    addressShort: NAP.lssi.streetAddress,
-    city: NAP.lssi.addressLocality,
-    region: NAP.lssi.borough,
+  lesvagues: {
+    name: NAP.lesvagues.name,
+    shortName: NAP.lesvagues.neighborhood,
+    address: `${NAP.lesvagues.streetAddress}, ${NAP.lesvagues.addressLocality}, ${NAP.lesvagues.addressRegion} ${NAP.lesvagues.postalCode}`,
+    addressShort: NAP.lesvagues.streetAddress,
+    city: NAP.lesvagues.addressLocality,
+    region: NAP.lesvagues.borough,
+    // Pas de numéro de clinique publié : on affiche le cellulaire de Judith.
     phone: CONTACT.phoneLocal,
     phoneFull: CONTACT.phone,
-    siteUrl: NAP.lssi.siteUrl,
-    grvSlug: NAP.lssi.grvSlug,
-    grvUrl: NAP.lssi.grvUrl,
-    mapsQuery: NAP.lssi.mapsQuery,
-    days: capitalizeFirst(NAP.lssi.daysLabel),
-    services: [...NAP.lssi.services],
-    hasSociale: NAP.lssi.hasSocialAcupuncture,
-    postalCode: NAP.lssi.postalCode,
-    // Géolocalisation : valeur tranchée à 45.5408/-73.5823 dans entity-canonical
-    // (la valeur 45.5501/-73.5832 anciennement ici a été corrigée — cf. SOT v1.7).
-    geo: NAP.lssi.geo,
+    siteUrl: NAP.lesvagues.siteUrl,
+    grvSlug: NAP.lesvagues.grvSlug,
+    grvUrl: NAP.lesvagues.grvUrl,
+    mapsQuery: NAP.lesvagues.mapsQuery,
+    days: capitalizeFirst(NAP.lesvagues.daysLabel),
+    schedule: NAP.lesvagues.schedule,
+    access: NAP.lesvagues.access,
+    services: [...NAP.lesvagues.services],
+    hasSociale: NAP.lesvagues.hasSocialAcupuncture,
+    postalCode: NAP.lesvagues.postalCode,
+    geo: NAP.lesvagues.geo,
   },
   eden: {
     name: NAP.eden.name,
@@ -56,6 +57,7 @@ export const CLINICS = {
     grvUrl: NAP.eden.grvUrl,
     mapsQuery: NAP.eden.mapsQuery,
     days: capitalizeFirst(NAP.eden.daysLabel),
+    schedule: NAP.eden.schedule,
     services: [...NAP.eden.services],
     hasSociale: NAP.eden.hasSocialAcupuncture,
     postalCode: NAP.eden.postalCode,
@@ -69,7 +71,7 @@ export function getRdvUrl(opts?: {
   campaign?: string;
   clinic?: Clinic;
 }): string {
-  const clinic = opts?.clinic || 'lssi';
+  const clinic = opts?.clinic || 'lesvagues';
   const base = CLINICS[clinic].grvUrl;
   if (!opts?.source) return base;
   const params = new URLSearchParams();
@@ -86,4 +88,4 @@ export function slugify(text: string): string {
 
 // For story images (text in image, not clickable — redirige vers la page /reserver)
 export const RDV_URL_SHORT = 'acupuncturejudith.ca/reserver';
-export const RDV_URL_BASE = CLINICS.lssi.grvUrl;
+export const RDV_URL_BASE = CLINICS.lesvagues.grvUrl;
